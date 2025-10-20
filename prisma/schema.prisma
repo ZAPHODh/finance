@@ -1,0 +1,289 @@
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DB_PRISMA_URL") // uses connection pooling
+  directUrl = env("DB_URL_NON_POOLING") // uses a direct connection
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model EmailVerificationCode {
+  id        String   @id @default(cuid())
+  code      String
+  userId    String
+  email     String
+  expiresAt DateTime
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model User {
+  id                     String                  @id @unique @default(cuid())
+  name                   String?
+  email                  String?                 @unique
+  emailVerified          Boolean?                @default(false)
+  picture                String?
+  githubId               Int?                    @unique
+  sessions               Session[]
+  emailVerificationCodes EmailVerificationCode[]
+
+  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
+  stripePriceId          String?   @map(name: "stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+
+  drivers      Driver[]
+  vehicles     Vehicle[]
+  companies    Company[]
+  expenseTypes ExpenseType[]
+  revenueTypes RevenueType[]
+  paymentMethods PaymentMethod[]
+  preferences  UserPreferences?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PlanType {
+  FREE
+  SIMPLE
+  PRO
+}
+
+model Driver {
+  id        String   @id @default(cuid())
+  name      String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expenses  Expense[]
+  revenues  Revenue[]
+  workLogs  WorkLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Vehicle {
+  id        String   @id @default(cuid())
+  name      String
+  plate     String?
+  model     String?
+  year      Int?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expenses     Expense[]
+  revenues     Revenue[]
+  workLogs     WorkLog[]
+  maintenances Maintenance[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Company {
+  id       String    @id @default(cuid())
+  name     String
+  icon     String?
+  userId   String
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  revenues Revenue[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model ExpenseType {
+  id       String    @id @default(cuid())
+  name     String
+  icon     String?
+  userId   String
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expenses Expense[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model RevenueType {
+  id       String    @id @default(cuid())
+  name     String
+  icon     String?
+  userId   String
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  revenues Revenue[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model PaymentMethod {
+  id       String    @id @default(cuid())
+  name     String
+  icon     String?
+  userId   String
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expenses Expense[]
+  revenues Revenue[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Expense {
+  id              String         @id @default(cuid())
+  description     String?
+  amount          Float
+  date            DateTime
+  kmDriven        Float?
+  receiptUrl      String?
+
+  expenseTypeId   String
+  expenseType     ExpenseType    @relation(fields: [expenseTypeId], references: [id], onDelete: Cascade)
+
+  paymentMethodId String?
+  paymentMethod   PaymentMethod? @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
+
+  driverId        String?
+  driver          Driver?        @relation(fields: [driverId], references: [id], onDelete: SetNull)
+
+  vehicleId       String?
+  vehicle         Vehicle?       @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([expenseTypeId])
+  @@index([driverId])
+  @@index([vehicleId])
+  @@index([date])
+}
+
+model Revenue {
+  id              String         @id @default(cuid())
+  description     String?
+  amount          Float
+  date            DateTime
+  kmDriven        Float?
+  hoursWorked     Float?
+  tripType        String?
+  receiptUrl      String?
+
+  revenueTypeId   String?
+  revenueType     RevenueType?   @relation(fields: [revenueTypeId], references: [id], onDelete: SetNull)
+
+  companyId       String?
+  company         Company?       @relation(fields: [companyId], references: [id], onDelete: SetNull)
+
+  paymentMethodId String?
+  paymentMethod   PaymentMethod? @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
+
+  driverId        String?
+  driver          Driver?        @relation(fields: [driverId], references: [id], onDelete: SetNull)
+
+  vehicleId       String?
+  vehicle         Vehicle?       @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([driverId])
+  @@index([vehicleId])
+  @@index([date])
+}
+
+model WorkLog {
+  id           String   @id @default(cuid())
+  date         DateTime
+  kmDriven     Float
+  hoursWorked  Float
+
+  driverId     String?
+  driver       Driver?  @relation(fields: [driverId], references: [id], onDelete: SetNull)
+
+  vehicleId    String?
+  vehicle      Vehicle? @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([driverId])
+  @@index([vehicleId])
+  @@index([date])
+}
+
+model Maintenance {
+  id          String   @id @default(cuid())
+  description String
+  cost        Float
+  date        DateTime
+  kmAtService Float?
+  nextServiceKm Float?
+  receiptUrl  String?
+
+  vehicleId   String
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([vehicleId])
+  @@index([date])
+}
+
+model UserPreferences {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Appearance
+  theme     String   @default("system") // light, dark, system
+  language  String   @default("en") // en, pt
+
+  // Regional
+  currency  String   @default("brl") // usd, brl, eur
+  timezone  String   @default("America/Sao_Paulo")
+  use24HourFormat Boolean @default(false)
+
+  // Notifications
+  emailNotifications Boolean @default(true)
+  pushNotifications  Boolean @default(false)
+  marketingEmails    Boolean @default(false)
+
+  // Privacy
+  analytics          Boolean @default(true)
+  profileVisibility  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+

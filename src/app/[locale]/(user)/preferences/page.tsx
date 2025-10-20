@@ -1,0 +1,49 @@
+import { getCurrentSession } from "@/lib/server/auth/session"
+import { getScopedI18n } from "@/locales/server"
+import { redirect } from "next/navigation"
+import { Separator } from "@/components/ui/separator"
+import { PreferencesForm } from "./preferences-form"
+
+export default async function PreferencesPage() {
+  const { user } = await getCurrentSession()
+  if (!user) redirect("/login")
+
+  const t = await getScopedI18n("shared.userPages.preferences")
+
+  return (
+    <div className="max-w-3xl space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold">{t("title")}</h1>
+        <p className="text-muted-foreground">{t("description")}</p>
+      </div>
+
+      <Separator />
+
+      <PreferencesForm
+        translations={{
+          appearanceTitle: t("appearanceTitle"),
+          appearanceDescription: t("appearanceDescription"),
+          theme: t("theme"),
+          light: t("light"),
+          dark: t("dark"),
+          system: t("system"),
+          language: t("language"),
+          english: t("english"),
+          portuguese: t("portuguese"),
+          regionalTitle: t("regionalTitle"),
+          regionalDescription: t("regionalDescription"),
+          currency: t("currency"),
+          usDollar: t("usDollar"),
+          brazilianReal: t("brazilianReal"),
+          euro: t("euro"),
+          timezone: t("timezone"),
+          saoPaulo: t("saoPaulo"),
+          newYork: t("newYork"),
+          london: t("london"),
+          timeFormat: t("timeFormat"),
+          timeFormatDescription: t("timeFormatDescription"),
+        }}
+      />
+    </div>
+  )
+}
