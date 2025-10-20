@@ -52,7 +52,7 @@ export function VehicleDialog({ mode, vehicle }: VehicleDialogProps) {
           await updateVehicle(vehicle!.id, formData);
           toast.success(tCommon('updateSuccess'));
         }
-      } catch (error) {
+      } catch {
         toast.error(tCommon('error'));
       }
     });

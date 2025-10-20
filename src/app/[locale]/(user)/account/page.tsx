@@ -21,7 +21,7 @@ export default async function AccountPage() {
 
       <ProfileForm
         defaultName={user.name || ""}
-        defaultEmail={user.email}
+        defaultEmail={user.email || ""}
         translations={{
           profileTitle: t("profileTitle"),
           profileDescription: t("profileDescription"),

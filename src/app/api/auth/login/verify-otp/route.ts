@@ -59,7 +59,7 @@ export const POST = async (req: Request) => {
         return new Response(null, {
             status: 200,
         });
-    } catch (error) {
+    } catch {
         return new Response("Internal Server Error", {
             status: 500,
         });

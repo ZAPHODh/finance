@@ -42,7 +42,7 @@ export function VehiclesTable({ vehicles }: VehiclesTableProps) {
       try {
         await deleteVehicle(id);
         toast.success(tCommon('deleteSuccess'));
-      } catch (error) {
+      } catch {
         toast.error(tCommon('error'));
       }
     });

@@ -1,5 +1,3 @@
-import { logout } from "@/app/[locale]/actions";
-
 export default {
     goBack: 'Voltar',
     locales: {
@@ -302,6 +300,10 @@ export default {
             title: 'Relatórios Inteligentes',
             description: 'Gere relatórios detalhados sobre desempenho de motoristas, eficiência de veículos e resumos financeiros. Exporte dados em múltiplos formatos.',
         },
+        feature1: 'Categorização detalhada de despesas',
+        feature2: 'Rastreamento de receita em tempo real',
+        feature3: 'Métricas de desempenho de motoristas e veículos',
+        feature4: 'Relatórios e exportações personalizáveis',
     },
     pricing: {
         title: 'Preços que Escalam com Você',

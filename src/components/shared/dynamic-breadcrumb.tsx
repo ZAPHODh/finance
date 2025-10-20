@@ -25,7 +25,7 @@ export function DynamicBreadcrumb({ locale }: DynamicBreadcrumbProps) {
   const pathWithoutLocale = pathname.replace(`/${locale}`, "")
   const segments = pathWithoutLocale.split("/").filter(Boolean)
 
-  const getSegmentLabel = (segment: string, index: number): string => {
+  const getSegmentLabel = (segment: string): string => {
     if (segment === "drivers") return tConfig("drivers.title")
     if (segment === "vehicles") return tConfig("vehicles.title")
     if (segment === "companies") return tConfig("companies.title")
@@ -47,7 +47,7 @@ export function DynamicBreadcrumb({ locale }: DynamicBreadcrumbProps) {
 
   const breadcrumbs = segments.map((segment, index) => {
     const path = `/${locale}/${segments.slice(0, index + 1).join("/")}`
-    const label = getSegmentLabel(segment, index)
+    const label = getSegmentLabel(segment)
     const isLast = index === segments.length - 1
 
     return {
@@ -73,7 +73,7 @@ export function DynamicBreadcrumb({ locale }: DynamicBreadcrumbProps) {
           </BreadcrumbLink>
         </BreadcrumbItem>
 
-        {breadcrumbs.map((breadcrumb, index) => {
+        {breadcrumbs.map((breadcrumb) => {
           // Skip dashboard in breadcrumb trail since it's already the root
           if (breadcrumb.label === tSidebar("navigation.dashboard")) {
             return null

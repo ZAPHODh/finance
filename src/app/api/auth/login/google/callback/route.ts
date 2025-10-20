@@ -22,7 +22,7 @@ export async function GET(request: Request) {
         const tokens = await google.validateAuthorizationCode(code, codeVerifier);
 
         const idToken = tokens.idToken();
-        const claims = decodeIdToken(idToken);
+        decodeIdToken(idToken);
 
         const userinfoRes = await fetch("https://openidconnect.googleapis.com/v1/userinfo", {
             headers: { Authorization: `Bearer ${tokens.accessToken()}` },
@@ -31,10 +31,7 @@ export async function GET(request: Request) {
 
         const existingUser = await prisma.user.findFirst({
             where: {
-                OR: [
-                    { googleId: googleUser.sub },
-                    { email: googleUser.email },
-                ],
+                email: googleUser.email,
             },
         });
 
@@ -44,7 +41,6 @@ export async function GET(request: Request) {
         } else {
             user = await prisma.user.create({
                 data: {
-                    googleId: googleUser.sub,
                     name: googleUser.name,
                     email: googleUser.email,
                     picture: googleUser.picture,

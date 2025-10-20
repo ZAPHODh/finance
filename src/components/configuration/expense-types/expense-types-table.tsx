@@ -41,7 +41,7 @@ export function ExpenseTypesTable({ expenseTypes }: ExpenseTypesTableProps) {
       try {
         await deleteExpenseType(id);
         toast.success(tCommon('deleteSuccess'));
-      } catch (error) {
+      } catch {
         toast.error(tCommon('error'));
       }
     });

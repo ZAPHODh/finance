@@ -48,7 +48,7 @@ export function PaymentMethodDialog({ mode, paymentMethod }: PaymentMethodDialog
           await updatePaymentMethod(paymentMethod!.id, formData);
           toast.success(tCommon('updateSuccess'));
         }
-      } catch (error) {
+      } catch {
         toast.error(tCommon('error'));
       }
     });

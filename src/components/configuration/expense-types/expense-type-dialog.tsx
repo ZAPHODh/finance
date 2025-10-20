@@ -48,7 +48,7 @@ export function ExpenseTypeDialog({ mode, expenseType }: ExpenseTypeDialogProps)
           await updateExpenseType(expenseType!.id, formData);
           toast.success(tCommon('updateSuccess'));
         }
-      } catch (error) {
+      } catch {
         toast.error(tCommon('error'));
       }
     });

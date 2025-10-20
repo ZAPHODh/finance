@@ -6,6 +6,7 @@ export default {
         button: 'Get Started',
         closing: 'Best regards,',
         signature: 'The Team',
+        subject: 'Thank you for joining us!',
     },
     verification: {
         preview: 'Your verification code',
@@ -14,6 +15,7 @@ export default {
         expires: 'This code expires in 10 minutes.',
         closing: 'Best regards,',
         signature: 'The Team',
+        subject: 'Your verification code',
     },
     supportConfirmation: {
         preview: 'We received your support request: {subject}',

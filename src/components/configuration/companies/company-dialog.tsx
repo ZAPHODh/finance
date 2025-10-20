@@ -48,7 +48,7 @@ export function CompanyDialog({ mode, company }: CompanyDialogProps) {
           await updateCompany(company!.id, formData);
           toast.success(tCommon('updateSuccess'));
         }
-      } catch (error) {
+      } catch {
         toast.error(tCommon('error'));
       }
     });

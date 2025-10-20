@@ -6,6 +6,7 @@ export default {
         button: 'Começar',
         closing: 'Atenciosamente,',
         signature: 'A Equipe',
+        subject: 'Obrigado por se juntar a nós!',
     },
     verification: {
         preview: 'Seu código de verificação',
@@ -14,6 +15,7 @@ export default {
         expires: 'Este código expira em 10 minutos.',
         closing: 'Atenciosamente,',
         signature: 'A Equipe',
+        subject: 'Seu código de verificação',
     },
     supportConfirmation: {
         preview: 'Recebemos sua solicitação de suporte: {subject}',

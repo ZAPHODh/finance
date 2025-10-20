@@ -41,7 +41,7 @@ export function PaymentMethodsTable({ paymentMethods }: PaymentMethodsTableProps
       try {
         await deletePaymentMethod(id);
         toast.success(tCommon('deleteSuccess'));
-      } catch (error) {
+      } catch {
         toast.error(tCommon('error'));
       }
     });

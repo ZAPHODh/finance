@@ -40,7 +40,7 @@ export function DriversTable({ drivers }: DriversTableProps) {
       try {
         await deleteDriver(id);
         toast.success(tCommon('deleteSuccess'));
-      } catch (error) {
+      } catch {
         toast.error(tCommon('error'));
       }
     });

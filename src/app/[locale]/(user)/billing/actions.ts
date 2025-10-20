@@ -18,7 +18,7 @@ const removePaymentMethodSchema = z.object({
 
 export const upgradeToPro = authActionClient
   .metadata({ actionName: "upgradeToPro" })
-  .action(async ({ ctx }) => {
+  .action(async () => {
 
     revalidatePath("/billing")
     return { success: true, message: "Upgrade initiated" }
@@ -27,7 +27,7 @@ export const upgradeToPro = authActionClient
 export const addPaymentMethod = authActionClient
   .metadata({ actionName: "addPaymentMethod" })
   .schema(addPaymentMethodSchema)
-  .action(async ({ parsedInput, ctx }) => {
+  .action(async () => {
     // TODO: Implement payment method storage with Stripe
     // Never store raw card details - use Stripe tokens/payment methods
 
@@ -38,7 +38,7 @@ export const addPaymentMethod = authActionClient
 export const removePaymentMethod = authActionClient
   .metadata({ actionName: "removePaymentMethod" })
   .schema(removePaymentMethodSchema)
-  .action(async ({ parsedInput, ctx }) => {
+  .action(async () => {
     // TODO: Implement payment method removal with Stripe
 
     revalidatePath("/billing")
@@ -47,7 +47,7 @@ export const removePaymentMethod = authActionClient
 
 export const cancelSubscription = authActionClient
   .metadata({ actionName: "cancelSubscription" })
-  .action(async ({ ctx }) => {
+  .action(async () => {
     // TODO: Implement subscription cancellation with Stripe
 
     revalidatePath("/billing")

@@ -41,7 +41,7 @@ export function RevenueTypesTable({ revenueTypes }: RevenueTypesTableProps) {
       try {
         await deleteRevenueType(id);
         toast.success(tCommon('deleteSuccess'));
-      } catch (error) {
+      } catch {
         toast.error(tCommon('error'));
       }
     });

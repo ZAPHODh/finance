@@ -300,6 +300,10 @@ export default {
             title: 'Smart Reporting',
             description: 'Generate detailed reports on driver performance, vehicle efficiency, and financial summaries. Export data in multiple formats.',
         },
+        feature1: 'Detailed expense categorization',
+        feature2: 'Real-time revenue tracking',
+        feature3: 'Driver and vehicle performance metrics',
+        feature4: 'Customizable reports and exports',
     },
     pricing: {
         title: 'Pricing that Scales with You',
@@ -365,7 +369,7 @@ export default {
             login: 'Login',
             contact: 'Contact',
         },
-        copyright: '© {{year}} DriveFinance. All rights reserved',
+        copyright: '© {year} DriveFinance. All rights reserved',
     },
     userSidebar: {
         brandName: 'DriveFinance',

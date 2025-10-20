@@ -34,7 +34,7 @@ export const updateProfile = authActionClient
 export const changePassword = authActionClient
   .metadata({ actionName: "changePassword" })
   .schema(changePasswordSchema)
-  .action(async ({ parsedInput, ctx }) => {
+  .action(async () => {
     // TODO: Implement password verification and hashing
     // This would require checking the current password and hashing the new one
 

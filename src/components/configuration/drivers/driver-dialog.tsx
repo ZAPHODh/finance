@@ -46,7 +46,7 @@ export function DriverDialog({ mode, driver }: DriverDialogProps) {
           await updateDriver(driver!.id, formData);
           toast.success(tCommon('updateSuccess'));
         }
-      } catch (error) {
+      } catch {
         toast.error(tCommon('error'));
       }
     });

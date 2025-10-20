@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -94,13 +94,13 @@ export function CancelSubscriptionDialog({
         }
     };
 
-    const handleDialogClose = () => {
+    const handleDialogClose = useCallback(() => {
         setIsOpen(false);
         setShowConfirmation(false);
         setError(null);
         setIsLoading(false);
         onDialogClose?.();
-    };
+    }, [onDialogClose]);
 
     const handleGoBack = () => {
         setShowConfirmation(false);
@@ -120,7 +120,7 @@ export function CancelSubscriptionDialog({
 
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen]);
+    }, [isOpen, handleDialogClose]);
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => {
@@ -144,6 +144,7 @@ export function CancelSubscriptionDialog({
                 </DialogClose>
                 {leftPanelImageUrl && (
                     <div className="w-full md:w-1/2 min-h-[500px] relative hidden md:block overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={leftPanelImageUrl} alt="Cancel Subscription" className="absolute inset-0 w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/30 to-background/90 dark:block hidden"></div>
                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-background/20 dark:block hidden"></div>

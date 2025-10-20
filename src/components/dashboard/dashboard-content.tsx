@@ -19,12 +19,37 @@ import { TransactionsSection } from "./transactions-section"
 import { useDashboardFilters } from "@/hooks/use-dashboard-filters"
 import { getDashboardData } from "@/app/[locale]/(financial)/dashboard/actions"
 
+interface DashboardData {
+  kpis: {
+    totalRevenue: number
+    totalExpenses: number
+    netProfit: number
+    totalKm: number
+    totalHours: number
+  }
+  breakdowns: {
+    revenueByCompany: Array<{ name: string; value: number; percentage: number }>
+    expensesByType: Array<{ name: string; value: number; percentage: number }>
+    performanceByDriver: Array<{ name: string; value: number; revenue: number; expenses: number }>
+    performanceByVehicle: Array<{ name: string; value: number; revenue: number; expenses: number }>
+  }
+  transactions: Array<{
+    id: string
+    description: string
+    category: string
+    amount: number
+    type: 'revenue' | 'expense'
+    date: Date
+    driver?: string
+    vehicle?: string
+    company?: string
+  }>
+}
+
 export function DashboardContent() {
   const { filters } = useDashboardFilters()
-  const [data, setData] = useState<any>(null)
+  const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
-
-  const tDashboard = useScopedI18n("shared.sidebar.dashboard")
   const tKpis = useScopedI18n("shared.sidebar.dashboard.kpis")
   const tBreakdowns = useScopedI18n("shared.sidebar.dashboard.breakdowns")
 

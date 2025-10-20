@@ -27,11 +27,19 @@ export function DashboardFilters({
   const t = useScopedI18n("shared.sidebar.dashboard.filters")
   const { filters, setFilter } = useDashboardFilters()
 
-  function handleFilterChange<K extends keyof typeof filters>(
-    key: K,
+  function handleFilterChange(
+    key: keyof typeof filters,
     value: string
   ) {
-    setFilter(key, value === "all" ? null : value)
+    if (key === "period") {
+      setFilter("period", value)
+    } else if (key === "driverId") {
+      setFilter("driverId", value === "all" ? null : value)
+    } else if (key === "vehicleId") {
+      setFilter("vehicleId", value === "all" ? null : value)
+    } else if (key === "companyId") {
+      setFilter("companyId", value === "all" ? null : value)
+    }
     onFilterChange?.()
   }
 

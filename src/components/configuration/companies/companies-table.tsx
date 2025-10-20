@@ -41,7 +41,7 @@ export function CompaniesTable({ companies }: CompaniesTableProps) {
       try {
         await deleteCompany(id);
         toast.success(tCommon('deleteSuccess'));
-      } catch (error) {
+      } catch {
         toast.error(tCommon('error'));
       }
     });
