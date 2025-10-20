@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { RenderIMGEl } from "@/components/OGImgEl";
 import { siteUrl } from "@/config/site";
 import Logo from "public/chad-next.png";
-import homepageImage from "public/chadnext-homepage.png";
+import homepageImage from "public/test.jpg";
 
 export const runtime = "edge";
 
