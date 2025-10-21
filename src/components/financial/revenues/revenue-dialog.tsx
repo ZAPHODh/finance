@@ -100,11 +100,11 @@ export function RevenueDialog({
         hoursWorked: value.hoursWorked ? Number(value.hoursWorked) : undefined,
         tripType: value.tripType || undefined,
         receiptUrl: value.receiptUrl || undefined,
-        revenueTypeId: value.revenueTypeId || undefined,
-        companyId: value.companyId || undefined,
-        paymentMethodId: value.paymentMethodId || undefined,
-        driverId: value.driverId || undefined,
-        vehicleId: value.vehicleId || undefined,
+        revenueTypeId: value.revenueTypeId && value.revenueTypeId !== "none" ? value.revenueTypeId : undefined,
+        companyId: value.companyId && value.companyId !== "none" ? value.companyId : undefined,
+        paymentMethodId: value.paymentMethodId && value.paymentMethodId !== "none" ? value.paymentMethodId : undefined,
+        driverId: value.driverId && value.driverId !== "none" ? value.driverId : undefined,
+        vehicleId: value.vehicleId && value.vehicleId !== "none" ? value.vehicleId : undefined,
       };
 
       if (mode === "create") {
@@ -188,7 +188,7 @@ export function RevenueDialog({
                         <SelectValue placeholder={t('company')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">-</SelectItem>
+                        <SelectItem value="none">-</SelectItem>
                         {companies.map((company) => (
                           <SelectItem key={company.id} value={company.id}>
                             {company.name}
@@ -212,7 +212,7 @@ export function RevenueDialog({
                         <SelectValue placeholder={t('revenueType')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">-</SelectItem>
+                        <SelectItem value="none">-</SelectItem>
                         {revenueTypes.map((type) => (
                           <SelectItem key={type.id} value={type.id}>
                             {type.name}
@@ -236,7 +236,7 @@ export function RevenueDialog({
                         <SelectValue placeholder={t('paymentMethod')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">-</SelectItem>
+                        <SelectItem value="none">-</SelectItem>
                         {paymentMethods.map((method) => (
                           <SelectItem key={method.id} value={method.id}>
                             {method.name}
@@ -260,7 +260,7 @@ export function RevenueDialog({
                         <SelectValue placeholder={t('driver')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">-</SelectItem>
+                        <SelectItem value="none">-</SelectItem>
                         {drivers.map((driver) => (
                           <SelectItem key={driver.id} value={driver.id}>
                             {driver.name}
@@ -284,7 +284,7 @@ export function RevenueDialog({
                         <SelectValue placeholder={t('vehicle')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">-</SelectItem>
+                        <SelectItem value="none">-</SelectItem>
                         {vehicles.map((vehicle) => (
                           <SelectItem key={vehicle.id} value={vehicle.id}>
                             {vehicle.name}
