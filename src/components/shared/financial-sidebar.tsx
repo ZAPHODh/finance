@@ -77,17 +77,17 @@ export function FinancialSidebar({ user, locale }: FinancialSidebarProps) {
       {
         title: t("financial.expenses"),
         icon: Receipt,
-        href: `/${locale}/dashboard/financial/expenses`,
+        href: `/${locale}/dashboard/expenses`,
       },
       {
         title: t("financial.revenues"),
         icon: TrendingUp,
-        href: `/${locale}/dashboard/financial/revenues`,
+        href: `/${locale}/dashboard/revenues`,
       },
       {
         title: t("financial.workLogs"),
         icon: Clock,
-        href: `/${locale}/dashboard/financial/work-logs`,
+        href: `/${locale}/dashboard/work-logs`,
       },
     ],
   }

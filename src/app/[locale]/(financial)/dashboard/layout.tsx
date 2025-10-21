@@ -13,6 +13,8 @@ export default async function FinancialLayout({
   expenseTypeDialog,
   paymentMethodDialog,
   revenueTypeDialog,
+  expenseDialog,
+  revenueDialog,
 }: {
   children: React.ReactNode;
   driverDialog: React.ReactNode;
@@ -21,6 +23,8 @@ export default async function FinancialLayout({
   expenseTypeDialog: React.ReactNode;
   paymentMethodDialog: React.ReactNode;
   revenueTypeDialog: React.ReactNode;
+  expenseDialog: React.ReactNode;
+  revenueDialog: React.ReactNode;
 }) {
   const { user } = await getCurrentSession()
   if (!user) redirect('/login')
@@ -43,6 +47,8 @@ export default async function FinancialLayout({
             {expenseTypeDialog}
             {paymentMethodDialog}
             {revenueTypeDialog}
+            {expenseDialog}
+            {revenueDialog}
           </main>
         </SidebarInset>
       </div>
