@@ -177,7 +177,6 @@ function DayRow({ dayGroup, defaultOpen = false, locale = 'en' }: DayRowProps) {
 }
 
 export function TransactionsTable({ transactions, locale = 'en' }: TransactionsTableProps) {
-  // Group transactions by day
   const dayGroups = transactions.reduce((acc, transaction) => {
     const dateKey = format(transaction.date, 'yyyy-MM-dd');
     const existing = acc.find((g) => g.date === dateKey);
@@ -198,10 +197,8 @@ export function TransactionsTable({ transactions, locale = 'en' }: TransactionsT
     return acc;
   }, [] as DayGroup[]);
 
-  // Sort by date descending
   dayGroups.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  // Calculate grand total
   const grandTotal = dayGroups.reduce((sum, group) => sum + group.total, 0);
 
   return (

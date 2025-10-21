@@ -77,3 +77,19 @@ export async function deleteRevenueType(id: string) {
 
   revalidatePath("/dashboard/revenue-types");
 }
+
+export async function getRevenueTypesData() {
+  const { user } = await getCurrentSession();
+  if (!user) redirect("/login");
+
+  const revenueTypes = await prisma.revenueType.findMany({
+    where: {
+      userId: user.id,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return { revenueTypes };
+}

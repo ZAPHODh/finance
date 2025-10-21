@@ -74,3 +74,19 @@ export async function deleteDriver(id: string) {
 
   revalidatePath("/dashboard/drivers");
 }
+
+export async function getDriversData() {
+  const { user } = await getCurrentSession();
+  if (!user) redirect("/login");
+
+  const drivers = await prisma.driver.findMany({
+    where: {
+      userId: user.id,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return { drivers };
+}

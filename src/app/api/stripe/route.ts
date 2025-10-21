@@ -21,8 +21,6 @@ export async function GET(req: NextRequest) {
 
     const subscriptionPlan = await getUserSubscriptionPlan(user.id);
 
-    // The user is on a paid plan.
-    // Create a portal session to manage subscription.
     if (subscriptionPlan.isPro && subscriptionPlan.stripeCustomerId) {
       const stripeSession = await stripe.billingPortal.sessions.create({
         customer: subscriptionPlan.stripeCustomerId,
@@ -32,7 +30,6 @@ export async function GET(req: NextRequest) {
       return Response.json({ url: stripeSession.url });
     }
 
-    // Determine which plan to use based on the plan parameter
     const selectedPlan = planParam === "simple" ? simplePlan : proPlan;
 
     const stripeSession = await stripe.checkout.sessions.create({

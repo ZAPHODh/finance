@@ -83,3 +83,19 @@ export async function deleteVehicle(id: string) {
 
   revalidatePath("/dashboard/vehicles");
 }
+
+export async function getVehiclesData() {
+  const { user } = await getCurrentSession();
+  if (!user) redirect("/login");
+
+  const vehicles = await prisma.vehicle.findMany({
+    where: {
+      userId: user.id,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return { vehicles };
+}

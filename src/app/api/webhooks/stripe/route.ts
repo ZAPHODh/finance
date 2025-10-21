@@ -32,14 +32,10 @@ export async function POST(req: NextRequest) {
     event?.type === "checkout.session.async_payment_succeeded"
   ) {
     const session = eventData as Stripe.Checkout.Session;
-    // Retrieve the subscription details from Stripe.
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string
     );
 
-    // Update the user stripe into in our database.
-    // Since this is the initial subscription, we need to update
-    // the subscription id and customer id.
     try {
       await prisma.user.update({
         where: {
@@ -62,12 +58,10 @@ export async function POST(req: NextRequest) {
 
     const subscriptionId = invoice.parent?.subscription_details?.subscription;
 
-    // Retrieve the subscription details from Stripe.
     const subscription = await stripe.subscriptions.retrieve(
       subscriptionId as string
     );
 
-    // Update the price id and set the new period end.
     try {
       await prisma.user.update({
         where: {

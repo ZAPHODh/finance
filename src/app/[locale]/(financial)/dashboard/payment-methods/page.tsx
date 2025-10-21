@@ -1,28 +1,13 @@
 import { getI18n } from "@/locales/server";
-import { getCurrentSession } from "@/lib/server/auth/session";
-import { redirect } from "next/navigation";
-import { prisma } from "@/lib/server/db";
 import { PaymentMethodsTable } from "@/components/configuration/payment-methods/payment-methods-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { getPaymentMethodsData } from "./actions";
 
 export default async function PaymentMethodsPage() {
   const t = await getI18n();
-  const { user } = await getCurrentSession();
-
-  if (!user) {
-    redirect("/");
-  }
-
-  const paymentMethods = await prisma.paymentMethod.findMany({
-    where: {
-      userId: user.id,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const { paymentMethods } = await getPaymentMethodsData();
 
   return (
     <div className="container mx-auto py-6 space-y-6">

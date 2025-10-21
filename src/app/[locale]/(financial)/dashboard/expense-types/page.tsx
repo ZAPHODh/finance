@@ -1,28 +1,13 @@
 import { getI18n } from "@/locales/server";
-import { getCurrentSession } from "@/lib/server/auth/session";
-import { redirect } from "next/navigation";
-import { prisma } from "@/lib/server/db";
 import { ExpenseTypesTable } from "@/components/configuration/expense-types/expense-types-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { getExpenseTypesData } from "./actions";
 
 export default async function ExpenseTypesPage() {
   const t = await getI18n();
-  const { user } = await getCurrentSession();
-
-  if (!user) {
-    redirect("/");
-  }
-
-  const expenseTypes = await prisma.expenseType.findMany({
-    where: {
-      userId: user.id,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const { expenseTypes } = await getExpenseTypesData();
 
   return (
     <div className="container mx-auto py-6 space-y-6">

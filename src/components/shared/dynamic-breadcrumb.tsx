@@ -57,7 +57,6 @@ export function DynamicBreadcrumb({ locale }: DynamicBreadcrumbProps) {
     }
   })
 
-  // // Don't show breadcrumb on dashboard root
   if (segments.length === 0 || (segments.length === 1 && segments[0] === "dashboard")) {
     return null
   }
@@ -74,7 +73,6 @@ export function DynamicBreadcrumb({ locale }: DynamicBreadcrumbProps) {
         </BreadcrumbItem>
 
         {breadcrumbs.map((breadcrumb) => {
-          // Skip dashboard in breadcrumb trail since it's already the root
           if (breadcrumb.label === tSidebar("navigation.dashboard")) {
             return null
           }

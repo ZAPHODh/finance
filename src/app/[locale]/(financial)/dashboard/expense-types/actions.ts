@@ -77,3 +77,19 @@ export async function deleteExpenseType(id: string) {
 
   revalidatePath("/dashboard/expense-types");
 }
+
+export async function getExpenseTypesData() {
+  const { user } = await getCurrentSession();
+  if (!user) redirect("/login");
+
+  const expenseTypes = await prisma.expenseType.findMany({
+    where: {
+      userId: user.id,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return { expenseTypes };
+}

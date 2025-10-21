@@ -1,28 +1,13 @@
 import { getI18n } from "@/locales/server";
-import { getCurrentSession } from "@/lib/server/auth/session";
-import { redirect } from "next/navigation";
-import { prisma } from "@/lib/server/db";
 import { RevenueTypesTable } from "@/components/configuration/revenue-types/revenue-types-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { getRevenueTypesData } from "./actions";
 
 export default async function RevenueTypesPage() {
   const t = await getI18n();
-  const { user } = await getCurrentSession();
-
-  if (!user) {
-    redirect("/");
-  }
-
-  const revenueTypes = await prisma.revenueType.findMany({
-    where: {
-      userId: user.id,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const { revenueTypes } = await getRevenueTypesData();
 
   return (
     <div className="container mx-auto py-6 space-y-6">

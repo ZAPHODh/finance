@@ -34,7 +34,6 @@ export function TransactionsSection({ transactions, locale = 'en' }: Transaction
     to: new Date(),
   });
 
-  // Filter transactions by date range
   const filteredTransactions = transactions.filter((transaction) => {
     if (!date?.from) return true;
     if (!date?.to) {

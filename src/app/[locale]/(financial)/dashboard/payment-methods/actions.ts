@@ -77,3 +77,19 @@ export async function deletePaymentMethod(id: string) {
 
   revalidatePath("/dashboard/payment-methods");
 }
+
+export async function getPaymentMethodsData() {
+  const { user } = await getCurrentSession();
+  if (!user) redirect("/login");
+
+  const paymentMethods = await prisma.paymentMethod.findMany({
+    where: {
+      userId: user.id,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return { paymentMethods };
+}

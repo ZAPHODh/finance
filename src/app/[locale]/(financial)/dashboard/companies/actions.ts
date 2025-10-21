@@ -77,3 +77,19 @@ export async function deleteCompany(id: string) {
 
   revalidatePath("/dashboard/companies");
 }
+
+export async function getCompaniesData() {
+  const { user } = await getCurrentSession();
+  if (!user) redirect("/login");
+
+  const companies = await prisma.company.findMany({
+    where: {
+      userId: user.id,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return { companies };
+}

@@ -107,7 +107,6 @@ export function CancelSubscriptionDialog({
         setError(null);
     };
 
-    // Handle keyboard shortcuts
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (!isOpen) return;

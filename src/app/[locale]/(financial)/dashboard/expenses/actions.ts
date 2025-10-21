@@ -110,7 +110,6 @@ export const deleteExpense = authActionClient
     revalidatePath("/dashboard/expenses");
   });
 
-// Regular server functions (no safe-action needed for server-to-server calls)
 export async function getExpensesData() {
   const { user } = await getCurrentSession();
   if (!user) redirect("/login");

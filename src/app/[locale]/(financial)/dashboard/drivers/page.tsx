@@ -1,28 +1,13 @@
 import { getI18n } from "@/locales/server";
-import { getCurrentSession } from "@/lib/server/auth/session";
-import { redirect } from "next/navigation";
-import { prisma } from "@/lib/server/db";
 import { DriversTable } from "@/components/configuration/drivers/drivers-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { getDriversData } from "./actions";
 
 export default async function DriversPage() {
   const t = await getI18n();
-  const { user } = await getCurrentSession();
-
-  if (!user) {
-    redirect("/");
-  }
-
-  const drivers = await prisma.driver.findMany({
-    where: {
-      userId: user.id,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const { drivers } = await getDriversData();
 
   return (
     <div className="container mx-auto py-6 space-y-6">
