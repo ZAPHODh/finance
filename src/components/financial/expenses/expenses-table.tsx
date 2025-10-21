@@ -22,7 +22,7 @@ import { Edit, Trash, Search } from 'lucide-react';
 import Link from 'next/link';
 import { deleteExpense } from '@/app/[locale]/(financial)/dashboard/expenses/actions';
 import { toast } from 'sonner';
-import { useTransition, useState, useMemo } from 'react';
+import { useState, useMemo, useTransition } from 'react';
 
 interface Expense {
   id: string;
@@ -101,11 +101,12 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
     }
 
     startTransition(async () => {
-      try {
-        await deleteExpense(id);
+      const result = await deleteExpense({ id });
+
+      if (result?.serverError) {
+        toast.error(result.serverError.message || tCommon('error'));
+      } else {
         toast.success(tCommon('deleteSuccess'));
-      } catch {
-        toast.error(tCommon('error'));
       }
     });
   }

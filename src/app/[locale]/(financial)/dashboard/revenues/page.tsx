@@ -1,7 +1,7 @@
 import { getI18n } from "@/locales/server";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/server/db";
+import { getRevenuesData } from "./actions";
 import { RevenuesTable } from "@/components/financial/revenues/revenues-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -15,107 +15,7 @@ export default async function RevenuesPage() {
     redirect("/");
   }
 
-  const [revenues, revenueTypes, companies, drivers, vehicles] = await Promise.all([
-    prisma.revenue.findMany({
-      where: {
-        OR: [
-          {
-            company: {
-              userId: user.id,
-            },
-          },
-          {
-            driver: {
-              userId: user.id,
-            },
-          },
-        ],
-      },
-      include: {
-        revenueType: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        company: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        paymentMethod: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        driver: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        vehicle: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-      orderBy: {
-        date: "desc",
-      },
-    }),
-    prisma.revenueType.findMany({
-      where: {
-        userId: user.id,
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-      orderBy: {
-        name: "asc",
-      },
-    }),
-    prisma.company.findMany({
-      where: {
-        userId: user.id,
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-      orderBy: {
-        name: "asc",
-      },
-    }),
-    prisma.driver.findMany({
-      where: {
-        userId: user.id,
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-      orderBy: {
-        name: "asc",
-      },
-    }),
-    prisma.vehicle.findMany({
-      where: {
-        userId: user.id,
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-      orderBy: {
-        name: "asc",
-      },
-    }),
-  ]);
+  const { revenues, revenueTypes, companies, drivers, vehicles } = await getRevenuesData();
 
   return (
     <div className="container mx-auto py-6 space-y-6">

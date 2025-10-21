@@ -22,7 +22,7 @@ import { Edit, Trash, Search } from 'lucide-react';
 import Link from 'next/link';
 import { deleteRevenue } from '@/app/[locale]/(financial)/dashboard/revenues/actions';
 import { toast } from 'sonner';
-import { useTransition, useState, useMemo } from 'react';
+import { useState, useMemo, useTransition } from 'react';
 
 interface Revenue {
   id: string;
@@ -114,11 +114,12 @@ export function RevenuesTable({ revenues, revenueTypes, companies, drivers, vehi
     }
 
     startTransition(async () => {
-      try {
-        await deleteRevenue(id);
+      const result = await deleteRevenue({ id });
+
+      if (result?.serverError) {
+        toast.error(result.serverError.message || tCommon('error'));
+      } else {
         toast.success(tCommon('deleteSuccess'));
-      } catch {
-        toast.error(tCommon('error'));
       }
     });
   }

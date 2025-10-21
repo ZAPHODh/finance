@@ -1,7 +1,7 @@
 import { getI18n } from "@/locales/server";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/server/db";
+import { getExpensesData } from "./actions";
 import { ExpensesTable } from "@/components/financial/expenses/expenses-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -15,80 +15,7 @@ export default async function ExpensesPage() {
     redirect("/");
   }
 
-  const [expenses, expenseTypes, drivers, vehicles] = await Promise.all([
-    prisma.expense.findMany({
-      where: {
-        expenseType: {
-          userId: user.id,
-        },
-      },
-      include: {
-        expenseType: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        paymentMethod: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        driver: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        vehicle: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-      orderBy: {
-        date: "desc",
-      },
-    }),
-    prisma.expenseType.findMany({
-      where: {
-        userId: user.id,
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-      orderBy: {
-        name: "asc",
-      },
-    }),
-    prisma.driver.findMany({
-      where: {
-        userId: user.id,
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-      orderBy: {
-        name: "asc",
-      },
-    }),
-    prisma.vehicle.findMany({
-      where: {
-        userId: user.id,
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-      orderBy: {
-        name: "asc",
-      },
-    }),
-  ]);
+  const { expenses, expenseTypes, drivers, vehicles } = await getExpensesData();
 
   return (
     <div className="container mx-auto py-6 space-y-6">

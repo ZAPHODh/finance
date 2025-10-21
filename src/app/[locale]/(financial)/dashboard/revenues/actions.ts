@@ -1,122 +1,275 @@
 'use server';
 
 import { prisma } from "@/lib/server/db";
-import { getCurrentSession } from "@/lib/server/auth/session";
+import { authActionClient } from "@/lib/client/safe-action";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
+import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 
-export interface RevenueFormData {
-  description?: string;
-  amount: number;
-  date: Date;
-  kmDriven?: number;
-  hoursWorked?: number;
-  tripType?: string;
-  receiptUrl?: string;
-  revenueTypeId?: string;
-  companyId?: string;
-  paymentMethodId?: string;
-  driverId?: string;
-  vehicleId?: string;
-}
+const revenueSchema = z.object({
+  description: z.string().optional(),
+  amount: z.number().positive(),
+  date: z.date(),
+  kmDriven: z.number().positive().optional(),
+  hoursWorked: z.number().positive().optional(),
+  tripType: z.string().optional(),
+  receiptUrl: z.string().url().optional().or(z.literal("")),
+  revenueTypeId: z.string().optional(),
+  companyId: z.string().optional(),
+  paymentMethodId: z.string().optional(),
+  driverId: z.string().optional(),
+  vehicleId: z.string().optional(),
+});
 
-export async function createRevenue(data: RevenueFormData) {
-  const { user } = await getCurrentSession();
+export const createRevenue = authActionClient
+  .metadata({ actionName: "createRevenue" })
+  .schema(revenueSchema)
+  .action(async ({ parsedInput: data }) => {
+    await prisma.revenue.create({
+      data: {
+        description: data.description || null,
+        amount: data.amount,
+        date: data.date,
+        kmDriven: data.kmDriven || null,
+        hoursWorked: data.hoursWorked || null,
+        tripType: data.tripType || null,
+        receiptUrl: data.receiptUrl || null,
+        revenueTypeId: data.revenueTypeId || null,
+        companyId: data.companyId || null,
+        paymentMethodId: data.paymentMethodId || null,
+        driverId: data.driverId || null,
+        vehicleId: data.vehicleId || null,
+      },
+    });
 
-  if (!user) {
-    throw new Error("Unauthorized");
-  }
-
-  await prisma.revenue.create({
-    data: {
-      description: data.description || null,
-      amount: data.amount,
-      date: data.date,
-      kmDriven: data.kmDriven || null,
-      hoursWorked: data.hoursWorked || null,
-      tripType: data.tripType || null,
-      receiptUrl: data.receiptUrl || null,
-      revenueTypeId: data.revenueTypeId || null,
-      companyId: data.companyId || null,
-      paymentMethodId: data.paymentMethodId || null,
-      driverId: data.driverId || null,
-      vehicleId: data.vehicleId || null,
-    },
+    revalidatePath("/dashboard/revenues");
+    redirect("/dashboard/revenues");
   });
 
-  revalidatePath("/dashboard/revenues");
-  redirect("/dashboard/revenues");
-}
+const updateRevenueSchema = z.object({
+  id: z.string().min(1),
+  data: revenueSchema,
+});
 
-export async function updateRevenue(id: string, data: RevenueFormData) {
-  const { user } = await getCurrentSession();
-
-  if (!user) {
-    throw new Error("Unauthorized");
-  }
-
-  const revenue = await prisma.revenue.findUnique({
-    where: { id },
-    include: {
-      company: {
-        select: {
-          userId: true,
+export const updateRevenue = authActionClient
+  .metadata({ actionName: "updateRevenue" })
+  .schema(updateRevenueSchema)
+  .action(async ({ parsedInput: { id, data }, ctx }) => {
+    const revenue = await prisma.revenue.findUnique({
+      where: { id },
+      include: {
+        company: {
+          select: {
+            userId: true,
+          },
+        },
+        driver: {
+          select: {
+            userId: true,
+          },
         },
       },
-    },
+    });
+
+    if (!revenue || (revenue.company?.userId !== ctx.userId && revenue.driver?.userId !== ctx.userId)) {
+      throw new Error("Revenue not found or unauthorized");
+    }
+
+    await prisma.revenue.update({
+      where: { id },
+      data: {
+        description: data.description || null,
+        amount: data.amount,
+        date: data.date,
+        kmDriven: data.kmDriven || null,
+        hoursWorked: data.hoursWorked || null,
+        tripType: data.tripType || null,
+        receiptUrl: data.receiptUrl || null,
+        revenueTypeId: data.revenueTypeId || null,
+        companyId: data.companyId || null,
+        paymentMethodId: data.paymentMethodId || null,
+        driverId: data.driverId || null,
+        vehicleId: data.vehicleId || null,
+      },
+    });
+
+    revalidatePath("/dashboard/revenues");
+    redirect("/dashboard/revenues");
   });
 
-  if (!revenue || revenue.company?.userId !== user.id) {
-    throw new Error("Revenue not found or unauthorized");
-  }
-
-  await prisma.revenue.update({
-    where: { id },
-    data: {
-      description: data.description || null,
-      amount: data.amount,
-      date: data.date,
-      kmDriven: data.kmDriven || null,
-      hoursWorked: data.hoursWorked || null,
-      tripType: data.tripType || null,
-      receiptUrl: data.receiptUrl || null,
-      revenueTypeId: data.revenueTypeId || null,
-      companyId: data.companyId || null,
-      paymentMethodId: data.paymentMethodId || null,
-      driverId: data.driverId || null,
-      vehicleId: data.vehicleId || null,
-    },
-  });
-
-  revalidatePath("/dashboard/revenues");
-  redirect("/dashboard/revenues");
-}
-
-export async function deleteRevenue(id: string) {
-  const { user } = await getCurrentSession();
-
-  if (!user) {
-    throw new Error("Unauthorized");
-  }
-
-  const revenue = await prisma.revenue.findUnique({
-    where: { id },
-    include: {
-      company: {
-        select: {
-          userId: true,
+export const deleteRevenue = authActionClient
+  .metadata({ actionName: "deleteRevenue" })
+  .schema(z.object({ id: z.string().min(1) }))
+  .action(async ({ parsedInput: { id }, ctx }) => {
+    const revenue = await prisma.revenue.findUnique({
+      where: { id },
+      include: {
+        company: {
+          select: {
+            userId: true,
+          },
+        },
+        driver: {
+          select: {
+            userId: true,
+          },
         },
       },
-    },
+    });
+
+    if (!revenue || (revenue.company?.userId !== ctx.userId && revenue.driver?.userId !== ctx.userId)) {
+      throw new Error("Revenue not found or unauthorized");
+    }
+
+    await prisma.revenue.delete({
+      where: { id },
+    });
+
+    revalidatePath("/dashboard/revenues");
   });
 
-  if (!revenue || revenue.company?.userId !== user.id) {
-    throw new Error("Revenue not found or unauthorized");
-  }
+// Regular server functions (no safe-action needed for server-to-server calls)
+export async function getRevenuesData() {
+  const { user } = await getCurrentSession();
+  if (!user) redirect("/login");
 
-  await prisma.revenue.delete({
-    where: { id },
-  });
+  const [revenues, revenueTypes, companies, drivers, vehicles] = await Promise.all([
+    prisma.revenue.findMany({
+      where: {
+        OR: [
+          {
+            company: {
+              userId: user.id,
+            },
+          },
+          {
+            driver: {
+              userId: user.id,
+            },
+          },
+        ],
+      },
+      include: {
+        revenueType: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        company: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        paymentMethod: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        driver: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        vehicle: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        date: "desc",
+      },
+    }),
+    prisma.revenueType.findMany({
+      where: {
+        userId: user.id,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    }),
+    prisma.company.findMany({
+      where: {
+        userId: user.id,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    }),
+    prisma.driver.findMany({
+      where: {
+        userId: user.id,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    }),
+    prisma.vehicle.findMany({
+      where: {
+        userId: user.id,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    }),
+  ]);
 
-  revalidatePath("/dashboard/revenues");
+  return { revenues, revenueTypes, companies, drivers, vehicles };
+}
+
+export async function getRevenueFormData() {
+  const { user } = await getCurrentSession();
+  if (!user) redirect("/login");
+
+  const [revenueTypes, companies, paymentMethods, drivers, vehicles] = await Promise.all([
+    prisma.revenueType.findMany({
+      where: { userId: user.id },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+    prisma.company.findMany({
+      where: { userId: user.id },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+    prisma.paymentMethod.findMany({
+      where: { userId: user.id },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+    prisma.driver.findMany({
+      where: { userId: user.id },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+    prisma.vehicle.findMany({
+      where: { userId: user.id },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+  ]);
+
+  return { revenueTypes, companies, paymentMethods, drivers, vehicles };
 }
