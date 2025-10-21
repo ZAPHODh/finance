@@ -61,7 +61,7 @@ export const updateExpense = authActionClient
       },
     });
 
-    if (!expense || expense.expenseType.userId !== ctx.user.id) {
+    if (!expense || expense.expenseType.userId !== ctx.userId) {
       throw new Error("Expense not found or unauthorized");
     }
 
@@ -99,7 +99,7 @@ export const deleteExpense = authActionClient
       },
     });
 
-    if (!expense || expense.expenseType.userId !== ctx.user.id) {
+    if (!expense || expense.expenseType.userId !== ctx.userId) {
       throw new Error("Expense not found or unauthorized");
     }
 

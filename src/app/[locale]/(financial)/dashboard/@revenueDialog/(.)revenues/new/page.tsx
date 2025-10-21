@@ -1,7 +1,7 @@
 import { RevenueDialog } from "@/components/financial/revenues/revenue-dialog";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
-import { getRevenueFormData } from "../../actions";
+import { getRevenueFormData } from "../../../revenues/actions";
 
 export default async function NewRevenueModal() {
   const { user } = await getCurrentSession();

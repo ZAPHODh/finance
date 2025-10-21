@@ -129,7 +129,6 @@ export const deleteRevenue = authActionClient
     revalidatePath("/dashboard/revenues");
   });
 
-// Regular server functions (no safe-action needed for server-to-server calls)
 export async function getRevenuesData() {
   const { user } = await getCurrentSession();
   if (!user) redirect("/login");

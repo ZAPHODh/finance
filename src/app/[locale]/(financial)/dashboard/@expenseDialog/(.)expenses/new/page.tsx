@@ -1,7 +1,7 @@
 import { ExpenseDialog } from "@/components/financial/expenses/expense-dialog";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
-import { getExpenseFormData } from "../../actions";
+import { getExpenseFormData } from "../../../expenses/actions";
 
 export default async function NewExpenseModal() {
   const { user } = await getCurrentSession();
