@@ -11,6 +11,8 @@ import {
   Building2,
   CreditCard,
   Tag,
+  Target,
+  Wallet,
 } from "lucide-react"
 
 import {
@@ -90,6 +92,18 @@ export function FinancialSidebar({ user, locale }: FinancialSidebarProps) {
         href: `/${locale}/dashboard/work-logs`,
       },
     ],
+    planning: [
+      {
+        title: "Metas",
+        icon: Target,
+        href: `/${locale}/goals`,
+      },
+      {
+        title: "Orçamentos",
+        icon: Wallet,
+        href: `/${locale}/budgets`,
+      },
+    ],
   }
 
   return (
@@ -127,6 +141,26 @@ export function FinancialSidebar({ user, locale }: FinancialSidebarProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               {navigation.financial.map((item) => (
+                <SidebarMenuItem key={item.href}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.href}
+                  >
+                    <Link href={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Planejamento</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navigation.planning.map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton
                     asChild

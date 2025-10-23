@@ -41,6 +41,12 @@ model User {
   stripePriceId          String?   @map(name: "stripe_price_id")
   stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
 
+  // Subscription limits
+  planType          PlanType @default(FREE)
+  storageUsed       BigInt   @default(0) // in bytes
+  monthlyExportCount Int     @default(0)
+  exportCountResetAt DateTime?
+
   drivers      Driver[]
   vehicles     Vehicle[]
   companies    Company[]
@@ -48,6 +54,14 @@ model User {
   revenueTypes RevenueType[]
   paymentMethods PaymentMethod[]
   preferences  UserPreferences?
+  goals        Goal[]
+  budgets      Budget[]
+  insights     Insight[]
+  alerts       Alert[]
+  attachments  Attachment[]
+  reports      Report[]
+  reminders    Reminder[]
+  teamMembers  TeamMember[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -68,6 +82,8 @@ model Driver {
   expenses  Expense[]
   revenues  Revenue[]
   workLogs  WorkLog[]
+  goals     Goal[]
+  teamMember TeamMember?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -88,6 +104,7 @@ model Vehicle {
   revenues     Revenue[]
   workLogs     WorkLog[]
   maintenances Maintenance[]
+  goals        Goal[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -117,7 +134,9 @@ model ExpenseType {
   userId   String
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  expenses Expense[]
+  expenses  Expense[]
+  budgets   Budget[]
+  reminders Reminder[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -161,7 +180,6 @@ model Expense {
   description     String?
   amount          Float
   date            DateTime
-  kmDriven        Float?
   receiptUrl      String?
 
   expenseTypeId   String
@@ -175,6 +193,8 @@ model Expense {
 
   vehicleId       String?
   vehicle         Vehicle?       @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+
+  attachments     Attachment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -209,6 +229,8 @@ model Revenue {
 
   vehicleId       String?
   vehicle         Vehicle?       @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+
+  attachments     Attachment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -251,6 +273,8 @@ model Maintenance {
   vehicleId   String
   vehicle     Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
+  attachments Attachment[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -285,5 +309,255 @@ model UserPreferences {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+}
+
+// ============================================
+// New Features: Goals, Budgets, Insights, etc.
+// ============================================
+
+enum GoalType {
+  DAILY_REVENUE
+  WEEKLY_REVENUE
+  MONTHLY_REVENUE
+  MONTHLY_PROFIT
+  MONTHLY_KM
+  MONTHLY_HOURS
+  CUSTOM
+}
+
+model Goal {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name        String?
+  type        GoalType
+  targetValue Float
+  period      String   // "2025-01" for monthly, "2025-01-15" for daily
+
+  driverId    String?
+  driver      Driver?  @relation(fields: [driverId], references: [id], onDelete: SetNull)
+
+  vehicleId   String?
+  vehicle     Vehicle? @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+
+  isActive    Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([period])
+  @@index([driverId])
+  @@index([vehicleId])
+}
+
+model Budget {
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name            String?
+  expenseTypeId   String
+  expenseType     ExpenseType @relation(fields: [expenseTypeId], references: [id], onDelete: Cascade)
+
+  monthlyLimit    Float
+  alertThreshold  Float       @default(0.8) // Alert at 80%
+  period          String      // "2025-01"
+
+  isActive        Boolean     @default(true)
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([period])
+  @@index([expenseTypeId])
+}
+
+enum InsightType {
+  COST_INCREASE
+  COST_DECREASE
+  REVENUE_INCREASE
+  REVENUE_DECREASE
+  EFFICIENCY_IMPROVED
+  EFFICIENCY_DECLINED
+  GOAL_ACHIEVED
+  BUDGET_EXCEEDED
+  MAINTENANCE_DUE
+  PATTERN_DETECTED
+}
+
+model Insight {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type        InsightType
+  title       String
+  description String
+  metadata    Json?       // Additional data
+
+  isRead      Boolean     @default(false)
+  priority    Int         @default(0) // 0=low, 1=medium, 2=high
+
+  createdAt   DateTime    @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+}
+
+enum AlertType {
+  BUDGET_WARNING
+  BUDGET_EXCEEDED
+  GOAL_PROGRESS
+  MAINTENANCE_REMINDER
+  EXPENSE_REMINDER
+  REVENUE_REMINDER
+  DAILY_LOG_REMINDER
+}
+
+model Alert {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type        AlertType
+  title       String
+  message     String
+  metadata    Json?
+
+  isRead      Boolean   @default(false)
+  isSent      Boolean   @default(false)
+
+  createdAt   DateTime  @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([isSent])
+}
+
+model Attachment {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  fileName    String
+  fileUrl     String
+  fileSize    BigInt   // in bytes
+  mimeType    String
+
+  expenseId   String?
+  expense     Expense? @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+
+  revenueId   String?
+  revenue     Revenue? @relation(fields: [revenueId], references: [id], onDelete: Cascade)
+
+  maintenanceId String?
+  maintenance   Maintenance? @relation(fields: [maintenanceId], references: [id], onDelete: Cascade)
+
+  metadata    Json?    // OCR data, tags, etc.
+
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([expenseId])
+  @@index([revenueId])
+  @@index([maintenanceId])
+}
+
+enum ReportType {
+  MONTHLY_SUMMARY
+  DRE
+  CARNE_LEAO
+  EXPENSE_BREAKDOWN
+  REVENUE_BREAKDOWN
+  DRIVER_PERFORMANCE
+  VEHICLE_PERFORMANCE
+  CUSTOM
+}
+
+model Report {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name        String
+  type        ReportType
+  format      String     // pdf, excel, csv
+
+  startDate   DateTime
+  endDate     DateTime
+
+  fileUrl     String?
+  metadata    Json?
+
+  createdAt   DateTime   @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+enum ReminderFrequency {
+  ONCE
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+model Reminder {
+  id          String            @id @default(cuid())
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+
+  frequency   ReminderFrequency
+  nextDate    DateTime
+
+  expenseTypeId String?
+  expenseType   ExpenseType? @relation(fields: [expenseTypeId], references: [id], onDelete: SetNull)
+
+  isActive    Boolean   @default(true)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([nextDate])
+  @@index([isActive])
+}
+
+enum TeamRole {
+  OWNER
+  ADMIN
+  DRIVER
+  VIEWER
+}
+
+model TeamMember {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  email       String
+  name        String?
+  role        TeamRole
+
+  driverId    String?  @unique
+  driver      Driver?  @relation(fields: [driverId], references: [id], onDelete: SetNull)
+
+  inviteToken String?  @unique
+  acceptedAt  DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([email])
+  @@index([driverId])
 }
 

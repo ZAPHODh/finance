@@ -3,19 +3,16 @@
 import { useState, useEffect } from "react"
 import { useScopedI18n } from "@/locales/client"
 import {
-  DollarSign,
-  TrendingDown,
-  TrendingUp,
-  MapPin,
-  Clock,
   Building2,
   Tag,
   Users,
   Car,
 } from "lucide-react"
-import { StatCard } from "./stat-card"
+import { SectionCards } from "@/components/dashboard-01/section-cards"
+import { ChartAreaInteractive } from "@/components/dashboard-01/chart-area-interactive"
 import { BreakdownCard } from "./breakdown-card"
 import { TransactionsSection } from "./transactions-section"
+import { GoalsSection } from "./goals-section"
 import { useDashboardFilters } from "@/hooks/use-dashboard-filters"
 import { getDashboardData } from "@/app/[locale]/(financial)/dashboard/actions"
 
@@ -33,6 +30,11 @@ interface DashboardData {
     performanceByDriver: Array<{ name: string; value: number; revenue: number; expenses: number }>
     performanceByVehicle: Array<{ name: string; value: number; revenue: number; expenses: number }>
   }
+  chartData?: Array<{
+    date: string
+    revenue: number
+    expenses: number
+  }>
   transactions: Array<{
     id: string
     description: string
@@ -90,8 +92,8 @@ export function DashboardContent() {
 
   if (loading || !data) {
     return (
-      <div className="space-y-6">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+      <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+        <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card grid grid-cols-1 gap-4 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-5">
           {[...Array(5)].map((_, i) => (
             <div
               key={i}
@@ -99,7 +101,10 @@ export function DashboardContent() {
             />
           ))}
         </div>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="px-4 lg:px-6">
+          <div className="h-[350px] animate-pulse rounded-lg border bg-muted" />
+        </div>
+        <div className="grid gap-4 px-4 md:grid-cols-2 lg:px-6">
           {[...Array(4)].map((_, i) => (
             <div
               key={i}
@@ -112,36 +117,16 @@ export function DashboardContent() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <StatCard
-          title={tKpis("totalRevenue")}
-          value={formatCurrency(data.kpis.totalRevenue)}
-          icon={TrendingUp}
-        />
-        <StatCard
-          title={tKpis("totalExpenses")}
-          value={formatCurrency(data.kpis.totalExpenses)}
-          icon={TrendingDown}
-        />
-        <StatCard
-          title={tKpis("netProfit")}
-          value={formatCurrency(data.kpis.netProfit)}
-          icon={DollarSign}
-        />
-        <StatCard
-          title={tKpis("totalKm")}
-          value={formatNumber(data.kpis.totalKm)}
-          icon={MapPin}
-        />
-        <StatCard
-          title={tKpis("totalHours")}
-          value={formatNumber(data.kpis.totalHours)}
-          icon={Clock}
-        />
-      </div>
+    <>
+      <SectionCards kpis={data.kpis} />
 
-      <div className="grid gap-4 md:grid-cols-2">
+      {data.chartData && data.chartData.length > 0 && (
+        <div className="px-4 lg:px-6">
+          <ChartAreaInteractive data={data.chartData} />
+        </div>
+      )}
+
+      <div className="grid gap-4 px-4 md:grid-cols-2 lg:px-6">
         <BreakdownCard
           title={tBreakdowns("revenueByCompany")}
           items={data.breakdowns.revenueByCompany}
@@ -173,11 +158,17 @@ export function DashboardContent() {
       </div>
 
       {data.transactions && data.transactions.length > 0 && (
-        <TransactionsSection
-          transactions={data.transactions}
-          locale="pt"
-        />
+        <div className="px-4 lg:px-6">
+          <TransactionsSection
+            transactions={data.transactions}
+            locale="pt"
+          />
+        </div>
       )}
-    </div>
+
+      <div className="px-4 pt-6 lg:px-6">
+        <GoalsSection />
+      </div>
+    </>
   )
 }

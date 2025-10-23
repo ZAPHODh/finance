@@ -5,8 +5,7 @@ import { I18nProviderClient } from "@/locales/client";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
-import Nav from "@/components/shared/nav";
-import FooterSection from "@/components/footer";
+
 import "../globals.css";
 
 type Props = {
@@ -125,12 +124,10 @@ export default async function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <I18nProviderClient locale={locale}>
-            <Nav />
             <main>
               {children}
               {loginDialog}
             </main>
-            <FooterSection />
           </I18nProviderClient>
           <Toaster />
         </ThemeProvider>

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { PLAN_LIMITS } from "@/config/subscription";
 
 export interface VehicleFormData {
   name: string;
@@ -12,11 +13,37 @@ export interface VehicleFormData {
   year?: number;
 }
 
+async function checkIfVehicleLimitReached() {
+  const { user } = await getCurrentSession();
+  if (!user) throw new Error("Unauthorized");
+
+  const userWithPlan = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { planType: true },
+  });
+
+  if (!userWithPlan) throw new Error("User not found");
+
+  const limits = PLAN_LIMITS[userWithPlan.planType];
+  if (limits.maxVehicles === -1) return false;
+
+  const count = await prisma.vehicle.count({
+    where: { userId: user.id },
+  });
+
+  return count >= limits.maxVehicles;
+}
+
 export async function createVehicle(data: VehicleFormData) {
   const { user } = await getCurrentSession();
 
   if (!user) {
     throw new Error("Unauthorized");
+  }
+
+  const limitReached = await checkIfVehicleLimitReached();
+  if (limitReached) {
+    throw new Error("You have reached the maximum number of vehicles for your plan. Please upgrade to add more.");
   }
 
   await prisma.vehicle.create({

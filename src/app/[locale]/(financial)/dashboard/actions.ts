@@ -123,7 +123,7 @@ export async function getDashboardData(filters: DashboardFilters) {
   const totalRevenue = revenues.reduce((sum, r) => sum + r.amount, 0)
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0)
   const netProfit = totalRevenue - totalExpenses
-  const totalKm = [...revenues, ...expenses, ...workLogs].reduce((sum, item) => {
+  const totalKm = [...revenues, ...workLogs].reduce((sum, item) => {
     return sum + (item.kmDriven || 0)
   }, 0)
   const totalHours = [...revenues, ...workLogs].reduce((sum, item) => {
@@ -208,6 +208,29 @@ export async function getDashboardData(filters: DashboardFilters) {
     })),
   ].sort((a, b) => b.date.getTime() - a.date.getTime())
 
+  // Generate chart data
+  const chartDataMap = new Map<string, { revenue: number; expenses: number }>()
+
+  revenues.forEach(r => {
+    const dateKey = r.date.toISOString().split('T')[0]
+    const existing = chartDataMap.get(dateKey) || { revenue: 0, expenses: 0 }
+    chartDataMap.set(dateKey, { ...existing, revenue: existing.revenue + r.amount })
+  })
+
+  expenses.forEach(e => {
+    const dateKey = e.date.toISOString().split('T')[0]
+    const existing = chartDataMap.get(dateKey) || { revenue: 0, expenses: 0 }
+    chartDataMap.set(dateKey, { ...existing, expenses: existing.expenses + e.amount })
+  })
+
+  const chartData = Array.from(chartDataMap.entries())
+    .map(([date, data]) => ({
+      date,
+      revenue: data.revenue,
+      expenses: data.expenses,
+    }))
+    .sort((a, b) => a.date.localeCompare(b.date))
+
   return {
     kpis: {
       totalRevenue,
@@ -244,6 +267,7 @@ export async function getDashboardData(filters: DashboardFilters) {
         .sort((a, b) => b.value - a.value)
         .slice(0, 5),
     },
+    chartData,
     transactions,
   }
 }

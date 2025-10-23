@@ -29,7 +29,6 @@ interface Expense {
   description: string | null;
   amount: number;
   date: Date;
-  kmDriven: number | null;
   expenseType: {
     id: string;
     name: string;

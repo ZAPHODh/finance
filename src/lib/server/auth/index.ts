@@ -68,5 +68,5 @@ export const authMiddleware = createMiddleware().define(async ({ next }) => {
     if (!session) {
         throw new Error("Unauthorized");
     }
-    return next({ ctx: { userId: user.id, sessionId: session.id } });
+    return next({ ctx: { userId: user.id, sessionId: session.id, user } });
 });

@@ -4,10 +4,32 @@ import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { PLAN_LIMITS } from "@/config/subscription";
 
 export interface PaymentMethodFormData {
   name: string;
   icon?: string;
+}
+
+async function checkIfPaymentMethodLimitReached() {
+  const { user } = await getCurrentSession();
+  if (!user) throw new Error("Unauthorized");
+
+  const userWithPlan = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { planType: true },
+  });
+
+  if (!userWithPlan) throw new Error("User not found");
+
+  const limits = PLAN_LIMITS[userWithPlan.planType];
+  if (limits.maxPaymentMethods === -1) return false;
+
+  const count = await prisma.paymentMethod.count({
+    where: { userId: user.id },
+  });
+
+  return count >= limits.maxPaymentMethods;
 }
 
 export async function createPaymentMethod(data: PaymentMethodFormData) {
@@ -15,6 +37,11 @@ export async function createPaymentMethod(data: PaymentMethodFormData) {
 
   if (!user) {
     throw new Error("Unauthorized");
+  }
+
+  const limitReached = await checkIfPaymentMethodLimitReached();
+  if (limitReached) {
+    throw new Error("You have reached the maximum number of payment methods for your plan. Please upgrade to add more.");
   }
 
   await prisma.paymentMethod.create({

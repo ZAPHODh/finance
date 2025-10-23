@@ -1,9 +1,12 @@
 import { getCurrentSession } from "@/lib/server/auth/session"
-import { getCurrentLocale } from "@/locales/server"
-import { FinancialSidebar } from "@/components/shared/financial-sidebar"
-import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
-import { DynamicBreadcrumb } from "@/components/shared/dynamic-breadcrumb"
 import { redirect } from "next/navigation"
+import { AppSidebar } from "@/components/dashboard-01/app-sidebar"
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { SiteHeader } from "@/components/dashboard-01/site-header";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Plus } from "lucide-react";
+import { getScopedI18n } from "@/locales/server";
 
 export default async function FinancialLayout({
   children,
@@ -28,30 +31,50 @@ export default async function FinancialLayout({
 }) {
   const { user } = await getCurrentSession()
   if (!user) redirect('/login')
-  const locale = await getCurrentLocale()
-
+  const tDashboard = await getScopedI18n("shared.sidebar.dashboard")
+  const tFinancial = await getScopedI18n("shared.financial")
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <FinancialSidebar user={user} locale={locale} />
-        <SidebarInset className="flex-1">
-          <div className="sticky top-0 z-10 flex h-14 items-center gap-4 bg-background px-4 lg:h-16 lg:px-6">
-            <SidebarTrigger />
-            <DynamicBreadcrumb locale={locale} />
-          </div>
-          <main className="flex-1 p-4 lg:p-6">
-            {children}
-            {driverDialog}
-            {vehicleDialog}
-            {companyDialog}
-            {expenseTypeDialog}
-            {paymentMethodDialog}
-            {revenueTypeDialog}
-            {expenseDialog}
-            {revenueDialog}
-          </main>
-        </SidebarInset>
-      </div>
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "16rem",
+          "--header-height": "4rem",
+        } as React.CSSProperties
+      }
+    >
+      <AppSidebar user={user} variant="inset" />
+      <SidebarInset>
+        <div className="flex flex-1 flex-col">
+          <SiteHeader
+            title={tDashboard("title")}
+            actions={
+              <div className="flex gap-2">
+                <Button asChild size="sm">
+                  <Link href="/dashboard/expenses/new">
+                    <Plus className="mr-2 h-4 w-4" />
+                    {tFinancial("expenses.new")}
+                  </Link>
+                </Button>
+                <Button asChild size="sm">
+                  <Link href="/dashboard/revenues/new">
+                    <Plus className="mr-2 h-4 w-4" />
+                    {tFinancial("revenues.new")}
+                  </Link>
+                </Button>
+              </div>
+            }
+          />
+          {children}
+          {driverDialog}
+          {vehicleDialog}
+          {companyDialog}
+          {expenseTypeDialog}
+          {paymentMethodDialog}
+          {revenueTypeDialog}
+          {expenseDialog}
+          {revenueDialog}
+        </div>
+      </SidebarInset>
     </SidebarProvider>
   );
 }

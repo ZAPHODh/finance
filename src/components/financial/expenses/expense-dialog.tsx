@@ -20,7 +20,6 @@ interface ExpenseDialogProps {
     description: string | null;
     amount: number;
     date: Date;
-    kmDriven: number | null;
     receiptUrl: string | null;
     expenseTypeId: string;
     paymentMethodId: string | null;
@@ -76,7 +75,6 @@ export function ExpenseDialog({
       description: expense?.description || "",
       amount: expense?.amount || 0,
       date: expense?.date ? new Date(expense.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-      kmDriven: expense?.kmDriven || undefined,
       receiptUrl: expense?.receiptUrl || "",
       expenseTypeId: expense?.expenseTypeId || "",
       paymentMethodId: expense?.paymentMethodId || "",
@@ -88,7 +86,6 @@ export function ExpenseDialog({
         description: value.description || undefined,
         amount: Number(value.amount),
         date: new Date(value.date),
-        kmDriven: value.kmDriven ? Number(value.kmDriven) : undefined,
         receiptUrl: value.receiptUrl || undefined,
         expenseTypeId: value.expenseTypeId,
         paymentMethodId: value.paymentMethodId && value.paymentMethodId !== "none" ? value.paymentMethodId : undefined,
@@ -256,21 +253,6 @@ export function ExpenseDialog({
                         ))}
                       </SelectContent>
                     </Select>
-                  </Field>
-                )}
-              </form.Field>
-
-              <form.Field name="kmDriven">
-                {(field) => (
-                  <Field>
-                    <FieldLabel htmlFor="kmDriven">{t('kmDriven')}</FieldLabel>
-                    <Input
-                      id="kmDriven"
-                      type="number"
-                      step="0.01"
-                      value={field.state.value || ""}
-                      onChange={(e) => field.handleChange(e.target.value ? Number(e.target.value) : undefined)}
-                    />
                   </Field>
                 )}
               </form.Field>

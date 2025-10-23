@@ -1,53 +1,31 @@
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { redirect } from "next/navigation"
-import { getScopedI18n } from "@/locales/server"
-import { getDashboardFilterOptions } from "./actions"
-import { DashboardFilters } from "@/components/dashboard/dashboard-filters"
-import { DashboardContent } from "@/components/dashboard/dashboard-content"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
-import Link from "next/link"
+import { getDashboardData } from "./actions"
+import { SectionCards } from "@/components/dashboard-01/section-cards"
+import { ChartAreaInteractive } from "@/components/dashboard-01/chart-area-interactive"
+import { DataTable } from "@/components/dashboard-01/data-table"
 
 export default async function DashboardPage() {
   const { user } = await getCurrentSession()
   if (!user) redirect("/login")
 
-  const tDashboard = await getScopedI18n("shared.sidebar.dashboard")
-  const tFinancial = await getScopedI18n("shared.financial")
-  const filterOptions = await getDashboardFilterOptions()
+  const dashboardData = await getDashboardData({
+    period: "thisMonth",
+  })
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            {tDashboard("title")}
-          </h1>
-          <p className="text-muted-foreground">{tDashboard("overview")}</p>
-        </div>
-        <div className="flex gap-2">
-          <Button asChild>
-            <Link href="/dashboard/expenses/new">
-              <Plus className="mr-2 h-4 w-4" />
-              {tFinancial("expenses.new")}
-            </Link>
-          </Button>
-          <Button asChild>
-            <Link href="/dashboard/revenues/new">
-              <Plus className="mr-2 h-4 w-4" />
-              {tFinancial("revenues.new")}
-            </Link>
-          </Button>
+    <div className="flex flex-1 flex-col">
+      <div className="@container/main flex flex-1 flex-col gap-2">
+        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+          <SectionCards kpis={dashboardData.kpis} />
+          {dashboardData.chartData && dashboardData.chartData.length > 0 && (
+            <div className="px-4 lg:px-6">
+              <ChartAreaInteractive data={dashboardData.chartData} />
+            </div>
+          )}
+          <DataTable data={dashboardData.transactions} />
         </div>
       </div>
-
-      <DashboardFilters
-        drivers={filterOptions.drivers}
-        vehicles={filterOptions.vehicles}
-        companies={filterOptions.companies}
-      />
-
-      <DashboardContent />
     </div>
   )
 }

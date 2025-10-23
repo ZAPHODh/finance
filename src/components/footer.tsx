@@ -2,9 +2,15 @@
 import { Logo } from '@/components/logo'
 import Link from 'next/link'
 import { useScopedI18n } from '@/locales/client'
+import { usePathname } from 'next/navigation'
 
 export default function FooterSection() {
     const t = useScopedI18n('shared.footer')
+    const pathname = usePathname()
+
+    if (pathname.includes('/dashboard')) {
+        return null
+    }
 
     return (
         <footer className="py-16 md:py-32">
