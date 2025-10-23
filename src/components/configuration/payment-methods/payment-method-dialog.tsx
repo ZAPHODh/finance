@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRouter, usePathname } from "next/navigation";
 import { useScopedI18n } from "@/locales/client";
 import { createPaymentMethod, updatePaymentMethod, type PaymentMethodFormData } from "@/app/[locale]/(financial)/dashboard/payment-methods/actions";
@@ -16,6 +17,9 @@ interface PaymentMethodDialogProps {
     id: string;
     name: string;
     icon: string | null;
+    feeType: string;
+    feePercentage: number | null;
+    feeFixed: number | null;
   };
 }
 
@@ -28,6 +32,9 @@ export function PaymentMethodDialog({ mode, paymentMethod }: PaymentMethodDialog
   const [formData, setFormData] = useState<PaymentMethodFormData>({
     name: paymentMethod?.name || "",
     icon: paymentMethod?.icon || "",
+    feeType: paymentMethod?.feeType || "NONE",
+    feePercentage: paymentMethod?.feePercentage || null,
+    feeFixed: paymentMethod?.feeFixed || null,
   });
 
   const isOpen = pathname.includes("/dashboard/payment-methods");
@@ -81,6 +88,62 @@ export function PaymentMethodDialog({ mode, paymentMethod }: PaymentMethodDialog
               placeholder="💳"
             />
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="feeType">Tipo de Taxa</Label>
+            <Select
+              value={formData.feeType}
+              onValueChange={(value) => setFormData({ ...formData, feeType: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione o tipo de taxa" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="NONE">Sem taxa</SelectItem>
+                <SelectItem value="PERCENTAGE">Percentual</SelectItem>
+                <SelectItem value="FIXED">Valor fixo</SelectItem>
+                <SelectItem value="BOTH">Ambos</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {(formData.feeType === "PERCENTAGE" || formData.feeType === "BOTH") && (
+            <div className="space-y-2">
+              <Label htmlFor="feePercentage">Taxa Percentual (%)</Label>
+              <Input
+                id="feePercentage"
+                type="number"
+                step="0.01"
+                min="0"
+                max="100"
+                value={formData.feePercentage || ""}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  feePercentage: e.target.value ? parseFloat(e.target.value) : null
+                })}
+                placeholder="Ex: 2.5 para 2.5%"
+              />
+            </div>
+          )}
+
+          {(formData.feeType === "FIXED" || formData.feeType === "BOTH") && (
+            <div className="space-y-2">
+              <Label htmlFor="feeFixed">Taxa Fixa (R$)</Label>
+              <Input
+                id="feeFixed"
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.feeFixed || ""}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  feeFixed: e.target.value ? parseFloat(e.target.value) : null
+                })}
+                placeholder="Ex: 0.50"
+              />
+            </div>
+          )}
+
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={handleClose}>
               {tCommon('cancel')}

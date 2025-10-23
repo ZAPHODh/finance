@@ -4,12 +4,14 @@ import * as React from "react"
 import {
   DndContext,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   closestCenter,
   useSensor,
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core"
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
 import {
   SortableContext,
   arrayMove,
@@ -69,6 +71,7 @@ import {
 } from "@/components/ui/table"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { TransactionDrawer } from "./transaction-drawer"
+import { useScopedI18n } from "@/locales/client"
 
 interface Transaction {
   id: string
@@ -101,7 +104,9 @@ function DraggableRow({ row }: { row: Row<Transaction> }) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0.8 : 1,
+    zIndex: isDragging ? 1 : 0,
+    position: "relative" as const,
   }
 
   return (
@@ -109,20 +114,22 @@ function DraggableRow({ row }: { row: Row<Transaction> }) {
       ref={setNodeRef}
       style={style}
       data-state={row.getIsSelected() && "selected"}
+      className="group"
     >
-      <TableCell>
+      <TableCell className="w-[60px]">
         <div className="flex items-center gap-2">
           <button
-            className="cursor-grab active:cursor-grabbing"
+            className="cursor-grab touch-none opacity-50 hover:opacity-100 active:cursor-grabbing"
             {...attributes}
             {...listeners}
           >
-            <GripVertical className="h-4 w-4 text-muted-foreground" />
+            <GripVertical className="h-4 w-4" />
           </button>
           <Checkbox
             checked={row.getIsSelected()}
             onCheckedChange={(value) => row.toggleSelected(!!value)}
             aria-label="Select row"
+            className="translate-y-0.5"
           />
         </div>
       </TableCell>
@@ -136,6 +143,7 @@ function DraggableRow({ row }: { row: Row<Transaction> }) {
 }
 
 export function DataTable({ data }: DataTableProps) {
+  const t = useScopedI18n("shared.sidebar.dashboard.table")
   const [transactions, setTransactions] = React.useState<Transaction[]>(data)
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -150,7 +158,17 @@ export function DataTable({ data }: DataTableProps) {
   const [drawerOpen, setDrawerOpen] = React.useState(false)
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200,
+        tolerance: 5,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -178,45 +196,49 @@ export function DataTable({ data }: DataTableProps) {
         return (
           <Button
             variant="ghost"
+            size="sm"
+            className="-ml-3 h-8"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Data
+            {t("date")}
             {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
+              <ArrowUp className="ml-2 h-3.5 w-3.5" />
             ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown className="ml-2 h-4 w-4" />
+              <ArrowDown className="ml-2 h-3.5 w-3.5" />
             ) : null}
           </Button>
         )
       },
-      cell: ({ row }) => formatDate(row.getValue("date")),
+      cell: ({ row }) => (
+        <div className="font-medium">{formatDate(row.getValue("date"))}</div>
+      ),
     },
     {
       accessorKey: "type",
-      header: "Tipo",
+      header: t("type"),
       cell: ({ row }) => {
         const type = row.getValue("type") as string
         return (
-          <Badge variant={type === "revenue" ? "default" : "secondary"}>
-            {type === "revenue" ? "Receita" : "Despesa"}
+          <Badge variant={type === "revenue" ? "default" : "secondary"} className="font-medium">
+            {type === "revenue" ? t("revenue") : t("expense")}
           </Badge>
         )
       },
     },
     {
       accessorKey: "description",
-      header: "Descrição",
+      header: t("description"),
       cell: ({ row }) => (
-        <div className="max-w-[200px] truncate">
+        <div className="max-w-[200px] truncate text-muted-foreground">
           {row.getValue("description") || "-"}
         </div>
       ),
     },
     {
       accessorKey: "category",
-      header: "Categoria",
+      header: t("category"),
       cell: ({ row }) => (
-        <div className="max-w-[150px] truncate">
+        <div className="max-w-[150px] truncate font-medium">
           {row.getValue("category")}
         </div>
       ),
@@ -227,21 +249,26 @@ export function DataTable({ data }: DataTableProps) {
         return (
           <Button
             variant="ghost"
+            size="sm"
+            className="-ml-3 h-8"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Valor
+            {t("amount")}
             {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
+              <ArrowUp className="ml-2 h-3.5 w-3.5" />
             ) : column.getIsSorted() === "desc" ? (
-              <ArrowDown className="ml-2 h-4 w-4" />
+              <ArrowDown className="ml-2 h-3.5 w-3.5" />
             ) : null}
           </Button>
         )
       },
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("amount"))
+        const type = row.original.type
         return (
-          <div className="font-medium">
+          <div className={`font-semibold tabular-nums ${
+            type === "revenue" ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
+          }`}>
             {formatCurrency(amount)}
           </div>
         )
@@ -249,27 +276,27 @@ export function DataTable({ data }: DataTableProps) {
     },
     {
       accessorKey: "driver",
-      header: "Motorista",
+      header: t("driver"),
       cell: ({ row }) => (
-        <div className="max-w-[120px] truncate">
+        <div className="max-w-[120px] truncate text-muted-foreground">
           {row.getValue("driver") || "-"}
         </div>
       ),
     },
     {
       accessorKey: "vehicle",
-      header: "Veículo",
+      header: t("vehicle"),
       cell: ({ row }) => (
-        <div className="max-w-[120px] truncate">
+        <div className="max-w-[120px] truncate text-muted-foreground">
           {row.getValue("vehicle") || "-"}
         </div>
       ),
     },
     {
       accessorKey: "company",
-      header: "Empresa",
+      header: t("company"),
       cell: ({ row }) => (
-        <div className="max-w-[120px] truncate">
+        <div className="max-w-[120px] truncate text-muted-foreground">
           {row.getValue("company") || "-"}
         </div>
       ),
@@ -283,16 +310,18 @@ export function DataTable({ data }: DataTableProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Abrir menu</span>
+                <span className="sr-only">{t("openMenu")}</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Ações</DropdownMenuLabel>
+              <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(transaction.id)}
+                onClick={() => {
+                  navigator.clipboard.writeText(transaction.id)
+                }}
               >
-                Copiar ID
+                {t("copyId")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -301,9 +330,13 @@ export function DataTable({ data }: DataTableProps) {
                   setDrawerOpen(true)
                 }}
               >
-                Ver detalhes
+                {t("viewDetails")}
               </DropdownMenuItem>
-              <DropdownMenuItem>Editar</DropdownMenuItem>
+              <DropdownMenuItem>{t("edit")}</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-destructive">
+                {t("delete")}
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )
@@ -353,21 +386,21 @@ export function DataTable({ data }: DataTableProps) {
 
   return (
     <div className="space-y-4 px-4 lg:px-6">
-      <div className="flex items-center justify-between">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <div className="flex items-center justify-between gap-2">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
           <TabsList>
-            <TabsTrigger value="all">Todas</TabsTrigger>
-            <TabsTrigger value="revenue">Receitas</TabsTrigger>
-            <TabsTrigger value="expense">Despesas</TabsTrigger>
+            <TabsTrigger value="all">{t("all")}</TabsTrigger>
+            <TabsTrigger value="revenue">{t("revenues")}</TabsTrigger>
+            <TabsTrigger value="expense">{t("expenses")}</TabsTrigger>
           </TabsList>
         </Tabs>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Colunas <ChevronDown className="ml-2 h-4 w-4" />
+            <Button variant="outline" size="sm" className="ml-auto h-8">
+              {t("columns")} <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="w-40">
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
@@ -389,19 +422,20 @@ export function DataTable({ data }: DataTableProps) {
         </DropdownMenu>
       </div>
 
-      <div className="rounded-md border">
+      <div className="@container/table rounded-lg border bg-card">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
+          modifiers={[restrictToVerticalAxis]}
         >
           <Table>
-            <TableHeader>
+            <TableHeader className="bg-muted/50">
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  <TableHead className="w-[100px]">
+                <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                  <TableHead className="w-[60px]">
                     <div className="flex items-center gap-2">
-                      <GripVertical className="h-4 w-4 text-muted-foreground" />
+                      <GripVertical className="h-4 w-4 opacity-50" />
                       <Checkbox
                         checked={
                           table.getIsAllPageRowsSelected() ||
@@ -411,6 +445,7 @@ export function DataTable({ data }: DataTableProps) {
                           table.toggleAllPageRowsSelected(!!value)
                         }
                         aria-label="Select all"
+                        className="translate-y-0.5"
                       />
                     </div>
                   </TableHead>
@@ -420,9 +455,9 @@ export function DataTable({ data }: DataTableProps) {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
                       </TableHead>
                     )
                   })}
@@ -442,9 +477,9 @@ export function DataTable({ data }: DataTableProps) {
                   <TableRow>
                     <TableCell
                       colSpan={columns.length + 1}
-                      className="h-24 text-center"
+                      className="h-32 text-center text-muted-foreground"
                     >
-                      Nenhum resultado encontrado.
+                      {t("noResults")}
                     </TableCell>
                   </TableRow>
                 )}
@@ -454,14 +489,16 @@ export function DataTable({ data }: DataTableProps) {
         </DndContext>
       </div>
 
-      <div className="flex items-center justify-between space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} de{" "}
-          {table.getFilteredRowModel().rows.length} linha(s) selecionada(s).
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} {t("of")}{" "}
+          {table.getFilteredRowModel().rows.length} {t("rowsSelected")}
         </div>
-        <div className="flex items-center space-x-6 lg:space-x-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6 lg:gap-8">
           <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium">Linhas por página</p>
+            <p className="whitespace-nowrap text-sm font-medium">
+              {t("rowsPerPage")}
+            </p>
             <Select
               value={`${table.getState().pagination.pageSize}`}
               onValueChange={(value) => {
@@ -480,47 +517,49 @@ export function DataTable({ data }: DataTableProps) {
               </SelectContent>
             </Select>
           </div>
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-            Página {table.getState().pagination.pageIndex + 1} de{" "}
-            {table.getPageCount()}
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <span className="sr-only">Ir para primeira página</span>
-              {"<<"}
-            </Button>
-            <Button
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <span className="sr-only">Ir para página anterior</span>
-              {"<"}
-            </Button>
-            <Button
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <span className="sr-only">Ir para próxima página</span>
-              {">"}
-            </Button>
-            <Button
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              <span className="sr-only">Ir para última página</span>
-              {">>"}
-            </Button>
+          <div className="flex items-center gap-2">
+            <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+              {t("page")} {table.getState().pagination.pageIndex + 1} {t("of")}{" "}
+              {table.getPageCount()}
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                className="hidden h-8 w-8 p-0 lg:flex"
+                onClick={() => table.setPageIndex(0)}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">{t("goToFirstPage")}</span>
+                <span className="text-sm">{"<<"}</span>
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 w-8 p-0"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">{t("goToPreviousPage")}</span>
+                <span className="text-sm">{"<"}</span>
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 w-8 p-0"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">{t("goToNextPage")}</span>
+                <span className="text-sm">{">"}</span>
+              </Button>
+              <Button
+                variant="outline"
+                className="hidden h-8 w-8 p-0 lg:flex"
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">{t("goToLastPage")}</span>
+                <span className="text-sm">{">>"}</span>
+              </Button>
+            </div>
           </div>
         </div>
       </div>

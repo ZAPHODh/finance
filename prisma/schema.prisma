@@ -159,12 +159,24 @@ model RevenueType {
   @@index([userId])
 }
 
+enum FeeType {
+  NONE
+  PERCENTAGE
+  FIXED
+  BOTH
+}
+
 model PaymentMethod {
-  id       String    @id @default(cuid())
-  name     String
-  icon     String?
-  userId   String
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id              String    @id @default(cuid())
+  name            String
+  icon            String?
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Fee configuration
+  feeType         FeeType   @default(NONE)
+  feePercentage   Float?    // Ex: 2.5 for 2.5%
+  feeFixed        Float?    // Ex: 0.50 for R$ 0.50
 
   expenses Expense[]
   revenues Revenue[]

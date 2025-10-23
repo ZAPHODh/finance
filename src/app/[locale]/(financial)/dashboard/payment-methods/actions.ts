@@ -9,6 +9,9 @@ import { PLAN_LIMITS } from "@/config/subscription";
 export interface PaymentMethodFormData {
   name: string;
   icon?: string;
+  feeType: string;
+  feePercentage: number | null;
+  feeFixed: number | null;
 }
 
 async function checkIfPaymentMethodLimitReached() {
@@ -48,6 +51,9 @@ export async function createPaymentMethod(data: PaymentMethodFormData) {
     data: {
       name: data.name,
       icon: data.icon,
+      feeType: data.feeType as any,
+      feePercentage: data.feePercentage,
+      feeFixed: data.feeFixed,
       userId: user.id,
     },
   });
@@ -76,6 +82,9 @@ export async function updatePaymentMethod(id: string, data: PaymentMethodFormDat
     data: {
       name: data.name,
       icon: data.icon,
+      feeType: data.feeType as any,
+      feePercentage: data.feePercentage,
+      feeFixed: data.feeFixed,
     },
   });
 
