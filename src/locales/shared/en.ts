@@ -9,6 +9,16 @@ export default {
     toggleTheme: 'Toggle Theme',
     light: 'Light',
     dark: 'Dark',
+    nav: {
+        home: 'Home',
+        features: 'Features',
+        pricing: 'Pricing',
+        about: 'About',
+        contact: 'Contact',
+        login: 'Login',
+        getStarted: 'Get Started',
+        goToDashboard: 'Go to Dashboard',
+    },
     supportConfirmation: {
         title: 'Thank you for contacting us!',
         message: 'We have received your message and will get back to you as soon as possible.',

@@ -9,6 +9,16 @@ export default {
     toggleTheme: 'Alternar Tema',
     light: 'Claro',
     dark: 'Escuro',
+    nav: {
+        home: 'Início',
+        features: 'Recursos',
+        pricing: 'Preços',
+        about: 'Sobre',
+        contact: 'Contato',
+        login: 'Entrar',
+        getStarted: 'Começar Grátis',
+        goToDashboard: 'Ir para Dashboard',
+    },
     supportConfirmation: {
         title: 'Obrigado por entrar em contato!',
         message: 'Recebemos sua mensagem e retornaremos o mais breve possível.',

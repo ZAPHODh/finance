@@ -1,50 +1,27 @@
 'use server';
 
-import {
-  WalletIcon,
-  HomeIcon,
-  TrendingUpIcon,
-  CreditCardIcon,
-} from "lucide-react"
-
 import Logo from "@/components/shared/nav-components/logo"
 import { Button } from "@/components/ui/button"
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { ModeSwitcher } from "./nav-components/theme-toggle"
-import { NavUser } from "./nav-components/nav-user"
 import { getCurrentSession } from "@/lib/server/auth/session"
-import { getCurrentLocale } from "@/locales/server"
-
-const navigationLinks = [
-  { href: "/dashboard", label: "Dashboard", icon: HomeIcon, active: true },
-  { href: "#", label: "Transactions", icon: WalletIcon },
-  { href: "#", label: "Investments", icon: TrendingUpIcon },
-  { href: "#", label: "Cards", icon: CreditCardIcon },
-]
-
-
-
+import { getScopedI18n } from "@/locales/server"
+import Link from "next/link"
 
 export default async function Nav() {
   const { user } = await getCurrentSession()
-  const locale = await getCurrentLocale()
+  const t = await getScopedI18n("shared.nav")
+
+  const navigationLinks = [
+    { href: "/", label: t("home") },
+    { href: "/features", label: t("features") },
+    { href: "/pricing", label: t("pricing") },
+  ]
+
   return (
     <header className="px-4 md:px-6 container mx-auto max-w-6xl">
       <div className="flex h-16 items-center justify-between gap-4">
@@ -83,68 +60,53 @@ export default async function Nav() {
                 </svg>
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" className="w-36 p-1 md:hidden">
-              <NavigationMenu className="max-w-none *:w-full">
-                <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
-                  {navigationLinks.map((link, index) => {
-                    const Icon = link.icon
-                    return (
-                      <NavigationMenuItem key={index} className="w-full">
-                        <NavigationMenuLink
-                          href={link.href}
-                          className="flex-row items-center gap-2 py-1.5"
-                          active={link.active}
-                        >
-                          <Icon
-                            size={16}
-                            className="text-muted-foreground"
-                            aria-hidden="true"
-                          />
-                          <span>{link.label}</span>
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
-                    )
-                  })}
-                </NavigationMenuList>
-              </NavigationMenu>
+            <PopoverContent align="start" className="w-48 p-2 md:hidden">
+              <nav className="flex flex-col gap-1">
+                {navigationLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="px-3 py-2 text-sm rounded-md hover:bg-muted transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
             </PopoverContent>
           </Popover>
           <div className="flex items-center gap-6">
-            <a href="#" className="text-primary hover:text-primary/90">
+            <Link href="/" className="text-primary hover:text-primary/90">
               <Logo />
-            </a>
-            <NavigationMenu className="hidden md:flex">
-              <NavigationMenuList className="gap-2">
-                <TooltipProvider>
-                  {navigationLinks.map((link) => (
-                    <NavigationMenuItem key={link.label}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <NavigationMenuLink
-                            href={link.href}
-                            className="flex size-8 items-center justify-center p-1.5"
-                          >
-                            <link.icon size={20} aria-hidden="true" />
-                            <span className="sr-only">{link.label}</span>
-                          </NavigationMenuLink>
-                        </TooltipTrigger>
-                        <TooltipContent
-                          side="bottom"
-                          className="px-2 py-1 text-xs"
-                        >
-                          <p>{link.label}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </NavigationMenuItem>
-                  ))}
-                </TooltipProvider>
-              </NavigationMenuList>
-            </NavigationMenu>
+            </Link>
+            <nav className="hidden md:flex items-center gap-6">
+              {navigationLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <ModeSwitcher />
-          <NavUser user={user} locale={locale} />
+          {user ? (
+            <Button asChild size="sm">
+              <Link href="/dashboard">{t("goToDashboard")}</Link>
+            </Button>
+          ) : (
+            <>
+              <Button asChild variant="ghost" size="sm" className="hidden sm:flex">
+                <Link href="/login">{t("login")}</Link>
+              </Button>
+              <Button asChild size="sm">
+                <Link href="/login">{t("getStarted")}</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>
