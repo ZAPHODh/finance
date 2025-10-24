@@ -1,12 +1,12 @@
 
 import { Resend } from "resend";
-import { generateId } from "../utils";
 import { ReactNode } from "react";
 import { SendOTPProps, SendWelcomeEmailProps } from "@/types";
 import VerificationTemp from "../../../emails/verification";
 import ThanksTemp from "../../../emails/thanks";
 import SupportConfirmationTemp from "../../../emails/support-confirmation";
 import { getScopedI18n } from "@/locales/server";
+import { generateId } from "../utils";
 export const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendWelcomeEmail = async ({
