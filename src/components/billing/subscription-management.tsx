@@ -31,7 +31,6 @@ export function SubscriptionManagement({ className, currentPlan, cancelSubscript
             </CardHeader>
 
             <CardContent className="space-y-6 sm:space-y-8 px-4 sm:px-6">
-                {/* Current Plan Details with highlighted styling */}
                 <div className="relative p-3 sm:p-4 rounded-xl bg-gradient-to-r from-muted/30 via-muted/20 to-muted/30 border border-border/50 overflow-hidden">
                     <div className="relative">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">

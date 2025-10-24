@@ -481,6 +481,7 @@ export default {
             freePlanDescription: 'Up to 2 drivers with basic features',
             perMonth: 'per month',
             upgradeToPro: 'Upgrade to Pro',
+            manageSubscription: 'Manage Subscription',
             paymentMethodTitle: 'Payment Method',
             paymentMethodDescription: 'Manage your payment methods',
             noPaymentMethod: 'No payment method',

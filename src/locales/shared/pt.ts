@@ -481,6 +481,7 @@ export default {
             freePlanDescription: 'Até 2 motoristas com recursos básicos',
             perMonth: 'por mês',
             upgradeToPro: 'Atualizar para Pro',
+            manageSubscription: 'Gerenciar Assinatura',
             paymentMethodTitle: 'Método de Pagamento',
             paymentMethodDescription: 'Gerencie seus métodos de pagamento',
             noPaymentMethod: 'Nenhum método de pagamento',
