@@ -2,51 +2,20 @@
 
 import { prisma } from "@/lib/server/db"
 import { getCurrentSession } from "@/lib/server/auth/session"
-import { type PlanType } from "@prisma/client"
 import { PLAN_LIMITS } from "@/config/subscription"
-
-export interface UserSubscriptionPlan {
-    planType: PlanType
-    isPro: boolean
-    isSimple: boolean
-    isFree: boolean
-    stripeCustomerId: string | null
-    stripeSubscriptionId: string | null
-    stripeCurrentPeriodEnd: Date | null
-}
-
-export async function getUserSubscriptionPlan(userId: string): Promise<UserSubscriptionPlan> {
-    const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: {
-            planType: true,
-            stripeCustomerId: true,
-            stripeSubscriptionId: true,
-            stripeCurrentPeriodEnd: true,
-        },
-    })
-
-    if (!user) {
-        throw new Error("User not found")
-    }
-
-    return {
-        planType: user.planType,
-        isPro: user.planType === "PRO",
-        isSimple: user.planType === "SIMPLE",
-        isFree: user.planType === "FREE",
-        stripeCustomerId: user.stripeCustomerId,
-        stripeSubscriptionId: user.stripeSubscriptionId,
-        stripeCurrentPeriodEnd: user.stripeCurrentPeriodEnd,
-    }
-}
 
 export async function hasFeature(feature: keyof typeof PLAN_LIMITS.FREE): Promise<boolean> {
     const { user } = await getCurrentSession()
     if (!user) return false
 
-    const subscriptionPlan = await getUserSubscriptionPlan(user.id)
-    const limits = PLAN_LIMITS[subscriptionPlan.planType]
+    const userData = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { planType: true },
+    })
+
+    if (!userData) return false
+
+    const limits = PLAN_LIMITS[userData.planType]
 
     return Boolean(limits[feature])
 }
@@ -55,8 +24,21 @@ export async function getUserUsageAndLimits() {
     const { user } = await getCurrentSession()
     if (!user) throw new Error("Unauthorized")
 
-    const subscriptionPlan = await getUserSubscriptionPlan(user.id)
-    const limits = PLAN_LIMITS[subscriptionPlan.planType]
+    const userData = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: {
+            planType: true,
+            stripeCustomerId: true,
+            stripeSubscriptionId: true,
+            stripeCurrentPeriodEnd: true,
+            storageUsed: true,
+            monthlyExportCount: true,
+        },
+    })
+
+    if (!userData) throw new Error("User not found")
+
+    const limits = PLAN_LIMITS[userData.planType]
 
     const [
         driversCount,
@@ -78,18 +60,18 @@ export async function getUserUsageAndLimits() {
         prisma.budget.count({ where: { userId: user.id, isActive: true } }),
     ])
 
-    const userStorage = await prisma.user.findUnique({
-        where: { id: user.id },
-        select: {
-            storageUsed: true,
-            monthlyExportCount: true,
-        },
-    })
-
-    const storageUsedGB = userStorage ? Number(userStorage.storageUsed) / (1024 ** 3) : 0
+    const storageUsedGB = Number(userData.storageUsed) / (1024 ** 3)
 
     return {
-        plan: subscriptionPlan,
+        plan: {
+            planType: userData.planType,
+            isPro: userData.planType === "PRO",
+            isSimple: userData.planType === "SIMPLE",
+            isFree: userData.planType === "FREE",
+            stripeCustomerId: userData.stripeCustomerId,
+            stripeSubscriptionId: userData.stripeSubscriptionId,
+            stripeCurrentPeriodEnd: userData.stripeCurrentPeriodEnd,
+        },
         usage: {
             drivers: driversCount,
             vehicles: vehiclesCount,
@@ -99,7 +81,7 @@ export async function getUserUsageAndLimits() {
             paymentMethods: paymentMethodsCount,
             goals: goalsCount,
             budgets: budgetsCount,
-            exports: userStorage?.monthlyExportCount || 0,
+            exports: userData.monthlyExportCount,
             storageGB: storageUsedGB,
         },
         limits: {
@@ -131,25 +113,24 @@ export async function checkIfExportLimitReached() {
     const { user } = await getCurrentSession()
     if (!user) throw new Error("Unauthorized")
 
-    const subscriptionPlan = await getUserSubscriptionPlan(user.id)
-
-    const limits = PLAN_LIMITS[subscriptionPlan.planType]
-
-    if (!limits.hasExports) return true
-    if (limits.maxExportsPerMonth === -1) return false
-
-    const userWithCount = await prisma.user.findUnique({
+    const userData = await prisma.user.findUnique({
         where: { id: user.id },
         select: {
+            planType: true,
             monthlyExportCount: true,
             exportCountResetAt: true,
         },
     })
 
-    if (!userWithCount) return true
+    if (!userData) throw new Error("User not found")
+
+    const limits = PLAN_LIMITS[userData.planType]
+
+    if (!limits.hasExports) return true
+    if (limits.maxExportsPerMonth === -1) return false
 
     const now = new Date()
-    if (!userWithCount.exportCountResetAt || userWithCount.exportCountResetAt < now) {
+    if (!userData.exportCountResetAt || userData.exportCountResetAt < now) {
         const nextReset = new Date(now.getFullYear(), now.getMonth() + 1, 1)
         await prisma.user.update({
             where: { id: user.id },
@@ -161,7 +142,7 @@ export async function checkIfExportLimitReached() {
         return false
     }
 
-    return userWithCount.monthlyExportCount >= limits.maxExportsPerMonth
+    return userData.monthlyExportCount >= limits.maxExportsPerMonth
 }
 
 export async function incrementExportCounter() {

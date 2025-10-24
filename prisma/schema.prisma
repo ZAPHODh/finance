@@ -53,15 +53,16 @@ model User {
   expenseTypes ExpenseType[]
   revenueTypes RevenueType[]
   paymentMethods PaymentMethod[]
-  preferences  UserPreferences?
-  goals        Goal[]
-  budgets      Budget[]
-  insights     Insight[]
-  alerts       Alert[]
-  attachments  Attachment[]
-  reports      Report[]
-  reminders    Reminder[]
-  teamMembers  TeamMember[]
+  preferences      UserPreferences?
+  goals            Goal[]
+  budgets          Budget[]
+  insights         Insight[]
+  alerts           Alert[]
+  attachments      Attachment[]
+  reports          Report[]
+  reminders        Reminder[]
+  teamMembers      TeamMember[]
+  expenseTemplates ExpenseTemplate[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -74,16 +75,17 @@ enum PlanType {
 }
 
 model Driver {
-  id        String   @id @default(cuid())
-  name      String
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id               String            @id @default(cuid())
+  name             String
+  userId           String
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  expenses  Expense[]
-  revenues  Revenue[]
-  workLogs  WorkLog[]
-  goals     Goal[]
-  teamMember TeamMember?
+  expenses         Expense[]
+  revenues         Revenue[]
+  workLogs         WorkLog[]
+  goals            Goal[]
+  teamMember       TeamMember?
+  expenseTemplates ExpenseTemplate[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -92,19 +94,20 @@ model Driver {
 }
 
 model Vehicle {
-  id        String   @id @default(cuid())
-  name      String
-  plate     String?
-  model     String?
-  year      Int?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id               String            @id @default(cuid())
+  name             String
+  plate            String?
+  model            String?
+  year             Int?
+  userId           String
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  expenses     Expense[]
-  revenues     Revenue[]
-  workLogs     WorkLog[]
-  maintenances Maintenance[]
-  goals        Goal[]
+  expenses         Expense[]
+  revenues         Revenue[]
+  workLogs         WorkLog[]
+  maintenances     Maintenance[]
+  goals            Goal[]
+  expenseTemplates ExpenseTemplate[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -128,15 +131,16 @@ model Company {
 }
 
 model ExpenseType {
-  id       String    @id @default(cuid())
-  name     String
-  icon     String?
-  userId   String
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id               String            @id @default(cuid())
+  name             String
+  icon             String?
+  userId           String
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  expenses  Expense[]
-  budgets   Budget[]
-  reminders Reminder[]
+  expenses         Expense[]
+  budgets          Budget[]
+  reminders        Reminder[]
+  expenseTemplates ExpenseTemplate[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -167,24 +171,67 @@ enum FeeType {
 }
 
 model PaymentMethod {
-  id              String    @id @default(cuid())
-  name            String
-  icon            String?
-  userId          String
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id               String            @id @default(cuid())
+  name             String
+  icon             String?
+  userId           String
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Fee configuration
-  feeType         FeeType   @default(NONE)
-  feePercentage   Float?    // Ex: 2.5 for 2.5%
-  feeFixed        Float?    // Ex: 0.50 for R$ 0.50
+  feeType          FeeType           @default(NONE)
+  feePercentage    Float?            // Ex: 2.5 for 2.5%
+  feeFixed         Float?            // Ex: 0.50 for R$ 0.50
 
-  expenses Expense[]
-  revenues Revenue[]
+  expenses         Expense[]
+  revenues         Revenue[]
+  expenseTemplates ExpenseTemplate[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+}
+
+enum RecurrenceFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+model ExpenseTemplate {
+  id              String                @id @default(cuid())
+  userId          String
+  user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name            String
+  description     String?
+  amount          Float?
+
+  expenseTypeId   String
+  expenseType     ExpenseType           @relation(fields: [expenseTypeId], references: [id], onDelete: Cascade)
+
+  paymentMethodId String?
+  paymentMethod   PaymentMethod?        @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
+
+  driverId        String?
+  driver          Driver?               @relation(fields: [driverId], references: [id], onDelete: SetNull)
+
+  vehicleId       String?
+  vehicle         Vehicle?              @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+
+  // Recurrence
+  isRecurring     Boolean               @default(false)
+  frequency       RecurrenceFrequency?
+  nextDueDate     DateTime?
+
+  isActive        Boolean               @default(true)
+
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+
+  @@index([userId, isActive])
+  @@index([userId, isRecurring, nextDueDate])
 }
 
 model Expense {
@@ -215,6 +262,11 @@ model Expense {
   @@index([driverId])
   @@index([vehicleId])
   @@index([date])
+  // Composite indexes for complex queries
+  @@index([expenseTypeId, date])
+  @@index([driverId, date])
+  @@index([vehicleId, date])
+  @@index([date, expenseTypeId, driverId])
 }
 
 model Revenue {
@@ -251,6 +303,11 @@ model Revenue {
   @@index([driverId])
   @@index([vehicleId])
   @@index([date])
+  // Composite indexes for complex queries
+  @@index([companyId, date])
+  @@index([driverId, date])
+  @@index([vehicleId, date])
+  @@index([date, companyId, driverId])
 }
 
 model WorkLog {
@@ -362,6 +419,8 @@ model Goal {
   @@index([period])
   @@index([driverId])
   @@index([vehicleId])
+  // Composite index for goal tracking queries
+  @@index([userId, isActive, period])
 }
 
 model Budget {
@@ -385,6 +444,8 @@ model Budget {
   @@index([userId])
   @@index([period])
   @@index([expenseTypeId])
+  // Composite index for budget alerts
+  @@index([userId, isActive, period, expenseTypeId])
 }
 
 enum InsightType {

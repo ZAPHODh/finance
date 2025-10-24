@@ -11,10 +11,8 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 export async function getUserSubscriptionPlan(
     userId: string
 ): Promise<UserSubscriptionPlan> {
-    const user = await prisma.user.findFirst({
-        where: {
-            id: userId,
-        },
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
         select: {
             stripeSubscriptionId: true,
             stripeCurrentPeriodEnd: true,

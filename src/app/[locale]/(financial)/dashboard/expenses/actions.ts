@@ -2,10 +2,11 @@
 
 import { prisma } from "@/lib/server/db";
 import { authActionClient } from "@/lib/client/safe-action";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
+import { cacheWithTag, CacheTags } from "@/lib/server/cache";
 
 const expenseSchema = z.object({
   description: z.string().optional(),
@@ -35,6 +36,8 @@ export const createExpense = authActionClient
       },
     });
 
+    revalidateTag(CacheTags.EXPENSES);
+    revalidateTag(CacheTags.DASHBOARD);
     revalidatePath("/dashboard/expenses");
     redirect("/dashboard/expenses");
   });
@@ -48,18 +51,16 @@ export const updateExpense = authActionClient
   .metadata({ actionName: "updateExpense" })
   .schema(updateExpenseSchema)
   .action(async ({ parsedInput: { id, data }, ctx }) => {
-    const expense = await prisma.expense.findUnique({
-      where: { id },
-      include: {
+    const expense = await prisma.expense.findFirst({
+      where: {
+        id,
         expenseType: {
-          select: {
-            userId: true,
-          },
+          userId: ctx.userId,
         },
       },
     });
 
-    if (!expense || expense.expenseType.userId !== ctx.userId) {
+    if (!expense) {
       throw new Error("Expense not found or unauthorized");
     }
 
@@ -77,6 +78,8 @@ export const updateExpense = authActionClient
       },
     });
 
+    revalidateTag(CacheTags.EXPENSES);
+    revalidateTag(CacheTags.DASHBOARD);
     revalidatePath("/dashboard/expenses");
     redirect("/dashboard/expenses");
   });
@@ -85,18 +88,16 @@ export const deleteExpense = authActionClient
   .metadata({ actionName: "deleteExpense" })
   .schema(z.object({ id: z.string().min(1) }))
   .action(async ({ parsedInput: { id }, ctx }) => {
-    const expense = await prisma.expense.findUnique({
-      where: { id },
-      include: {
+    const expense = await prisma.expense.findFirst({
+      where: {
+        id,
         expenseType: {
-          select: {
-            userId: true,
-          },
+          userId: ctx.userId,
         },
       },
     });
 
-    if (!expense || expense.expenseType.userId !== ctx.userId) {
+    if (!expense) {
       throw new Error("Expense not found or unauthorized");
     }
 
@@ -104,18 +105,17 @@ export const deleteExpense = authActionClient
       where: { id },
     });
 
+    revalidateTag(CacheTags.EXPENSES);
+    revalidateTag(CacheTags.DASHBOARD);
     revalidatePath("/dashboard/expenses");
   });
 
-export async function getExpensesData() {
-  const { user } = await getCurrentSession();
-  if (!user) redirect("/login");
-
+async function getExpensesDataUncached(userId: string) {
   const [expenses, expenseTypes, drivers, vehicles] = await Promise.all([
     prisma.expense.findMany({
       where: {
         expenseType: {
-          userId: user.id,
+          userId: userId,
         },
       },
       include: {
@@ -150,7 +150,7 @@ export async function getExpensesData() {
     }),
     prisma.expenseType.findMany({
       where: {
-        userId: user.id,
+        userId: userId,
       },
       select: {
         id: true,
@@ -162,7 +162,7 @@ export async function getExpensesData() {
     }),
     prisma.driver.findMany({
       where: {
-        userId: user.id,
+        userId: userId,
       },
       select: {
         id: true,
@@ -174,7 +174,7 @@ export async function getExpensesData() {
     }),
     prisma.vehicle.findMany({
       where: {
-        userId: user.id,
+        userId: userId,
       },
       select: {
         id: true,
@@ -189,32 +189,57 @@ export async function getExpensesData() {
   return { expenses, expenseTypes, drivers, vehicles };
 }
 
-export async function getExpenseFormData() {
+const getCachedExpensesData = cacheWithTag(
+  getExpensesDataUncached,
+  ['expenses-data'],
+  [CacheTags.EXPENSES, CacheTags.EXPENSE_TYPES, CacheTags.DRIVERS, CacheTags.VEHICLES],
+  300
+)
+
+export async function getExpensesData() {
   const { user } = await getCurrentSession();
   if (!user) redirect("/login");
 
+  return getCachedExpensesData(user.id);
+}
+
+async function getExpenseFormDataUncached(userId: string) {
   const [expenseTypes, paymentMethods, drivers, vehicles] = await Promise.all([
     prisma.expenseType.findMany({
-      where: { userId: user.id },
+      where: { userId: userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
     prisma.paymentMethod.findMany({
-      where: { userId: user.id },
+      where: { userId: userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
     prisma.driver.findMany({
-      where: { userId: user.id },
+      where: { userId: userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
     prisma.vehicle.findMany({
-      where: { userId: user.id },
+      where: { userId: userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
   ]);
 
   return { expenseTypes, paymentMethods, drivers, vehicles };
+}
+
+const getCachedExpenseFormData = cacheWithTag(
+  getExpenseFormDataUncached,
+  ['expense-form-data'],
+  [CacheTags.EXPENSE_TYPES, CacheTags.PAYMENT_METHODS, CacheTags.DRIVERS, CacheTags.VEHICLES],
+  600
+)
+
+export async function getExpenseFormData() {
+  const { user } = await getCurrentSession();
+  if (!user) redirect("/login");
+
+  return getCachedExpenseFormData(user.id);
 }

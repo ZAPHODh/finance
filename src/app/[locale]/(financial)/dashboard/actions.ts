@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/server/db"
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { redirect } from "next/navigation"
+import { cacheWithTag, CacheTags } from "@/lib/server/cache"
 import {
   startOfToday,
   endOfToday,
@@ -52,36 +53,22 @@ function getDateRange(period: string = "thisMonth") {
   }
 }
 
-export async function getDashboardData(filters: DashboardFilters) {
-  const { user } = await getCurrentSession()
-  if (!user) redirect("/login")
-
+async function getDashboardDataUncached(userId: string, filters: DashboardFilters) {
   const { start, end } = getDateRange(filters.period)
 
-  const whereClause = {
-    userId: user.id,
-    date: {
-      gte: start,
-      lte: end,
-    },
-    ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
-    ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
+  const dateFilter = {
+    gte: start,
+    lte: end,
   }
-
-  const revenueWhereClause = {
-    ...whereClause,
-    ...(filters.companyId && filters.companyId !== "all" && { companyId: filters.companyId }),
-  }
-
 
   const revenues = await prisma.revenue.findMany({
     where: {
-      date: revenueWhereClause.date,
+      date: dateFilter,
       ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
       ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
       ...(filters.companyId && filters.companyId !== "all" && { companyId: filters.companyId }),
       driver: {
-        userId: user.id,
+        userId: userId,
       },
     },
     include: {
@@ -93,11 +80,11 @@ export async function getDashboardData(filters: DashboardFilters) {
 
   const expenses = await prisma.expense.findMany({
     where: {
-      date: whereClause.date,
+      date: dateFilter,
       ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
       ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
       driver: {
-        userId: user.id,
+        userId: userId,
       },
     },
     include: {
@@ -110,11 +97,11 @@ export async function getDashboardData(filters: DashboardFilters) {
 
   const workLogs = await prisma.workLog.findMany({
     where: {
-      date: whereClause.date,
+      date: dateFilter,
       ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
       ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
       driver: {
-        userId: user.id,
+        userId: userId,
       },
     },
   })
@@ -208,7 +195,6 @@ export async function getDashboardData(filters: DashboardFilters) {
     })),
   ].sort((a, b) => b.date.getTime() - a.date.getTime())
 
-  // Generate chart data
   const chartDataMap = new Map<string, { revenue: number; expenses: number }>()
 
   revenues.forEach(r => {
@@ -272,24 +258,49 @@ export async function getDashboardData(filters: DashboardFilters) {
   }
 }
 
-export async function getDashboardFilterOptions() {
+const getCachedDashboardData = cacheWithTag(
+  getDashboardDataUncached,
+  ['dashboard-data'],
+  [CacheTags.DASHBOARD, CacheTags.REVENUES, CacheTags.EXPENSES, CacheTags.WORK_LOGS],
+  300
+)
+
+export async function getDashboardData(filters: DashboardFilters) {
   const { user } = await getCurrentSession()
   if (!user) redirect("/login")
 
+  return getCachedDashboardData(user.id, filters)
+}
+
+async function getDashboardFilterOptionsUncached(userId: string) {
   const [drivers, vehicles, companies] = await Promise.all([
     prisma.driver.findMany({
-      where: { userId: user.id },
+      where: { userId: userId },
       orderBy: { name: "asc" },
     }),
     prisma.vehicle.findMany({
-      where: { userId: user.id },
+      where: { userId: userId },
       orderBy: { name: "asc" },
     }),
     prisma.company.findMany({
-      where: { userId: user.id },
+      where: { userId: userId },
       orderBy: { name: "asc" },
     }),
   ])
 
   return { drivers, vehicles, companies }
+}
+
+const getCachedDashboardFilterOptions = cacheWithTag(
+  getDashboardFilterOptionsUncached,
+  ['dashboard-filters'],
+  [CacheTags.DRIVERS, CacheTags.VEHICLES, CacheTags.COMPANIES],
+  600
+)
+
+export async function getDashboardFilterOptions() {
+  const { user } = await getCurrentSession()
+  if (!user) redirect("/login")
+
+  return getCachedDashboardFilterOptions(user.id)
 }

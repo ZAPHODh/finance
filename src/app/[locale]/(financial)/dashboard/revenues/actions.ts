@@ -2,10 +2,11 @@
 
 import { prisma } from "@/lib/server/db";
 import { authActionClient } from "@/lib/client/safe-action";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
+import { cacheWithTag, CacheTags } from "@/lib/server/cache";
 
 const revenueSchema = z.object({
   description: z.string().optional(),
@@ -43,6 +44,8 @@ export const createRevenue = authActionClient
       },
     });
 
+    revalidateTag(CacheTags.REVENUES);
+    revalidateTag(CacheTags.DASHBOARD);
     revalidatePath("/dashboard/revenues");
     redirect("/dashboard/revenues");
   });
@@ -56,23 +59,17 @@ export const updateRevenue = authActionClient
   .metadata({ actionName: "updateRevenue" })
   .schema(updateRevenueSchema)
   .action(async ({ parsedInput: { id, data }, ctx }) => {
-    const revenue = await prisma.revenue.findUnique({
-      where: { id },
-      include: {
-        company: {
-          select: {
-            userId: true,
-          },
-        },
-        driver: {
-          select: {
-            userId: true,
-          },
-        },
+    const revenue = await prisma.revenue.findFirst({
+      where: {
+        id,
+        OR: [
+          { company: { userId: ctx.userId } },
+          { driver: { userId: ctx.userId } },
+        ],
       },
     });
 
-    if (!revenue || (revenue.company?.userId !== ctx.userId && revenue.driver?.userId !== ctx.userId)) {
+    if (!revenue) {
       throw new Error("Revenue not found or unauthorized");
     }
 
@@ -94,6 +91,8 @@ export const updateRevenue = authActionClient
       },
     });
 
+    revalidateTag(CacheTags.REVENUES);
+    revalidateTag(CacheTags.DASHBOARD);
     revalidatePath("/dashboard/revenues");
     redirect("/dashboard/revenues");
   });
@@ -102,23 +101,17 @@ export const deleteRevenue = authActionClient
   .metadata({ actionName: "deleteRevenue" })
   .schema(z.object({ id: z.string().min(1) }))
   .action(async ({ parsedInput: { id }, ctx }) => {
-    const revenue = await prisma.revenue.findUnique({
-      where: { id },
-      include: {
-        company: {
-          select: {
-            userId: true,
-          },
-        },
-        driver: {
-          select: {
-            userId: true,
-          },
-        },
+    const revenue = await prisma.revenue.findFirst({
+      where: {
+        id,
+        OR: [
+          { company: { userId: ctx.userId } },
+          { driver: { userId: ctx.userId } },
+        ],
       },
     });
 
-    if (!revenue || (revenue.company?.userId !== ctx.userId && revenue.driver?.userId !== ctx.userId)) {
+    if (!revenue) {
       throw new Error("Revenue not found or unauthorized");
     }
 
@@ -126,25 +119,24 @@ export const deleteRevenue = authActionClient
       where: { id },
     });
 
+    revalidateTag(CacheTags.REVENUES);
+    revalidateTag(CacheTags.DASHBOARD);
     revalidatePath("/dashboard/revenues");
   });
 
-export async function getRevenuesData() {
-  const { user } = await getCurrentSession();
-  if (!user) redirect("/login");
-
+async function getRevenuesDataUncached(userId: string) {
   const [revenues, revenueTypes, companies, drivers, vehicles] = await Promise.all([
     prisma.revenue.findMany({
       where: {
         OR: [
           {
             company: {
-              userId: user.id,
+              userId: userId,
             },
           },
           {
             driver: {
-              userId: user.id,
+              userId: userId,
             },
           },
         ],
@@ -187,7 +179,7 @@ export async function getRevenuesData() {
     }),
     prisma.revenueType.findMany({
       where: {
-        userId: user.id,
+        userId: userId,
       },
       select: {
         id: true,
@@ -199,7 +191,7 @@ export async function getRevenuesData() {
     }),
     prisma.company.findMany({
       where: {
-        userId: user.id,
+        userId: userId,
       },
       select: {
         id: true,
@@ -211,7 +203,7 @@ export async function getRevenuesData() {
     }),
     prisma.driver.findMany({
       where: {
-        userId: user.id,
+        userId: userId,
       },
       select: {
         id: true,
@@ -223,7 +215,7 @@ export async function getRevenuesData() {
     }),
     prisma.vehicle.findMany({
       where: {
-        userId: user.id,
+        userId: userId,
       },
       select: {
         id: true,
@@ -238,37 +230,62 @@ export async function getRevenuesData() {
   return { revenues, revenueTypes, companies, drivers, vehicles };
 }
 
-export async function getRevenueFormData() {
+const getCachedRevenuesData = cacheWithTag(
+  getRevenuesDataUncached,
+  ['revenues-data'],
+  [CacheTags.REVENUES, CacheTags.REVENUE_TYPES, CacheTags.COMPANIES, CacheTags.DRIVERS, CacheTags.VEHICLES],
+  300
+)
+
+export async function getRevenuesData() {
   const { user } = await getCurrentSession();
   if (!user) redirect("/login");
 
+  return getCachedRevenuesData(user.id);
+}
+
+async function getRevenueFormDataUncached(userId: string) {
   const [revenueTypes, companies, paymentMethods, drivers, vehicles] = await Promise.all([
     prisma.revenueType.findMany({
-      where: { userId: user.id },
+      where: { userId: userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
     prisma.company.findMany({
-      where: { userId: user.id },
+      where: { userId: userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
     prisma.paymentMethod.findMany({
-      where: { userId: user.id },
+      where: { userId: userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
     prisma.driver.findMany({
-      where: { userId: user.id },
+      where: { userId: userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
     prisma.vehicle.findMany({
-      where: { userId: user.id },
+      where: { userId: userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
   ]);
 
   return { revenueTypes, companies, paymentMethods, drivers, vehicles };
+}
+
+const getCachedRevenueFormData = cacheWithTag(
+  getRevenueFormDataUncached,
+  ['revenue-form-data'],
+  [CacheTags.REVENUE_TYPES, CacheTags.COMPANIES, CacheTags.PAYMENT_METHODS, CacheTags.DRIVERS, CacheTags.VEHICLES],
+  600
+)
+
+export async function getRevenueFormData() {
+  const { user } = await getCurrentSession();
+  if (!user) redirect("/login");
+
+  return getCachedRevenueFormData(user.id);
 }
