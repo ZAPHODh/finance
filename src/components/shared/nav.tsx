@@ -1,4 +1,4 @@
-'use server';
+'use client';
 
 import Logo from "@/components/shared/nav-components/logo"
 import { Button } from "@/components/ui/button"
@@ -8,13 +8,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { ModeSwitcher } from "./nav-components/theme-toggle"
-import { getCurrentSession } from "@/lib/server/auth/session"
-import { getScopedI18n } from "@/locales/server"
-import Link from "next/link"
 
-export default async function Nav() {
-  const { user } = await getCurrentSession()
-  const t = await getScopedI18n("shared.nav")
+import Link from "next/link"
+import { useScopedI18n } from "@/locales/client";
+
+export default function Nav() {
+
+  const t = useScopedI18n("shared.nav")
 
   const navigationLinks = [
     { href: "/", label: t("home") },
@@ -93,20 +93,12 @@ export default async function Nav() {
         </div>
         <div className="flex items-center gap-2">
           <ModeSwitcher />
-          {user ? (
-            <Button asChild size="sm">
-              <Link href="/dashboard">{t("goToDashboard")}</Link>
-            </Button>
-          ) : (
-            <>
-              <Button asChild variant="ghost" size="sm" className="hidden sm:flex">
-                <Link href="/login">{t("login")}</Link>
-              </Button>
-              <Button asChild size="sm">
-                <Link href="/login">{t("getStarted")}</Link>
-              </Button>
-            </>
-          )}
+          <Button asChild variant="ghost" size="sm" className="hidden sm:flex">
+            <Link href="/login">{t("login")}</Link>
+          </Button>
+          <Button asChild size="sm">
+            <Link href="/login">{t("getStarted")}</Link>
+          </Button>
         </div>
       </div>
     </header>

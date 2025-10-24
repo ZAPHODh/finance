@@ -51,13 +51,11 @@ export default async function FinancialLayout({
               <div className="flex gap-2">
                 <Button asChild size="sm">
                   <Link href="/dashboard/expenses/new">
-                    <Plus className="mr-2 h-4 w-4" />
                     {tFinancial("expenses.new")}
                   </Link>
                 </Button>
                 <Button asChild size="sm">
                   <Link href="/dashboard/revenues/new">
-                    <Plus className="mr-2 h-4 w-4" />
                     {tFinancial("revenues.new")}
                   </Link>
                 </Button>
