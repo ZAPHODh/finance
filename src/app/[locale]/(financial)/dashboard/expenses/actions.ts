@@ -1,114 +1,113 @@
 'use server';
 
 import { prisma } from "@/lib/server/db";
-import { authActionClient } from "@/lib/client/safe-action";
 import { revalidatePath, revalidateTag } from "next/cache";
-import { z } from "zod";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
 
-const expenseSchema = z.object({
-  description: z.string().optional(),
-  amount: z.number().positive(),
-  date: z.date(),
-  receiptUrl: z.string().url().optional().or(z.literal("")),
-  expenseTypeId: z.string().min(1),
-  paymentMethodId: z.string().optional(),
-  driverId: z.string().optional(),
-  vehicleId: z.string().optional(),
-});
+export interface ExpenseFormData {
+  description?: string;
+  amount: number;
+  date: Date;
+  receiptUrl?: string;
+  expenseTypeId: string;
+  paymentMethodId?: string;
+  driverId?: string;
+  vehicleId?: string;
+}
 
-export const createExpense = authActionClient
-  .metadata({ actionName: "createExpense" })
-  .schema(expenseSchema)
-  .action(async ({ parsedInput: data }) => {
-    await prisma.expense.create({
-      data: {
-        description: data.description || null,
-        amount: data.amount,
-        date: data.date,
-        receiptUrl: data.receiptUrl || null,
-        expenseTypeId: data.expenseTypeId,
-        paymentMethodId: data.paymentMethodId || null,
-        driverId: data.driverId || null,
-        vehicleId: data.vehicleId || null,
-      },
-    });
+export async function createExpense(data: ExpenseFormData) {
+  const { user } = await getCurrentSession();
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
 
-    revalidateTag(CacheTags.EXPENSES);
-    revalidateTag(CacheTags.DASHBOARD);
-    revalidatePath("/dashboard/expenses");
-    redirect("/dashboard/expenses");
+  await prisma.expense.create({
+    data: {
+      description: data.description || null,
+      amount: data.amount,
+      date: data.date,
+      receiptUrl: data.receiptUrl || null,
+      expenseTypeId: data.expenseTypeId,
+      paymentMethodId: data.paymentMethodId || null,
+      driverId: data.driverId || null,
+      vehicleId: data.vehicleId || null,
+    },
   });
 
-const updateExpenseSchema = z.object({
-  id: z.string().min(1),
-  data: expenseSchema,
-});
+  revalidateTag(CacheTags.EXPENSES);
+  revalidateTag(CacheTags.DASHBOARD);
+  revalidatePath("/dashboard/expenses");
+  redirect("/dashboard/expenses");
+}
 
-export const updateExpense = authActionClient
-  .metadata({ actionName: "updateExpense" })
-  .schema(updateExpenseSchema)
-  .action(async ({ parsedInput: { id, data }, ctx }) => {
-    const expense = await prisma.expense.findFirst({
-      where: {
-        id,
-        expenseType: {
-          userId: ctx.userId,
-        },
+export async function updateExpense(id: string, data: ExpenseFormData) {
+  const { user } = await getCurrentSession();
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  const expense = await prisma.expense.findFirst({
+    where: {
+      id,
+      expenseType: {
+        userId: user.id,
       },
-    });
-
-    if (!expense) {
-      throw new Error("Expense not found or unauthorized");
-    }
-
-    await prisma.expense.update({
-      where: { id },
-      data: {
-        description: data.description || null,
-        amount: data.amount,
-        date: data.date,
-        receiptUrl: data.receiptUrl || null,
-        expenseTypeId: data.expenseTypeId,
-        paymentMethodId: data.paymentMethodId || null,
-        driverId: data.driverId || null,
-        vehicleId: data.vehicleId || null,
-      },
-    });
-
-    revalidateTag(CacheTags.EXPENSES);
-    revalidateTag(CacheTags.DASHBOARD);
-    revalidatePath("/dashboard/expenses");
-    redirect("/dashboard/expenses");
+    },
   });
 
-export const deleteExpense = authActionClient
-  .metadata({ actionName: "deleteExpense" })
-  .schema(z.object({ id: z.string().min(1) }))
-  .action(async ({ parsedInput: { id }, ctx }) => {
-    const expense = await prisma.expense.findFirst({
-      where: {
-        id,
-        expenseType: {
-          userId: ctx.userId,
-        },
-      },
-    });
+  if (!expense) {
+    throw new Error("Expense not found or unauthorized");
+  }
 
-    if (!expense) {
-      throw new Error("Expense not found or unauthorized");
-    }
-
-    await prisma.expense.delete({
-      where: { id },
-    });
-
-    revalidateTag(CacheTags.EXPENSES);
-    revalidateTag(CacheTags.DASHBOARD);
-    revalidatePath("/dashboard/expenses");
+  await prisma.expense.update({
+    where: { id },
+    data: {
+      description: data.description || null,
+      amount: data.amount,
+      date: data.date,
+      receiptUrl: data.receiptUrl || null,
+      expenseTypeId: data.expenseTypeId,
+      paymentMethodId: data.paymentMethodId || null,
+      driverId: data.driverId || null,
+      vehicleId: data.vehicleId || null,
+    },
   });
+
+  revalidateTag(CacheTags.EXPENSES);
+  revalidateTag(CacheTags.DASHBOARD);
+  revalidatePath("/dashboard/expenses");
+  redirect("/dashboard/expenses");
+}
+
+export async function deleteExpense(id: string) {
+  const { user } = await getCurrentSession();
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  const expense = await prisma.expense.findFirst({
+    where: {
+      id,
+      expenseType: {
+        userId: user.id,
+      },
+    },
+  });
+
+  if (!expense) {
+    throw new Error("Expense not found or unauthorized");
+  }
+
+  await prisma.expense.delete({
+    where: { id },
+  });
+
+  revalidateTag(CacheTags.EXPENSES);
+  revalidateTag(CacheTags.DASHBOARD);
+  revalidatePath("/dashboard/expenses");
+}
 
 async function getExpensesDataUncached(userId: string) {
   const [expenses, expenseTypes, drivers, vehicles] = await Promise.all([

@@ -5,7 +5,7 @@ import { DataTable } from "@/components/ui/data-table/data-table"
 import { createBudgetsColumns } from "./budgets-columns"
 import { deleteBudget } from "@/app/[locale]/(financial)/budgets/actions"
 import { toast } from "sonner"
-import { useAction } from "next-safe-action/hooks"
+import { useTransition } from "react"
 
 interface BudgetsTableProps {
     budgets: any[]
@@ -14,19 +14,18 @@ interface BudgetsTableProps {
 export function BudgetsTable({ budgets }: BudgetsTableProps) {
     const t = useScopedI18n("shared.budgets")
     const tCommon = useScopedI18n("shared.common")
-
-    const { execute: executeDelete } = useAction(deleteBudget, {
-        onSuccess: () => {
-            toast.success(tCommon("deleteSuccess"))
-        },
-        onError: (error) => {
-            toast.error(error.error.serverError?.message || tCommon("error"))
-        },
-    })
+    const [isPending, startTransition] = useTransition()
 
     async function handleDelete(id: string) {
         if (!confirm(tCommon("confirmDelete"))) return
-        executeDelete({ id })
+        startTransition(async () => {
+            try {
+                await deleteBudget(id)
+                toast.success(tCommon("deleteSuccess"))
+            } catch (error) {
+                toast.error(error instanceof Error ? error.message : tCommon("error"))
+            }
+        })
     }
 
     function formatCurrency(value: number) {

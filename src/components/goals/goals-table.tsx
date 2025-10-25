@@ -6,7 +6,6 @@ import { createGoalsColumns } from "./goals-columns"
 import { toggleGoalActive, deleteGoal } from "@/app/[locale]/(financial)/goals/actions"
 import { toast } from "sonner"
 import { useTransition } from "react"
-import { useAction } from "next-safe-action/hooks"
 import type { Goal } from "@prisma/client"
 
 interface GoalsTableProps {
@@ -21,29 +20,27 @@ export function GoalsTable({ goals }: GoalsTableProps) {
     const tCommon = useScopedI18n("shared.common")
     const [isPending, startTransition] = useTransition()
 
-    const { execute: executeDelete } = useAction(deleteGoal, {
-        onSuccess: () => {
-            toast.success(tCommon("deleteSuccess"))
-        },
-        onError: (error) => {
-            toast.error(error.error.serverError?.message || tCommon("error"))
-        },
-    })
-
     async function handleToggleActive(id: string) {
         startTransition(async () => {
             try {
                 await toggleGoalActive(id)
                 toast.success(tCommon("updateSuccess"))
             } catch (error) {
-                toast.error(tCommon("error"))
+                toast.error(error instanceof Error ? error.message : tCommon("error"))
             }
         })
     }
 
     async function handleDelete(id: string) {
         if (!confirm(tCommon("confirmDelete"))) return
-        executeDelete({ id })
+        startTransition(async () => {
+            try {
+                await deleteGoal(id)
+                toast.success(tCommon("deleteSuccess"))
+            } catch (error) {
+                toast.error(error instanceof Error ? error.message : tCommon("error"))
+            }
+        })
     }
 
     const columns = createGoalsColumns(t, tCommon, handleToggleActive, handleDelete, isPending)

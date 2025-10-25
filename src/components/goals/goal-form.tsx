@@ -7,9 +7,8 @@ import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Select } from "@/components/ui/select"
 import { createGoal, updateGoal } from "@/app/[locale]/(financial)/goals/actions"
-import { useAction } from "next-safe-action/hooks"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+import { useTransition } from "react"
 import { GoalType } from "@prisma/client"
 import type { Goal } from "@prisma/client"
 
@@ -22,27 +21,7 @@ interface GoalFormProps {
 export function GoalForm({ drivers, vehicles, goal }: GoalFormProps) {
     const t = useScopedI18n("shared.goals")
     const tCommon = useScopedI18n("shared.common")
-    const router = useRouter()
-
-    const { execute: executeCreate, isPending: isCreating } = useAction(createGoal, {
-        onSuccess: () => {
-            toast.success(tCommon("createSuccess"))
-            router.push("/goals")
-        },
-        onError: (error) => {
-            toast.error(error.error.serverError?.message || tCommon("error"))
-        },
-    })
-
-    const { execute: executeUpdate, isPending: isUpdating } = useAction(updateGoal, {
-        onSuccess: () => {
-            toast.success(tCommon("updateSuccess"))
-            router.push("/goals")
-        },
-        onError: (error) => {
-            toast.error(error.error.serverError?.message || tCommon("error"))
-        },
-    })
+    const [isPending, startTransition] = useTransition()
 
     const form = useForm({
         defaultValues: {
@@ -54,24 +33,29 @@ export function GoalForm({ drivers, vehicles, goal }: GoalFormProps) {
             vehicleId: goal?.vehicleId || "",
         },
         onSubmit: async ({ value }) => {
-            if (goal) {
-                executeUpdate({
-                    id: goal.id,
-                    ...value,
-                    driverId: value.driverId || undefined,
-                    vehicleId: value.vehicleId || undefined,
-                })
-            } else {
-                executeCreate({
-                    ...value,
-                    driverId: value.driverId || undefined,
-                    vehicleId: value.vehicleId || undefined,
-                })
-            }
+            startTransition(async () => {
+                try {
+                    if (goal) {
+                        await updateGoal(goal.id, {
+                            ...value,
+                            driverId: value.driverId || undefined,
+                            vehicleId: value.vehicleId || undefined,
+                        })
+                        toast.success(tCommon("updateSuccess"))
+                    } else {
+                        await createGoal({
+                            ...value,
+                            driverId: value.driverId || undefined,
+                            vehicleId: value.vehicleId || undefined,
+                        })
+                        toast.success(tCommon("createSuccess"))
+                    }
+                } catch (error) {
+                    toast.error(error instanceof Error ? error.message : tCommon("error"))
+                }
+            })
         },
     })
-
-    const isPending = isCreating || isUpdating
 
     return (
         <form
@@ -207,13 +191,6 @@ export function GoalForm({ drivers, vehicles, goal }: GoalFormProps) {
                 <div className="flex gap-2">
                     <Button type="submit" disabled={isPending}>
                         {isPending ? "Salvando..." : tCommon("save")}
-                    </Button>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => router.push("/goals")}
-                    >
-                        {tCommon("cancel")}
                     </Button>
                 </div>
             </FieldSet>

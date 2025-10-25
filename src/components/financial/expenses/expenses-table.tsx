@@ -100,12 +100,11 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
     }
 
     startTransition(async () => {
-      const result = await deleteExpense({ id });
-
-      if (result?.serverError) {
-        toast.error(result.serverError.message || tCommon('error'));
-      } else {
+      try {
+        await deleteExpense(id);
         toast.success(tCommon('deleteSuccess'));
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : tCommon('error'));
       }
     });
   }

@@ -4,8 +4,6 @@ import { prisma } from "@/lib/server/db"
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
-import { authActionClient } from "@/lib/client/safe-action"
 import { PLAN_LIMITS } from "@/config/subscription"
 
 async function checkIfBudgetLimitReached() {
@@ -29,27 +27,22 @@ async function checkIfBudgetLimitReached() {
     return count >= limits.maxBudgets
 }
 
-const createBudgetSchema = z.object({
-    name: z.string().min(1, "Name is required").optional(),
-    expenseTypeId: z.string().min(1, "Expense type is required"),
-    monthlyLimit: z.number().positive("Monthly limit must be positive"),
-    alertThreshold: z.number().min(0).max(1).default(0.8),
-    period: z.string().min(1, "Period is required"),
-})
+export interface BudgetFormData {
+    name?: string;
+    expenseTypeId: string;
+    monthlyLimit: number;
+    alertThreshold: number;
+    period: string;
+}
 
-const updateBudgetSchema = z.object({
-    id: z.string(),
-    name: z.string().min(1, "Name is required").optional(),
-    expenseTypeId: z.string().min(1, "Expense type is required").optional(),
-    monthlyLimit: z.number().positive("Monthly limit must be positive").optional(),
-    alertThreshold: z.number().min(0).max(1).optional(),
-    period: z.string().min(1, "Period is required").optional(),
-    isActive: z.boolean().optional(),
-})
-
-const deleteBudgetSchema = z.object({
-    id: z.string(),
-})
+export interface UpdateBudgetData {
+    name?: string;
+    expenseTypeId?: string;
+    monthlyLimit?: number;
+    alertThreshold?: number;
+    period?: string;
+    isActive?: boolean;
+}
 
 // ============================================
 // Server Actions
@@ -100,98 +93,97 @@ export async function getBudgetById(id: string) {
 /**
  * Create a new budget
  */
-export const createBudget = authActionClient
-    .metadata({ actionName: "createBudget" })
-    .schema(createBudgetSchema)
-    .action(async ({ parsedInput, ctx }) => {
-        const { user } = ctx
+export async function createBudget(data: BudgetFormData) {
+    const { user } = await getCurrentSession()
+    if (!user) {
+        throw new Error("Unauthorized")
+    }
 
-        // Check if limit is reached
-        const limitReached = await checkIfBudgetLimitReached()
-        if (limitReached) {
-            throw new Error("You have reached the maximum number of budgets for your plan. Please upgrade to add more.")
-        }
+    // Check if limit is reached
+    const limitReached = await checkIfBudgetLimitReached()
+    if (limitReached) {
+        throw new Error("You have reached the maximum number of budgets for your plan. Please upgrade to add more.")
+    }
 
-        const budget = await prisma.budget.create({
-            data: {
-                userId: user.id,
-                name: parsedInput.name,
-                expenseTypeId: parsedInput.expenseTypeId,
-                monthlyLimit: parsedInput.monthlyLimit,
-                alertThreshold: parsedInput.alertThreshold,
-                period: parsedInput.period,
-            },
-        })
-
-        revalidatePath("/budgets")
-        return budget
+    const budget = await prisma.budget.create({
+        data: {
+            userId: user.id,
+            name: data.name,
+            expenseTypeId: data.expenseTypeId,
+            monthlyLimit: data.monthlyLimit,
+            alertThreshold: data.alertThreshold ?? 0.8,
+            period: data.period,
+        },
     })
+
+    revalidatePath("/budgets")
+    redirect("/budgets")
+}
 
 /**
  * Update a budget
  */
-export const updateBudget = authActionClient
-    .metadata({ actionName: "updateBudget" })
-    .schema(updateBudgetSchema)
-    .action(async ({ parsedInput, ctx }) => {
-        const { user } = ctx
+export async function updateBudget(id: string, data: UpdateBudgetData) {
+    const { user } = await getCurrentSession()
+    if (!user) {
+        throw new Error("Unauthorized")
+    }
 
-        // Verify ownership
-        const existing = await prisma.budget.findFirst({
-            where: {
-                id: parsedInput.id,
-                userId: user.id,
-            },
-        })
-
-        if (!existing) {
-            throw new Error("Budget not found")
-        }
-
-        const budget = await prisma.budget.update({
-            where: { id: parsedInput.id },
-            data: {
-                name: parsedInput.name,
-                expenseTypeId: parsedInput.expenseTypeId,
-                monthlyLimit: parsedInput.monthlyLimit,
-                alertThreshold: parsedInput.alertThreshold,
-                period: parsedInput.period,
-                isActive: parsedInput.isActive,
-            },
-        })
-
-        revalidatePath("/budgets")
-        return budget
+    // Verify ownership
+    const existing = await prisma.budget.findFirst({
+        where: {
+            id,
+            userId: user.id,
+        },
     })
+
+    if (!existing) {
+        throw new Error("Budget not found")
+    }
+
+    const budget = await prisma.budget.update({
+        where: { id },
+        data: {
+            name: data.name,
+            expenseTypeId: data.expenseTypeId,
+            monthlyLimit: data.monthlyLimit,
+            alertThreshold: data.alertThreshold,
+            period: data.period,
+            isActive: data.isActive,
+        },
+    })
+
+    revalidatePath("/budgets")
+    redirect("/budgets")
+}
 
 /**
  * Delete a budget
  */
-export const deleteBudget = authActionClient
-    .metadata({ actionName: "deleteBudget" })
-    .schema(deleteBudgetSchema)
-    .action(async ({ parsedInput, ctx }) => {
-        const { user } = ctx
+export async function deleteBudget(id: string) {
+    const { user } = await getCurrentSession()
+    if (!user) {
+        throw new Error("Unauthorized")
+    }
 
-        // Verify ownership
-        const existing = await prisma.budget.findFirst({
-            where: {
-                id: parsedInput.id,
-                userId: user.id,
-            },
-        })
-
-        if (!existing) {
-            throw new Error("Budget not found")
-        }
-
-        await prisma.budget.delete({
-            where: { id: parsedInput.id },
-        })
-
-        revalidatePath("/budgets")
-        return { success: true }
+    // Verify ownership
+    const existing = await prisma.budget.findFirst({
+        where: {
+            id,
+            userId: user.id,
+        },
     })
+
+    if (!existing) {
+        throw new Error("Budget not found")
+    }
+
+    await prisma.budget.delete({
+        where: { id },
+    })
+
+    revalidatePath("/budgets")
+}
 
 /**
  * Toggle budget active status

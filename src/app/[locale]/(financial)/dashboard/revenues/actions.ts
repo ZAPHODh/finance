@@ -1,128 +1,127 @@
 'use server';
 
 import { prisma } from "@/lib/server/db";
-import { authActionClient } from "@/lib/client/safe-action";
 import { revalidatePath, revalidateTag } from "next/cache";
-import { z } from "zod";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
 
-const revenueSchema = z.object({
-  description: z.string().optional(),
-  amount: z.number().positive(),
-  date: z.date(),
-  kmDriven: z.number().positive().optional(),
-  hoursWorked: z.number().positive().optional(),
-  tripType: z.string().optional(),
-  receiptUrl: z.string().url().optional().or(z.literal("")),
-  revenueTypeId: z.string().optional(),
-  companyId: z.string().optional(),
-  paymentMethodId: z.string().optional(),
-  driverId: z.string().optional(),
-  vehicleId: z.string().optional(),
-});
+export interface RevenueFormData {
+  description?: string;
+  amount: number;
+  date: Date;
+  kmDriven?: number;
+  hoursWorked?: number;
+  tripType?: string;
+  receiptUrl?: string;
+  revenueTypeId?: string;
+  companyId?: string;
+  paymentMethodId?: string;
+  driverId?: string;
+  vehicleId?: string;
+}
 
-export const createRevenue = authActionClient
-  .metadata({ actionName: "createRevenue" })
-  .schema(revenueSchema)
-  .action(async ({ parsedInput: data }) => {
-    await prisma.revenue.create({
-      data: {
-        description: data.description || null,
-        amount: data.amount,
-        date: data.date,
-        kmDriven: data.kmDriven || null,
-        hoursWorked: data.hoursWorked || null,
-        tripType: data.tripType || null,
-        receiptUrl: data.receiptUrl || null,
-        revenueTypeId: data.revenueTypeId || null,
-        companyId: data.companyId || null,
-        paymentMethodId: data.paymentMethodId || null,
-        driverId: data.driverId || null,
-        vehicleId: data.vehicleId || null,
-      },
-    });
+export async function createRevenue(data: RevenueFormData) {
+  const { user } = await getCurrentSession();
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
 
-    revalidateTag(CacheTags.REVENUES);
-    revalidateTag(CacheTags.DASHBOARD);
-    revalidatePath("/dashboard/revenues");
-    redirect("/dashboard/revenues");
+  await prisma.revenue.create({
+    data: {
+      description: data.description || null,
+      amount: data.amount,
+      date: data.date,
+      kmDriven: data.kmDriven || null,
+      hoursWorked: data.hoursWorked || null,
+      tripType: data.tripType || null,
+      receiptUrl: data.receiptUrl || null,
+      revenueTypeId: data.revenueTypeId || null,
+      companyId: data.companyId || null,
+      paymentMethodId: data.paymentMethodId || null,
+      driverId: data.driverId || null,
+      vehicleId: data.vehicleId || null,
+    },
   });
 
-const updateRevenueSchema = z.object({
-  id: z.string().min(1),
-  data: revenueSchema,
-});
+  revalidateTag(CacheTags.REVENUES);
+  revalidateTag(CacheTags.DASHBOARD);
+  revalidatePath("/dashboard/revenues");
+  redirect("/dashboard/revenues");
+}
 
-export const updateRevenue = authActionClient
-  .metadata({ actionName: "updateRevenue" })
-  .schema(updateRevenueSchema)
-  .action(async ({ parsedInput: { id, data }, ctx }) => {
-    const revenue = await prisma.revenue.findFirst({
-      where: {
-        id,
-        OR: [
-          { company: { userId: ctx.userId } },
-          { driver: { userId: ctx.userId } },
-        ],
-      },
-    });
+export async function updateRevenue(id: string, data: RevenueFormData) {
+  const { user } = await getCurrentSession();
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
 
-    if (!revenue) {
-      throw new Error("Revenue not found or unauthorized");
-    }
-
-    await prisma.revenue.update({
-      where: { id },
-      data: {
-        description: data.description || null,
-        amount: data.amount,
-        date: data.date,
-        kmDriven: data.kmDriven || null,
-        hoursWorked: data.hoursWorked || null,
-        tripType: data.tripType || null,
-        receiptUrl: data.receiptUrl || null,
-        revenueTypeId: data.revenueTypeId || null,
-        companyId: data.companyId || null,
-        paymentMethodId: data.paymentMethodId || null,
-        driverId: data.driverId || null,
-        vehicleId: data.vehicleId || null,
-      },
-    });
-
-    revalidateTag(CacheTags.REVENUES);
-    revalidateTag(CacheTags.DASHBOARD);
-    revalidatePath("/dashboard/revenues");
-    redirect("/dashboard/revenues");
+  const revenue = await prisma.revenue.findFirst({
+    where: {
+      id,
+      OR: [
+        { company: { userId: user.id } },
+        { driver: { userId: user.id } },
+      ],
+    },
   });
 
-export const deleteRevenue = authActionClient
-  .metadata({ actionName: "deleteRevenue" })
-  .schema(z.object({ id: z.string().min(1) }))
-  .action(async ({ parsedInput: { id }, ctx }) => {
-    const revenue = await prisma.revenue.findFirst({
-      where: {
-        id,
-        OR: [
-          { company: { userId: ctx.userId } },
-          { driver: { userId: ctx.userId } },
-        ],
-      },
-    });
+  if (!revenue) {
+    throw new Error("Revenue not found or unauthorized");
+  }
 
-    if (!revenue) {
-      throw new Error("Revenue not found or unauthorized");
-    }
-
-    await prisma.revenue.delete({
-      where: { id },
-    });
-
-    revalidateTag(CacheTags.REVENUES);
-    revalidateTag(CacheTags.DASHBOARD);
-    revalidatePath("/dashboard/revenues");
+  await prisma.revenue.update({
+    where: { id },
+    data: {
+      description: data.description || null,
+      amount: data.amount,
+      date: data.date,
+      kmDriven: data.kmDriven || null,
+      hoursWorked: data.hoursWorked || null,
+      tripType: data.tripType || null,
+      receiptUrl: data.receiptUrl || null,
+      revenueTypeId: data.revenueTypeId || null,
+      companyId: data.companyId || null,
+      paymentMethodId: data.paymentMethodId || null,
+      driverId: data.driverId || null,
+      vehicleId: data.vehicleId || null,
+    },
   });
+
+  revalidateTag(CacheTags.REVENUES);
+  revalidateTag(CacheTags.DASHBOARD);
+  revalidatePath("/dashboard/revenues");
+  redirect("/dashboard/revenues");
+}
+
+export async function deleteRevenue(id: string) {
+  const { user } = await getCurrentSession();
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  const revenue = await prisma.revenue.findFirst({
+    where: {
+      id,
+      OR: [
+        { company: { userId: user.id } },
+        { driver: { userId: user.id } },
+      ],
+    },
+  });
+
+  if (!revenue) {
+    throw new Error("Revenue not found or unauthorized");
+  }
+
+  await prisma.revenue.delete({
+    where: { id },
+  });
+
+  revalidateTag(CacheTags.REVENUES);
+  revalidateTag(CacheTags.DASHBOARD);
+  revalidatePath("/dashboard/revenues");
+}
 
 async function getRevenuesDataUncached(userId: string) {
   const [revenues, revenueTypes, companies, drivers, vehicles] = await Promise.all([

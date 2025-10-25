@@ -10,7 +10,6 @@ export default async function NewGoalPage() {
 
     const tGoals = await getScopedI18n("shared.goals")
 
-    // Get drivers and vehicles for the form
     const [drivers, vehicles] = await Promise.all([
         prisma.driver.findMany({
             where: { userId: user.id },

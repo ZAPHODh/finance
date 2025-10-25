@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { createBudget, updateBudget } from "@/app/[locale]/(financial)/budgets/actions"
-import { useAction } from "next-safe-action/hooks"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+import { useTransition } from "react"
 import type { Budget } from "@prisma/client"
 
 interface BudgetFormProps {
@@ -19,27 +18,7 @@ interface BudgetFormProps {
 export function BudgetForm({ expenseTypes, budget }: BudgetFormProps) {
     const t = useScopedI18n("shared.budgets")
     const tCommon = useScopedI18n("shared.common")
-    const router = useRouter()
-
-    const { execute: executeCreate, isPending: isCreating } = useAction(createBudget, {
-        onSuccess: () => {
-            toast.success(tCommon("createSuccess"))
-            router.push("/budgets")
-        },
-        onError: (error) => {
-            toast.error(error.error.serverError?.message || tCommon("error"))
-        },
-    })
-
-    const { execute: executeUpdate, isPending: isUpdating } = useAction(updateBudget, {
-        onSuccess: () => {
-            toast.success(tCommon("updateSuccess"))
-            router.push("/budgets")
-        },
-        onError: (error) => {
-            toast.error(error.error.serverError?.message || tCommon("error"))
-        },
-    })
+    const [isPending, startTransition] = useTransition()
 
     const form = useForm({
         defaultValues: {
@@ -50,22 +29,27 @@ export function BudgetForm({ expenseTypes, budget }: BudgetFormProps) {
             period: budget?.period || new Date().toISOString().slice(0, 7), // YYYY-MM
         },
         onSubmit: async ({ value }) => {
-            if (budget) {
-                executeUpdate({
-                    id: budget.id,
-                    ...value,
-                    alertThreshold: value.alertThreshold / 100,
-                })
-            } else {
-                executeCreate({
-                    ...value,
-                    alertThreshold: value.alertThreshold / 100,
-                })
-            }
+            startTransition(async () => {
+                try {
+                    if (budget) {
+                        await updateBudget(budget.id, {
+                            ...value,
+                            alertThreshold: value.alertThreshold / 100,
+                        })
+                        toast.success(tCommon("updateSuccess"))
+                    } else {
+                        await createBudget({
+                            ...value,
+                            alertThreshold: value.alertThreshold / 100,
+                        })
+                        toast.success(tCommon("createSuccess"))
+                    }
+                } catch (error) {
+                    toast.error(error instanceof Error ? error.message : tCommon("error"))
+                }
+            })
         },
     })
-
-    const isPending = isCreating || isUpdating
 
     return (
         <form
@@ -179,13 +163,6 @@ export function BudgetForm({ expenseTypes, budget }: BudgetFormProps) {
                 <div className="flex gap-2">
                     <Button type="submit" disabled={isPending}>
                         {isPending ? "Salvando..." : tCommon("save")}
-                    </Button>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => router.push("/budgets")}
-                    >
-                        {tCommon("cancel")}
                     </Button>
                 </div>
             </FieldSet>

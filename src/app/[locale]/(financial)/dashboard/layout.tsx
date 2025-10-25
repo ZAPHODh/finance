@@ -18,6 +18,8 @@ export default async function FinancialLayout({
   revenueTypeDialog,
   expenseDialog,
   revenueDialog,
+  budgetDialog,
+  goalDialog,
 }: {
   children: React.ReactNode;
   driverDialog: React.ReactNode;
@@ -28,6 +30,8 @@ export default async function FinancialLayout({
   revenueTypeDialog: React.ReactNode;
   expenseDialog: React.ReactNode;
   revenueDialog: React.ReactNode;
+  budgetDialog: React.ReactNode;
+  goalDialog: React.ReactNode;
 }) {
   const { user } = await getCurrentSession()
   if (!user) redirect('/login')
@@ -49,6 +53,18 @@ export default async function FinancialLayout({
             title={tDashboard("title")}
             actions={
               <div className="flex gap-2">
+                <Button asChild size="sm" variant="outline">
+                  <Link href="/dashboard/budgets/new">
+                    <Plus className="h-4 w-4 mr-1" />
+                    Orçamento
+                  </Link>
+                </Button>
+                <Button asChild size="sm" variant="outline">
+                  <Link href="/dashboard/goals/new">
+                    <Plus className="h-4 w-4 mr-1" />
+                    Meta
+                  </Link>
+                </Button>
                 <Button asChild size="sm">
                   <Link href="/dashboard/expenses/new">
                     {tFinancial("expenses.new")}
@@ -71,6 +87,8 @@ export default async function FinancialLayout({
           {revenueTypeDialog}
           {expenseDialog}
           {revenueDialog}
+          {budgetDialog}
+          {goalDialog}
         </div>
       </SidebarInset>
     </SidebarProvider>

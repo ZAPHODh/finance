@@ -114,12 +114,11 @@ export function RevenuesTable({ revenues, revenueTypes, companies, drivers, vehi
     }
 
     startTransition(async () => {
-      const result = await deleteRevenue({ id });
-
-      if (result?.serverError) {
-        toast.error(result.serverError.message || tCommon('error'));
-      } else {
+      try {
+        await deleteRevenue(id);
         toast.success(tCommon('deleteSuccess'));
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : tCommon('error'));
       }
     });
   }

@@ -11,7 +11,7 @@ import { useScopedI18n } from "@/locales/client";
 import { toast } from "sonner";
 import { useForm } from "@tanstack/react-form";
 import { createExpense, updateExpense } from "@/app/[locale]/(financial)/dashboard/expenses/actions";
-import { useAction } from "next-safe-action/hooks";
+import { useTransition } from "react";
 
 interface ExpenseDialogProps {
   mode: "create" | "edit";
@@ -44,27 +44,9 @@ export function ExpenseDialog({
   const pathname = usePathname();
   const t = useScopedI18n('shared.financial.expenses');
   const tCommon = useScopedI18n('shared.common');
-
-  const { execute: executeCreate, isPending: isCreating } = useAction(createExpense, {
-    onSuccess: () => {
-      toast.success(tCommon('createSuccess'));
-    },
-    onError: (error) => {
-      toast.error(error.error.serverError?.message || tCommon('error'));
-    },
-  });
-
-  const { execute: executeUpdate, isPending: isUpdating } = useAction(updateExpense, {
-    onSuccess: () => {
-      toast.success(tCommon('updateSuccess'));
-    },
-    onError: (error) => {
-      toast.error(error.error.serverError?.message || tCommon('error'));
-    },
-  });
+  const [isPending, startTransition] = useTransition();
 
   const isOpen = pathname.includes("/expenses");
-  const isPending = isCreating || isUpdating;
 
   function handleClose() {
     router.back();
@@ -93,11 +75,19 @@ export function ExpenseDialog({
         vehicleId: value.vehicleId && value.vehicleId !== "none" ? value.vehicleId : undefined,
       };
 
-      if (mode === "create") {
-        executeCreate(data);
-      } else if (expense) {
-        executeUpdate({ id: expense.id, data });
-      }
+      startTransition(async () => {
+        try {
+          if (mode === "create") {
+            await createExpense(data);
+            toast.success(tCommon('createSuccess'));
+          } else if (expense) {
+            await updateExpense(expense.id, data);
+            toast.success(tCommon('updateSuccess'));
+          }
+        } catch (error) {
+          toast.error(error instanceof Error ? error.message : tCommon('error'));
+        }
+      });
     },
   });
 

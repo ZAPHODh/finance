@@ -4,8 +4,6 @@ import { prisma } from "@/lib/server/db"
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
-import { authActionClient } from "@/lib/client/safe-action"
 import { GoalType } from "@prisma/client"
 import { PLAN_LIMITS } from "@/config/subscription"
 
@@ -30,28 +28,23 @@ async function checkIfGoalLimitReached() {
     return count >= limits.maxGoals
 }
 
-const createGoalSchema = z.object({
-    name: z.string().min(1, "Name is required").optional(),
-    type: z.nativeEnum(GoalType),
-    targetValue: z.number().positive("Target value must be positive"),
-    period: z.string().min(1, "Period is required"),
-    driverId: z.string().optional(),
-    vehicleId: z.string().optional(),
-})
+export interface GoalFormData {
+    name?: string;
+    type: GoalType;
+    targetValue: number;
+    period: string;
+    driverId?: string;
+    vehicleId?: string;
+}
 
-const updateGoalSchema = z.object({
-    id: z.string(),
-    name: z.string().min(1, "Name is required").optional(),
-    targetValue: z.number().positive("Target value must be positive").optional(),
-    period: z.string().min(1, "Period is required").optional(),
-    driverId: z.string().optional(),
-    vehicleId: z.string().optional(),
-    isActive: z.boolean().optional(),
-})
-
-const deleteGoalSchema = z.object({
-    id: z.string(),
-})
+export interface UpdateGoalData {
+    name?: string;
+    targetValue?: number;
+    period?: string;
+    driverId?: string;
+    vehicleId?: string;
+    isActive?: boolean;
+}
 
 // ============================================
 // Server Actions
@@ -108,99 +101,98 @@ export async function getGoalById(id: string) {
 /**
  * Create a new goal
  */
-export const createGoal = authActionClient
-    .metadata({ actionName: "createGoal" })
-    .schema(createGoalSchema)
-    .action(async ({ parsedInput, ctx }) => {
-        const { user } = ctx
+export async function createGoal(data: GoalFormData) {
+    const { user } = await getCurrentSession()
+    if (!user) {
+        throw new Error("Unauthorized")
+    }
 
-        // Check if limit is reached
-        const limitReached = await checkIfGoalLimitReached()
-        if (limitReached) {
-            throw new Error("You have reached the maximum number of goals for your plan. Please upgrade to add more.")
-        }
+    // Check if limit is reached
+    const limitReached = await checkIfGoalLimitReached()
+    if (limitReached) {
+        throw new Error("You have reached the maximum number of goals for your plan. Please upgrade to add more.")
+    }
 
-        const goal = await prisma.goal.create({
-            data: {
-                userId: user.id,
-                name: parsedInput.name,
-                type: parsedInput.type,
-                targetValue: parsedInput.targetValue,
-                period: parsedInput.period,
-                driverId: parsedInput.driverId,
-                vehicleId: parsedInput.vehicleId,
-            },
-        })
-
-        revalidatePath("/goals")
-        return goal
+    const goal = await prisma.goal.create({
+        data: {
+            userId: user.id,
+            name: data.name,
+            type: data.type,
+            targetValue: data.targetValue,
+            period: data.period,
+            driverId: data.driverId,
+            vehicleId: data.vehicleId,
+        },
     })
+
+    revalidatePath("/goals")
+    redirect("/goals")
+}
 
 /**
  * Update a goal
  */
-export const updateGoal = authActionClient
-    .metadata({ actionName: "updateGoal" })
-    .schema(updateGoalSchema)
-    .action(async ({ parsedInput, ctx }) => {
-        const { user } = ctx
+export async function updateGoal(id: string, data: UpdateGoalData) {
+    const { user } = await getCurrentSession()
+    if (!user) {
+        throw new Error("Unauthorized")
+    }
 
-        // Verify ownership
-        const existing = await prisma.goal.findFirst({
-            where: {
-                id: parsedInput.id,
-                userId: user.id,
-            },
-        })
-
-        if (!existing) {
-            throw new Error("Goal not found")
-        }
-
-        const goal = await prisma.goal.update({
-            where: { id: parsedInput.id },
-            data: {
-                name: parsedInput.name,
-                targetValue: parsedInput.targetValue,
-                period: parsedInput.period,
-                driverId: parsedInput.driverId,
-                vehicleId: parsedInput.vehicleId,
-                isActive: parsedInput.isActive,
-            },
-        })
-
-        revalidatePath("/goals")
-        return goal
+    // Verify ownership
+    const existing = await prisma.goal.findFirst({
+        where: {
+            id,
+            userId: user.id,
+        },
     })
+
+    if (!existing) {
+        throw new Error("Goal not found")
+    }
+
+    const goal = await prisma.goal.update({
+        where: { id },
+        data: {
+            name: data.name,
+            targetValue: data.targetValue,
+            period: data.period,
+            driverId: data.driverId,
+            vehicleId: data.vehicleId,
+            isActive: data.isActive,
+        },
+    })
+
+    revalidatePath("/goals")
+    redirect("/goals")
+}
 
 /**
  * Delete a goal
  */
-export const deleteGoal = authActionClient
-    .metadata({ actionName: "deleteGoal" })
-    .schema(deleteGoalSchema)
-    .action(async ({ parsedInput, ctx }) => {
-        const { user } = ctx
+export async function deleteGoal(id: string) {
+    const { user } = await getCurrentSession()
+    if (!user) {
+        throw new Error("Unauthorized")
+    }
 
-        // Verify ownership
-        const existing = await prisma.goal.findFirst({
-            where: {
-                id: parsedInput.id,
-                userId: user.id,
-            },
-        })
-
-        if (!existing) {
-            throw new Error("Goal not found")
-        }
-
-        await prisma.goal.delete({
-            where: { id: parsedInput.id },
-        })
-
-        revalidatePath("/goals")
-        return { success: true }
+    // Verify ownership
+    const existing = await prisma.goal.findFirst({
+        where: {
+            id,
+            userId: user.id,
+        },
     })
+
+    if (!existing) {
+        throw new Error("Goal not found")
+    }
+
+    await prisma.goal.delete({
+        where: { id },
+    })
+
+    revalidatePath("/goals")
+}
 
 /**
  * Toggle goal active status
