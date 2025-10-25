@@ -93,7 +93,7 @@ export function GoalDialog({
                 {(field) => (
                   <Field>
                     <FieldLabel htmlFor="name">
-                      {t("name")} (opcional)
+                      {t("name")} ({tCommon("optional")})
                     </FieldLabel>
                     <Input
                       id="name"
@@ -158,7 +158,7 @@ export function GoalDialog({
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
                     <p className="text-xs text-muted-foreground mt-1">
-                      Para metas diárias, use formato YYYY-MM-DD
+                      {tCommon("dailyGoalHint")}
                     </p>
                   </Field>
                 )}
@@ -168,7 +168,7 @@ export function GoalDialog({
                 {(field) => (
                   <Field>
                     <FieldLabel htmlFor="driverId">
-                      Motorista (opcional)
+                      {tCommon("driver")} ({tCommon("optional")})
                     </FieldLabel>
                     <select
                       id="driverId"
@@ -176,7 +176,7 @@ export function GoalDialog({
                       onChange={(e) => field.handleChange(e.target.value)}
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                      <option value="">Todos os motoristas</option>
+                      <option value="">{tCommon("allDrivers")}</option>
                       {drivers.map((driver) => (
                         <option key={driver.id} value={driver.id}>
                           {driver.name}
@@ -191,7 +191,7 @@ export function GoalDialog({
                 {(field) => (
                   <Field>
                     <FieldLabel htmlFor="vehicleId">
-                      Veículo (opcional)
+                      {tCommon("vehicle")} ({tCommon("optional")})
                     </FieldLabel>
                     <select
                       id="vehicleId"
@@ -199,7 +199,7 @@ export function GoalDialog({
                       onChange={(e) => field.handleChange(e.target.value)}
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                      <option value="">Todos os veículos</option>
+                      <option value="">{tCommon("allVehicles")}</option>
                       {vehicles.map((vehicle) => (
                         <option key={vehicle.id} value={vehicle.id}>
                           {vehicle.name}
@@ -216,7 +216,7 @@ export function GoalDialog({
                 {tCommon("cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
-                {isPending ? "Salvando..." : tCommon("save")}
+                {isPending ? tCommon("saving") : tCommon("save")}
               </Button>
             </div>
           </FieldSet>

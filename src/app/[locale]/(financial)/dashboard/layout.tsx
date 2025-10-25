@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { AppSidebar } from "@/components/dashboard-01/app-sidebar"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { SiteHeader } from "@/components/dashboard-01/site-header";
+import { QuickActionsMenu } from "@/components/dashboard-01/quick-actions-menu";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
@@ -37,6 +38,8 @@ export default async function FinancialLayout({
   if (!user) redirect('/login')
   const tDashboard = await getScopedI18n("shared.sidebar.dashboard")
   const tFinancial = await getScopedI18n("shared.financial")
+  const tBudgets = await getScopedI18n("shared.budgets")
+  const tGoals = await getScopedI18n("shared.goals")
   return (
     <SidebarProvider
       style={
@@ -51,18 +54,28 @@ export default async function FinancialLayout({
         <div className="flex flex-1 flex-col">
           <SiteHeader
             title={tDashboard("title")}
+            mobileActions={
+              <QuickActionsMenu
+                labels={{
+                  newExpense: tFinancial("expenses.new"),
+                  newRevenue: tFinancial("revenues.new"),
+                  newBudget: tBudgets("new"),
+                  newGoal: tGoals("new"),
+                }}
+              />
+            }
             actions={
-              <div className="flex gap-2">
+              <>
                 <Button asChild size="sm" variant="outline">
                   <Link href="/dashboard/budgets/new">
                     <Plus className="h-4 w-4 mr-1" />
-                    Orçamento
+                    {tBudgets("new")}
                   </Link>
                 </Button>
                 <Button asChild size="sm" variant="outline">
                   <Link href="/dashboard/goals/new">
                     <Plus className="h-4 w-4 mr-1" />
-                    Meta
+                    {tGoals("new")}
                   </Link>
                 </Button>
                 <Button asChild size="sm">
@@ -75,7 +88,7 @@ export default async function FinancialLayout({
                     {tFinancial("revenues.new")}
                   </Link>
                 </Button>
-              </div>
+              </>
             }
           />
           {children}

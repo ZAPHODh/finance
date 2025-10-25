@@ -25,6 +25,7 @@ import { NavMain } from "./nav-main"
 import { NavSecondary } from "./nav-secondary"
 import { NavUser } from "./nav-user"
 import { NavDocuments } from "./nav-documents"
+import { SearchButton } from "./search-button"
 import {
   Sidebar,
   SidebarContent,
@@ -33,6 +34,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarGroup,
+  SidebarGroupContent,
 } from "@/components/ui/sidebar"
 import type { User } from "@prisma/client"
 
@@ -101,11 +104,6 @@ const navSecondary = [
     url: "/help",
     icon: HelpCircle,
   },
-  {
-    title: "Buscar",
-    url: "/search",
-    icon: Search,
-  },
 ]
 
 const documents = [
@@ -153,7 +151,16 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         <NavMain items={navFinancial} title="Financeiro" />
         <NavMain items={navPlanning} title="Planejamento" />
         <NavDocuments items={documents} />
-        <NavSecondary items={navSecondary} className="mt-auto" />
+        <SidebarGroup className="mt-auto">
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SearchButton />
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <NavSecondary items={navSecondary} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

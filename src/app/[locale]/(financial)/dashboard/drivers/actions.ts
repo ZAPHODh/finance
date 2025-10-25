@@ -2,9 +2,10 @@
 
 import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { PLAN_LIMITS } from "@/config/subscription";
+import { CacheTags } from "@/lib/server/cache";
 
 export interface DriverFormData {
   name: string;
@@ -50,6 +51,7 @@ export async function createDriver(data: DriverFormData) {
     },
   });
 
+  revalidateTag(CacheTags.DRIVERS);
   revalidatePath("/dashboard/drivers");
   redirect("/dashboard/drivers");
 }
@@ -76,6 +78,7 @@ export async function updateDriver(id: string, data: DriverFormData) {
     },
   });
 
+  revalidateTag(CacheTags.DRIVERS);
   revalidatePath("/dashboard/drivers");
   redirect("/dashboard/drivers");
 }
@@ -99,6 +102,7 @@ export async function deleteDriver(id: string) {
     where: { id },
   });
 
+  revalidateTag(CacheTags.DRIVERS);
   revalidatePath("/dashboard/drivers");
 }
 

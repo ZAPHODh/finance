@@ -2,9 +2,10 @@
 
 import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { PLAN_LIMITS } from "@/config/subscription";
+import { CacheTags } from "@/lib/server/cache";
 
 export interface CompanyFormData {
   name: string;
@@ -52,6 +53,7 @@ export async function createCompany(data: CompanyFormData) {
     },
   });
 
+  revalidateTag(CacheTags.COMPANIES);
   revalidatePath("/dashboard/companies");
   redirect("/dashboard/companies");
 }
@@ -79,6 +81,7 @@ export async function updateCompany(id: string, data: CompanyFormData) {
     },
   });
 
+  revalidateTag(CacheTags.COMPANIES);
   revalidatePath("/dashboard/companies");
   redirect("/dashboard/companies");
 }
@@ -102,6 +105,7 @@ export async function deleteCompany(id: string) {
     where: { id },
   });
 
+  revalidateTag(CacheTags.COMPANIES);
   revalidatePath("/dashboard/companies");
 }
 

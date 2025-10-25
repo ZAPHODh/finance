@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import { I18nProviderClient } from "@/locales/client";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { CommandMenuProvider } from "@/components/command-menu-provider";
 import { cn } from "@/lib/utils";
 
 import "../globals.css";
@@ -124,10 +125,12 @@ export default async function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <I18nProviderClient locale={locale}>
-            <main>
-              {children}
-              {loginDialog}
-            </main>
+            <CommandMenuProvider>
+              <main>
+                {children}
+                {loginDialog}
+              </main>
+            </CommandMenuProvider>
           </I18nProviderClient>
           <Toaster />
         </ThemeProvider>

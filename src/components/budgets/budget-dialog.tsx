@@ -87,7 +87,7 @@ export function BudgetDialog({
                 {(field) => (
                   <Field>
                     <FieldLabel htmlFor="name">
-                      {t("name")} (opcional)
+                      {t("name")} ({tCommon("optional")})
                     </FieldLabel>
                     <Input
                       id="name"
@@ -112,7 +112,7 @@ export function BudgetDialog({
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       required
                     >
-                      <option value="">Selecione um tipo de despesa</option>
+                      <option value="">{tCommon("selectExpenseType")}</option>
                       {expenseTypes.map((type) => (
                         <option key={type.id} value={type.id}>
                           {type.name}
@@ -159,7 +159,7 @@ export function BudgetDialog({
                       placeholder="80"
                     />
                     <p className="text-xs text-muted-foreground mt-1">
-                      Você será alertado quando atingir este percentual do orçamento
+                      {tCommon("alertThresholdHint")}
                     </p>
                   </Field>
                 )}
@@ -188,7 +188,7 @@ export function BudgetDialog({
                 {tCommon("cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
-                {isPending ? "Salvando..." : tCommon("save")}
+                {isPending ? tCommon("saving") : tCommon("save")}
               </Button>
             </div>
           </FieldSet>

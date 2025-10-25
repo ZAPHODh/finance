@@ -2,9 +2,10 @@
 
 import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { PLAN_LIMITS } from "@/config/subscription";
+import { CacheTags } from "@/lib/server/cache";
 
 export interface RevenueTypeFormData {
   name: string;
@@ -52,6 +53,7 @@ export async function createRevenueType(data: RevenueTypeFormData) {
     },
   });
 
+  revalidateTag(CacheTags.REVENUE_TYPES);
   revalidatePath("/dashboard/revenue-types");
   redirect("/dashboard/revenue-types");
 }
@@ -79,6 +81,7 @@ export async function updateRevenueType(id: string, data: RevenueTypeFormData) {
     },
   });
 
+  revalidateTag(CacheTags.REVENUE_TYPES);
   revalidatePath("/dashboard/revenue-types");
   redirect("/dashboard/revenue-types");
 }
@@ -102,6 +105,7 @@ export async function deleteRevenueType(id: string) {
     where: { id },
   });
 
+  revalidateTag(CacheTags.REVENUE_TYPES);
   revalidatePath("/dashboard/revenue-types");
 }
 
