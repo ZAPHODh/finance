@@ -92,26 +92,26 @@ export function PaymentMethodDialog({ mode, paymentMethod }: PaymentMethodDialog
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="feeType">Tipo de Taxa</Label>
+            <Label htmlFor="feeType">{t('feeType')}</Label>
             <Select
               value={formData.feeType}
               onValueChange={(value) => setFormData({ ...formData, feeType: value })}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Selecione o tipo de taxa" />
+                <SelectValue placeholder={t('feeTypeSelect')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="NONE">Sem taxa</SelectItem>
-                <SelectItem value="PERCENTAGE">Percentual</SelectItem>
-                <SelectItem value="FIXED">Valor fixo</SelectItem>
-                <SelectItem value="BOTH">Ambos</SelectItem>
+                <SelectItem value="NONE">{t('feeTypeNone')}</SelectItem>
+                <SelectItem value="PERCENTAGE">{t('feeTypePercentage')}</SelectItem>
+                <SelectItem value="FIXED">{t('feeTypeFixed')}</SelectItem>
+                <SelectItem value="BOTH">{t('feeTypeBoth')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {(formData.feeType === "PERCENTAGE" || formData.feeType === "BOTH") && (
             <div className="space-y-2">
-              <Label htmlFor="feePercentage">Taxa Percentual (%)</Label>
+              <Label htmlFor="feePercentage">{t('feePercentage')}</Label>
               <Input
                 id="feePercentage"
                 type="number"
@@ -123,14 +123,14 @@ export function PaymentMethodDialog({ mode, paymentMethod }: PaymentMethodDialog
                   ...formData,
                   feePercentage: e.target.value ? parseFloat(e.target.value) : null
                 })}
-                placeholder="Ex: 2.5 para 2.5%"
+                placeholder={t('feePercentagePlaceholder')}
               />
             </div>
           )}
 
           {(formData.feeType === "FIXED" || formData.feeType === "BOTH") && (
             <div className="space-y-2">
-              <Label htmlFor="feeFixed">Taxa Fixa (R$)</Label>
+              <Label htmlFor="feeFixed">{t('feeFixed')}</Label>
               <Input
                 id="feeFixed"
                 type="number"
@@ -141,7 +141,7 @@ export function PaymentMethodDialog({ mode, paymentMethod }: PaymentMethodDialog
                   ...formData,
                   feeFixed: e.target.value ? parseFloat(e.target.value) : null
                 })}
-                placeholder="Ex: 0.50"
+                placeholder={t('feeFixedPlaceholder')}
               />
             </div>
           )}

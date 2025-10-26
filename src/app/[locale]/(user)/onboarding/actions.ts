@@ -6,6 +6,8 @@ import { revalidatePath } from "next/cache";
 
 export interface OnboardingData {
   platforms: Array<{ name: string; icon?: string }>;
+  drivers: Array<{ name: string }>;
+  vehicles: Array<{ name: string; plate?: string; model?: string; year?: number }>;
   expenseTypes: Array<{ name: string; icon?: string }>;
   paymentMethods: Array<{ name: string; icon?: string }>;
   preferences?: {
@@ -33,6 +35,27 @@ export async function completeOnboarding(data: OnboardingData) {
         data: data.platforms.map((platform) => ({
           name: platform.name,
           icon: platform.icon || null,
+          userId: user.id,
+        })),
+      });
+    }
+
+    if (data.drivers && data.drivers.length > 0) {
+      await tx.driver.createMany({
+        data: data.drivers.map((driver) => ({
+          name: driver.name,
+          userId: user.id,
+        })),
+      });
+    }
+
+    if (data.vehicles && data.vehicles.length > 0) {
+      await tx.vehicle.createMany({
+        data: data.vehicles.map((vehicle) => ({
+          name: vehicle.name,
+          plate: vehicle.plate || null,
+          model: vehicle.model || null,
+          year: vehicle.year || null,
           userId: user.id,
         })),
       });
