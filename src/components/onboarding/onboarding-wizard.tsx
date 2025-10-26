@@ -23,7 +23,7 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
   const [isPending, startTransition] = useTransition();
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Form state
+
   const [platforms, setPlatforms] = useState<Array<{ name: string; icon?: string }>>([]);
   const [platformInput, setPlatformInput] = useState('');
 

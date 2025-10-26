@@ -26,9 +26,8 @@ export async function completeOnboarding(data: OnboardingData) {
     throw new Error("Onboarding already completed");
   }
 
-  // Use transaction to ensure all data is created atomically
   await prisma.$transaction(async (tx) => {
-    // Create platforms
+
     if (data.platforms && data.platforms.length > 0) {
       await tx.platform.createMany({
         data: data.platforms.map((platform) => ({
@@ -39,7 +38,6 @@ export async function completeOnboarding(data: OnboardingData) {
       });
     }
 
-    // Create expense types
     if (data.expenseTypes && data.expenseTypes.length > 0) {
       await tx.expenseType.createMany({
         data: data.expenseTypes.map((type) => ({
@@ -50,7 +48,6 @@ export async function completeOnboarding(data: OnboardingData) {
       });
     }
 
-    // Create payment methods
     if (data.paymentMethods && data.paymentMethods.length > 0) {
       await tx.paymentMethod.createMany({
         data: data.paymentMethods.map((method) => ({
@@ -61,7 +58,6 @@ export async function completeOnboarding(data: OnboardingData) {
       });
     }
 
-    // Update or create user preferences
     if (data.preferences) {
       await tx.userPreferences.upsert({
         where: { userId: user.id },
@@ -79,7 +75,6 @@ export async function completeOnboarding(data: OnboardingData) {
       });
     }
 
-    // Mark onboarding as completed
     await tx.user.update({
       where: { id: user.id },
       data: { hasCompletedOnboarding: true },

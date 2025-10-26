@@ -8,6 +8,7 @@ import { DataTable } from "@/components/dashboard-01/data-table"
 export default async function DashboardPage() {
   const { user } = await getCurrentSession()
   if (!user) redirect("/login")
+  if (!user.hasCompletedOnboarding) redirect("/onboarding")
 
   const dashboardData = await getDashboardData({
     period: "thisMonth",
