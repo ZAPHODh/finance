@@ -61,7 +61,6 @@ export async function createPaymentMethod(data: PaymentMethodFormData) {
 
   revalidateTag(CacheTags.PAYMENT_METHODS);
   revalidatePath("/dashboard/payment-methods");
-  redirect("/dashboard/payment-methods");
 }
 
 export async function updatePaymentMethod(id: string, data: PaymentMethodFormData) {
@@ -92,7 +91,6 @@ export async function updatePaymentMethod(id: string, data: PaymentMethodFormDat
 
   revalidateTag(CacheTags.PAYMENT_METHODS);
   revalidatePath("/dashboard/payment-methods");
-  redirect("/dashboard/payment-methods");
 }
 
 export async function deletePaymentMethod(id: string) {

@@ -15,7 +15,7 @@ export interface RevenueFormData {
   tripType?: string;
   receiptUrl?: string;
   revenueTypeId?: string;
-  companyId?: string;
+  platformId?: string;
   paymentMethodId?: string;
   driverId?: string;
   vehicleId?: string;
@@ -37,7 +37,7 @@ export async function createRevenue(data: RevenueFormData) {
       tripType: data.tripType || null,
       receiptUrl: data.receiptUrl || null,
       revenueTypeId: data.revenueTypeId || null,
-      companyId: data.companyId || null,
+      platformId: data.platformId || null,
       paymentMethodId: data.paymentMethodId || null,
       driverId: data.driverId || null,
       vehicleId: data.vehicleId || null,
@@ -47,7 +47,6 @@ export async function createRevenue(data: RevenueFormData) {
   revalidateTag(CacheTags.REVENUES);
   revalidateTag(CacheTags.DASHBOARD);
   revalidatePath("/dashboard/revenues");
-  redirect("/dashboard/revenues");
 }
 
 export async function updateRevenue(id: string, data: RevenueFormData) {
@@ -60,7 +59,7 @@ export async function updateRevenue(id: string, data: RevenueFormData) {
     where: {
       id,
       OR: [
-        { company: { userId: user.id } },
+        { platform: { userId: user.id } },
         { driver: { userId: user.id } },
       ],
     },
@@ -81,7 +80,7 @@ export async function updateRevenue(id: string, data: RevenueFormData) {
       tripType: data.tripType || null,
       receiptUrl: data.receiptUrl || null,
       revenueTypeId: data.revenueTypeId || null,
-      companyId: data.companyId || null,
+      platformId: data.platformId || null,
       paymentMethodId: data.paymentMethodId || null,
       driverId: data.driverId || null,
       vehicleId: data.vehicleId || null,
@@ -91,7 +90,6 @@ export async function updateRevenue(id: string, data: RevenueFormData) {
   revalidateTag(CacheTags.REVENUES);
   revalidateTag(CacheTags.DASHBOARD);
   revalidatePath("/dashboard/revenues");
-  redirect("/dashboard/revenues");
 }
 
 export async function deleteRevenue(id: string) {
@@ -104,7 +102,7 @@ export async function deleteRevenue(id: string) {
     where: {
       id,
       OR: [
-        { company: { userId: user.id } },
+        { platform: { userId: user.id } },
         { driver: { userId: user.id } },
       ],
     },
@@ -129,7 +127,7 @@ async function getRevenuesDataUncached(userId: string) {
       where: {
         OR: [
           {
-            company: {
+            platform: {
               userId: userId,
             },
           },
@@ -147,7 +145,7 @@ async function getRevenuesDataUncached(userId: string) {
             name: true,
           },
         },
-        company: {
+        platform: {
           select: {
             id: true,
             name: true,
@@ -188,7 +186,7 @@ async function getRevenuesDataUncached(userId: string) {
         name: "asc",
       },
     }),
-    prisma.company.findMany({
+    prisma.platform.findMany({
       where: {
         userId: userId,
       },
@@ -226,13 +224,13 @@ async function getRevenuesDataUncached(userId: string) {
     }),
   ]);
 
-  return { revenues, revenueTypes, companies, drivers, vehicles };
+  return { revenues, revenueTypes, platforms: companies, drivers, vehicles };
 }
 
 const getCachedRevenuesData = cacheWithTag(
   getRevenuesDataUncached,
   ['revenues-data'],
-  [CacheTags.REVENUES, CacheTags.REVENUE_TYPES, CacheTags.COMPANIES, CacheTags.DRIVERS, CacheTags.VEHICLES],
+  [CacheTags.REVENUES, CacheTags.REVENUE_TYPES, CacheTags.PLATFORMS, CacheTags.DRIVERS, CacheTags.VEHICLES],
   300
 )
 
@@ -250,7 +248,7 @@ async function getRevenueFormDataUncached(userId: string) {
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
-    prisma.company.findMany({
+    prisma.platform.findMany({
       where: { userId: userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
@@ -272,13 +270,13 @@ async function getRevenueFormDataUncached(userId: string) {
     }),
   ]);
 
-  return { revenueTypes, companies, paymentMethods, drivers, vehicles };
+  return { revenueTypes, platforms: companies, paymentMethods, drivers, vehicles };
 }
 
 const getCachedRevenueFormData = cacheWithTag(
   getRevenueFormDataUncached,
   ['revenue-form-data'],
-  [CacheTags.REVENUE_TYPES, CacheTags.COMPANIES, CacheTags.PAYMENT_METHODS, CacheTags.DRIVERS, CacheTags.VEHICLES],
+  [CacheTags.REVENUE_TYPES, CacheTags.PLATFORMS, CacheTags.PAYMENT_METHODS, CacheTags.DRIVERS, CacheTags.VEHICLES],
   600
 )
 

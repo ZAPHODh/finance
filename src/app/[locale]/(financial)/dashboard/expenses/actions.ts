@@ -39,7 +39,6 @@ export async function createExpense(data: ExpenseFormData) {
   revalidateTag(CacheTags.EXPENSES);
   revalidateTag(CacheTags.DASHBOARD);
   revalidatePath("/dashboard/expenses");
-  redirect("/dashboard/expenses");
 }
 
 export async function updateExpense(id: string, data: ExpenseFormData) {
@@ -78,7 +77,6 @@ export async function updateExpense(id: string, data: ExpenseFormData) {
   revalidateTag(CacheTags.EXPENSES);
   revalidateTag(CacheTags.DASHBOARD);
   revalidatePath("/dashboard/expenses");
-  redirect("/dashboard/expenses");
 }
 
 export async function deleteExpense(id: string) {

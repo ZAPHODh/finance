@@ -51,12 +51,14 @@ export function PaymentMethodDialog({ mode, paymentMethod }: PaymentMethodDialog
         if (mode === "create") {
           await createPaymentMethod(formData);
           toast.success(tCommon('createSuccess'));
+          router.push('/dashboard/payment-methods');
         } else {
           await updatePaymentMethod(paymentMethod!.id, formData);
           toast.success(tCommon('updateSuccess'));
+          router.push('/dashboard/payment-methods');
         }
-      } catch {
-        toast.error(tCommon('error'));
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : tCommon('error'));
       }
     });
   }

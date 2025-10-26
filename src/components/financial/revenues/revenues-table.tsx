@@ -35,7 +35,7 @@ interface Revenue {
     id: string;
     name: string;
   } | null;
-  company: {
+  platform: {
     id: string;
     name: string;
   } | null;
@@ -58,7 +58,7 @@ interface RevenueType {
   name: string;
 }
 
-interface Company {
+interface Platform {
   id: string;
   name: string;
 }
@@ -76,12 +76,12 @@ interface Vehicle {
 interface RevenuesTableProps {
   revenues: Revenue[];
   revenueTypes: RevenueType[];
-  companies: Company[];
+  platforms: Platform[];
   drivers: Driver[];
   vehicles: Vehicle[];
 }
 
-export function RevenuesTable({ revenues, revenueTypes, companies, drivers, vehicles }: RevenuesTableProps) {
+export function RevenuesTable({ revenues, revenueTypes, platforms, drivers, vehicles }: RevenuesTableProps) {
   const t = useScopedI18n('shared.financial.revenues');
   const tCommon = useScopedI18n('shared.common');
   const tNoData = useScopedI18n('shared.sidebar.dashboard.breakdowns');
@@ -89,7 +89,7 @@ export function RevenuesTable({ revenues, revenueTypes, companies, drivers, vehi
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRevenueType, setSelectedRevenueType] = useState<string>('all');
-  const [selectedCompany, setSelectedCompany] = useState<string>('all');
+  const [selectedPlatform, setSelectedPlatform] = useState<string>('all');
   const [selectedDriver, setSelectedDriver] = useState<string>('all');
   const [selectedVehicle, setSelectedVehicle] = useState<string>('all');
 
@@ -100,13 +100,13 @@ export function RevenuesTable({ revenues, revenueTypes, companies, drivers, vehi
         revenue.revenueType?.name.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesType = selectedRevenueType === 'all' || revenue.revenueType?.id === selectedRevenueType;
-      const matchesCompany = selectedCompany === 'all' || revenue.company?.id === selectedCompany;
+      const matchesPlatform = selectedPlatform === 'all' || revenue.platform?.id === selectedPlatform;
       const matchesDriver = selectedDriver === 'all' || revenue.driver?.id === selectedDriver;
       const matchesVehicle = selectedVehicle === 'all' || revenue.vehicle?.id === selectedVehicle;
 
-      return matchesSearch && matchesType && matchesCompany && matchesDriver && matchesVehicle;
+      return matchesSearch && matchesType && matchesPlatform && matchesDriver && matchesVehicle;
     });
-  }, [revenues, searchTerm, selectedRevenueType, selectedCompany, selectedDriver, selectedVehicle]);
+  }, [revenues, searchTerm, selectedRevenueType, selectedPlatform, selectedDriver, selectedVehicle]);
 
   async function handleDelete(id: string) {
     if (!confirm(tCommon('confirmDelete'))) {
@@ -159,15 +159,15 @@ export function RevenuesTable({ revenues, revenueTypes, companies, drivers, vehi
             ))}
           </SelectContent>
         </Select>
-        <Select value={selectedCompany} onValueChange={setSelectedCompany}>
+        <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
           <SelectTrigger>
-            <SelectValue placeholder={t('company')} />
+            <SelectValue placeholder={t('platform')} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{tCommon('filter')}</SelectItem>
-            {companies.map((company) => (
-              <SelectItem key={company.id} value={company.id}>
-                {company.name}
+            {platforms.map((platform) => (
+              <SelectItem key={platform.id} value={platform.id}>
+                {platform.name}
               </SelectItem>
             ))}
           </SelectContent>
@@ -212,7 +212,7 @@ export function RevenuesTable({ revenues, revenueTypes, companies, drivers, vehi
                   {t('description')}
                 </TableHead>
                 <TableHead className="p-3 font-semibold text-foreground text-sm">
-                  {t('company')}
+                  {t('platform')}
                 </TableHead>
                 <TableHead className="p-3 font-semibold text-foreground text-sm">
                   {t('driver')}
@@ -245,7 +245,7 @@ export function RevenuesTable({ revenues, revenueTypes, companies, drivers, vehi
                       {revenue.description || '-'}
                     </TableCell>
                     <TableCell className="p-3">
-                      {revenue.company?.name || '-'}
+                      {revenue.platform?.name || '-'}
                     </TableCell>
                     <TableCell className="p-3">
                       {revenue.driver?.name || '-'}

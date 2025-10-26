@@ -8,20 +8,20 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useScopedI18n } from "@/locales/client"
-import { Driver, Vehicle, Company } from "@prisma/client"
+import { Driver, Vehicle, Platform } from "@prisma/client"
 import { useDashboardFilters } from "@/hooks/use-dashboard-filters"
 
 interface DashboardFiltersProps {
   drivers: Driver[]
   vehicles: Vehicle[]
-  companies: Company[]
+  platforms: Platform[]
   onFilterChange?: () => void
 }
 
 export function DashboardFilters({
   drivers,
   vehicles,
-  companies,
+  platforms,
   onFilterChange,
 }: DashboardFiltersProps) {
   const t = useScopedI18n("shared.sidebar.dashboard.filters")
@@ -37,8 +37,8 @@ export function DashboardFilters({
       setFilter("driverId", value === "all" ? null : value)
     } else if (key === "vehicleId") {
       setFilter("vehicleId", value === "all" ? null : value)
-    } else if (key === "companyId") {
-      setFilter("companyId", value === "all" ? null : value)
+    } else if (key === "platformId") {
+      setFilter("platformId", value === "all" ? null : value)
     }
     onFilterChange?.()
   }
@@ -102,17 +102,17 @@ export function DashboardFilters({
 
       <div className="w-full sm:w-auto sm:min-w-[200px]">
         <Select
-          value={filters.companyId || "all"}
-          onValueChange={(value) => handleFilterChange("companyId", value)}
+          value={filters.platformId || "all"}
+          onValueChange={(value) => handleFilterChange("platformId", value)}
         >
           <SelectTrigger>
-            <SelectValue placeholder={t("company")} />
+            <SelectValue placeholder={t("platform")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">{t("allCompanies")}</SelectItem>
-            {companies.map((company) => (
-              <SelectItem key={company.id} value={company.id}>
-                {company.name}
+            <SelectItem value="all">{t("allPlatforms")}</SelectItem>
+            {platforms.map((platform) => (
+              <SelectItem key={platform.id} value={platform.id}>
+                {platform.name}
               </SelectItem>
             ))}
           </SelectContent>

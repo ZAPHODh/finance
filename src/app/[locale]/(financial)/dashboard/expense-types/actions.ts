@@ -55,7 +55,6 @@ export async function createExpenseType(data: ExpenseTypeFormData) {
 
   revalidateTag(CacheTags.EXPENSE_TYPES);
   revalidatePath("/dashboard/expense-types");
-  redirect("/dashboard/expense-types");
 }
 
 export async function updateExpenseType(id: string, data: ExpenseTypeFormData) {
@@ -83,7 +82,6 @@ export async function updateExpenseType(id: string, data: ExpenseTypeFormData) {
 
   revalidateTag(CacheTags.EXPENSE_TYPES);
   revalidatePath("/dashboard/expense-types");
-  redirect("/dashboard/expense-types");
 }
 
 export async function deleteExpenseType(id: string) {

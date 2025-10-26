@@ -52,12 +52,14 @@ export function BudgetDialog({
               alertThreshold: value.alertThreshold / 100,
             });
             toast.success(tCommon("createSuccess"));
+            router.push('/budgets');
           } else if (budget) {
             await updateBudget(budget.id, {
               ...value,
               alertThreshold: value.alertThreshold / 100,
             });
             toast.success(tCommon("updateSuccess"));
+            router.push('/budgets');
           }
         } catch (error) {
           toast.error(error instanceof Error ? error.message : tCommon("error"));

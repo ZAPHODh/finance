@@ -34,7 +34,7 @@ export const CacheTags = {
   BUDGETS: 'budgets',
   DRIVERS: 'drivers',
   VEHICLES: 'vehicles',
-  COMPANIES: 'companies',
+  PLATFORMS: 'platforms',
   EXPENSE_TYPES: 'expense-types',
   REVENUE_TYPES: 'revenue-types',
   PAYMENT_METHODS: 'payment-methods',

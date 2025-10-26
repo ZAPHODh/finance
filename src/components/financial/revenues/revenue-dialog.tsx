@@ -25,13 +25,13 @@ interface RevenueDialogProps {
     tripType: string | null;
     receiptUrl: string | null;
     revenueTypeId: string | null;
-    companyId: string | null;
+    platformId: string | null;
     paymentMethodId: string | null;
     driverId: string | null;
     vehicleId: string | null;
   };
   revenueTypes?: Array<{ id: string; name: string }>;
-  companies?: Array<{ id: string; name: string }>;
+  platforms?: Array<{ id: string; name: string }>;
   paymentMethods?: Array<{ id: string; name: string }>;
   drivers?: Array<{ id: string; name: string }>;
   vehicles?: Array<{ id: string; name: string }>;
@@ -41,7 +41,7 @@ export function RevenueDialog({
   mode,
   revenue,
   revenueTypes = [],
-  companies = [],
+  platforms = [],
   paymentMethods = [],
   drivers = [],
   vehicles = []
@@ -68,7 +68,7 @@ export function RevenueDialog({
       tripType: revenue?.tripType || "",
       receiptUrl: revenue?.receiptUrl || "",
       revenueTypeId: revenue?.revenueTypeId || "",
-      companyId: revenue?.companyId || "",
+      platformId: revenue?.platformId || "",
       paymentMethodId: revenue?.paymentMethodId || "",
       driverId: revenue?.driverId || "",
       vehicleId: revenue?.vehicleId || "",
@@ -83,7 +83,7 @@ export function RevenueDialog({
         tripType: value.tripType || undefined,
         receiptUrl: value.receiptUrl || undefined,
         revenueTypeId: value.revenueTypeId && value.revenueTypeId !== "none" ? value.revenueTypeId : undefined,
-        companyId: value.companyId && value.companyId !== "none" ? value.companyId : undefined,
+        platformId: value.platformId && value.platformId !== "none" ? value.platformId : undefined,
         paymentMethodId: value.paymentMethodId && value.paymentMethodId !== "none" ? value.paymentMethodId : undefined,
         driverId: value.driverId && value.driverId !== "none" ? value.driverId : undefined,
         vehicleId: value.vehicleId && value.vehicleId !== "none" ? value.vehicleId : undefined,
@@ -94,9 +94,11 @@ export function RevenueDialog({
           if (mode === "create") {
             await createRevenue(data);
             toast.success(tCommon('createSuccess'));
+            router.push('/dashboard/revenues');
           } else if (revenue) {
             await updateRevenue(revenue.id, data);
             toast.success(tCommon('updateSuccess'));
+            router.push('/dashboard/revenues');
           }
         } catch (error) {
           toast.error(error instanceof Error ? error.message : tCommon('error'));
@@ -166,22 +168,22 @@ export function RevenueDialog({
                 )}
               </form.Field>
 
-              <form.Field name="companyId">
+              <form.Field name="platformId">
                 {(field) => (
                   <Field>
-                    <FieldLabel htmlFor="companyId">{t('company')}</FieldLabel>
+                    <FieldLabel htmlFor="platformId">{t('platform')}</FieldLabel>
                     <Select
                       value={field.state.value}
                       onValueChange={field.handleChange}
                     >
-                      <SelectTrigger id="companyId">
-                        <SelectValue placeholder={t('company')} />
+                      <SelectTrigger id="platformId">
+                        <SelectValue placeholder={t('platform')} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">-</SelectItem>
-                        {companies.map((company) => (
-                          <SelectItem key={company.id} value={company.id}>
-                            {company.name}
+                        {platforms.map((platform) => (
+                          <SelectItem key={platform.id} value={platform.id}>
+                            {platform.name}
                           </SelectItem>
                         ))}
                       </SelectContent>

@@ -44,12 +44,14 @@ export function ExpenseTypeDialog({ mode, expenseType }: ExpenseTypeDialogProps)
         if (mode === "create") {
           await createExpenseType(formData);
           toast.success(tCommon('createSuccess'));
+          router.push('/dashboard/expense-types');
         } else {
           await updateExpenseType(expenseType!.id, formData);
           toast.success(tCommon('updateSuccess'));
+          router.push('/dashboard/expense-types');
         }
-      } catch {
-        toast.error(tCommon('error'));
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : tCommon('error'));
       }
     });
   }

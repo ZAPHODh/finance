@@ -25,7 +25,7 @@ interface DashboardData {
     totalHours: number
   }
   breakdowns: {
-    revenueByCompany: Array<{ name: string; value: number; percentage: number }>
+    revenueByPlatform: Array<{ name: string; value: number; percentage: number }>
     expensesByType: Array<{ name: string; value: number; percentage: number }>
     performanceByDriver: Array<{ name: string; value: number; revenue: number; expenses: number }>
     performanceByVehicle: Array<{ name: string; value: number; revenue: number; expenses: number }>
@@ -63,7 +63,7 @@ export function DashboardContent() {
           period: filters.period,
           driverId: filters.driverId,
           vehicleId: filters.vehicleId,
-          companyId: filters.companyId,
+          platformId: filters.platformId,
         })
         setData(result)
       } catch (error) {
@@ -128,8 +128,8 @@ export function DashboardContent() {
 
       <div className="grid gap-4 px-4 md:grid-cols-2 lg:px-6">
         <BreakdownCard
-          title={tBreakdowns("revenueByCompany")}
-          items={data.breakdowns.revenueByCompany}
+          title={tBreakdowns("revenueByPlatform")}
+          items={data.breakdowns.revenueByPlatform}
           icon={Building2}
           emptyMessage={tBreakdowns("noData")}
           formatValue={formatCurrency}

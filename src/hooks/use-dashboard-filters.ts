@@ -5,7 +5,7 @@ export interface DashboardFilters {
   period: string
   driverId: string | null
   vehicleId: string | null
-  companyId: string | null
+  platformId: string | null
 }
 
 interface DashboardFiltersStore {
@@ -18,7 +18,7 @@ const defaultFilters: DashboardFilters = {
   period: 'thisMonth',
   driverId: null,
   vehicleId: null,
-  companyId: null,
+  platformId: null,
 }
 
 export const useDashboardFilters = create<DashboardFiltersStore>()(

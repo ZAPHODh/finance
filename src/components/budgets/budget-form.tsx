@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { createBudget, updateBudget } from "@/app/[locale]/(financial)/budgets/actions"
 import { toast } from "sonner"
 import { useTransition } from "react"
+import { useRouter } from "next/navigation"
 import type { Budget } from "@prisma/client"
 
 interface BudgetFormProps {
@@ -16,6 +17,7 @@ interface BudgetFormProps {
 }
 
 export function BudgetForm({ expenseTypes, budget }: BudgetFormProps) {
+    const router = useRouter()
     const t = useScopedI18n("shared.budgets")
     const tCommon = useScopedI18n("shared.common")
     const [isPending, startTransition] = useTransition()
@@ -37,12 +39,14 @@ export function BudgetForm({ expenseTypes, budget }: BudgetFormProps) {
                             alertThreshold: value.alertThreshold / 100,
                         })
                         toast.success(tCommon("updateSuccess"))
+                        router.push('/budgets')
                     } else {
                         await createBudget({
                             ...value,
                             alertThreshold: value.alertThreshold / 100,
                         })
                         toast.success(tCommon("createSuccess"))
+                        router.push('/budgets')
                     }
                 } catch (error) {
                     toast.error(error instanceof Error ? error.message : tCommon("error"))

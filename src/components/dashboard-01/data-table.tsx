@@ -82,7 +82,7 @@ interface Transaction {
   date: Date
   driver?: string
   vehicle?: string
-  company?: string
+  platform?: string
 }
 
 interface DataTableProps {
@@ -293,11 +293,11 @@ export function DataTable({ data }: DataTableProps) {
       ),
     },
     {
-      accessorKey: "company",
-      header: t("company"),
+      accessorKey: "platform",
+      header: t("platform"),
       cell: ({ row }) => (
         <div className="max-w-[120px] truncate text-muted-foreground">
-          {row.getValue("company") || "-"}
+          {row.getValue("platform") || "-"}
         </div>
       ),
     },

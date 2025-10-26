@@ -42,12 +42,14 @@ export function DriverDialog({ mode, driver }: DriverDialogProps) {
         if (mode === "create") {
           await createDriver(formData);
           toast.success(tCommon('createSuccess'));
+          router.push('/dashboard/drivers');
         } else {
           await updateDriver(driver!.id, formData);
           toast.success(tCommon('updateSuccess'));
+          router.push('/dashboard/drivers');
         }
-      } catch {
-        toast.error(tCommon('error'));
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : tCommon('error'));
       }
     });
   }

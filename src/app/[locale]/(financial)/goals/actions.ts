@@ -126,7 +126,6 @@ export async function createGoal(data: GoalFormData) {
     })
 
     revalidatePath("/goals")
-    redirect("/goals")
 }
 
 /**
@@ -163,7 +162,6 @@ export async function updateGoal(id: string, data: UpdateGoalData) {
     })
 
     revalidatePath("/goals")
-    redirect("/goals")
 }
 
 /**

@@ -18,7 +18,7 @@ interface DashboardFilters {
   period?: string
   driverId?: string | null
   vehicleId?: string | null
-  companyId?: string | null
+  platformId?: string | null
 }
 
 function getDateRange(period: string = "thisMonth") {
@@ -66,13 +66,13 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
       date: dateFilter,
       ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
       ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
-      ...(filters.companyId && filters.companyId !== "all" && { companyId: filters.companyId }),
+      ...(filters.platformId && filters.platformId !== "all" && { platformId: filters.platformId }),
       driver: {
         userId: userId,
       },
     },
     include: {
-      company: true,
+      platform: true,
       driver: true,
       vehicle: true,
     },
@@ -118,12 +118,12 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
   }, 0)
 
 
-  const revenueByCompany = revenues.reduce((acc, r) => {
-    const companyName = r.company?.name || "Sem empresa"
-    if (!acc[companyName]) {
-      acc[companyName] = 0
+  const revenueByPlatform = revenues.reduce((acc, r) => {
+    const platformName = r.platform?.name || "Sem plataforma"
+    if (!acc[platformName]) {
+      acc[platformName] = 0
     }
-    acc[companyName] += r.amount
+    acc[platformName] += r.amount
     return acc
   }, {} as Record<string, number>)
 
@@ -173,14 +173,14 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
   const transactions = [
     ...revenues.map(r => ({
       id: `rev-${r.id}`,
-      description: r.description || `Receita - ${r.company?.name || 'Sem empresa'}`,
-      category: r.company?.name || 'Sem empresa',
+      description: r.description || `Receita - ${r.platform?.name || 'Sem plataforma'}`,
+      category: r.platform?.name || 'Sem plataforma',
       amount: r.amount,
       type: 'revenue' as const,
       date: r.date,
       driver: r.driver?.name,
       vehicle: r.vehicle?.name,
-      company: r.company?.name,
+      platform: r.platform?.name,
     })),
     ...expenses.map(e => ({
       id: `exp-${e.id}`,
@@ -191,7 +191,7 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
       date: e.date,
       driver: e.driver?.name,
       vehicle: e.vehicle?.name,
-      company: undefined,
+      platform: undefined,
     })),
   ].sort((a, b) => b.date.getTime() - a.date.getTime())
 
@@ -226,7 +226,7 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
       totalHours,
     },
     breakdowns: {
-      revenueByCompany: Object.entries(revenueByCompany)
+      revenueByPlatform: Object.entries(revenueByPlatform)
         .map(([name, value]) => ({ name, value, percentage: (value / totalRevenue) * 100 }))
         .sort((a, b) => b.value - a.value)
         .slice(0, 5),
@@ -282,19 +282,19 @@ async function getDashboardFilterOptionsUncached(userId: string) {
       where: { userId: userId },
       orderBy: { name: "asc" },
     }),
-    prisma.company.findMany({
+    prisma.platform.findMany({
       where: { userId: userId },
       orderBy: { name: "asc" },
     }),
   ])
 
-  return { drivers, vehicles, companies }
+  return { drivers, vehicles, platforms: companies }
 }
 
 const getCachedDashboardFilterOptions = cacheWithTag(
   getDashboardFilterOptionsUncached,
   ['dashboard-filters'],
-  [CacheTags.DRIVERS, CacheTags.VEHICLES, CacheTags.COMPANIES],
+  [CacheTags.DRIVERS, CacheTags.VEHICLES, CacheTags.PLATFORMS],
   600
 )
 

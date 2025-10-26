@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Driver, Vehicle, Company } from "@prisma/client"
+import { Driver, Vehicle, Platform } from "@prisma/client"
 import { SectionCards } from "./section-cards"
 import { ChartAreaInteractive } from "./chart-area-interactive"
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters"
@@ -26,13 +26,13 @@ interface DashboardData {
 interface DashboardViewProps {
   drivers: Driver[]
   vehicles: Vehicle[]
-  companies: Company[]
+  platforms: Platform[]
 }
 
 export function DashboardView({
   drivers,
   vehicles,
-  companies,
+  platforms,
 }: DashboardViewProps) {
   const { filters } = useDashboardFilters()
   const [data, setData] = useState<DashboardData | null>(null)
@@ -46,7 +46,7 @@ export function DashboardView({
           period: filters.period,
           driverId: filters.driverId,
           vehicleId: filters.vehicleId,
-          companyId: filters.companyId,
+          platformId: filters.platformId,
         })
         setData(result)
       } catch (error) {
@@ -86,7 +86,7 @@ export function DashboardView({
         <DashboardFilters
           drivers={drivers}
           vehicles={vehicles}
-          companies={companies}
+          platforms={platforms}
         />
       </div>
 

@@ -52,7 +52,7 @@ export async function getUserUsageAndLimits() {
     ] = await Promise.all([
         prisma.driver.count({ where: { userId: user.id } }),
         prisma.vehicle.count({ where: { userId: user.id } }),
-        prisma.company.count({ where: { userId: user.id } }),
+        prisma.platform.count({ where: { userId: user.id } }),
         prisma.expenseType.count({ where: { userId: user.id } }),
         prisma.revenueType.count({ where: { userId: user.id } }),
         prisma.paymentMethod.count({ where: { userId: user.id } }),

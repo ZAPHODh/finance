@@ -81,8 +81,8 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
     },
     {
       icon: Building2,
-      label: t('companies'),
-      action: () => router.push('/dashboard/companies'),
+      label: t('platforms'),
+      action: () => router.push('/dashboard/platforms'),
     },
     {
       icon: User,

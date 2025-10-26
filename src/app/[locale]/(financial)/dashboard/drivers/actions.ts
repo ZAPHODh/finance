@@ -53,7 +53,6 @@ export async function createDriver(data: DriverFormData) {
 
   revalidateTag(CacheTags.DRIVERS);
   revalidatePath("/dashboard/drivers");
-  redirect("/dashboard/drivers");
 }
 
 export async function updateDriver(id: string, data: DriverFormData) {
@@ -80,7 +79,6 @@ export async function updateDriver(id: string, data: DriverFormData) {
 
   revalidateTag(CacheTags.DRIVERS);
   revalidatePath("/dashboard/drivers");
-  redirect("/dashboard/drivers");
 }
 
 export async function deleteDriver(id: string) {

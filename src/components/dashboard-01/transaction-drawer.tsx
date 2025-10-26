@@ -145,7 +145,7 @@ export function TransactionDrawer({
             {transaction.company && (
               <div className="space-y-2">
                 <span className="text-sm font-medium text-muted-foreground">
-                  {t("company")}
+                  {t("platform")}
                 </span>
                 <p className="text-sm">{transaction.company}</p>
               </div>

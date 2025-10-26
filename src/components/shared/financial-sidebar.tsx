@@ -60,9 +60,9 @@ export function FinancialSidebar({ user, locale }: FinancialSidebarProps) {
         href: `/${locale}/dashboard/vehicles`,
       },
       {
-        title: t("configuration.companies"),
+        title: t("configuration.platforms"),
         icon: Building2,
-        href: `/${locale}/dashboard/companies`,
+        href: `/${locale}/dashboard/platforms`,
       },
       {
         title: t("configuration.expenseTypes"),

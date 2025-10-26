@@ -28,7 +28,7 @@ export function DynamicBreadcrumb({ locale }: DynamicBreadcrumbProps) {
   const getSegmentLabel = (segment: string): string => {
     if (segment === "drivers") return tConfig("drivers.title")
     if (segment === "vehicles") return tConfig("vehicles.title")
-    if (segment === "companies") return tConfig("companies.title")
+    if (segment === "platforms") return tConfig("platforms.title")
     if (segment === "expense-types") return tConfig("expenseTypes.title")
     if (segment === "payment-methods") return tConfig("paymentMethods.title")
     if (segment === "revenue-types") return tConfig("revenueTypes.title")

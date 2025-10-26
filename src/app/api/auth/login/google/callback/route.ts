@@ -4,6 +4,8 @@ import { OAuth2RequestError, ArcticFetchError, decodeIdToken } from "arctic";
 import { prisma } from "@/lib/server/db";
 import { createSession, generateSessionToken } from "@/lib/server/auth/session";
 import { setSessionTokenCookie } from "@/lib/server/auth/cookies";
+import { revalidatePath } from "next/cache";
+import { sendWelcomeEmail } from "@/lib/server/mail";
 
 export async function GET(request: Request) {
     const url = new URL(request.url);
@@ -35,27 +37,46 @@ export async function GET(request: Request) {
             },
         });
 
-        let user;
         if (existingUser) {
-            user = existingUser;
-        } else {
-            user = await prisma.user.create({
-                data: {
-                    name: googleUser.name,
-                    email: googleUser.email,
-                    picture: googleUser.picture,
-                    emailVerified: googleUser.email_verified,
+            const sessionTokenCookie = generateSessionToken();
+            const session = await createSession(sessionTokenCookie, existingUser.id);
+            await setSessionTokenCookie(sessionTokenCookie, session.expiresAt);
+
+            // Redirect to onboarding if not completed, otherwise to dashboard
+            const redirectPath = existingUser.hasCompletedOnboarding ? "/dashboard" : "/onboarding";
+            revalidatePath(redirectPath, "layout");
+
+            return new Response(null, {
+                status: 302,
+                headers: {
+                    Location: redirectPath,
                 },
             });
         }
 
-        const sessionToken = generateSessionToken();
-        const session = await createSession(sessionToken, user.id);
-        await setSessionTokenCookie(sessionToken, session.expiresAt);
+        const newUser = await prisma.user.create({
+            data: {
+                name: googleUser.name,
+                email: googleUser.email,
+                picture: googleUser.picture,
+                emailVerified: googleUser.email_verified,
+            },
+        });
+
+        if (googleUser.email) {
+            sendWelcomeEmail({ toMail: newUser.email!, userName: newUser.name! });
+        }
+
+        const sessionTokenCookie = generateSessionToken();
+        const session = await createSession(sessionTokenCookie, newUser.id);
+        await setSessionTokenCookie(sessionTokenCookie, session.expiresAt);
+        revalidatePath("/onboarding", "layout");
 
         return new Response(null, {
             status: 302,
-            headers: { Location: "/dashboard" },
+            headers: {
+                Location: "/onboarding",
+            },
         });
     } catch (e) {
         console.error("Google OAuth error:", e);

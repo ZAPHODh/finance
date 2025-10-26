@@ -57,6 +57,7 @@ export function GoalDialog({
               vehicleId: value.vehicleId || undefined,
             });
             toast.success(tCommon("createSuccess"));
+            router.push('/goals');
           } else if (goal) {
             await updateGoal(goal.id, {
               ...value,
@@ -64,6 +65,7 @@ export function GoalDialog({
               vehicleId: value.vehicleId || undefined,
             });
             toast.success(tCommon("updateSuccess"));
+            router.push('/goals');
           }
         } catch (error) {
           toast.error(error instanceof Error ? error.message : tCommon("error"));

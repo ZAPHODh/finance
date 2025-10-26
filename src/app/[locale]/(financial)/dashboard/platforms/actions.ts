@@ -7,12 +7,12 @@ import { redirect } from "next/navigation";
 import { PLAN_LIMITS } from "@/config/subscription";
 import { CacheTags } from "@/lib/server/cache";
 
-export interface CompanyFormData {
+export interface PlatformFormData {
   name: string;
   icon?: string;
 }
 
-async function checkIfCompanyLimitReached() {
+async function checkIfPlatformLimitReached() {
   const { user } = await getCurrentSession();
   if (!user) throw new Error("Unauthorized");
 
@@ -26,26 +26,26 @@ async function checkIfCompanyLimitReached() {
   const limits = PLAN_LIMITS[userWithPlan.planType];
   if (limits.maxCompanies === -1) return false;
 
-  const count = await prisma.company.count({
+  const count = await prisma.platform.count({
     where: { userId: user.id },
   });
 
   return count >= limits.maxCompanies;
 }
 
-export async function createCompany(data: CompanyFormData) {
+export async function createPlatform(data: PlatformFormData) {
   const { user } = await getCurrentSession();
 
   if (!user) {
     throw new Error("Unauthorized");
   }
 
-  const limitReached = await checkIfCompanyLimitReached();
+  const limitReached = await checkIfPlatformLimitReached();
   if (limitReached) {
-    throw new Error("You have reached the maximum number of companies for your plan. Please upgrade to add more.");
+    throw new Error("You have reached the maximum number of platforms for your plan. Please upgrade to add more.");
   }
 
-  await prisma.company.create({
+  await prisma.platform.create({
     data: {
       name: data.name,
       icon: data.icon,
@@ -53,27 +53,26 @@ export async function createCompany(data: CompanyFormData) {
     },
   });
 
-  revalidateTag(CacheTags.COMPANIES);
-  revalidatePath("/dashboard/companies");
-  redirect("/dashboard/companies");
+  revalidateTag(CacheTags.PLATFORMS);
+  revalidatePath("/dashboard/platforms");
 }
 
-export async function updateCompany(id: string, data: CompanyFormData) {
+export async function updatePlatform(id: string, data: PlatformFormData) {
   const { user } = await getCurrentSession();
 
   if (!user) {
     throw new Error("Unauthorized");
   }
 
-  const company = await prisma.company.findUnique({
+  const platform = await prisma.platform.findUnique({
     where: { id },
   });
 
-  if (!company || company.userId !== user.id) {
-    throw new Error("Company not found or unauthorized");
+  if (!platform || platform.userId !== user.id) {
+    throw new Error("Platform not found or unauthorized");
   }
 
-  await prisma.company.update({
+  await prisma.platform.update({
     where: { id },
     data: {
       name: data.name,
@@ -81,39 +80,38 @@ export async function updateCompany(id: string, data: CompanyFormData) {
     },
   });
 
-  revalidateTag(CacheTags.COMPANIES);
-  revalidatePath("/dashboard/companies");
-  redirect("/dashboard/companies");
+  revalidateTag(CacheTags.PLATFORMS);
+  revalidatePath("/dashboard/platforms");
 }
 
-export async function deleteCompany(id: string) {
+export async function deletePlatform(id: string) {
   const { user } = await getCurrentSession();
 
   if (!user) {
     throw new Error("Unauthorized");
   }
 
-  const company = await prisma.company.findUnique({
+  const platform = await prisma.platform.findUnique({
     where: { id },
   });
 
-  if (!company || company.userId !== user.id) {
-    throw new Error("Company not found or unauthorized");
+  if (!platform || platform.userId !== user.id) {
+    throw new Error("Platform not found or unauthorized");
   }
 
-  await prisma.company.delete({
+  await prisma.platform.delete({
     where: { id },
   });
 
-  revalidateTag(CacheTags.COMPANIES);
-  revalidatePath("/dashboard/companies");
+  revalidateTag(CacheTags.PLATFORMS);
+  revalidatePath("/dashboard/platforms");
 }
 
-export async function getCompaniesData() {
+export async function getPlatformsData() {
   const { user } = await getCurrentSession();
   if (!user) redirect("/login");
 
-  const companies = await prisma.company.findMany({
+  const platforms = await prisma.platform.findMany({
     where: {
       userId: user.id,
     },
@@ -122,5 +120,5 @@ export async function getCompaniesData() {
     },
   });
 
-  return { companies };
+  return { platforms };
 }

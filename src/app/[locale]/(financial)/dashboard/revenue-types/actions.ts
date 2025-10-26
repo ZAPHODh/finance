@@ -55,7 +55,6 @@ export async function createRevenueType(data: RevenueTypeFormData) {
 
   revalidateTag(CacheTags.REVENUE_TYPES);
   revalidatePath("/dashboard/revenue-types");
-  redirect("/dashboard/revenue-types");
 }
 
 export async function updateRevenueType(id: string, data: RevenueTypeFormData) {
@@ -83,7 +82,6 @@ export async function updateRevenueType(id: string, data: RevenueTypeFormData) {
 
   revalidateTag(CacheTags.REVENUE_TYPES);
   revalidatePath("/dashboard/revenue-types");
-  redirect("/dashboard/revenue-types");
 }
 
 export async function deleteRevenueType(id: string) {

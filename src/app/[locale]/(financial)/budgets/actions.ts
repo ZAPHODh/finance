@@ -117,7 +117,6 @@ export async function createBudget(data: BudgetFormData) {
     })
 
     revalidatePath("/budgets")
-    redirect("/budgets")
 }
 
 /**
@@ -154,7 +153,6 @@ export async function updateBudget(id: string, data: UpdateBudgetData) {
     })
 
     revalidatePath("/budgets")
-    redirect("/budgets")
 }
 
 /**

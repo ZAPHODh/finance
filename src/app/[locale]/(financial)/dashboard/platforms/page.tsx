@@ -1,28 +1,28 @@
 import { getI18n } from "@/locales/server";
-import { CompaniesTable } from "@/components/configuration/companies/companies-table";
+import { PlatformsTable } from "@/components/configuration/platforms/platforms-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { getCompaniesData } from "./actions";
+import { getPlatformsData } from "./actions";
 
-export default async function CompaniesPage() {
+export default async function PlatformsPage() {
   const t = await getI18n();
-  const { companies } = await getCompaniesData();
+  const { platforms } = await getPlatformsData();
 
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t('shared.configuration.companies.title')}</h1>
+          <h1 className="text-3xl font-bold">{t('shared.configuration.platforms.title')}</h1>
         </div>
-        <Link href="/dashboard/companies/new">
+        <Link href="/dashboard/platforms/new">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
-            {t('shared.configuration.companies.new')}
+            {t('shared.configuration.platforms.new')}
           </Button>
         </Link>
       </div>
-      <CompaniesTable companies={companies} />
+      <PlatformsTable platforms={platforms} />
     </div>
   );
 }

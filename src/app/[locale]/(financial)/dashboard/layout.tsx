@@ -13,7 +13,7 @@ export default async function FinancialLayout({
   children,
   driverDialog,
   vehicleDialog,
-  companyDialog,
+  platformDialog,
   expenseTypeDialog,
   paymentMethodDialog,
   revenueTypeDialog,
@@ -25,7 +25,7 @@ export default async function FinancialLayout({
   children: React.ReactNode;
   driverDialog: React.ReactNode;
   vehicleDialog: React.ReactNode;
-  companyDialog: React.ReactNode;
+  platformDialog: React.ReactNode;
   expenseTypeDialog: React.ReactNode;
   paymentMethodDialog: React.ReactNode;
   revenueTypeDialog: React.ReactNode;
@@ -94,7 +94,7 @@ export default async function FinancialLayout({
           {children}
           {driverDialog}
           {vehicleDialog}
-          {companyDialog}
+          {platformDialog}
           {expenseTypeDialog}
           {paymentMethodDialog}
           {revenueTypeDialog}

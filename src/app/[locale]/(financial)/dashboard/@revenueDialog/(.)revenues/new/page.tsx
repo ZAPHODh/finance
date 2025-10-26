@@ -7,13 +7,13 @@ export default async function NewRevenueModal() {
   const { user } = await getCurrentSession();
   if (!user) redirect("/");
 
-  const { revenueTypes, companies, paymentMethods, drivers, vehicles } = await getRevenueFormData();
+  const { revenueTypes, platforms, paymentMethods, drivers, vehicles } = await getRevenueFormData();
 
   return (
     <RevenueDialog
       mode="create"
       revenueTypes={revenueTypes}
-      companies={companies}
+      platforms={platforms}
       paymentMethods={paymentMethods}
       drivers={drivers}
       vehicles={vehicles}

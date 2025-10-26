@@ -59,7 +59,6 @@ export async function createVehicle(data: VehicleFormData) {
 
   revalidateTag(CacheTags.VEHICLES);
   revalidatePath("/dashboard/vehicles");
-  redirect("/dashboard/vehicles");
 }
 
 export async function updateVehicle(id: string, data: VehicleFormData) {
@@ -89,7 +88,6 @@ export async function updateVehicle(id: string, data: VehicleFormData) {
 
   revalidateTag(CacheTags.VEHICLES);
   revalidatePath("/dashboard/vehicles");
-  redirect("/dashboard/vehicles");
 }
 
 export async function deleteVehicle(id: string) {

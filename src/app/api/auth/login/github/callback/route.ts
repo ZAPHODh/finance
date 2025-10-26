@@ -65,11 +65,15 @@ export const GET = async (request: Request) => {
       const sessionTokenCookie = generateSessionToken();
       const session = await createSession(sessionTokenCookie, existingUser.id);
       await setSessionTokenCookie(sessionTokenCookie, session.expiresAt);
-      revalidatePath("/dashboard", "layout");
+
+      // Redirect to onboarding if not completed, otherwise to dashboard
+      const redirectPath = existingUser.hasCompletedOnboarding ? "/dashboard" : "/onboarding";
+      revalidatePath(redirectPath, "layout");
+
       return new Response(null, {
         status: 302,
         headers: {
-          Location: "/dashboard",
+          Location: redirectPath,
         },
       });
     }

@@ -12,22 +12,22 @@ import {
 import { useScopedI18n } from '@/locales/client';
 import { Edit, Trash } from 'lucide-react';
 import Link from 'next/link';
-import { deleteCompany } from '@/app/[locale]/(financial)/dashboard/companies/actions';
+import { deletePlatform } from '@/app/[locale]/(financial)/dashboard/platforms/actions';
 import { toast } from 'sonner';
 import { useTransition } from 'react';
 
-interface Company {
+interface Platform {
   id: string;
   name: string;
   icon: string | null;
 }
 
-interface CompaniesTableProps {
-  companies: Company[];
+interface PlatformsTableProps {
+  platforms: Platform[];
 }
 
-export function CompaniesTable({ companies }: CompaniesTableProps) {
-  const t = useScopedI18n('shared.configuration.companies');
+export function PlatformsTable({ platforms }: PlatformsTableProps) {
+  const t = useScopedI18n('shared.configuration.platforms');
   const tCommon = useScopedI18n('shared.common');
   const tNoData = useScopedI18n('shared.sidebar.dashboard.breakdowns');
   const [isPending, startTransition] = useTransition();
@@ -39,7 +39,7 @@ export function CompaniesTable({ companies }: CompaniesTableProps) {
 
     startTransition(async () => {
       try {
-        await deleteCompany(id);
+        await deletePlatform(id);
         toast.success(tCommon('deleteSuccess'));
       } catch {
         toast.error(tCommon('error'));
@@ -65,24 +65,24 @@ export function CompaniesTable({ companies }: CompaniesTableProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {companies.length === 0 ? (
+            {platforms.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={3} className="p-6 text-center text-muted-foreground">
                   {tNoData('noData')}
                 </TableCell>
               </TableRow>
             ) : (
-              companies.map((company) => (
-                <TableRow key={company.id}>
+              platforms.map((platform) => (
+                <TableRow key={platform.id}>
                   <TableCell className="p-3 text-2xl">
-                    {company.icon || '🏢'}
+                    {platform.icon || '🏢'}
                   </TableCell>
                   <TableCell className="p-3 font-medium">
-                    {company.name}
+                    {platform.name}
                   </TableCell>
                   <TableCell className="p-3 text-right">
                     <div className="flex justify-end gap-2">
-                      <Link href={`/dashboard/companies/${company.id}/edit`}>
+                      <Link href={`/dashboard/platforms/${platform.id}/edit`}>
                         <Button variant="ghost" size="icon">
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -90,7 +90,7 @@ export function CompaniesTable({ companies }: CompaniesTableProps) {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleDelete(company.id)}
+                        onClick={() => handleDelete(platform.id)}
                         disabled={isPending}
                       >
                         <Trash className="h-4 w-4" />

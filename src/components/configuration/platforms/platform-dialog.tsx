@@ -6,31 +6,31 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter, usePathname } from "next/navigation";
 import { useScopedI18n } from "@/locales/client";
-import { createCompany, updateCompany, type CompanyFormData } from "@/app/[locale]/(financial)/dashboard/companies/actions";
+import { createPlatform, updatePlatform, type PlatformFormData } from "@/app/[locale]/(financial)/dashboard/platforms/actions";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
-interface CompanyDialogProps {
+interface PlatformDialogProps {
   mode: "create" | "edit";
-  company?: {
+  platform?: {
     id: string;
     name: string;
     icon: string | null;
   };
 }
 
-export function CompanyDialog({ mode, company }: CompanyDialogProps) {
+export function PlatformDialog({ mode, platform }: PlatformDialogProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const t = useScopedI18n('shared.configuration.companies');
+  const t = useScopedI18n('shared.configuration.platforms');
   const tCommon = useScopedI18n('shared.common');
   const [isPending, startTransition] = useTransition();
-  const [formData, setFormData] = useState<CompanyFormData>({
-    name: company?.name || "",
-    icon: company?.icon || "",
+  const [formData, setFormData] = useState<PlatformFormData>({
+    name: platform?.name || "",
+    icon: platform?.icon || "",
   });
 
-  const isOpen = pathname.includes("/dashboard/companies");
+  const isOpen = pathname.includes("/dashboard/platforms");
 
   function handleClose() {
     router.back();
@@ -42,14 +42,16 @@ export function CompanyDialog({ mode, company }: CompanyDialogProps) {
     startTransition(async () => {
       try {
         if (mode === "create") {
-          await createCompany(formData);
+          await createPlatform(formData);
           toast.success(tCommon('createSuccess'));
+          router.push('/dashboard/platforms');
         } else {
-          await updateCompany(company!.id, formData);
+          await updatePlatform(platform!.id, formData);
           toast.success(tCommon('updateSuccess'));
+          router.push('/dashboard/platforms');
         }
-      } catch {
-        toast.error(tCommon('error'));
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : tCommon('error'));
       }
     });
   }

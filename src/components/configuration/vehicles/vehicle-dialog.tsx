@@ -48,12 +48,14 @@ export function VehicleDialog({ mode, vehicle }: VehicleDialogProps) {
         if (mode === "create") {
           await createVehicle(formData);
           toast.success(tCommon('createSuccess'));
+          router.push('/dashboard/vehicles');
         } else {
           await updateVehicle(vehicle!.id, formData);
           toast.success(tCommon('updateSuccess'));
+          router.push('/dashboard/vehicles');
         }
-      } catch {
-        toast.error(tCommon('error'));
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : tCommon('error'));
       }
     });
   }

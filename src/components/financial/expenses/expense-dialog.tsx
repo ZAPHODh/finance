@@ -80,9 +80,11 @@ export function ExpenseDialog({
           if (mode === "create") {
             await createExpense(data);
             toast.success(tCommon('createSuccess'));
+            router.push('/dashboard/expenses');
           } else if (expense) {
             await updateExpense(expense.id, data);
             toast.success(tCommon('updateSuccess'));
+            router.push('/dashboard/expenses');
           }
         } catch (error) {
           toast.error(error instanceof Error ? error.message : tCommon('error'));

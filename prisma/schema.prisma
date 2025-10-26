@@ -49,7 +49,7 @@ model User {
 
   drivers      Driver[]
   vehicles     Vehicle[]
-  companies    Company[]
+  platforms    Platform[]
   expenseTypes ExpenseType[]
   revenueTypes RevenueType[]
   paymentMethods PaymentMethod[]
@@ -61,8 +61,9 @@ model User {
   attachments      Attachment[]
   reports          Report[]
   reminders        Reminder[]
-  teamMembers      TeamMember[]
   expenseTemplates ExpenseTemplate[]
+
+  hasCompletedOnboarding Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -84,7 +85,6 @@ model Driver {
   revenues         Revenue[]
   workLogs         WorkLog[]
   goals            Goal[]
-  teamMember       TeamMember?
   expenseTemplates ExpenseTemplate[]
 
   createdAt DateTime @default(now())
@@ -115,7 +115,7 @@ model Vehicle {
   @@index([userId])
 }
 
-model Company {
+model Platform {
   id       String    @id @default(cuid())
   name     String
   icon     String?
@@ -282,8 +282,8 @@ model Revenue {
   revenueTypeId   String?
   revenueType     RevenueType?   @relation(fields: [revenueTypeId], references: [id], onDelete: SetNull)
 
-  companyId       String?
-  company         Company?       @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  platformId      String?
+  platform        Platform?      @relation(fields: [platformId], references: [id], onDelete: SetNull)
 
   paymentMethodId String?
   paymentMethod   PaymentMethod? @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
@@ -299,15 +299,15 @@ model Revenue {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([companyId])
+  @@index([platformId])
   @@index([driverId])
   @@index([vehicleId])
   @@index([date])
   // Composite indexes for complex queries
-  @@index([companyId, date])
+  @@index([platformId, date])
   @@index([driverId, date])
   @@index([vehicleId, date])
-  @@index([date, companyId, driverId])
+  @@index([date, platformId, driverId])
 }
 
 model WorkLog {
@@ -604,33 +604,4 @@ model Reminder {
   @@index([isActive])
 }
 
-enum TeamRole {
-  OWNER
-  ADMIN
-  DRIVER
-  VIEWER
-}
-
-model TeamMember {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  email       String
-  name        String?
-  role        TeamRole
-
-  driverId    String?  @unique
-  driver      Driver?  @relation(fields: [driverId], references: [id], onDelete: SetNull)
-
-  inviteToken String?  @unique
-  acceptedAt  DateTime?
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([userId])
-  @@index([email])
-  @@index([driverId])
-}
 

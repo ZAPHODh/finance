@@ -9,6 +9,7 @@ import { Select } from "@/components/ui/select"
 import { createGoal, updateGoal } from "@/app/[locale]/(financial)/goals/actions"
 import { toast } from "sonner"
 import { useTransition } from "react"
+import { useRouter } from "next/navigation"
 import { GoalType } from "@prisma/client"
 import type { Goal } from "@prisma/client"
 
@@ -19,6 +20,7 @@ interface GoalFormProps {
 }
 
 export function GoalForm({ drivers, vehicles, goal }: GoalFormProps) {
+    const router = useRouter()
     const t = useScopedI18n("shared.goals")
     const tCommon = useScopedI18n("shared.common")
     const [isPending, startTransition] = useTransition()
@@ -42,6 +44,7 @@ export function GoalForm({ drivers, vehicles, goal }: GoalFormProps) {
                             vehicleId: value.vehicleId || undefined,
                         })
                         toast.success(tCommon("updateSuccess"))
+                        router.push('/goals')
                     } else {
                         await createGoal({
                             ...value,
@@ -49,6 +52,7 @@ export function GoalForm({ drivers, vehicles, goal }: GoalFormProps) {
                             vehicleId: value.vehicleId || undefined,
                         })
                         toast.success(tCommon("createSuccess"))
+                        router.push('/goals')
                     }
                 } catch (error) {
                     toast.error(error instanceof Error ? error.message : tCommon("error"))

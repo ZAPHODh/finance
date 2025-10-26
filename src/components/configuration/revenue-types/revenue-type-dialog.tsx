@@ -44,12 +44,14 @@ export function RevenueTypeDialog({ mode, revenueType }: RevenueTypeDialogProps)
         if (mode === "create") {
           await createRevenueType(formData);
           toast.success(tCommon('createSuccess'));
+          router.push('/dashboard/revenue-types');
         } else {
           await updateRevenueType(revenueType!.id, formData);
           toast.success(tCommon('updateSuccess'));
+          router.push('/dashboard/revenue-types');
         }
-      } catch {
-        toast.error(tCommon('error'));
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : tCommon('error'));
       }
     });
   }
