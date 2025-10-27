@@ -119,7 +119,7 @@ const documents = [
   },
   {
     name: "Relatórios",
-    url: "/reports",
+    url: "/dashboard/reports",
     icon: FileText,
   },
 ]

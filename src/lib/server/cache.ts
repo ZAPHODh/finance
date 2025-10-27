@@ -38,4 +38,5 @@ export const CacheTags = {
   EXPENSE_TYPES: 'expense-types',
   REVENUE_TYPES: 'revenue-types',
   PAYMENT_METHODS: 'payment-methods',
+  REPORTS: 'reports',
 } as const

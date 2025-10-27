@@ -1,20 +1,14 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { useScopedI18n } from '@/locales/client';
 import { Edit, Trash } from 'lucide-react';
 import Link from 'next/link';
 import { deleteDriver } from '@/app/[locale]/(financial)/dashboard/drivers/actions';
 import { toast } from 'sonner';
 import { useTransition } from 'react';
+import { DataTable } from '@/components/ui/data-table/data-table-components';
+import { ColumnDef } from '@tanstack/react-table';
 
 interface Driver {
   id: string;
@@ -46,56 +40,45 @@ export function DriversTable({ drivers }: DriversTableProps) {
     });
   }
 
+  const columns: ColumnDef<Driver>[] = [
+    {
+      accessorKey: 'name',
+      header: t('name'),
+      cell: ({ row }) => <div className="font-medium">{row.getValue('name')}</div>,
+    },
+    {
+      id: 'actions',
+      header: () => <div className="text-right">{tCommon('actions')}</div>,
+      cell: ({ row }) => {
+        const driver = row.original;
+        return (
+          <div className="flex justify-end gap-2">
+            <Link href={`/dashboard/drivers/${driver.id}/edit`}>
+              <Button variant="ghost" size="icon">
+                <Edit className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleDelete(driver.id)}
+              disabled={isPending}
+            >
+              <Trash className="h-4 w-4" />
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
+
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-muted/50">
-              <TableHead className="p-3 font-semibold text-foreground text-sm">
-                {t('name')}
-              </TableHead>
-              <TableHead className="p-3 text-right font-semibold text-foreground text-sm">
-                {tCommon('actions')}
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {drivers.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={2} className="p-6 text-center text-muted-foreground">
-                  {tNoData('noData')}
-                </TableCell>
-              </TableRow>
-            ) : (
-              drivers.map((driver) => (
-                <TableRow key={driver.id}>
-                  <TableCell className="p-3 font-medium">
-                    {driver.name}
-                  </TableCell>
-                  <TableCell className="p-3 text-right">
-                    <div className="flex justify-end gap-2">
-                      <Link href={`/dashboard/drivers/${driver.id}/edit`}>
-                        <Button variant="ghost" size="icon">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </Link>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(driver.id)}
-                        disabled={isPending}
-                      >
-                        <Trash className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
-    </div>
+    <DataTable
+      columns={columns}
+      data={drivers}
+      searchKey="name"
+      searchPlaceholder={tCommon('search')}
+      noResultsText={tNoData('noData')}
+    />
   );
 }

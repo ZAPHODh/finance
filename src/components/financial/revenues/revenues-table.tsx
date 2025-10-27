@@ -2,27 +2,20 @@
 
 import { Button } from '@/components/ui/button';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
 import { useScopedI18n } from '@/locales/client';
-import { Edit, Trash, Search } from 'lucide-react';
+import { Edit, Trash } from 'lucide-react';
 import Link from 'next/link';
 import { deleteRevenue, type RevenueWithRelations } from '@/app/[locale]/(financial)/dashboard/revenues/actions';
 import { toast } from 'sonner';
 import { useState, useMemo, useTransition } from 'react';
+import { DataTable } from '@/components/ui/data-table/data-table-components';
+import { ColumnDef } from '@tanstack/react-table';
 
 interface RevenuesTableProps {
   revenues: RevenueWithRelations[];
@@ -37,23 +30,19 @@ export function RevenuesTable({ revenues, platforms, drivers, vehicles }: Revenu
   const tNoData = useScopedI18n('shared.sidebar.dashboard.breakdowns');
   const [isPending, startTransition] = useTransition();
 
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedPlatform, setSelectedPlatform] = useState<string>('all');
   const [selectedDriver, setSelectedDriver] = useState<string>('all');
   const [selectedVehicle, setSelectedVehicle] = useState<string>('all');
 
   const filteredRevenues = useMemo(() => {
     return revenues.filter((revenue) => {
-      const matchesSearch = searchTerm === '' ||
-        revenue.platforms.some(p => p.platform.name.toLowerCase().includes(searchTerm.toLowerCase()));
-
       const matchesPlatform = selectedPlatform === 'all' || revenue.platforms.some(p => p.platform.id === selectedPlatform);
       const matchesDriver = selectedDriver === 'all' || revenue.driver?.id === selectedDriver;
       const matchesVehicle = selectedVehicle === 'all' || revenue.vehicle?.id === selectedVehicle;
 
-      return matchesSearch && matchesPlatform && matchesDriver && matchesVehicle;
+      return matchesPlatform && matchesDriver && matchesVehicle;
     });
-  }, [revenues, searchTerm, selectedPlatform, selectedDriver, selectedVehicle]);
+  }, [revenues, selectedPlatform, selectedDriver, selectedVehicle]);
 
   async function handleDelete(id: string) {
     if (!confirm(tCommon('confirmDelete'))) {
@@ -81,18 +70,78 @@ export function RevenuesTable({ revenues, platforms, drivers, vehicles }: Revenu
     return new Date(date).toLocaleDateString('pt-BR');
   };
 
+  const columns: ColumnDef<RevenueWithRelations>[] = [
+    {
+      accessorKey: 'date',
+      header: t('date'),
+      cell: ({ row }) => <div className="font-medium">{formatDate(row.getValue('date'))}</div>,
+    },
+    {
+      id: 'platforms',
+      header: t('platforms'),
+      cell: ({ row }) => {
+        const revenue = row.original;
+        return (
+          <div>
+            {revenue.platforms.length > 0
+              ? revenue.platforms.map(p => p.platform.name).join(', ')
+              : '-'}
+          </div>
+        );
+      },
+      filterFn: (row, id, value) => {
+        const revenue = row.original;
+        return revenue.platforms.some(p =>
+          p.platform.name.toLowerCase().includes(value.toLowerCase())
+        );
+      },
+    },
+    {
+      id: 'driver',
+      header: t('driver'),
+      cell: ({ row }) => <div>{row.original.driver?.name || '-'}</div>,
+    },
+    {
+      id: 'vehicle',
+      header: t('vehicle'),
+      cell: ({ row }) => <div>{row.original.vehicle?.name || '-'}</div>,
+    },
+    {
+      accessorKey: 'amount',
+      header: () => <div className="text-right">{t('amount')}</div>,
+      cell: ({ row }) => (
+        <div className="text-right font-medium">{formatCurrency(row.getValue('amount'))}</div>
+      ),
+    },
+    {
+      id: 'actions',
+      header: () => <div className="text-right">{tCommon('actions')}</div>,
+      cell: ({ row }) => {
+        const revenue = row.original;
+        return (
+          <div className="flex justify-end gap-2">
+            <Link href={`/dashboard/revenues/${revenue.id}/edit`}>
+              <Button variant="ghost" size="icon">
+                <Edit className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleDelete(revenue.id)}
+              disabled={isPending}
+            >
+              <Trash className="h-4 w-4" />
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
+
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder={tCommon('search')}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9"
-          />
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
           <SelectTrigger>
             <SelectValue placeholder={t('platform')} />
@@ -134,82 +183,13 @@ export function RevenuesTable({ revenues, platforms, drivers, vehicles }: Revenu
         </Select>
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="p-3 font-semibold text-foreground text-sm">
-                  {t('date')}
-                </TableHead>
-                <TableHead className="p-3 font-semibold text-foreground text-sm">
-                  {t('platforms')}
-                </TableHead>
-                <TableHead className="p-3 font-semibold text-foreground text-sm">
-                  {t('driver')}
-                </TableHead>
-                <TableHead className="p-3 font-semibold text-foreground text-sm">
-                  {t('vehicle')}
-                </TableHead>
-                <TableHead className="p-3 font-semibold text-foreground text-sm text-right">
-                  {t('amount')}
-                </TableHead>
-                <TableHead className="p-3 text-right font-semibold text-foreground text-sm">
-                  {tCommon('actions')}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredRevenues.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="p-6 text-center text-muted-foreground">
-                    {tNoData('noData')}
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredRevenues.map((revenue) => (
-                  <TableRow key={revenue.id}>
-                    <TableCell className="p-3 font-medium">
-                      {formatDate(revenue.date)}
-                    </TableCell>
-                    <TableCell className="p-3">
-                      {revenue.platforms.length > 0
-                        ? revenue.platforms.map(p => p.platform.name).join(', ')
-                        : '-'}
-                    </TableCell>
-                    <TableCell className="p-3">
-                      {revenue.driver?.name || '-'}
-                    </TableCell>
-                    <TableCell className="p-3">
-                      {revenue.vehicle?.name || '-'}
-                    </TableCell>
-                    <TableCell className="p-3 text-right font-medium">
-                      {formatCurrency(revenue.amount)}
-                    </TableCell>
-                    <TableCell className="p-3 text-right">
-                      <div className="flex justify-end gap-2">
-                        <Link href={`/dashboard/revenues/${revenue.id}/edit`}>
-                          <Button variant="ghost" size="icon">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                        </Link>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDelete(revenue.id)}
-                          disabled={isPending}
-                        >
-                          <Trash className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
+      <DataTable
+        columns={columns}
+        data={filteredRevenues}
+        searchKey="platforms"
+        searchPlaceholder={tCommon('search')}
+        noResultsText={tNoData('noData')}
+      />
     </div>
   );
 }

@@ -9,7 +9,6 @@ import { CacheTags } from "@/lib/server/cache";
 
 export interface PaymentMethodFormData {
   name: string;
-  icon?: string;
   feeType: string;
   feePercentage: number | null;
   feeFixed: number | null;
@@ -51,7 +50,6 @@ export async function createPaymentMethod(data: PaymentMethodFormData) {
   await prisma.paymentMethod.create({
     data: {
       name: data.name,
-      icon: data.icon,
       feeType: data.feeType as any,
       feePercentage: data.feePercentage,
       feeFixed: data.feeFixed,
@@ -82,7 +80,6 @@ export async function updatePaymentMethod(id: string, data: PaymentMethodFormDat
     where: { id },
     data: {
       name: data.name,
-      icon: data.icon,
       feeType: data.feeType as any,
       feePercentage: data.feePercentage,
       feeFixed: data.feeFixed,

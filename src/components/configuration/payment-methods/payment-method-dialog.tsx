@@ -16,7 +16,6 @@ interface PaymentMethodDialogProps {
   paymentMethod?: {
     id: string;
     name: string;
-    icon: string | null;
     feeType: string;
     feePercentage: number | null;
     feeFixed: number | null;
@@ -31,7 +30,6 @@ export function PaymentMethodDialog({ mode, paymentMethod }: PaymentMethodDialog
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState<PaymentMethodFormData>({
     name: paymentMethod?.name || "",
-    icon: paymentMethod?.icon || "",
     feeType: paymentMethod?.feeType || "NONE",
     feePercentage: paymentMethod?.feePercentage || null,
     feeFixed: paymentMethod?.feeFixed || null,
@@ -79,15 +77,6 @@ export function PaymentMethodDialog({ mode, paymentMethod }: PaymentMethodDialog
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="icon">{t('icon')}</Label>
-            <Input
-              id="icon"
-              value={formData.icon}
-              onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-              placeholder="💳"
             />
           </div>
 
