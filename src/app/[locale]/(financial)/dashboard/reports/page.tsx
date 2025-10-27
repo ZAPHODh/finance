@@ -16,7 +16,7 @@ export default async function ReportsPage() {
   const { reports } = await getReportsData();
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto px-4 md:px-0 py-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">{t('title')}</h1>
@@ -30,7 +30,7 @@ export default async function ReportsPage() {
         <div className="lg:col-span-2">
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">{t('generated')}</h2>
-            <ReportsTable reports={reports} />.
+            <ReportsTable reports={reports} />
           </div>
         </div>
       </div>

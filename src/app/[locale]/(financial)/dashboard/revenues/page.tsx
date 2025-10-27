@@ -18,7 +18,7 @@ export default async function RevenuesPage() {
   const { revenues, platforms, drivers, vehicles } = await getRevenuesData();
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto px-4 md:px-0 py-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">{t('shared.financial.revenues.title')}</h1>
