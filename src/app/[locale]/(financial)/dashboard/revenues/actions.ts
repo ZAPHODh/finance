@@ -7,15 +7,11 @@ import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
 
 export interface RevenueFormData {
-  description?: string;
   amount: number;
   date: Date;
   kmDriven?: number;
   hoursWorked?: number;
-  tripType?: string;
-  receiptUrl?: string;
-  revenueTypeId?: string;
-  platformId?: string;
+  platformIds: string[];
   paymentMethodId?: string;
   driverId?: string;
   vehicleId?: string;
@@ -29,18 +25,18 @@ export async function createRevenue(data: RevenueFormData) {
 
   await prisma.revenue.create({
     data: {
-      description: data.description || null,
       amount: data.amount,
       date: data.date,
       kmDriven: data.kmDriven || null,
       hoursWorked: data.hoursWorked || null,
-      tripType: data.tripType || null,
-      receiptUrl: data.receiptUrl || null,
-      revenueTypeId: data.revenueTypeId || null,
-      platformId: data.platformId || null,
       paymentMethodId: data.paymentMethodId || null,
       driverId: data.driverId || null,
       vehicleId: data.vehicleId || null,
+      platforms: {
+        create: data.platformIds.map((platformId) => ({
+          platform: { connect: { id: platformId } },
+        })),
+      },
     },
   });
 
@@ -59,7 +55,7 @@ export async function updateRevenue(id: string, data: RevenueFormData) {
     where: {
       id,
       OR: [
-        { platform: { userId: user.id } },
+        { platforms: { some: { platform: { userId: user.id } } } },
         { driver: { userId: user.id } },
       ],
     },
@@ -72,18 +68,19 @@ export async function updateRevenue(id: string, data: RevenueFormData) {
   await prisma.revenue.update({
     where: { id },
     data: {
-      description: data.description || null,
       amount: data.amount,
       date: data.date,
       kmDriven: data.kmDriven || null,
       hoursWorked: data.hoursWorked || null,
-      tripType: data.tripType || null,
-      receiptUrl: data.receiptUrl || null,
-      revenueTypeId: data.revenueTypeId || null,
-      platformId: data.platformId || null,
       paymentMethodId: data.paymentMethodId || null,
       driverId: data.driverId || null,
       vehicleId: data.vehicleId || null,
+      platforms: {
+        deleteMany: {},
+        create: data.platformIds.map((platformId) => ({
+          platform: { connect: { id: platformId } },
+        })),
+      },
     },
   });
 
@@ -102,7 +99,7 @@ export async function deleteRevenue(id: string) {
     where: {
       id,
       OR: [
-        { platform: { userId: user.id } },
+        { platforms: { some: { platform: { userId: user.id } } } },
         { driver: { userId: user.id } },
       ],
     },
@@ -122,33 +119,23 @@ export async function deleteRevenue(id: string) {
 }
 
 async function getRevenuesDataUncached(userId: string) {
-  const [revenues, revenueTypes, companies, drivers, vehicles] = await Promise.all([
+  const [revenues, companies, drivers, vehicles] = await Promise.all([
     prisma.revenue.findMany({
       where: {
         OR: [
-          {
-            platform: {
-              userId: userId,
-            },
-          },
-          {
-            driver: {
-              userId: userId,
-            },
-          },
+          { platforms: { some: { platform: { userId } } } },
+          { driver: { userId } },
         ],
       },
       include: {
-        revenueType: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        platform: {
-          select: {
-            id: true,
-            name: true,
+        platforms: {
+          include: {
+            platform: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
         paymentMethod: {
@@ -174,22 +161,8 @@ async function getRevenuesDataUncached(userId: string) {
         date: "desc",
       },
     }),
-    prisma.revenueType.findMany({
-      where: {
-        userId: userId,
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-      orderBy: {
-        name: "asc",
-      },
-    }),
     prisma.platform.findMany({
-      where: {
-        userId: userId,
-      },
+      where: { userId },
       select: {
         id: true,
         name: true,
@@ -199,9 +172,7 @@ async function getRevenuesDataUncached(userId: string) {
       },
     }),
     prisma.driver.findMany({
-      where: {
-        userId: userId,
-      },
+      where: { userId },
       select: {
         id: true,
         name: true,
@@ -211,9 +182,7 @@ async function getRevenuesDataUncached(userId: string) {
       },
     }),
     prisma.vehicle.findMany({
-      where: {
-        userId: userId,
-      },
+      where: { userId },
       select: {
         id: true,
         name: true,
@@ -224,13 +193,13 @@ async function getRevenuesDataUncached(userId: string) {
     }),
   ]);
 
-  return { revenues, revenueTypes, platforms: companies, drivers, vehicles };
+  return { revenues, platforms: companies, drivers, vehicles };
 }
 
 const getCachedRevenuesData = cacheWithTag(
   getRevenuesDataUncached,
   ['revenues-data'],
-  [CacheTags.REVENUES, CacheTags.REVENUE_TYPES, CacheTags.PLATFORMS, CacheTags.DRIVERS, CacheTags.VEHICLES],
+  [CacheTags.REVENUES, CacheTags.PLATFORMS, CacheTags.DRIVERS, CacheTags.VEHICLES],
   300
 )
 
@@ -242,41 +211,36 @@ export async function getRevenuesData() {
 }
 
 async function getRevenueFormDataUncached(userId: string) {
-  const [revenueTypes, companies, paymentMethods, drivers, vehicles] = await Promise.all([
-    prisma.revenueType.findMany({
-      where: { userId: userId },
-      select: { id: true, name: true },
-      orderBy: { name: "asc" },
-    }),
+  const [companies, paymentMethods, drivers, vehicles] = await Promise.all([
     prisma.platform.findMany({
-      where: { userId: userId },
+      where: { userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
     prisma.paymentMethod.findMany({
-      where: { userId: userId },
+      where: { userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
     prisma.driver.findMany({
-      where: { userId: userId },
+      where: { userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
     prisma.vehicle.findMany({
-      where: { userId: userId },
+      where: { userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
   ]);
 
-  return { revenueTypes, platforms: companies, paymentMethods, drivers, vehicles };
+  return { platforms: companies, paymentMethods, drivers, vehicles };
 }
 
 const getCachedRevenueFormData = cacheWithTag(
   getRevenueFormDataUncached,
   ['revenue-form-data'],
-  [CacheTags.REVENUE_TYPES, CacheTags.PLATFORMS, CacheTags.PAYMENT_METHODS, CacheTags.DRIVERS, CacheTags.VEHICLES],
+  [CacheTags.PLATFORMS, CacheTags.PAYMENT_METHODS, CacheTags.DRIVERS, CacheTags.VEHICLES],
   600
 )
 

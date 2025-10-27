@@ -51,7 +51,6 @@ model User {
   vehicles     Vehicle[]
   platforms    Platform[]
   expenseTypes ExpenseType[]
-  revenueTypes RevenueType[]
   paymentMethods PaymentMethod[]
   preferences      UserPreferences?
   goals            Goal[]
@@ -122,7 +121,7 @@ model Platform {
   userId   String
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  revenues Revenue[]
+  revenues RevenuePlatform[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -148,20 +147,6 @@ model ExpenseType {
   @@index([userId])
 }
 
-model RevenueType {
-  id       String    @id @default(cuid())
-  name     String
-  icon     String?
-  userId   String
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  revenues Revenue[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId])
-}
 
 enum FeeType {
   NONE
@@ -271,19 +256,13 @@ model Expense {
 
 model Revenue {
   id              String         @id @default(cuid())
-  description     String?
   amount          Float
   date            DateTime
   kmDriven        Float?
   hoursWorked     Float?
-  tripType        String?
   receiptUrl      String?
 
-  revenueTypeId   String?
-  revenueType     RevenueType?   @relation(fields: [revenueTypeId], references: [id], onDelete: SetNull)
-
-  platformId      String?
-  platform        Platform?      @relation(fields: [platformId], references: [id], onDelete: SetNull)
+  platforms       RevenuePlatform[]
 
   paymentMethodId String?
   paymentMethod   PaymentMethod? @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
@@ -299,15 +278,27 @@ model Revenue {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([platformId])
   @@index([driverId])
   @@index([vehicleId])
   @@index([date])
-  // Composite indexes for complex queries
-  @@index([platformId, date])
   @@index([driverId, date])
   @@index([vehicleId, date])
-  @@index([date, platformId, driverId])
+  @@index([date, driverId])
+}
+
+// Junction table for many-to-many relationship between Revenue and Platform
+model RevenuePlatform {
+  id         String   @id @default(cuid())
+  revenueId  String
+  revenue    Revenue  @relation(fields: [revenueId], references: [id], onDelete: Cascade)
+  platformId String
+  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+
+  @@unique([revenueId, platformId])
+  @@index([revenueId])
+  @@index([platformId])
 }
 
 model WorkLog {

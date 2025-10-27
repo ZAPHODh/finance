@@ -30,6 +30,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Button } from "../ui/button"
+import { logout } from "@/app/[locale]/actions"
 
 export function NavUser({
   user,
@@ -112,10 +114,10 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/logout">
+              <Button onClick={() => logout()}>
                 <LogOut />
                 Sair
-              </Link>
+              </Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

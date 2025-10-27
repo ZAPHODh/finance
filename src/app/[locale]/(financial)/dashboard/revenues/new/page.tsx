@@ -7,12 +7,11 @@ export default async function NewRevenuePage() {
   const { user } = await getCurrentSession();
   if (!user) redirect("/");
 
-  const { revenueTypes, platforms, paymentMethods, drivers, vehicles } = await getRevenueFormData();
+  const { platforms, paymentMethods, drivers, vehicles } = await getRevenueFormData();
 
   return (
     <RevenueDialog
       mode="create"
-      revenueTypes={revenueTypes}
       platforms={platforms}
       paymentMethods={paymentMethods}
       drivers={drivers}

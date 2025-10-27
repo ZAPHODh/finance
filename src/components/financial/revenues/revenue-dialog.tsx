@@ -3,8 +3,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { useRouter, usePathname } from "next/navigation";
 import { useScopedI18n } from "@/locales/client";
@@ -17,20 +17,16 @@ interface RevenueDialogProps {
   mode: "create" | "edit";
   revenue?: {
     id: string;
-    description: string | null;
     amount: number;
     date: Date;
     kmDriven: number | null;
     hoursWorked: number | null;
-    tripType: string | null;
     receiptUrl: string | null;
-    revenueTypeId: string | null;
-    platformId: string | null;
+    platformIds: string[];
     paymentMethodId: string | null;
     driverId: string | null;
     vehicleId: string | null;
   };
-  revenueTypes?: Array<{ id: string; name: string }>;
   platforms?: Array<{ id: string; name: string }>;
   paymentMethods?: Array<{ id: string; name: string }>;
   drivers?: Array<{ id: string; name: string }>;
@@ -40,7 +36,6 @@ interface RevenueDialogProps {
 export function RevenueDialog({
   mode,
   revenue,
-  revenueTypes = [],
   platforms = [],
   paymentMethods = [],
   drivers = [],
@@ -60,30 +55,22 @@ export function RevenueDialog({
 
   const form = useForm({
     defaultValues: {
-      description: revenue?.description || "",
       amount: revenue?.amount || 0,
       date: revenue?.date ? new Date(revenue.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
       kmDriven: revenue?.kmDriven || undefined,
       hoursWorked: revenue?.hoursWorked || undefined,
-      tripType: revenue?.tripType || "",
-      receiptUrl: revenue?.receiptUrl || "",
-      revenueTypeId: revenue?.revenueTypeId || "",
-      platformId: revenue?.platformId || "",
+      platformIds: revenue?.platformIds || [],
       paymentMethodId: revenue?.paymentMethodId || "",
       driverId: revenue?.driverId || "",
       vehicleId: revenue?.vehicleId || "",
     },
     onSubmit: async ({ value }) => {
       const data = {
-        description: value.description || undefined,
         amount: Number(value.amount),
         date: new Date(value.date),
         kmDriven: value.kmDriven ? Number(value.kmDriven) : undefined,
         hoursWorked: value.hoursWorked ? Number(value.hoursWorked) : undefined,
-        tripType: value.tripType || undefined,
-        receiptUrl: value.receiptUrl || undefined,
-        revenueTypeId: value.revenueTypeId && value.revenueTypeId !== "none" ? value.revenueTypeId : undefined,
-        platformId: value.platformId && value.platformId !== "none" ? value.platformId : undefined,
+        platformIds: value.platformIds,
         paymentMethodId: value.paymentMethodId && value.paymentMethodId !== "none" ? value.paymentMethodId : undefined,
         driverId: value.driverId && value.driverId !== "none" ? value.driverId : undefined,
         vehicleId: value.vehicleId && value.vehicleId !== "none" ? value.vehicleId : undefined,
@@ -124,19 +111,6 @@ export function RevenueDialog({
         >
           <FieldSet>
             <FieldGroup>
-              <form.Field name="description">
-                {(field) => (
-                  <Field>
-                    <FieldLabel htmlFor="description">{t('description')}</FieldLabel>
-                    <Textarea
-                      id="description"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                  </Field>
-                )}
-              </form.Field>
-
               <form.Field name="amount">
                 {(field) => (
                   <Field>
@@ -168,50 +142,33 @@ export function RevenueDialog({
                 )}
               </form.Field>
 
-              <form.Field name="platformId">
+              <form.Field name="platformIds">
                 {(field) => (
                   <Field>
-                    <FieldLabel htmlFor="platformId">{t('platform')}</FieldLabel>
-                    <Select
-                      value={field.state.value}
-                      onValueChange={field.handleChange}
-                    >
-                      <SelectTrigger id="platformId">
-                        <SelectValue placeholder={t('platform')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">-</SelectItem>
-                        {platforms.map((platform) => (
-                          <SelectItem key={platform.id} value={platform.id}>
+                    <FieldLabel>{t('platforms')}</FieldLabel>
+                    <div className="space-y-2">
+                      {platforms.map((platform) => (
+                        <div key={platform.id} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`platform-${platform.id}`}
+                            checked={field.state.value.includes(platform.id)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                field.handleChange([...field.state.value, platform.id]);
+                              } else {
+                                field.handleChange(field.state.value.filter((id: string) => id !== platform.id));
+                              }
+                            }}
+                          />
+                          <label
+                            htmlFor={`platform-${platform.id}`}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
                             {platform.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </Field>
-                )}
-              </form.Field>
-
-              <form.Field name="revenueTypeId">
-                {(field) => (
-                  <Field>
-                    <FieldLabel htmlFor="revenueTypeId">{t('revenueType')}</FieldLabel>
-                    <Select
-                      value={field.state.value}
-                      onValueChange={field.handleChange}
-                    >
-                      <SelectTrigger id="revenueTypeId">
-                        <SelectValue placeholder={t('revenueType')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">-</SelectItem>
-                        {revenueTypes.map((type) => (
-                          <SelectItem key={type.id} value={type.id}>
-                            {type.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                          </label>
+                        </div>
+                      ))}
+                    </div>
                   </Field>
                 )}
               </form.Field>
@@ -313,19 +270,6 @@ export function RevenueDialog({
                       step="0.01"
                       value={field.state.value || ""}
                       onChange={(e) => field.handleChange(e.target.value ? Number(e.target.value) : undefined)}
-                    />
-                  </Field>
-                )}
-              </form.Field>
-
-              <form.Field name="tripType">
-                {(field) => (
-                  <Field>
-                    <FieldLabel htmlFor="tripType">{t('tripType')}</FieldLabel>
-                    <Input
-                      id="tripType"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
                     />
                   </Field>
                 )}
