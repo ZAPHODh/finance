@@ -325,6 +325,9 @@ export default {
         endDate: 'Data Final',
         createdAt: 'Criado Em',
         generating: 'Gerando relatório...',
+        view: 'Ver Relatório',
+        category: 'Categoria',
+        searchReports: 'Buscar relatórios...',
         types: {
             MONTHLY_SUMMARY: 'Resumo Mensal',
             DRE: 'DRE Simplificado',

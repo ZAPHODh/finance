@@ -532,6 +532,41 @@ enum ReportType {
   CUSTOM
 }
 
+enum PartnerCategory {
+  FUEL
+  MAINTENANCE
+  INSURANCE
+  PAYMENT
+  PARKING
+  TOLLS
+  CAR_WASH
+  TIRES
+}
+
+model Partner {
+  id           String          @id @default(cuid())
+  name         String
+  category     PartnerCategory
+  logoUrl      String?
+
+  // Marketing benefits
+  discountRate Float?          // Ex: 15 para 15% de desconto
+  tagline      String          // Ex: "Economize até 15% em combustível"
+  benefit      String          // Descrição detalhada do benefício
+  ctaText      String          // Ex: "Cadastre-se grátis"
+  ctaUrl       String          // Link de afiliado/parceiro
+
+  // Targeting
+  showForPlans PlanType[]      // [FREE] = só mostra para free tier
+  active       Boolean         @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([active])
+}
+
 model Report {
   id          String     @id @default(cuid())
   userId      String

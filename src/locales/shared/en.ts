@@ -325,6 +325,9 @@ export default {
         endDate: 'End Date',
         createdAt: 'Created At',
         generating: 'Generating report...',
+        view: 'View Report',
+        category: 'Category',
+        searchReports: 'Search reports...',
         types: {
             MONTHLY_SUMMARY: 'Monthly Summary',
             DRE: 'Simplified Income Statement',
