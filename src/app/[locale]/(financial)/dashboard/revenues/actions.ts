@@ -5,6 +5,40 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
+import type { Prisma } from "@prisma/client";
+
+export type RevenueWithRelations = Prisma.RevenueGetPayload<{
+  include: {
+    platforms: {
+      include: {
+        platform: {
+          select: {
+            id: true;
+            name: true;
+          };
+        };
+      };
+    };
+    paymentMethod: {
+      select: {
+        id: true;
+        name: true;
+      };
+    };
+    driver: {
+      select: {
+        id: true;
+        name: true;
+      };
+    };
+    vehicle: {
+      select: {
+        id: true;
+        name: true;
+      };
+    };
+  };
+}>;
 
 export interface RevenueFormData {
   amount: number;
@@ -119,48 +153,49 @@ export async function deleteRevenue(id: string) {
 }
 
 async function getRevenuesDataUncached(userId: string) {
-  const [revenues, companies, drivers, vehicles] = await Promise.all([
-    prisma.revenue.findMany({
-      where: {
-        OR: [
-          { platforms: { some: { platform: { userId } } } },
-          { driver: { userId } },
-        ],
-      },
-      include: {
-        platforms: {
-          include: {
-            platform: {
-              select: {
-                id: true,
-                name: true,
-              },
+  const revenues = await prisma.revenue.findMany({
+    where: {
+      OR: [
+        { platforms: { some: { platform: { userId } } } },
+        { driver: { userId } },
+      ],
+    },
+    include: {
+      platforms: {
+        include: {
+          platform: {
+            select: {
+              id: true,
+              name: true,
             },
           },
         },
-        paymentMethod: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        driver: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        vehicle: {
-          select: {
-            id: true,
-            name: true,
-          },
+      },
+      paymentMethod: {
+        select: {
+          id: true,
+          name: true,
         },
       },
-      orderBy: {
-        date: "desc",
+      driver: {
+        select: {
+          id: true,
+          name: true,
+        },
       },
-    }),
+      vehicle: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      date: "desc",
+    },
+  })
+
+  const [companies, drivers, vehicles] = await Promise.all([
     prisma.platform.findMany({
       where: { userId },
       select: {

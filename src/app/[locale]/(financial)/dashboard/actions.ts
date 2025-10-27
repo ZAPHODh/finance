@@ -66,13 +66,19 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
       date: dateFilter,
       ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
       ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
-      ...(filters.platformId && filters.platformId !== "all" && { platformId: filters.platformId }),
+      ...(filters.platformId && filters.platformId !== "all" && {
+        platforms: { some: { platformId: filters.platformId } }
+      }),
       driver: {
         userId: userId,
       },
     },
     include: {
-      platform: true,
+      platforms: {
+        include: {
+          platform: true,
+        },
+      },
       driver: true,
       vehicle: true,
     },
@@ -119,11 +125,21 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
 
 
   const revenueByPlatform = revenues.reduce((acc, r) => {
-    const platformName = r.platform?.name || "Sem plataforma"
-    if (!acc[platformName]) {
-      acc[platformName] = 0
+    if (r.platforms.length === 0) {
+      const platformName = "Sem plataforma"
+      if (!acc[platformName]) {
+        acc[platformName] = 0
+      }
+      acc[platformName] += r.amount
+    } else {
+      r.platforms.forEach(p => {
+        const platformName = p.platform.name
+        if (!acc[platformName]) {
+          acc[platformName] = 0
+        }
+        acc[platformName] += r.amount / r.platforms.length
+      })
     }
-    acc[platformName] += r.amount
     return acc
   }, {} as Record<string, number>)
 
@@ -173,18 +189,18 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
   const transactions = [
     ...revenues.map(r => ({
       id: `rev-${r.id}`,
-      description: r.description || `Receita - ${r.platform?.name || 'Sem plataforma'}`,
-      category: r.platform?.name || 'Sem plataforma',
+      description: `Receita - ${r.platforms.length > 0 ? r.platforms.map(p => p.platform.name).join(', ') : 'Sem plataforma'}`,
+      category: r.platforms.length > 0 ? r.platforms.map(p => p.platform.name).join(', ') : 'Sem plataforma',
       amount: r.amount,
       type: 'revenue' as const,
       date: r.date,
       driver: r.driver?.name,
       vehicle: r.vehicle?.name,
-      platform: r.platform?.name,
+      platform: r.platforms.length > 0 ? r.platforms[0].platform.name : undefined,
     })),
     ...expenses.map(e => ({
       id: `exp-${e.id}`,
-      description: e.description || `Despesa - ${e.expenseType.name}`,
+      description: `Despesa - ${e.expenseType.name}`,
       category: e.expenseType.name,
       amount: e.amount,
       type: 'expense' as const,

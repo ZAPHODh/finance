@@ -20,75 +20,24 @@ import { Input } from '@/components/ui/input';
 import { useScopedI18n } from '@/locales/client';
 import { Edit, Trash, Search } from 'lucide-react';
 import Link from 'next/link';
-import { deleteRevenue } from '@/app/[locale]/(financial)/dashboard/revenues/actions';
+import { deleteRevenue, type RevenueWithRelations } from '@/app/[locale]/(financial)/dashboard/revenues/actions';
 import { toast } from 'sonner';
 import { useState, useMemo, useTransition } from 'react';
 
-interface Revenue {
-  id: string;
-  description: string | null;
-  amount: number;
-  date: Date;
-  kmDriven: number | null;
-  hoursWorked: number | null;
-  revenueType: {
-    id: string;
-    name: string;
-  } | null;
-  platform: {
-    id: string;
-    name: string;
-  } | null;
-  paymentMethod: {
-    id: string;
-    name: string;
-  } | null;
-  driver: {
-    id: string;
-    name: string;
-  } | null;
-  vehicle: {
-    id: string;
-    name: string;
-  } | null;
-}
-
-interface RevenueType {
-  id: string;
-  name: string;
-}
-
-interface Platform {
-  id: string;
-  name: string;
-}
-
-interface Driver {
-  id: string;
-  name: string;
-}
-
-interface Vehicle {
-  id: string;
-  name: string;
-}
-
 interface RevenuesTableProps {
-  revenues: Revenue[];
-  revenueTypes: RevenueType[];
-  platforms: Platform[];
-  drivers: Driver[];
-  vehicles: Vehicle[];
+  revenues: RevenueWithRelations[];
+  platforms: { id: string; name: string }[];
+  drivers: { id: string; name: string }[];
+  vehicles: { id: string; name: string }[];
 }
 
-export function RevenuesTable({ revenues, revenueTypes, platforms, drivers, vehicles }: RevenuesTableProps) {
+export function RevenuesTable({ revenues, platforms, drivers, vehicles }: RevenuesTableProps) {
   const t = useScopedI18n('shared.financial.revenues');
   const tCommon = useScopedI18n('shared.common');
   const tNoData = useScopedI18n('shared.sidebar.dashboard.breakdowns');
   const [isPending, startTransition] = useTransition();
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedRevenueType, setSelectedRevenueType] = useState<string>('all');
   const [selectedPlatform, setSelectedPlatform] = useState<string>('all');
   const [selectedDriver, setSelectedDriver] = useState<string>('all');
   const [selectedVehicle, setSelectedVehicle] = useState<string>('all');
@@ -96,17 +45,15 @@ export function RevenuesTable({ revenues, revenueTypes, platforms, drivers, vehi
   const filteredRevenues = useMemo(() => {
     return revenues.filter((revenue) => {
       const matchesSearch = searchTerm === '' ||
-        revenue.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        revenue.revenueType?.name.toLowerCase().includes(searchTerm.toLowerCase());
+        revenue.platforms.some(p => p.platform.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
-      const matchesType = selectedRevenueType === 'all' || revenue.revenueType?.id === selectedRevenueType;
-      const matchesPlatform = selectedPlatform === 'all' || revenue.platform?.id === selectedPlatform;
+      const matchesPlatform = selectedPlatform === 'all' || revenue.platforms.some(p => p.platform.id === selectedPlatform);
       const matchesDriver = selectedDriver === 'all' || revenue.driver?.id === selectedDriver;
       const matchesVehicle = selectedVehicle === 'all' || revenue.vehicle?.id === selectedVehicle;
 
-      return matchesSearch && matchesType && matchesPlatform && matchesDriver && matchesVehicle;
+      return matchesSearch && matchesPlatform && matchesDriver && matchesVehicle;
     });
-  }, [revenues, searchTerm, selectedRevenueType, selectedPlatform, selectedDriver, selectedVehicle]);
+  }, [revenues, searchTerm, selectedPlatform, selectedDriver, selectedVehicle]);
 
   async function handleDelete(id: string) {
     if (!confirm(tCommon('confirmDelete'))) {
@@ -136,7 +83,7 @@ export function RevenuesTable({ revenues, revenueTypes, platforms, drivers, vehi
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -146,19 +93,6 @@ export function RevenuesTable({ revenues, revenueTypes, platforms, drivers, vehi
             className="pl-9"
           />
         </div>
-        <Select value={selectedRevenueType} onValueChange={setSelectedRevenueType}>
-          <SelectTrigger>
-            <SelectValue placeholder={t('revenueType')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{tCommon('filter')}</SelectItem>
-            {revenueTypes.map((type) => (
-              <SelectItem key={type.id} value={type.id}>
-                {type.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
         <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
           <SelectTrigger>
             <SelectValue placeholder={t('platform')} />
@@ -209,10 +143,7 @@ export function RevenuesTable({ revenues, revenueTypes, platforms, drivers, vehi
                   {t('date')}
                 </TableHead>
                 <TableHead className="p-3 font-semibold text-foreground text-sm">
-                  {t('description')}
-                </TableHead>
-                <TableHead className="p-3 font-semibold text-foreground text-sm">
-                  {t('platform')}
+                  {t('platforms')}
                 </TableHead>
                 <TableHead className="p-3 font-semibold text-foreground text-sm">
                   {t('driver')}
@@ -231,7 +162,7 @@ export function RevenuesTable({ revenues, revenueTypes, platforms, drivers, vehi
             <TableBody>
               {filteredRevenues.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="p-6 text-center text-muted-foreground">
+                  <TableCell colSpan={6} className="p-6 text-center text-muted-foreground">
                     {tNoData('noData')}
                   </TableCell>
                 </TableRow>
@@ -242,10 +173,9 @@ export function RevenuesTable({ revenues, revenueTypes, platforms, drivers, vehi
                       {formatDate(revenue.date)}
                     </TableCell>
                     <TableCell className="p-3">
-                      {revenue.description || '-'}
-                    </TableCell>
-                    <TableCell className="p-3">
-                      {revenue.platform?.name || '-'}
+                      {revenue.platforms.length > 0
+                        ? revenue.platforms.map(p => p.platform.name).join(', ')
+                        : '-'}
                     </TableCell>
                     <TableCell className="p-3">
                       {revenue.driver?.name || '-'}

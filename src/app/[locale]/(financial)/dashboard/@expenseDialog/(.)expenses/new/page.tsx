@@ -7,13 +7,12 @@ export default async function NewExpenseModal() {
   const { user } = await getCurrentSession();
   if (!user) redirect("/");
 
-  const { expenseTypes, paymentMethods, drivers, vehicles } = await getExpenseFormData();
+  const { expenseTypes, drivers, vehicles } = await getExpenseFormData();
 
   return (
     <ExpenseDialog
       mode="create"
       expenseTypes={expenseTypes}
-      paymentMethods={paymentMethods}
       drivers={drivers}
       vehicles={vehicles}
     />

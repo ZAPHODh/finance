@@ -31,7 +31,6 @@ export function DynamicBreadcrumb({ locale }: DynamicBreadcrumbProps) {
     if (segment === "platforms") return tConfig("platforms.title")
     if (segment === "expense-types") return tConfig("expenseTypes.title")
     if (segment === "payment-methods") return tConfig("paymentMethods.title")
-    if (segment === "revenue-types") return tConfig("revenueTypes.title")
 
     if (segment === "expenses") return tFinancial("expenses.title")
     if (segment === "revenues") return tFinancial("revenues.title")

@@ -23,20 +23,14 @@ import Link from 'next/link';
 import { deleteExpense } from '@/app/[locale]/(financial)/dashboard/expenses/actions';
 import { toast } from 'sonner';
 import { useState, useMemo, useTransition } from 'react';
-
-interface Expense {
+type ExpenseWithRelations = {
   id: string;
-  description: string | null;
   amount: number;
   date: Date;
   expenseType: {
     id: string;
     name: string;
   };
-  paymentMethod: {
-    id: string;
-    name: string;
-  } | null;
   driver: {
     id: string;
     name: string;
@@ -45,28 +39,13 @@ interface Expense {
     id: string;
     name: string;
   } | null;
-}
-
-interface ExpenseType {
-  id: string;
-  name: string;
-}
-
-interface Driver {
-  id: string;
-  name: string;
-}
-
-interface Vehicle {
-  id: string;
-  name: string;
-}
+};
 
 interface ExpensesTableProps {
-  expenses: Expense[];
-  expenseTypes: ExpenseType[];
-  drivers: Driver[];
-  vehicles: Vehicle[];
+  expenses: ExpenseWithRelations[];
+  expenseTypes: { id: string; name: string }[];
+  drivers: { id: string; name: string }[];
+  vehicles: { id: string; name: string }[];
 }
 
 export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: ExpensesTableProps) {
@@ -83,7 +62,6 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
   const filteredExpenses = useMemo(() => {
     return expenses.filter((expense) => {
       const matchesSearch = searchTerm === '' ||
-        expense.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         expense.expenseType.name.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesType = selectedExpenseType === 'all' || expense.expenseType.id === selectedExpenseType;
@@ -182,9 +160,6 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
                   {t('date')}
                 </TableHead>
                 <TableHead className="p-3 font-semibold text-foreground text-sm">
-                  {t('description')}
-                </TableHead>
-                <TableHead className="p-3 font-semibold text-foreground text-sm">
                   {t('expenseType')}
                 </TableHead>
                 <TableHead className="p-3 font-semibold text-foreground text-sm">
@@ -204,7 +179,7 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
             <TableBody>
               {filteredExpenses.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="p-6 text-center text-muted-foreground">
+                  <TableCell colSpan={6} className="p-6 text-center text-muted-foreground">
                     {tNoData('noData')}
                   </TableCell>
                 </TableRow>
@@ -213,9 +188,6 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
                   <TableRow key={expense.id}>
                     <TableCell className="p-3 font-medium">
                       {formatDate(expense.date)}
-                    </TableCell>
-                    <TableCell className="p-3">
-                      {expense.description || '-'}
                     </TableCell>
                     <TableCell className="p-3">
                       {expense.expenseType.name}

@@ -15,7 +15,7 @@ export default async function RevenuesPage() {
     redirect("/");
   }
 
-  const { revenues, revenueTypes, platforms, drivers, vehicles } = await getRevenuesData();
+  const { revenues, platforms, drivers, vehicles } = await getRevenuesData();
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -32,7 +32,6 @@ export default async function RevenuesPage() {
       </div>
       <RevenuesTable
         revenues={revenues}
-        revenueTypes={revenueTypes}
         platforms={platforms}
         drivers={drivers}
         vehicles={vehicles}

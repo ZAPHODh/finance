@@ -16,7 +16,6 @@ export default async function FinancialLayout({
   platformDialog,
   expenseTypeDialog,
   paymentMethodDialog,
-  revenueTypeDialog,
   expenseDialog,
   revenueDialog,
   budgetDialog,
@@ -28,7 +27,6 @@ export default async function FinancialLayout({
   platformDialog: React.ReactNode;
   expenseTypeDialog: React.ReactNode;
   paymentMethodDialog: React.ReactNode;
-  revenueTypeDialog: React.ReactNode;
   expenseDialog: React.ReactNode;
   revenueDialog: React.ReactNode;
   budgetDialog: React.ReactNode;
@@ -97,7 +95,6 @@ export default async function FinancialLayout({
           {platformDialog}
           {expenseTypeDialog}
           {paymentMethodDialog}
-          {revenueTypeDialog}
           {expenseDialog}
           {revenueDialog}
           {budgetDialog}
