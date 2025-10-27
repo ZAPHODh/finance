@@ -7,12 +7,9 @@ import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
 
 export interface ExpenseFormData {
-  description?: string;
   amount: number;
   date: Date;
-  receiptUrl?: string;
   expenseTypeId: string;
-  paymentMethodId?: string;
   driverId?: string;
   vehicleId?: string;
 }
@@ -25,12 +22,9 @@ export async function createExpense(data: ExpenseFormData) {
 
   await prisma.expense.create({
     data: {
-      description: data.description || null,
       amount: data.amount,
       date: data.date,
-      receiptUrl: data.receiptUrl || null,
       expenseTypeId: data.expenseTypeId,
-      paymentMethodId: data.paymentMethodId || null,
       driverId: data.driverId || null,
       vehicleId: data.vehicleId || null,
     },
@@ -63,12 +57,9 @@ export async function updateExpense(id: string, data: ExpenseFormData) {
   await prisma.expense.update({
     where: { id },
     data: {
-      description: data.description || null,
       amount: data.amount,
       date: data.date,
-      receiptUrl: data.receiptUrl || null,
       expenseTypeId: data.expenseTypeId,
-      paymentMethodId: data.paymentMethodId || null,
       driverId: data.driverId || null,
       vehicleId: data.vehicleId || null,
     },
@@ -112,17 +103,11 @@ async function getExpensesDataUncached(userId: string) {
     prisma.expense.findMany({
       where: {
         expenseType: {
-          userId: userId,
+          userId,
         },
       },
       include: {
         expenseType: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        paymentMethod: {
           select: {
             id: true,
             name: true,
@@ -146,9 +131,7 @@ async function getExpensesDataUncached(userId: string) {
       },
     }),
     prisma.expenseType.findMany({
-      where: {
-        userId: userId,
-      },
+      where: { userId },
       select: {
         id: true,
         name: true,
@@ -158,9 +141,7 @@ async function getExpensesDataUncached(userId: string) {
       },
     }),
     prisma.driver.findMany({
-      where: {
-        userId: userId,
-      },
+      where: { userId },
       select: {
         id: true,
         name: true,
@@ -170,9 +151,7 @@ async function getExpensesDataUncached(userId: string) {
       },
     }),
     prisma.vehicle.findMany({
-      where: {
-        userId: userId,
-      },
+      where: { userId },
       select: {
         id: true,
         name: true,
@@ -201,36 +180,31 @@ export async function getExpensesData() {
 }
 
 async function getExpenseFormDataUncached(userId: string) {
-  const [expenseTypes, paymentMethods, drivers, vehicles] = await Promise.all([
+  const [expenseTypes, drivers, vehicles] = await Promise.all([
     prisma.expenseType.findMany({
-      where: { userId: userId },
-      select: { id: true, name: true },
-      orderBy: { name: "asc" },
-    }),
-    prisma.paymentMethod.findMany({
-      where: { userId: userId },
+      where: { userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
     prisma.driver.findMany({
-      where: { userId: userId },
+      where: { userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
     prisma.vehicle.findMany({
-      where: { userId: userId },
+      where: { userId },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
   ]);
 
-  return { expenseTypes, paymentMethods, drivers, vehicles };
+  return { expenseTypes, drivers, vehicles };
 }
 
 const getCachedExpenseFormData = cacheWithTag(
   getExpenseFormDataUncached,
   ['expense-form-data'],
-  [CacheTags.EXPENSE_TYPES, CacheTags.PAYMENT_METHODS, CacheTags.DRIVERS, CacheTags.VEHICLES],
+  [CacheTags.EXPENSE_TYPES, CacheTags.DRIVERS, CacheTags.VEHICLES],
   600
 )
 

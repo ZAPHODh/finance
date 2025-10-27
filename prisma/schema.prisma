@@ -167,9 +167,7 @@ model PaymentMethod {
   feePercentage    Float?            // Ex: 2.5 for 2.5%
   feeFixed         Float?            // Ex: 0.50 for R$ 0.50
 
-  expenses         Expense[]
   revenues         Revenue[]
-  expenseTemplates ExpenseTemplate[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -190,14 +188,10 @@ model ExpenseTemplate {
   user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   name            String
-  description     String?
   amount          Float?
 
   expenseTypeId   String
   expenseType     ExpenseType           @relation(fields: [expenseTypeId], references: [id], onDelete: Cascade)
-
-  paymentMethodId String?
-  paymentMethod   PaymentMethod?        @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
 
   driverId        String?
   driver          Driver?               @relation(fields: [driverId], references: [id], onDelete: SetNull)
@@ -221,16 +215,12 @@ model ExpenseTemplate {
 
 model Expense {
   id              String         @id @default(cuid())
-  description     String?
   amount          Float
   date            DateTime
   receiptUrl      String?
 
   expenseTypeId   String
   expenseType     ExpenseType    @relation(fields: [expenseTypeId], references: [id], onDelete: Cascade)
-
-  paymentMethodId String?
-  paymentMethod   PaymentMethod? @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
 
   driverId        String?
   driver          Driver?        @relation(fields: [driverId], references: [id], onDelete: SetNull)
