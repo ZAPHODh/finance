@@ -1,8 +1,11 @@
 "use client"
 
+import { useTransition } from "react"
 import { useForm } from "@tanstack/react-form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 import {
   Field,
   FieldDescription,
@@ -10,8 +13,16 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field"
+import { updateAppearance, updateRegionalSettings } from "../../app/[locale]/(user)/preferences/actions"
 
 interface PreferencesFormProps {
+  initialData: {
+    theme: string
+    language: string
+    currency: string
+    timezone: string
+    use24HourFormat: boolean
+  }
   translations: {
     appearanceTitle: string
     appearanceDescription: string
@@ -34,20 +45,51 @@ interface PreferencesFormProps {
     london: string
     timeFormat: string
     timeFormatDescription: string
+    saveChanges: string
+    saving: string
   }
 }
 
-export function PreferencesForm({ translations }: PreferencesFormProps) {
+export function PreferencesForm({ initialData, translations }: PreferencesFormProps) {
+  const [isPending, startTransition] = useTransition()
+
   const form = useForm({
     defaultValues: {
-      theme: "system",
-      language: "en",
-      currency: "brl",
-      timezone: "america-saopaulo",
-      use24Hour: false,
+      theme: initialData.theme,
+      language: initialData.language,
+      currency: initialData.currency,
+      timezone: initialData.timezone,
+      use24Hour: initialData.use24HourFormat,
     },
     onSubmit: async ({ value }) => {
-      console.log(value)
+      startTransition(async () => {
+        try {
+          const appearanceResult = await updateAppearance({
+            theme: value.theme as "light" | "dark" | "system",
+            language: value.language as "en" | "pt",
+          })
+
+          if (appearanceResult?.serverError) {
+            toast.error(appearanceResult.serverError.message)
+            return
+          }
+
+          const regionalResult = await updateRegionalSettings({
+            currency: value.currency as "usd" | "brl" | "eur",
+            timezone: value.timezone,
+            use24HourFormat: value.use24Hour,
+          })
+
+          if (regionalResult?.serverError) {
+            toast.error(regionalResult.serverError.message)
+            return
+          }
+
+          toast.success("Preferences saved successfully")
+        } catch (error) {
+          toast.error("Failed to save preferences")
+        }
+      })
     },
   })
 
@@ -171,6 +213,12 @@ export function PreferencesForm({ translations }: PreferencesFormProps) {
             </form.Field>
           </FieldGroup>
         </FieldSet>
+
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isPending}>
+            {isPending ? translations.saving : translations.saveChanges}
+          </Button>
+        </div>
       </FieldGroup>
     </form>
   )

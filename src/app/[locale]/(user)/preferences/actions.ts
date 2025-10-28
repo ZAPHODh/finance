@@ -2,6 +2,7 @@
 
 import { authActionClient } from "@/lib/client/safe-action"
 import { prisma } from "@/lib/server/db"
+import { getCurrentSession } from "@/lib/server/auth/session"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
@@ -94,3 +95,27 @@ export const updateRegionalSettings = authActionClient
     revalidatePath("/preferences")
     return { success: true, message: "Regional settings updated successfully" }
   })
+
+export async function getUserPreferences() {
+  const { user } = await getCurrentSession()
+  if (!user) throw new Error("Unauthorized")
+
+  const preferences = await prisma.userPreferences.findUnique({
+    where: { userId: user.id },
+    select: {
+      theme: true,
+      language: true,
+      currency: true,
+      timezone: true,
+      use24HourFormat: true,
+    },
+  })
+
+  return preferences || {
+    theme: "system" as const,
+    language: "en" as const,
+    currency: "brl" as const,
+    timezone: "America/Sao_Paulo",
+    use24HourFormat: false,
+  }
+}

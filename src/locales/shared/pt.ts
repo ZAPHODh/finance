@@ -552,6 +552,8 @@ export default {
             analyticsDescription: 'Ajude-nos a melhorar compartilhando dados de uso anônimos',
             profileVisibility: 'Visibilidade do Perfil',
             profileVisibilityDescription: 'Torne seu perfil visível para outros usuários',
+            saveChanges: 'Salvar Alterações',
+            saving: 'Salvando...',
         },
         preferences: {
             title: 'Preferências',
@@ -577,6 +579,8 @@ export default {
             london: 'Londres (GMT)',
             timeFormat: 'Formato 24 horas',
             timeFormatDescription: 'Usar formato de hora de 24 horas',
+            saveChanges: 'Salvar Alterações',
+            saving: 'Salvando...',
         },
         billing: {
             title: 'Faturamento',

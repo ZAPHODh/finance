@@ -2,13 +2,15 @@ import { getCurrentSession } from "@/lib/server/auth/session"
 import { getScopedI18n } from "@/locales/server"
 import { redirect } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
-import { SettingsForm } from "./settings-form"
+import { getUserSettings } from "./actions"
+import { SettingsForm } from "@/components/layout/settings-form"
 
 export default async function SettingsPage() {
   const { user } = await getCurrentSession()
   if (!user) redirect("/login")
 
   const t = await getScopedI18n("shared.userPages.settings")
+  const initialData = await getUserSettings()
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -20,6 +22,7 @@ export default async function SettingsPage() {
       <Separator />
 
       <SettingsForm
+        initialData={initialData}
         translations={{
           notificationsTitle: t("notificationsTitle"),
           notificationsDescription: t("notificationsDescription"),
@@ -35,6 +38,8 @@ export default async function SettingsPage() {
           analyticsDescription: t("analyticsDescription"),
           profileVisibility: t("profileVisibility"),
           profileVisibilityDescription: t("profileVisibilityDescription"),
+          saveChanges: t("saveChanges"),
+          saving: t("saving"),
         }}
       />
     </div>

@@ -2,6 +2,7 @@
 
 import { authActionClient } from "@/lib/client/safe-action"
 import { prisma } from "@/lib/server/db"
+import { getCurrentSession } from "@/lib/server/auth/session"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
@@ -59,3 +60,27 @@ export const updatePrivacySettings = authActionClient
     revalidatePath("/settings")
     return { success: true, message: "Privacy settings updated" }
   })
+
+export async function getUserSettings() {
+  const { user } = await getCurrentSession()
+  if (!user) throw new Error("Unauthorized")
+
+  const preferences = await prisma.userPreferences.findUnique({
+    where: { userId: user.id },
+    select: {
+      emailNotifications: true,
+      pushNotifications: true,
+      marketingEmails: true,
+      analytics: true,
+      profileVisibility: true,
+    },
+  })
+
+  return preferences || {
+    emailNotifications: true,
+    pushNotifications: false,
+    marketingEmails: false,
+    analytics: true,
+    profileVisibility: false,
+  }
+}

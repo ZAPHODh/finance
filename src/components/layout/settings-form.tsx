@@ -1,7 +1,10 @@
 "use client"
 
+import { useTransition } from "react"
 import { useForm } from "@tanstack/react-form"
 import { Switch } from "@/components/ui/switch"
+import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 import {
   Field,
   FieldDescription,
@@ -9,8 +12,16 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field"
+import { updateNotificationSettings, updatePrivacySettings } from "./actions"
 
 interface SettingsFormProps {
+  initialData: {
+    emailNotifications: boolean
+    pushNotifications: boolean
+    marketingEmails: boolean
+    analytics: boolean
+    profileVisibility: boolean
+  }
   translations: {
     notificationsTitle: string
     notificationsDescription: string
@@ -26,20 +37,51 @@ interface SettingsFormProps {
     analyticsDescription: string
     profileVisibility: string
     profileVisibilityDescription: string
+    saveChanges: string
+    saving: string
   }
 }
 
-export function SettingsForm({ translations }: SettingsFormProps) {
+export function SettingsForm({ initialData, translations }: SettingsFormProps) {
+  const [isPending, startTransition] = useTransition()
+
   const form = useForm({
     defaultValues: {
-      emailNotifications: false,
-      pushNotifications: false,
-      marketing: false,
-      analytics: true,
-      profileVisibility: false,
+      emailNotifications: initialData.emailNotifications,
+      pushNotifications: initialData.pushNotifications,
+      marketing: initialData.marketingEmails,
+      analytics: initialData.analytics,
+      profileVisibility: initialData.profileVisibility,
     },
     onSubmit: async ({ value }) => {
-      console.log(value)
+      startTransition(async () => {
+        try {
+          const notificationsResult = await updateNotificationSettings({
+            emailNotifications: value.emailNotifications,
+            pushNotifications: value.pushNotifications,
+            marketingEmails: value.marketing,
+          })
+
+          if (notificationsResult?.serverError) {
+            toast.error(notificationsResult.serverError.message)
+            return
+          }
+
+          const privacyResult = await updatePrivacySettings({
+            analytics: value.analytics,
+            profileVisibility: value.profileVisibility,
+          })
+
+          if (privacyResult?.serverError) {
+            toast.error(privacyResult.serverError.message)
+            return
+          }
+
+          toast.success("Settings saved successfully")
+        } catch (error) {
+          toast.error("Failed to save settings")
+        }
+      })
     },
   })
 
@@ -144,6 +186,12 @@ export function SettingsForm({ translations }: SettingsFormProps) {
             </form.Field>
           </FieldGroup>
         </FieldSet>
+
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isPending}>
+            {isPending ? translations.saving : translations.saveChanges}
+          </Button>
+        </div>
       </FieldGroup>
     </form>
   )

@@ -2,13 +2,15 @@ import { getCurrentSession } from "@/lib/server/auth/session"
 import { getScopedI18n } from "@/locales/server"
 import { redirect } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
-import { PreferencesForm } from "./preferences-form"
+import { PreferencesForm } from "../../../../components/layout/preferences-form"
+import { getUserPreferences } from "./actions"
 
 export default async function PreferencesPage() {
   const { user } = await getCurrentSession()
   if (!user) redirect("/login")
 
   const t = await getScopedI18n("shared.userPages.preferences")
+  const initialData = await getUserPreferences()
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -20,6 +22,7 @@ export default async function PreferencesPage() {
       <Separator />
 
       <PreferencesForm
+        initialData={initialData}
         translations={{
           appearanceTitle: t("appearanceTitle"),
           appearanceDescription: t("appearanceDescription"),
@@ -42,6 +45,8 @@ export default async function PreferencesPage() {
           london: t("london"),
           timeFormat: t("timeFormat"),
           timeFormatDescription: t("timeFormatDescription"),
+          saveChanges: t("saveChanges"),
+          saving: t("saving"),
         }}
       />
     </div>
