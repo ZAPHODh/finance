@@ -38,97 +38,100 @@ import {
   SidebarGroupContent,
 } from "@/components/ui/sidebar"
 import type { User } from "@prisma/client"
-
-const navMain = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Motoristas",
-    url: "/dashboard/drivers",
-    icon: Users,
-  },
-  {
-    title: "Veículos",
-    url: "/dashboard/vehicles",
-    icon: Car,
-  },
-  {
-    title: "Empresas",
-    url: "/dashboard/companies",
-    icon: Building2,
-  },
-]
-
-const navFinancial = [
-  {
-    title: "Despesas",
-    url: "/dashboard/expenses",
-    icon: Receipt,
-  },
-  {
-    title: "Receitas",
-    url: "/dashboard/revenues",
-    icon: TrendingUp,
-  },
-  {
-    title: "Jornadas",
-    url: "/dashboard/work-logs",
-    icon: Clock,
-  },
-]
-
-const navPlanning = [
-  {
-    title: "Metas",
-    url: "/goals",
-    icon: Target,
-  },
-  {
-    title: "Orçamentos",
-    url: "/budgets",
-    icon: Wallet,
-  },
-]
-
-const navSecondary = [
-  {
-    title: "Configurações",
-    url: "/settings",
-    icon: Settings,
-  },
-  {
-    title: "Ajuda",
-    url: "/help",
-    icon: HelpCircle,
-  },
-]
-
-const documents = [
-  {
-    name: "Tipos de Despesas",
-    url: "/dashboard/expense-types",
-    icon: Tag,
-  },
-  {
-    name: "Formas de Pagamento",
-    url: "/dashboard/payment-methods",
-    icon: CreditCard,
-  },
-  {
-    name: "Relatórios",
-    url: "/dashboard/reports",
-    icon: FileText,
-  },
-]
+import { useScopedI18n } from "@/locales/client"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user: User | null
 }
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
+  const t = useScopedI18n('shared.sidebar')
+
+  const navMain = [
+    {
+      title: t('navigation.dashboard'),
+      url: "/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      title: t('configuration.drivers'),
+      url: "/dashboard/drivers",
+      icon: Users,
+    },
+    {
+      title: t('configuration.vehicles'),
+      url: "/dashboard/vehicles",
+      icon: Car,
+    },
+    {
+      title: t('configuration.platforms'),
+      url: "/dashboard/companies",
+      icon: Building2,
+    },
+  ]
+
+  const navFinancial = [
+    {
+      title: t('financial.expenses'),
+      url: "/dashboard/expenses",
+      icon: Receipt,
+    },
+    {
+      title: t('financial.revenues'),
+      url: "/dashboard/revenues",
+      icon: TrendingUp,
+    },
+    {
+      title: t('financial.workLogs'),
+      url: "/dashboard/work-logs",
+      icon: Clock,
+    },
+  ]
+
+  const navPlanning = [
+    {
+      title: t('planning.goals'),
+      url: "/goals",
+      icon: Target,
+    },
+    {
+      title: t('planning.budgets'),
+      url: "/budgets",
+      icon: Wallet,
+    },
+  ]
+
+  const navSecondary = [
+    {
+      title: t('settings.title'),
+      url: "/settings",
+      icon: Settings,
+    },
+    {
+      title: t('help'),
+      url: "/help",
+      icon: HelpCircle,
+    },
+  ]
+
+  const documents = [
+    {
+      name: t('configuration.expenseTypes'),
+      url: "/dashboard/expense-types",
+      icon: Tag,
+    },
+    {
+      name: t('configuration.paymentMethods'),
+      url: "/dashboard/payment-methods",
+      icon: CreditCard,
+    },
+    {
+      name: t('documents.reports'),
+      url: "/dashboard/reports",
+      icon: FileText,
+    },
+  ]
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -140,16 +143,16 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             >
               <a href="/dashboard">
                 <Database className="!size-5" />
-                <span className="text-base font-semibold">Financial App</span>
+                <span className="text-base font-semibold">{t('brandName')}</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navMain} title="Principal" />
-        <NavMain items={navFinancial} title="Financeiro" />
-        <NavMain items={navPlanning} title="Planejamento" />
+        <NavMain items={navMain} title={t('navigation.main')} />
+        <NavMain items={navFinancial} title={t('financial.title')} />
+        <NavMain items={navPlanning} title={t('planning.title')} />
         <NavDocuments items={documents} />
         <SidebarGroup className="mt-auto">
           <SidebarGroupContent>

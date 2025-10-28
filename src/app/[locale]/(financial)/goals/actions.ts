@@ -5,28 +5,7 @@ import { getCurrentSession } from "@/lib/server/auth/session"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import { GoalType } from "@prisma/client"
-import { PLAN_LIMITS } from "@/config/subscription"
-
-async function checkIfGoalLimitReached() {
-    const { user } = await getCurrentSession()
-    if (!user) throw new Error("Unauthorized")
-
-    const userWithPlan = await prisma.user.findUnique({
-        where: { id: user.id },
-        select: { planType: true },
-    })
-
-    if (!userWithPlan) throw new Error("User not found")
-
-    const limits = PLAN_LIMITS[userWithPlan.planType]
-    if (limits.maxGoals === -1) return false
-
-    const count = await prisma.goal.count({
-        where: { userId: user.id, isActive: true },
-    })
-
-    return count >= limits.maxGoals
-}
+import { checkIfGoalLimitReached } from "@/lib/plans/plan-checker"
 
 export interface GoalFormData {
     name?: string;
@@ -107,10 +86,10 @@ export async function createGoal(data: GoalFormData) {
         throw new Error("Unauthorized")
     }
 
-    // Check if limit is reached
+    // Verificar limite do plano
     const limitReached = await checkIfGoalLimitReached()
     if (limitReached) {
-        throw new Error("You have reached the maximum number of goals for your plan. Please upgrade to add more.")
+        throw new Error("Você atingiu o limite de metas do seu plano. Faça upgrade para adicionar mais.")
     }
 
     const goal = await prisma.goal.create({

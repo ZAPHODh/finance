@@ -94,12 +94,12 @@ export function FinancialSidebar({ user, locale }: FinancialSidebarProps) {
     ],
     planning: [
       {
-        title: "Metas",
+        title: t("planning.goals"),
         icon: Target,
         href: `/${locale}/goals`,
       },
       {
-        title: "Orçamentos",
+        title: t("planning.budgets"),
         icon: Wallet,
         href: `/${locale}/budgets`,
       },
@@ -157,7 +157,7 @@ export function FinancialSidebar({ user, locale }: FinancialSidebarProps) {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Planejamento</SidebarGroupLabel>
+          <SidebarGroupLabel>{t('planning.title')}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navigation.planning.map((item) => (

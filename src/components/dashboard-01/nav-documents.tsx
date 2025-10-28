@@ -2,6 +2,7 @@
 
 import { LucideIcon } from "lucide-react"
 import Link from "next/link"
+import { useScopedI18n } from "@/locales/client"
 
 import {
   SidebarGroup,
@@ -20,9 +21,11 @@ export function NavDocuments({
     icon: LucideIcon
   }[]
 }) {
+  const t = useScopedI18n('shared.sidebar')
+
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Documentos</SidebarGroupLabel>
+      <SidebarGroupLabel>{t('documents.title')}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>

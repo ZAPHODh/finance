@@ -39,6 +39,7 @@ export default {
             configuration: 'Configuration',
             analytics: 'Analytics',
             settings: 'Settings',
+            main: 'Main',
         },
         financial: {
             title: 'Financial',
@@ -194,6 +195,15 @@ export default {
             preferences: 'Preferences',
             integrations: 'Integrations',
         },
+        planning: {
+            title: 'Planning',
+            goals: 'Goals',
+            budgets: 'Budgets',
+        },
+        documents: {
+            title: 'Documents',
+            reports: 'Reports',
+        },
     },
     financial: {
         expenses: {
@@ -328,6 +338,26 @@ export default {
         view: 'View Report',
         category: 'Category',
         searchReports: 'Search reports...',
+        chooseFormat: 'Choose the format to export the report',
+        comingSoon: 'Coming soon',
+        fileNotAvailable: 'File not available',
+        preview: {
+            title: 'Report Preview',
+            description: 'View of data from the selected period',
+            refresh: 'Refresh',
+            totalExpenses: 'Total Expenses',
+            totalRevenue: 'Total Revenue',
+            quantity: 'Quantity',
+            expensesByType: 'Expenses by Type',
+            revenueByPlatform: 'Revenue by Platform',
+            expensesDistribution: 'Expenses Distribution',
+            performanceByDriver: 'Performance by Driver',
+            performanceByVehicle: 'Performance by Vehicle',
+            revenue: 'Revenue',
+            expenses: 'Expenses',
+            profit: 'Profit',
+            notAvailable: 'Preview not available for this report type.',
+        },
         types: {
             MONTHLY_SUMMARY: 'Monthly Summary',
             DRE: 'Simplified Income Statement',

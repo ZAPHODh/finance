@@ -83,7 +83,7 @@ export function ExportButtons({
       <CardHeader>
         <CardTitle>{t('export')}</CardTitle>
         <CardDescription>
-          Escolha o formato para exportar o relatório
+          {t('chooseFormat')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -99,7 +99,7 @@ export function ExportButtons({
               <Icon className="h-8 w-8" />
               <span className="text-sm font-medium">{label}</span>
               {!available && (
-                <span className="text-xs text-muted-foreground">Em breve</span>
+                <span className="text-xs text-muted-foreground">{t('comingSoon')}</span>
               )}
             </Button>
           ))}

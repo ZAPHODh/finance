@@ -8,6 +8,7 @@ import { generateCSV } from "@/lib/reports/generators/csv";
 import { generatePDF } from "@/lib/reports/generators/pdf";
 import { generateExcel } from "@/lib/reports/generators/excel";
 import { generateReportFilename } from "@/lib/reports/storage/file-system";
+import { checkIfExportLimitReached, incrementExportCount } from "@/lib/plans/plan-checker";
 
 interface ExportReportParams {
   reportType: ReportType;
@@ -26,6 +27,12 @@ export async function exportReport(params: ExportReportParams) {
   const { user } = await getCurrentSession();
   if (!user) {
     throw new Error("Unauthorized");
+  }
+
+  // Verificar limite do plano
+  const limitReached = await checkIfExportLimitReached();
+  if (limitReached) {
+    throw new Error("Você atingiu o limite de exportações do seu plano. Faça upgrade para exportar mais relatórios.");
   }
 
   const { reportType, format, startDate, endDate, filters } = params;
@@ -63,6 +70,9 @@ export async function exportReport(params: ExportReportParams) {
 
   // Convert buffer to base64 for transmission
   const base64 = buffer.toString('base64');
+
+  // Incrementar contador de exports
+  await incrementExportCount();
 
   return {
     data: base64,

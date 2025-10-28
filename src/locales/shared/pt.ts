@@ -39,6 +39,7 @@ export default {
             configuration: 'Configuração',
             analytics: 'Análises',
             settings: 'Configurações',
+            main: 'Principal',
         },
         financial: {
             title: 'Financeiro',
@@ -194,6 +195,15 @@ export default {
             preferences: 'Preferências',
             integrations: 'Integrações',
         },
+        planning: {
+            title: 'Planejamento',
+            goals: 'Metas',
+            budgets: 'Orçamentos',
+        },
+        documents: {
+            title: 'Documentos',
+            reports: 'Relatórios',
+        },
     },
     financial: {
         expenses: {
@@ -328,6 +338,26 @@ export default {
         view: 'Ver Relatório',
         category: 'Categoria',
         searchReports: 'Buscar relatórios...',
+        chooseFormat: 'Escolha o formato para exportar o relatório',
+        comingSoon: 'Em breve',
+        fileNotAvailable: 'Arquivo não disponível',
+        preview: {
+            title: 'Preview do Relatório',
+            description: 'Visualização dos dados do período selecionado',
+            refresh: 'Atualizar',
+            totalExpenses: 'Total de Despesas',
+            totalRevenue: 'Total de Receitas',
+            quantity: 'Quantidade',
+            expensesByType: 'Despesas por Tipo',
+            revenueByPlatform: 'Receitas por Plataforma',
+            expensesDistribution: 'Distribuição de Despesas',
+            performanceByDriver: 'Performance por Motorista',
+            performanceByVehicle: 'Performance por Veículo',
+            revenue: 'Receita',
+            expenses: 'Despesas',
+            profit: 'Lucro',
+            notAvailable: 'Preview não disponível para este tipo de relatório.',
+        },
         types: {
             MONTHLY_SUMMARY: 'Resumo Mensal',
             DRE: 'DRE Simplificado',

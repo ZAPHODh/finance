@@ -4,32 +4,11 @@ import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { PLAN_LIMITS } from "@/config/subscription";
 import { CacheTags } from "@/lib/server/cache";
+import { checkIfDriverLimitReached } from "@/lib/plans/plan-checker";
 
 export interface DriverFormData {
   name: string;
-}
-
-async function checkIfDriverLimitReached() {
-  const { user } = await getCurrentSession();
-  if (!user) throw new Error("Unauthorized");
-
-  const userWithPlan = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { planType: true },
-  });
-
-  if (!userWithPlan) throw new Error("User not found");
-
-  const limits = PLAN_LIMITS[userWithPlan.planType];
-  if (limits.maxDrivers === -1) return false;
-
-  const count = await prisma.driver.count({
-    where: { userId: user.id },
-  });
-
-  return count >= limits.maxDrivers;
 }
 
 export async function createDriver(data: DriverFormData) {
@@ -39,9 +18,10 @@ export async function createDriver(data: DriverFormData) {
     throw new Error("Unauthorized");
   }
 
+  // Verificar limite do plano
   const limitReached = await checkIfDriverLimitReached();
   if (limitReached) {
-    throw new Error("You have reached the maximum number of drivers for your plan. Please upgrade to add more.");
+    throw new Error("Você atingiu o limite de motoristas do seu plano. Faça upgrade para adicionar mais.");
   }
 
   await prisma.driver.create({

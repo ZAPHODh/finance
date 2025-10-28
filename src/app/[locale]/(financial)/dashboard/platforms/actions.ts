@@ -4,33 +4,12 @@ import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { PLAN_LIMITS } from "@/config/subscription";
 import { CacheTags } from "@/lib/server/cache";
+import { checkIfPlatformLimitReached } from "@/lib/plans/plan-checker";
 
 export interface PlatformFormData {
   name: string;
   icon?: string;
-}
-
-async function checkIfPlatformLimitReached() {
-  const { user } = await getCurrentSession();
-  if (!user) throw new Error("Unauthorized");
-
-  const userWithPlan = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { planType: true },
-  });
-
-  if (!userWithPlan) throw new Error("User not found");
-
-  const limits = PLAN_LIMITS[userWithPlan.planType];
-  if (limits.maxCompanies === -1) return false;
-
-  const count = await prisma.platform.count({
-    where: { userId: user.id },
-  });
-
-  return count >= limits.maxCompanies;
 }
 
 export async function createPlatform(data: PlatformFormData) {
@@ -40,9 +19,10 @@ export async function createPlatform(data: PlatformFormData) {
     throw new Error("Unauthorized");
   }
 
+  // Verificar limite do plano
   const limitReached = await checkIfPlatformLimitReached();
   if (limitReached) {
-    throw new Error("You have reached the maximum number of platforms for your plan. Please upgrade to add more.");
+    throw new Error("Você atingiu o limite de plataformas do seu plano. Faça upgrade para adicionar mais.");
   }
 
   await prisma.platform.create({

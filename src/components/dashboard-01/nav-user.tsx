@@ -113,11 +113,9 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Button onClick={() => logout()}>
-                <LogOut />
-                Sair
-              </Button>
+            <DropdownMenuItem onClick={() => logout()}>
+              <LogOut />
+              Sair
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

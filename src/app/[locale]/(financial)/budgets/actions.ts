@@ -4,28 +4,7 @@ import { prisma } from "@/lib/server/db"
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
-import { PLAN_LIMITS } from "@/config/subscription"
-
-async function checkIfBudgetLimitReached() {
-    const { user } = await getCurrentSession()
-    if (!user) throw new Error("Unauthorized")
-
-    const userWithPlan = await prisma.user.findUnique({
-        where: { id: user.id },
-        select: { planType: true },
-    })
-
-    if (!userWithPlan) throw new Error("User not found")
-
-    const limits = PLAN_LIMITS[userWithPlan.planType]
-    if (limits.maxBudgets === -1) return false
-
-    const count = await prisma.budget.count({
-        where: { userId: user.id, isActive: true },
-    })
-
-    return count >= limits.maxBudgets
-}
+import { checkIfBudgetLimitReached } from "@/lib/plans/plan-checker"
 
 export interface BudgetFormData {
     name?: string;
@@ -99,10 +78,10 @@ export async function createBudget(data: BudgetFormData) {
         throw new Error("Unauthorized")
     }
 
-    // Check if limit is reached
+    // Verificar limite do plano
     const limitReached = await checkIfBudgetLimitReached()
     if (limitReached) {
-        throw new Error("You have reached the maximum number of budgets for your plan. Please upgrade to add more.")
+        throw new Error("Você atingiu o limite de orçamentos do seu plano. Faça upgrade para adicionar mais.")
     }
 
     const budget = await prisma.budget.create({

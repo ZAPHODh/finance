@@ -4,33 +4,12 @@ import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { PLAN_LIMITS } from "@/config/subscription";
 import { CacheTags } from "@/lib/server/cache";
+import { checkIfExpenseTypeLimitReached } from "@/lib/plans/plan-checker";
 
 export interface ExpenseTypeFormData {
   name: string;
   icon?: string;
-}
-
-async function checkIfExpenseTypeLimitReached() {
-  const { user } = await getCurrentSession();
-  if (!user) throw new Error("Unauthorized");
-
-  const userWithPlan = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { planType: true },
-  });
-
-  if (!userWithPlan) throw new Error("User not found");
-
-  const limits = PLAN_LIMITS[userWithPlan.planType];
-  if (limits.maxExpenseTypes === -1) return false;
-
-  const count = await prisma.expenseType.count({
-    where: { userId: user.id },
-  });
-
-  return count >= limits.maxExpenseTypes;
 }
 
 export async function createExpenseType(data: ExpenseTypeFormData) {
@@ -40,9 +19,10 @@ export async function createExpenseType(data: ExpenseTypeFormData) {
     throw new Error("Unauthorized");
   }
 
+  // Verificar limite do plano
   const limitReached = await checkIfExpenseTypeLimitReached();
   if (limitReached) {
-    throw new Error("You have reached the maximum number of expense types for your plan. Please upgrade to add more.");
+    throw new Error("Você atingiu o limite de tipos de despesa do seu plano. Faça upgrade para adicionar mais.");
   }
 
   await prisma.expenseType.create({

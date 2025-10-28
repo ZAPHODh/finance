@@ -7,6 +7,7 @@ import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Toolti
 import { RefreshCw } from 'lucide-react';
 import { getReportPreview } from '@/app/[locale]/(financial)/dashboard/reports/[type]/preview-actions';
 import type { ReportType } from '@prisma/client';
+import { useScopedI18n } from '@/locales/client';
 
 interface ReportPreviewProps {
   reportType: ReportType;
@@ -23,6 +24,7 @@ interface ReportPreviewProps {
 const COLORS = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
 export function ReportPreview({ reportType, startDate, endDate, filters }: ReportPreviewProps) {
+  const t = useScopedI18n('shared.reports.preview');
   const [data, setData] = useState<any>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -65,9 +67,9 @@ export function ReportPreview({ reportType, startDate, endDate, filters }: Repor
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Preview do Relatório</CardTitle>
+            <CardTitle>{t('title')}</CardTitle>
             <CardDescription>
-              Visualização dos dados do período selecionado
+              {t('description')}
             </CardDescription>
           </div>
           <Button
@@ -77,36 +79,36 @@ export function ReportPreview({ reportType, startDate, endDate, filters }: Repor
             disabled={isPending}
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${isPending ? 'animate-spin' : ''}`} />
-            Atualizar
+            {t('refresh')}
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        {renderPreview(reportType, data)}
+        {renderPreview(reportType, data, t)}
       </CardContent>
     </Card>
   );
 }
 
-function renderPreview(reportType: ReportType, data: any) {
+function renderPreview(reportType: ReportType, data: any, t: any) {
   switch (reportType) {
     case 'EXPENSE_BREAKDOWN':
       return (
         <>
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground">Total de Despesas</p>
+              <p className="text-sm text-muted-foreground">{t('totalExpenses')}</p>
               <p className="text-2xl font-bold">R$ {data.summary.totalExpenses.toFixed(2)}</p>
             </div>
             <div className="p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground">Quantidade</p>
+              <p className="text-sm text-muted-foreground">{t('quantity')}</p>
               <p className="text-2xl font-bold">{data.summary.count}</p>
             </div>
           </div>
 
           {data.byType && data.byType.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold mb-4">Despesas por Tipo</h3>
+              <h3 className="text-lg font-semibold mb-4">{t('expensesByType')}</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
@@ -135,18 +137,18 @@ function renderPreview(reportType: ReportType, data: any) {
         <>
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground">Total de Receitas</p>
+              <p className="text-sm text-muted-foreground">{t('totalRevenue')}</p>
               <p className="text-2xl font-bold text-green-600">R$ {data.summary.totalRevenue.toFixed(2)}</p>
             </div>
             <div className="p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground">Quantidade</p>
+              <p className="text-sm text-muted-foreground">{t('quantity')}</p>
               <p className="text-2xl font-bold">{data.summary.count}</p>
             </div>
           </div>
 
           {data.byPlatform && data.byPlatform.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold mb-4">Receitas por Plataforma</h3>
+              <h3 className="text-lg font-semibold mb-4">{t('revenueByPlatform')}</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data.byPlatform}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -167,18 +169,18 @@ function renderPreview(reportType: ReportType, data: any) {
         <>
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground">Total de Despesas</p>
+              <p className="text-sm text-muted-foreground">{t('totalExpenses')}</p>
               <p className="text-2xl font-bold text-red-600">R$ {data.summary.totalExpenses.toFixed(2)}</p>
             </div>
             <div className="p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground">Quantidade</p>
+              <p className="text-sm text-muted-foreground">{t('quantity')}</p>
               <p className="text-2xl font-bold">{data.summary.count}</p>
             </div>
           </div>
 
           {data.byType && data.byType.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold mb-4">Distribuição de Despesas</h3>
+              <h3 className="text-lg font-semibold mb-4">{t('expensesDistribution')}</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data.byType}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -198,7 +200,7 @@ function renderPreview(reportType: ReportType, data: any) {
         <>
           {data.drivers && data.drivers.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold mb-4">Performance por Motorista</h3>
+              <h3 className="text-lg font-semibold mb-4">{t('performanceByDriver')}</h3>
               <ResponsiveContainer width="100%" height={350}>
                 <BarChart data={data.drivers}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -206,9 +208,9 @@ function renderPreview(reportType: ReportType, data: any) {
                   <YAxis />
                   <Tooltip formatter={(value: number) => `R$ ${value.toFixed(2)}`} />
                   <Legend />
-                  <Bar dataKey="revenue" fill="#22c55e" name="Receita" />
-                  <Bar dataKey="expenses" fill="#ef4444" name="Despesas" />
-                  <Bar dataKey="profit" fill="#3b82f6" name="Lucro" />
+                  <Bar dataKey="revenue" fill="#22c55e" name={t('revenue')} />
+                  <Bar dataKey="expenses" fill="#ef4444" name={t('expenses')} />
+                  <Bar dataKey="profit" fill="#3b82f6" name={t('profit')} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -221,7 +223,7 @@ function renderPreview(reportType: ReportType, data: any) {
         <>
           {data.vehicles && data.vehicles.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold mb-4">Performance por Veículo</h3>
+              <h3 className="text-lg font-semibold mb-4">{t('performanceByVehicle')}</h3>
               <ResponsiveContainer width="100%" height={350}>
                 <BarChart data={data.vehicles}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -229,9 +231,9 @@ function renderPreview(reportType: ReportType, data: any) {
                   <YAxis />
                   <Tooltip formatter={(value: number) => `R$ ${value.toFixed(2)}`} />
                   <Legend />
-                  <Bar dataKey="revenue" fill="#22c55e" name="Receita" />
-                  <Bar dataKey="expenses" fill="#ef4444" name="Despesas" />
-                  <Bar dataKey="profit" fill="#3b82f6" name="Lucro" />
+                  <Bar dataKey="revenue" fill="#22c55e" name={t('revenue')} />
+                  <Bar dataKey="expenses" fill="#ef4444" name={t('expenses')} />
+                  <Bar dataKey="profit" fill="#3b82f6" name={t('profit')} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -240,6 +242,6 @@ function renderPreview(reportType: ReportType, data: any) {
       );
 
     default:
-      return <p className="text-muted-foreground">Preview não disponível para este tipo de relatório.</p>;
+      return <p className="text-muted-foreground">{t('notAvailable')}</p>;
   }
 }

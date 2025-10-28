@@ -50,19 +50,19 @@ export function ReportsTable({ reports }: ReportsTableProps) {
     if (report.fileUrl) {
       window.open(report.fileUrl, '_blank');
     } else {
-      toast.error('File not available');
+      toast.error(t('fileNotAvailable'));
     }
   }
 
   const columns: ColumnDef<Report>[] = [
     {
       accessorKey: 'name',
-      header: 'Name',
+      header: t('name'),
       cell: ({ row }) => <div className="font-medium">{row.getValue('name')}</div>,
     },
     {
       accessorKey: 'type',
-      header: 'Type',
+      header: t('type'),
       cell: ({ row }) => {
         const type = row.getValue('type') as string;
         return <div>{t(`types.${type}` as any)}</div>;
@@ -70,12 +70,12 @@ export function ReportsTable({ reports }: ReportsTableProps) {
     },
     {
       accessorKey: 'format',
-      header: 'Format',
+      header: t('format'),
       cell: ({ row }) => <div className="uppercase">{row.getValue('format')}</div>,
     },
     {
       id: 'period',
-      header: 'Period',
+      header: t('period'),
       cell: ({ row }) => {
         const report = row.original;
         return (
@@ -88,7 +88,7 @@ export function ReportsTable({ reports }: ReportsTableProps) {
     },
     {
       accessorKey: 'createdAt',
-      header: 'Created At',
+      header: t('createdAt'),
       cell: ({ row }) => (
         <div>{format(new Date(row.getValue('createdAt')), 'dd/MM/yyyy HH:mm')}</div>
       ),
