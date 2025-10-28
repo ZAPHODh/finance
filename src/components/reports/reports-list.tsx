@@ -42,7 +42,7 @@ export function ReportsList() {
       cell: ({ row }) => {
         const icon = row.original.icon;
         return (
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted text-2xl">
+          <div className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg bg-muted text-xl md:text-2xl shrink-0">
             {icon}
           </div>
         );
@@ -52,10 +52,21 @@ export function ReportsList() {
       accessorKey: 'name',
       header: t('type'),
       cell: ({ row }) => {
+        const category = row.original.category;
         return (
-          <div className="flex flex-col gap-1">
-            <div className="font-medium">{row.original.name}</div>
-            <div className="text-sm text-muted-foreground">{row.original.description}</div>
+          <div className="flex flex-col gap-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-medium truncate">{row.original.name}</span>
+              {/* Badge visível no mobile, oculta no desktop (aparece na coluna própria) */}
+              {category !== 'general' && (
+                <Badge variant="outline" className="capitalize md:hidden shrink-0 text-xs">
+                  {category.toLowerCase()}
+                </Badge>
+              )}
+            </div>
+            <div className="text-sm text-muted-foreground line-clamp-2 md:line-clamp-1">
+              {row.original.description}
+            </div>
           </div>
         );
       },
@@ -73,19 +84,24 @@ export function ReportsList() {
           </Badge>
         );
       },
+      // Ocultar coluna de categoria no mobile (badge aparece junto ao nome)
+      meta: {
+        className: 'hidden md:table-cell',
+      },
     },
     {
       id: 'actions',
       cell: ({ row }) => {
         return (
-          <div className="flex justify-end">
+          <div className="flex justify-end shrink-0">
             <Button
               variant="ghost"
               size="sm"
+              className="h-8 md:h-9"
               onClick={() => router.push(`/dashboard/reports/${row.original.type.toLowerCase()}`)}
             >
-              <Eye className="h-4 w-4 mr-2" />
-              {t('view')}
+              <Eye className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">{t('view')}</span>
             </Button>
           </div>
         );

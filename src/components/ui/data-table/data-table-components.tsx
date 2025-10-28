@@ -121,10 +121,11 @@ export function DataTable<TData, TValue>({
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id} className="bg-muted/50">
                   {headerGroup.headers.map((header) => {
+                    const meta = header.column.columnDef.meta as any;
                     return (
                       <TableHead
                         key={header.id}
-                        className="p-3 font-semibold text-foreground text-sm"
+                        className={`p-3 font-semibold text-foreground text-sm ${meta?.className || ''}`}
                       >
                         {header.isPlaceholder
                           ? null
@@ -139,11 +140,14 @@ export function DataTable<TData, TValue>({
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="p-3">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
+                    {row.getVisibleCells().map((cell) => {
+                      const meta = cell.column.columnDef.meta as any;
+                      return (
+                        <TableCell key={cell.id} className={`p-3 ${meta?.className || ''}`}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      );
+                    })}
                   </TableRow>
                 ))
               ) : (
