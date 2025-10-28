@@ -28,7 +28,7 @@ export default function Pricing() {
                                 asChild
                                 variant="outline"
                                 className="w-full">
-                                <Link href="">{t('getStarted')}</Link>
+                                <Link href="/login">{t('getStarted')}</Link>
                             </Button>
 
                             <hr className="border-dashed" />
@@ -62,7 +62,7 @@ export default function Pricing() {
                                 <Button
                                     asChild
                                     className="w-full">
-                                    <Link href="">{t('getStarted')}</Link>
+                                    <Link href="/login">{t('getStarted')}</Link>
                                 </Button>
                             </div>
 

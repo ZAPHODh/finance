@@ -422,8 +422,13 @@ export default {
         title: 'Gerencie as Finanças da Sua Frota com Facilidade',
         subtitle: 'Acompanhe despesas, receitas e métricas de desempenho dos seus motoristas e veículos em uma plataforma poderosa.',
         startBuilding: 'Começar',
+        getStarted: 'Comece Agora',
+        viewPricing: 'Ver Preços',
         requestDemo: 'Solicitar Demo',
         powering: 'Confiado por empresas de transporte',
+        faster: 'Mais Rápido',
+        modern: 'Moderno',
+        customizable: '100% Personalizável',
     },
     features: {
         title: 'Feito para Gestores de Frotas',

@@ -422,8 +422,13 @@ export default {
         title: 'Manage Your Fleet Finances with Ease',
         subtitle: 'Track expenses, revenues, and performance metrics for your drivers and vehicles in one powerful platform.',
         startBuilding: 'Get Started',
+        getStarted: 'Get Started',
+        viewPricing: 'View Pricing',
         requestDemo: 'Request Demo',
         powering: 'Trusted by transportation companies',
+        faster: 'Faster',
+        modern: 'Modern',
+        customizable: '100% Customizable',
     },
     features: {
         title: 'Built for Fleet Managers',
