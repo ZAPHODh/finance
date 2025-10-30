@@ -86,6 +86,16 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       url: "/dashboard/work-logs",
       icon: Clock,
     },
+    {
+      title: t('configuration.expenseTypes'),
+      url: "/dashboard/expense-types",
+      icon: Tag,
+    },
+    {
+      title: t('configuration.paymentMethods'),
+      url: "/dashboard/payment-methods",
+      icon: CreditCard,
+    },
   ]
 
   const navPlanning = [
@@ -116,16 +126,6 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 
   const documents = [
     {
-      name: t('configuration.expenseTypes'),
-      url: "/dashboard/expense-types",
-      icon: Tag,
-    },
-    {
-      name: t('configuration.paymentMethods'),
-      url: "/dashboard/payment-methods",
-      icon: CreditCard,
-    },
-    {
       name: t('documents.reports'),
       url: "/dashboard/reports",
       icon: FileText,
@@ -150,11 +150,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navMain} title={t('navigation.main')} />
-        <NavMain items={navFinancial} title={t('financial.title')} />
-        <NavMain items={navPlanning} title={t('planning.title')} />
-        <NavDocuments items={documents} />
-        <SidebarGroup className="mt-auto">
+        <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -163,7 +159,11 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <NavSecondary items={navSecondary} />
+        <NavMain items={navMain} title={t('navigation.main')} />
+        <NavMain items={navFinancial} title={t('financial.title')} />
+        <NavMain items={navPlanning} title={t('planning.title')} />
+        <NavDocuments items={documents} />
+        <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

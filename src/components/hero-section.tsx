@@ -28,16 +28,13 @@ export default function HeroSection() {
                             <p className="mt-8">{t('subtitle')}</p>
 
                             <div>
-                                <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start my-10 lg:my-12">
-                                    <Button asChild size="lg">
-                                        <Link href="/login">{t('getStarted')}</Link>
-                                    </Button>
-                                    <Button asChild size="lg" variant="outline">
+                                <div className="my-10 lg:my-12">
+                                    <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
                                         <Link href="#pricing">{t('viewPricing')}</Link>
                                     </Button>
                                 </div>
 
-                                <ul className="list-inside list-disc space-y-2 text-sm">
+                                <ul className="list-outside list-disc space-y-2 text-sm pl-5">
                                     <li>{t('faster')}</li>
                                     <li>{t('modern')}</li>
                                     <li>{t('customizable')}</li>
