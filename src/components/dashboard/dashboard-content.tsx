@@ -13,7 +13,7 @@ import { ChartAreaInteractive } from "@/components/dashboard-01/chart-area-inter
 import { BreakdownCard } from "./breakdown-card"
 import { TransactionsSection } from "./transactions-section"
 import { GoalsSection } from "./goals-section"
-import { useDashboardFilters } from "@/hooks/use-dashboard-filters"
+import { useDashboardQueryFilters } from "@/hooks/use-dashboard-query-filters"
 import { getDashboardData } from "@/app/[locale]/(financial)/dashboard/actions"
 
 interface DashboardData {
@@ -49,7 +49,7 @@ interface DashboardData {
 }
 
 export function DashboardContent() {
-  const { filters } = useDashboardFilters()
+  const { filters } = useDashboardQueryFilters()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
   const tKpis = useScopedI18n("shared.sidebar.dashboard.kpis")

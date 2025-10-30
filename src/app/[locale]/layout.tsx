@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { CommandMenuProvider } from "@/components/command-menu-provider";
 import { cn } from "@/lib/utils";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import "../globals.css";
 
@@ -125,12 +126,14 @@ export default async function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <I18nProviderClient locale={locale}>
-            <CommandMenuProvider>
-              <main>
-                {children}
-                {loginDialog}
-              </main>
-            </CommandMenuProvider>
+            <NuqsAdapter>
+              <CommandMenuProvider>
+                <main>
+                  {children}
+                  {loginDialog}
+                </main>
+              </CommandMenuProvider>
+            </NuqsAdapter>
           </I18nProviderClient>
           <Toaster />
         </ThemeProvider>

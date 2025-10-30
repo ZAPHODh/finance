@@ -5,13 +5,31 @@ import { SectionCards } from "@/components/dashboard-01/section-cards"
 import { ChartAreaInteractive } from "@/components/dashboard-01/chart-area-interactive"
 import { DataTable } from "@/components/dashboard-01/data-table"
 
-export default async function DashboardPage() {
+interface DashboardPageProps {
+  searchParams: Promise<{
+    period?: string
+    driver?: string
+    vehicle?: string
+    platform?: string
+  }>
+}
+
+export default async function DashboardPage({ searchParams }: DashboardPageProps) {
   const { user } = await getCurrentSession()
   if (!user) redirect("/login")
   if (!user.hasCompletedOnboarding) redirect("/onboarding")
 
+  const params = await searchParams
+  const period = params.period || "thisMonth"
+  const driverId = params.driver || undefined
+  const vehicleId = params.vehicle || undefined
+  const platformId = params.platform || undefined
+
   const dashboardData = await getDashboardData({
-    period: "thisMonth",
+    period,
+    driverId,
+    vehicleId,
+    platformId,
   })
 
   return (

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select"
 import { useScopedI18n } from "@/locales/client"
 import { Driver, Vehicle, Platform } from "@prisma/client"
-import { useDashboardFilters } from "@/hooks/use-dashboard-filters"
+import { useDashboardQueryFilters } from "@/hooks/use-dashboard-query-filters"
 
 interface DashboardFiltersProps {
   drivers: Driver[]
@@ -25,7 +25,7 @@ export function DashboardFilters({
   onFilterChange,
 }: DashboardFiltersProps) {
   const t = useScopedI18n("shared.sidebar.dashboard.filters")
-  const { filters, setFilter } = useDashboardFilters()
+  const { filters, setFilter } = useDashboardQueryFilters()
 
   function handleFilterChange(
     key: keyof typeof filters,

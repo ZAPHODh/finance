@@ -5,7 +5,7 @@ import { Driver, Vehicle, Platform } from "@prisma/client"
 import { SectionCards } from "./section-cards"
 import { ChartAreaInteractive } from "./chart-area-interactive"
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters"
-import { useDashboardFilters } from "@/hooks/use-dashboard-filters"
+import { useDashboardQueryFilters } from "@/hooks/use-dashboard-query-filters"
 import { getDashboardData } from "@/app/[locale]/(financial)/dashboard/actions"
 
 interface DashboardData {
@@ -34,7 +34,7 @@ export function DashboardView({
   vehicles,
   platforms,
 }: DashboardViewProps) {
-  const { filters } = useDashboardFilters()
+  const { filters } = useDashboardQueryFilters()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
 
