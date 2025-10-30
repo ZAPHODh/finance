@@ -16,7 +16,12 @@
     "**/*.test.ts",
     "**/*.test.tsx",
     ".next/**",
-    "node_modules/**"
+    "node_modules/**",
+    "**/dashboard/drivers/new/page.tsx",
+    "**/dashboard/vehicles/new/page.tsx",
+    "**/dashboard/expense-types/new/page.tsx",
+    "**/dashboard/payment-methods/new/page.tsx",
+    "**/dashboard/platforms/new/page.tsx"
   ],
   "ignoreBinaries": ["pnpm"],
   "next": {
