@@ -6,6 +6,14 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfPaymentMethodLimitReached } from "@/lib/plans/plan-checker";
+import { z } from "zod";
+
+const paymentMethodFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  feeType: z.string(),
+  feePercentage: z.number().nullable(),
+  feeFixed: z.number().nullable(),
+});
 
 export interface PaymentMethodFormData {
   name: string;
@@ -14,7 +22,8 @@ export interface PaymentMethodFormData {
   feeFixed: number | null;
 }
 
-export async function createPaymentMethod(data: PaymentMethodFormData) {
+export async function createPaymentMethod(input: unknown) {
+  const data = paymentMethodFormSchema.parse(input);
   const { user } = await getCurrentSession();
 
   if (!user) {
@@ -41,7 +50,8 @@ export async function createPaymentMethod(data: PaymentMethodFormData) {
   revalidatePath("/dashboard/payment-methods");
 }
 
-export async function updatePaymentMethod(id: string, data: PaymentMethodFormData) {
+export async function updatePaymentMethod(id: string, input: unknown) {
+  const data = paymentMethodFormSchema.parse(input);
   const { user } = await getCurrentSession();
 
   if (!user) {
@@ -71,6 +81,8 @@ export async function updatePaymentMethod(id: string, data: PaymentMethodFormDat
 }
 
 export async function deletePaymentMethod(id: string) {
+  const idSchema = z.string().min(1);
+  idSchema.parse(id);
   const { user } = await getCurrentSession();
 
   if (!user) {

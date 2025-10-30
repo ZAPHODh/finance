@@ -5,6 +5,24 @@ import { getCurrentSession } from "@/lib/server/auth/session"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import { checkIfBudgetLimitReached } from "@/lib/plans/plan-checker"
+import { z } from "zod"
+
+const budgetFormSchema = z.object({
+    name: z.string().optional(),
+    expenseTypeId: z.string().min(1, "Expense type is required"),
+    monthlyLimit: z.number().positive("Monthly limit must be positive"),
+    alertThreshold: z.number().min(0).max(1),
+    period: z.string().min(1, "Period is required"),
+});
+
+const updateBudgetSchema = z.object({
+    name: z.string().optional(),
+    expenseTypeId: z.string().optional(),
+    monthlyLimit: z.number().positive().optional(),
+    alertThreshold: z.number().min(0).max(1).optional(),
+    period: z.string().optional(),
+    isActive: z.boolean().optional(),
+});
 
 export interface BudgetFormData {
     name?: string;
@@ -72,7 +90,8 @@ export async function getBudgetById(id: string) {
 /**
  * Create a new budget
  */
-export async function createBudget(data: BudgetFormData) {
+export async function createBudget(input: unknown) {
+    const data = budgetFormSchema.parse(input);
     const { user } = await getCurrentSession()
     if (!user) {
         throw new Error("Unauthorized")
@@ -101,7 +120,8 @@ export async function createBudget(data: BudgetFormData) {
 /**
  * Update a budget
  */
-export async function updateBudget(id: string, data: UpdateBudgetData) {
+export async function updateBudget(id: string, input: unknown) {
+    const data = updateBudgetSchema.parse(input);
     const { user } = await getCurrentSession()
     if (!user) {
         throw new Error("Unauthorized")
@@ -138,6 +158,8 @@ export async function updateBudget(id: string, data: UpdateBudgetData) {
  * Delete a budget
  */
 export async function deleteBudget(id: string) {
+    const idSchema = z.string().min(1);
+    idSchema.parse(id);
     const { user } = await getCurrentSession()
     if (!user) {
         throw new Error("Unauthorized")

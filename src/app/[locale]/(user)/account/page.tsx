@@ -1,8 +1,7 @@
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { getScopedI18n } from "@/locales/server"
 import { redirect } from "next/navigation"
-import { Separator } from "@/components/ui/separator"
-import { ProfileForm, SecurityForm } from "./account-forms"
+import { ProfileForm } from "../../../../components/layout/account-forms"
 
 export default async function AccountPage() {
   const { user } = await getCurrentSession()
@@ -17,8 +16,6 @@ export default async function AccountPage() {
         <p className="text-muted-foreground">{t("description")}</p>
       </div>
 
-      <Separator />
-
       <ProfileForm
         defaultName={user.name || ""}
         defaultEmail={user.email || ""}
@@ -28,19 +25,8 @@ export default async function AccountPage() {
           name: t("name"),
           email: t("email"),
           save: t("save"),
-        }}
-      />
-
-      <Separator />
-
-      <SecurityForm
-        translations={{
-          securityTitle: t("securityTitle"),
-          securityDescription: t("securityDescription"),
-          currentPassword: t("currentPassword"),
-          newPassword: t("newPassword"),
-          confirmPassword: t("confirmPassword"),
-          changePassword: t("changePassword"),
+          profileUpdated: t("profileUpdated"),
+          profileUpdateError: t("profileUpdateError"),
         }}
       />
     </div>

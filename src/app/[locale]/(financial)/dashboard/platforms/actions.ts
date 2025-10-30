@@ -6,13 +6,20 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfPlatformLimitReached } from "@/lib/plans/plan-checker";
+import { z } from "zod";
+
+const platformFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  icon: z.string().optional(),
+});
 
 export interface PlatformFormData {
   name: string;
   icon?: string;
 }
 
-export async function createPlatform(data: PlatformFormData) {
+export async function createPlatform(input: unknown) {
+  const data = platformFormSchema.parse(input);
   const { user } = await getCurrentSession();
 
   if (!user) {
@@ -37,7 +44,8 @@ export async function createPlatform(data: PlatformFormData) {
   revalidatePath("/dashboard/platforms");
 }
 
-export async function updatePlatform(id: string, data: PlatformFormData) {
+export async function updatePlatform(id: string, input: unknown) {
+  const data = platformFormSchema.parse(input);
   const { user } = await getCurrentSession();
 
   if (!user) {
@@ -65,6 +73,8 @@ export async function updatePlatform(id: string, data: PlatformFormData) {
 }
 
 export async function deletePlatform(id: string) {
+  const idSchema = z.string().min(1);
+  idSchema.parse(id);
   const { user } = await getCurrentSession();
 
   if (!user) {

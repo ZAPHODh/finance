@@ -6,6 +6,18 @@ import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
 import type { Prisma } from "@prisma/client";
+import { z } from "zod";
+
+const revenueFormSchema = z.object({
+  amount: z.number().positive("Amount must be positive"),
+  date: z.date(),
+  kmDriven: z.number().optional(),
+  hoursWorked: z.number().optional(),
+  platformIds: z.array(z.string()).min(1, "At least one platform is required"),
+  paymentMethodId: z.string().optional(),
+  driverId: z.string().optional(),
+  vehicleId: z.string().optional(),
+});
 
 export type RevenueWithRelations = Prisma.RevenueGetPayload<{
   include: {
@@ -51,7 +63,9 @@ export interface RevenueFormData {
   vehicleId?: string;
 }
 
-export async function createRevenue(data: RevenueFormData) {
+export async function createRevenue(input: unknown) {
+  const data = revenueFormSchema.parse(input);
+
   const { user } = await getCurrentSession();
   if (!user) {
     throw new Error("Unauthorized");
@@ -79,7 +93,9 @@ export async function createRevenue(data: RevenueFormData) {
   revalidatePath("/dashboard/revenues");
 }
 
-export async function updateRevenue(id: string, data: RevenueFormData) {
+export async function updateRevenue(id: string, input: unknown) {
+  const data = revenueFormSchema.parse(input);
+
   const { user } = await getCurrentSession();
   if (!user) {
     throw new Error("Unauthorized");
@@ -124,6 +140,9 @@ export async function updateRevenue(id: string, data: RevenueFormData) {
 }
 
 export async function deleteRevenue(id: string) {
+  const idSchema = z.string().min(1);
+  idSchema.parse(id);
+
   const { user } = await getCurrentSession();
   if (!user) {
     throw new Error("Unauthorized");

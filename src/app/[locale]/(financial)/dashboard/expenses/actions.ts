@@ -5,6 +5,15 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
+import { z } from "zod";
+
+const expenseFormSchema = z.object({
+  amount: z.number().positive("Amount must be positive"),
+  date: z.date(),
+  expenseTypeId: z.string().min(1, "Expense type is required"),
+  driverId: z.string().optional(),
+  vehicleId: z.string().optional(),
+});
 
 export interface ExpenseFormData {
   amount: number;
@@ -14,7 +23,9 @@ export interface ExpenseFormData {
   vehicleId?: string;
 }
 
-export async function createExpense(data: ExpenseFormData) {
+export async function createExpense(input: unknown) {
+  const data = expenseFormSchema.parse(input);
+
   const { user } = await getCurrentSession();
   if (!user) {
     throw new Error("Unauthorized");
@@ -35,7 +46,9 @@ export async function createExpense(data: ExpenseFormData) {
   revalidatePath("/dashboard/expenses");
 }
 
-export async function updateExpense(id: string, data: ExpenseFormData) {
+export async function updateExpense(id: string, input: unknown) {
+  const data = expenseFormSchema.parse(input);
+
   const { user } = await getCurrentSession();
   if (!user) {
     throw new Error("Unauthorized");
@@ -71,6 +84,9 @@ export async function updateExpense(id: string, data: ExpenseFormData) {
 }
 
 export async function deleteExpense(id: string) {
+  const idSchema = z.string().min(1);
+  idSchema.parse(id);
+
   const { user } = await getCurrentSession();
   if (!user) {
     throw new Error("Unauthorized");

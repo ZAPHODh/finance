@@ -6,6 +6,25 @@ import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import { GoalType } from "@prisma/client"
 import { checkIfGoalLimitReached } from "@/lib/plans/plan-checker"
+import { z } from "zod"
+
+const goalFormSchema = z.object({
+    name: z.string().optional(),
+    type: z.nativeEnum(GoalType),
+    targetValue: z.number().positive("Target value must be positive"),
+    period: z.string().min(1, "Period is required"),
+    driverId: z.string().optional(),
+    vehicleId: z.string().optional(),
+});
+
+const updateGoalSchema = z.object({
+    name: z.string().optional(),
+    targetValue: z.number().positive().optional(),
+    period: z.string().optional(),
+    driverId: z.string().optional(),
+    vehicleId: z.string().optional(),
+    isActive: z.boolean().optional(),
+});
 
 export interface GoalFormData {
     name?: string;
@@ -80,7 +99,8 @@ export async function getGoalById(id: string) {
 /**
  * Create a new goal
  */
-export async function createGoal(data: GoalFormData) {
+export async function createGoal(input: unknown) {
+    const data = goalFormSchema.parse(input);
     const { user } = await getCurrentSession()
     if (!user) {
         throw new Error("Unauthorized")
@@ -110,7 +130,8 @@ export async function createGoal(data: GoalFormData) {
 /**
  * Update a goal
  */
-export async function updateGoal(id: string, data: UpdateGoalData) {
+export async function updateGoal(id: string, input: unknown) {
+    const data = updateGoalSchema.parse(input);
     const { user } = await getCurrentSession()
     if (!user) {
         throw new Error("Unauthorized")
@@ -147,6 +168,8 @@ export async function updateGoal(id: string, data: UpdateGoalData) {
  * Delete a goal
  */
 export async function deleteGoal(id: string) {
+    const idSchema = z.string().min(1);
+    idSchema.parse(id);
     const { user } = await getCurrentSession()
     if (!user) {
         throw new Error("Unauthorized")

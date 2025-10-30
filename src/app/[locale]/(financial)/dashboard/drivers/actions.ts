@@ -6,12 +6,19 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfDriverLimitReached } from "@/lib/plans/plan-checker";
+import { z } from "zod";
+
+const driverFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+});
 
 export interface DriverFormData {
   name: string;
 }
 
-export async function createDriver(data: DriverFormData) {
+export async function createDriver(input: unknown) {
+  const data = driverFormSchema.parse(input);
+
   const { user } = await getCurrentSession();
 
   if (!user) {
@@ -35,7 +42,9 @@ export async function createDriver(data: DriverFormData) {
   revalidatePath("/dashboard/drivers");
 }
 
-export async function updateDriver(id: string, data: DriverFormData) {
+export async function updateDriver(id: string, input: unknown) {
+  const data = driverFormSchema.parse(input);
+
   const { user } = await getCurrentSession();
 
   if (!user) {
@@ -62,6 +71,9 @@ export async function updateDriver(id: string, data: DriverFormData) {
 }
 
 export async function deleteDriver(id: string) {
+  const idSchema = z.string().min(1);
+  idSchema.parse(id);
+
   const { user } = await getCurrentSession();
 
   if (!user) {
