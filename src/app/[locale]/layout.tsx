@@ -4,7 +4,6 @@ import { Metadata } from "next";
 import { I18nProviderClient } from "@/locales/client";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
-import { CommandMenuProvider } from "@/components/command-menu-provider";
 import { cn } from "@/lib/utils";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
@@ -127,12 +126,10 @@ export default async function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <I18nProviderClient locale={locale}>
             <NuqsAdapter>
-              <CommandMenuProvider>
-                <main>
-                  {children}
-                  {loginDialog}
-                </main>
-              </CommandMenuProvider>
+              <main>
+                {children}
+                {loginDialog}
+              </main>
             </NuqsAdapter>
           </I18nProviderClient>
           <Toaster />

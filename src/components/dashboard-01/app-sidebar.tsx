@@ -25,7 +25,7 @@ import { NavMain } from "./nav-main"
 import { NavSecondary } from "./nav-secondary"
 import { NavUser } from "./nav-user"
 import { NavDocuments } from "./nav-documents"
-import { SearchButton } from "./search-button"
+import { AlgoliaSearch } from "./algolia-search"
 import {
   Sidebar,
   SidebarContent,
@@ -154,7 +154,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SearchButton />
+                {user && <AlgoliaSearch userId={user.id} />}
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
