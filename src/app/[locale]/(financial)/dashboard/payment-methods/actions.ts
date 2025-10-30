@@ -7,6 +7,12 @@ import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfPaymentMethodLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
+import {
+  addRecordToIndex,
+  updateRecordInIndex,
+  removeRecordFromIndex
+} from "@/lib/server/algolia";
+import { buildPaymentMethodSearchRecord } from "@/lib/server/algolia-helpers";
 
 const paymentMethodFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -36,7 +42,7 @@ export async function createPaymentMethod(input: unknown) {
     throw new Error("Você atingiu o limite de formas de pagamento do seu plano. Faça upgrade para adicionar mais.");
   }
 
-  await prisma.paymentMethod.create({
+  const paymentMethod = await prisma.paymentMethod.create({
     data: {
       name: data.name,
       feeType: data.feeType as any,
@@ -45,6 +51,9 @@ export async function createPaymentMethod(input: unknown) {
       userId: user.id,
     },
   });
+
+  // Add to search index
+  await addRecordToIndex(buildPaymentMethodSearchRecord(paymentMethod));
 
   revalidateTag(CacheTags.PAYMENT_METHODS);
   revalidatePath("/dashboard/payment-methods");
@@ -66,7 +75,7 @@ export async function updatePaymentMethod(id: string, input: unknown) {
     throw new Error("Payment method not found or unauthorized");
   }
 
-  await prisma.paymentMethod.update({
+  const updatedPaymentMethod = await prisma.paymentMethod.update({
     where: { id },
     data: {
       name: data.name,
@@ -75,6 +84,9 @@ export async function updatePaymentMethod(id: string, input: unknown) {
       feeFixed: data.feeFixed,
     },
   });
+
+  // Update in search index
+  await updateRecordInIndex(buildPaymentMethodSearchRecord(updatedPaymentMethod));
 
   revalidateTag(CacheTags.PAYMENT_METHODS);
   revalidatePath("/dashboard/payment-methods");
@@ -100,6 +112,9 @@ export async function deletePaymentMethod(id: string) {
   await prisma.paymentMethod.delete({
     where: { id },
   });
+
+  // Remove from search index
+  await removeRecordFromIndex(`payment-method-${id}`);
 
   revalidateTag(CacheTags.PAYMENT_METHODS);
   revalidatePath("/dashboard/payment-methods");

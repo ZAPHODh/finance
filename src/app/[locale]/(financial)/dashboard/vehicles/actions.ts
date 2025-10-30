@@ -7,6 +7,12 @@ import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfVehicleLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
+import {
+  addRecordToIndex,
+  updateRecordInIndex,
+  removeRecordFromIndex
+} from "@/lib/server/algolia";
+import { buildVehicleSearchRecord } from "@/lib/server/algolia-helpers";
 
 const vehicleFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -36,7 +42,7 @@ export async function createVehicle(input: unknown) {
     throw new Error("Você atingiu o limite de veículos do seu plano. Faça upgrade para adicionar mais.");
   }
 
-  await prisma.vehicle.create({
+  const vehicle = await prisma.vehicle.create({
     data: {
       name: data.name,
       plate: data.plate,
@@ -45,6 +51,9 @@ export async function createVehicle(input: unknown) {
       userId: user.id,
     },
   });
+
+  // Add to search index
+  await addRecordToIndex(buildVehicleSearchRecord(vehicle));
 
   revalidateTag(CacheTags.VEHICLES);
   revalidatePath("/dashboard/vehicles");
@@ -66,7 +75,7 @@ export async function updateVehicle(id: string, input: unknown) {
     throw new Error("Vehicle not found or unauthorized");
   }
 
-  await prisma.vehicle.update({
+  const updatedVehicle = await prisma.vehicle.update({
     where: { id },
     data: {
       name: data.name,
@@ -75,6 +84,9 @@ export async function updateVehicle(id: string, input: unknown) {
       year: data.year,
     },
   });
+
+  // Update in search index
+  await updateRecordInIndex(buildVehicleSearchRecord(updatedVehicle));
 
   revalidateTag(CacheTags.VEHICLES);
   revalidatePath("/dashboard/vehicles");
@@ -100,6 +112,9 @@ export async function deleteVehicle(id: string) {
   await prisma.vehicle.delete({
     where: { id },
   });
+
+  // Remove from search index
+  await removeRecordFromIndex(`vehicle-${id}`);
 
   revalidateTag(CacheTags.VEHICLES);
   revalidatePath("/dashboard/vehicles");

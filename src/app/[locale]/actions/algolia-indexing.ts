@@ -132,7 +132,6 @@ export async function indexUserData() {
         userId: user.id,
       },
     },
-    take: 500, // Limit for performance
     orderBy: { date: 'desc' },
     include: {
       expenseType: { select: { name: true } },
@@ -168,7 +167,6 @@ export async function indexUserData() {
         { driver: { userId: user.id } },
       ],
     },
-    take: 500,
     orderBy: { date: 'desc' },
     include: {
       platforms: {

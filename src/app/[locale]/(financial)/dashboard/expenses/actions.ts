@@ -6,6 +6,12 @@ import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
 import { z } from "zod";
+import {
+  addRecordToIndex,
+  updateRecordInIndex,
+  removeRecordFromIndex
+} from "@/lib/server/algolia";
+import { buildExpenseSearchRecord } from "@/lib/server/algolia-helpers";
 
 const expenseFormSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
@@ -31,7 +37,7 @@ export async function createExpense(input: unknown) {
     throw new Error("Unauthorized");
   }
 
-  await prisma.expense.create({
+  const expense = await prisma.expense.create({
     data: {
       amount: data.amount,
       date: data.date,
@@ -39,7 +45,15 @@ export async function createExpense(input: unknown) {
       driverId: data.driverId || null,
       vehicleId: data.vehicleId || null,
     },
+    include: {
+      expenseType: { select: { name: true } },
+      driver: { select: { name: true } },
+      vehicle: { select: { name: true } },
+    },
   });
+
+  // Add to search index
+  await addRecordToIndex(buildExpenseSearchRecord(expense));
 
   revalidateTag(CacheTags.EXPENSES);
   revalidateTag(CacheTags.DASHBOARD);
@@ -67,7 +81,7 @@ export async function updateExpense(id: string, input: unknown) {
     throw new Error("Expense not found or unauthorized");
   }
 
-  await prisma.expense.update({
+  const updatedExpense = await prisma.expense.update({
     where: { id },
     data: {
       amount: data.amount,
@@ -76,7 +90,15 @@ export async function updateExpense(id: string, input: unknown) {
       driverId: data.driverId || null,
       vehicleId: data.vehicleId || null,
     },
+    include: {
+      expenseType: { select: { name: true } },
+      driver: { select: { name: true } },
+      vehicle: { select: { name: true } },
+    },
   });
+
+  // Update in search index
+  await updateRecordInIndex(buildExpenseSearchRecord(updatedExpense));
 
   revalidateTag(CacheTags.EXPENSES);
   revalidateTag(CacheTags.DASHBOARD);
@@ -108,6 +130,9 @@ export async function deleteExpense(id: string) {
   await prisma.expense.delete({
     where: { id },
   });
+
+  // Remove from search index
+  await removeRecordFromIndex(`expense-${id}`);
 
   revalidateTag(CacheTags.EXPENSES);
   revalidateTag(CacheTags.DASHBOARD);

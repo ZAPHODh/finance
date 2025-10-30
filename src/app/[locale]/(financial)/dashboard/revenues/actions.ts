@@ -7,6 +7,12 @@ import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
 import type { Prisma } from "@prisma/client";
 import { z } from "zod";
+import {
+  addRecordToIndex,
+  updateRecordInIndex,
+  removeRecordFromIndex
+} from "@/lib/server/algolia";
+import { buildRevenueSearchRecord } from "@/lib/server/algolia-helpers";
 
 const revenueFormSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
@@ -71,7 +77,7 @@ export async function createRevenue(input: unknown) {
     throw new Error("Unauthorized");
   }
 
-  await prisma.revenue.create({
+  const revenue = await prisma.revenue.create({
     data: {
       amount: data.amount,
       date: data.date,
@@ -86,7 +92,19 @@ export async function createRevenue(input: unknown) {
         })),
       },
     },
+    include: {
+      platforms: {
+        include: {
+          platform: { select: { name: true } },
+        },
+      },
+      driver: { select: { name: true } },
+      vehicle: { select: { name: true } },
+    },
   });
+
+  // Add to search index
+  await addRecordToIndex(buildRevenueSearchRecord(revenue));
 
   revalidateTag(CacheTags.REVENUES);
   revalidateTag(CacheTags.DASHBOARD);
@@ -115,7 +133,7 @@ export async function updateRevenue(id: string, input: unknown) {
     throw new Error("Revenue not found or unauthorized");
   }
 
-  await prisma.revenue.update({
+  const updatedRevenue = await prisma.revenue.update({
     where: { id },
     data: {
       amount: data.amount,
@@ -132,7 +150,19 @@ export async function updateRevenue(id: string, input: unknown) {
         })),
       },
     },
+    include: {
+      platforms: {
+        include: {
+          platform: { select: { name: true } },
+        },
+      },
+      driver: { select: { name: true } },
+      vehicle: { select: { name: true } },
+    },
   });
+
+  // Update in search index
+  await updateRecordInIndex(buildRevenueSearchRecord(updatedRevenue));
 
   revalidateTag(CacheTags.REVENUES);
   revalidateTag(CacheTags.DASHBOARD);
@@ -165,6 +195,9 @@ export async function deleteRevenue(id: string) {
   await prisma.revenue.delete({
     where: { id },
   });
+
+  // Remove from search index
+  await removeRecordFromIndex(`revenue-${id}`);
 
   revalidateTag(CacheTags.REVENUES);
   revalidateTag(CacheTags.DASHBOARD);

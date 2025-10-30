@@ -7,6 +7,12 @@ import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfPlatformLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
+import {
+  addRecordToIndex,
+  updateRecordInIndex,
+  removeRecordFromIndex
+} from "@/lib/server/algolia";
+import { buildPlatformSearchRecord } from "@/lib/server/algolia-helpers";
 
 const platformFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -32,13 +38,16 @@ export async function createPlatform(input: unknown) {
     throw new Error("Você atingiu o limite de plataformas do seu plano. Faça upgrade para adicionar mais.");
   }
 
-  await prisma.platform.create({
+  const platform = await prisma.platform.create({
     data: {
       name: data.name,
       icon: data.icon,
       userId: user.id,
     },
   });
+
+  // Add to search index
+  await addRecordToIndex(buildPlatformSearchRecord(platform));
 
   revalidateTag(CacheTags.PLATFORMS);
   revalidatePath("/dashboard/platforms");
@@ -60,13 +69,16 @@ export async function updatePlatform(id: string, input: unknown) {
     throw new Error("Platform not found or unauthorized");
   }
 
-  await prisma.platform.update({
+  const updatedPlatform = await prisma.platform.update({
     where: { id },
     data: {
       name: data.name,
       icon: data.icon,
     },
   });
+
+  // Update in search index
+  await updateRecordInIndex(buildPlatformSearchRecord(updatedPlatform));
 
   revalidateTag(CacheTags.PLATFORMS);
   revalidatePath("/dashboard/platforms");
@@ -92,6 +104,9 @@ export async function deletePlatform(id: string) {
   await prisma.platform.delete({
     where: { id },
   });
+
+  // Remove from search index
+  await removeRecordFromIndex(`platform-${id}`);
 
   revalidateTag(CacheTags.PLATFORMS);
   revalidatePath("/dashboard/platforms");
