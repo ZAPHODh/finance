@@ -1,0 +1,35 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "ignoreExportsUsedInFile": true,
+  "ignoreDependencies": [
+    "@types/node",
+    "@types/react",
+    "@types/react-dom",
+    "typescript",
+    "prisma",
+    "eslint-config-next",
+    "prettier",
+    "shadcn",
+    "tailwindcss"
+  ],
+  "ignore": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    ".next/**",
+    "node_modules/**"
+  ],
+  "ignoreBinaries": ["pnpm"],
+  "next": {
+    "entry": [
+      "src/app/**/page.tsx!",
+      "src/app/**/layout.tsx!",
+      "src/app/**/route.ts!",
+      "src/app/**/loading.tsx!",
+      "src/app/**/error.tsx!",
+      "src/app/**/not-found.tsx!",
+      "src/middleware.ts!",
+      "next.config.ts!",
+      "postcss.config.mjs!"
+    ]
+  }
+}
