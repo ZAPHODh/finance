@@ -4,6 +4,9 @@ import { Metadata } from "next";
 import { I18nProviderClient } from "@/locales/client";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { CookieConsent } from "@/components/legal/cookie-consent";
+import { PosthogProvider } from "@/components/analytics/posthog-provider";
+import { CrispChat } from "@/components/support/crisp-chat";
 import { cn } from "@/lib/utils";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
@@ -124,15 +127,19 @@ export default async function RootLayout({
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <I18nProviderClient locale={locale}>
-            <NuqsAdapter>
-              <main>
-                {children}
-                {loginDialog}
-              </main>
-            </NuqsAdapter>
-          </I18nProviderClient>
-          <Toaster />
+          <PosthogProvider>
+            <I18nProviderClient locale={locale}>
+              <NuqsAdapter>
+                <main>
+                  {children}
+                  {loginDialog}
+                </main>
+              </NuqsAdapter>
+            </I18nProviderClient>
+            <Toaster />
+            <CookieConsent />
+            <CrispChat />
+          </PosthogProvider>
         </ThemeProvider>
       </body>
     </html>

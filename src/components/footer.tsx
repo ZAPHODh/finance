@@ -39,14 +39,24 @@ export default function FooterSection() {
                         <span>{t('links.faq')}</span>
                     </Link>
                     <Link
+                        href="/terms"
+                        className="text-muted-foreground hover:text-primary block duration-150">
+                        <span>{t('links.terms')}</span>
+                    </Link>
+                    <Link
+                        href="/privacy"
+                        className="text-muted-foreground hover:text-primary block duration-150">
+                        <span>{t('links.privacy')}</span>
+                    </Link>
+                    <Link
+                        href="/contact"
+                        className="text-muted-foreground hover:text-primary block duration-150">
+                        <span>{t('links.contact')}</span>
+                    </Link>
+                    <Link
                         href="/login"
                         className="text-muted-foreground hover:text-primary block duration-150">
                         <span>{t('links.login')}</span>
-                    </Link>
-                    <Link
-                        href="#contact"
-                        className="text-muted-foreground hover:text-primary block duration-150">
-                        <span>{t('links.contact')}</span>
                     </Link>
                 </div>
                 <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">

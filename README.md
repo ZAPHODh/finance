@@ -1,36 +1,184 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DriveFinance
+
+A comprehensive financial management platform for transportation and fleet operations. Track expenses, revenues, and performance metrics for drivers and vehicles in one powerful SaaS application.
+
+## Features
+
+- **Financial Tracking**: Complete expense and revenue management with detailed categorization
+- **Multi-Driver Support**: Manage unlimited drivers and vehicles with the Pro plan
+- **Analytics Dashboard**: Real-time KPIs, performance metrics, and financial insights
+- **Smart Reports**: Generate detailed reports in PDF, Excel, and CSV formats
+- **Platform Integration**: Track earnings across multiple ride-sharing and delivery platforms
+- **Budget Management**: Set spending limits and receive alerts when approaching thresholds
+- **Goal Tracking**: Define financial targets and monitor progress
+- **Algolia Search**: Real-time search across all financial records with user data isolation
+- **Internationalization**: Full support for English and Portuguese (pt-BR)
+- **Dark Mode**: Complete dark mode support with system preference detection
+
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: Lucia Auth (OAuth + Magic Link)
+- **Payments**: Stripe
+- **Search**: Algolia
+- **Monitoring**: Sentry + Posthog
+- **Styling**: Tailwind CSS + Shadcn UI
+- **Forms**: TanStack Form
+- **i18n**: next-international
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+
+- pnpm (recommended) or npm
+- PostgreSQL database
+- Required API keys (see `.env.example`)
+
+### Installation
+
+1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/ZAPHODh/financial.git
+cd financial
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies
+```bash
+pnpm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables
+```bash
+cp .env.example .env
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Fill in all required environment variables in `.env` file. See [Environment Variables](#environment-variables) section below.
 
-## Learn More
+4. Set up the database
+```bash
+npx prisma generate
+npx prisma db push
+```
 
-To learn more about Next.js, take a look at the following resources:
+5. Run the development server
+```bash
+pnpm dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Environment Variables
 
-## Deploy on Vercel
+The application requires several environment variables to function properly. See `.env.example` for a complete list with descriptions.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Required Variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Database**: PostgreSQL connection URLs
+- **Authentication**: Google/GitHub OAuth credentials, Resend API key
+- **Payments**: Stripe API keys and plan IDs
+- **Search**: Algolia credentials
+
+### Optional Variables
+
+- **Monitoring**: Sentry DSN, Posthog key
+- **Support**: Crisp chat widget ID
+- **Feature Flags**: Enable/disable specific features
+
+## Project Structure
+
+```
+src/
+├── app/                    # Next.js app directory
+│   ├── [locale]/          # Internationalized routes
+│   ├── api/               # API routes
+│   └── globals.css        # Global styles
+├── components/            # React components
+│   ├── ui/               # Shadcn UI components
+│   ├── dashboard-01/     # Dashboard components
+│   └── legal/            # Legal components (cookies, etc)
+├── lib/                   # Utilities and configurations
+│   ├── server/           # Server-only code
+│   └── client/           # Client-only code
+├── locales/              # i18n translations
+└── config/               # Application configuration
+```
+
+## Development
+
+### Database Schema Changes
+
+When modifying the Prisma schema:
+
+```bash
+npx prisma db push          # Push changes to database
+npx prisma generate         # Regenerate Prisma client
+```
+
+### Running Tests
+
+```bash
+pnpm test
+```
+
+See `docs/TESTING_CHECKLIST.md` for comprehensive manual testing guide.
+
+### Code Quality
+
+The project follows strict TypeScript and coding standards defined in `CLAUDE.md`:
+
+- Functional programming patterns
+- Server Components by default
+- Client Components only when necessary
+- All text must be internationalized
+- No hard-coded strings in UI
+
+## Deployment
+
+### Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Import project in Vercel
+3. Add environment variables
+4. Deploy
+
+### Manual Deployment
+
+1. Build the application
+```bash
+pnpm build
+```
+
+2. Start production server
+```bash
+pnpm start
+```
+
+## Monitoring & Error Tracking
+
+- **Sentry**: Error tracking and performance monitoring
+- **Posthog**: Analytics and user behavior tracking
+- **Health Check**: `/api/health` endpoint for uptime monitoring
+
+## Legal & Compliance
+
+- Terms of Service: `/terms`
+- Privacy Policy: `/privacy` (LGPD compliant)
+- Contact: `/contact`
+- Cookie Consent: Automatic banner on first visit
+
+## Support
+
+For questions or issues:
+- Email: support@drivefinance.com
+- Privacy/LGPD: privacy@drivefinance.com
+
+## License
+
+Proprietary - All rights reserved
+
+## Contributing
+
+This is a private commercial project. Contributing is currently not open to the public.

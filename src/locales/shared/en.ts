@@ -505,6 +505,26 @@ export default {
             question: 'Is my data secure?',
             answer: 'Absolutely. We use industry-standard encryption to protect your data. Pro plan includes automatic backup and recovery features to ensure your financial records are always safe.',
         },
+        q6: {
+            question: 'How do I cancel my subscription?',
+            answer: 'You can cancel your subscription at any time from the Billing page in your account settings. Your access will continue until the end of your current billing period.',
+        },
+        q7: {
+            question: 'Do you offer a free trial?',
+            answer: 'The free plan is available indefinitely with no credit card required. You can upgrade to Pro at any time to access advanced features.',
+        },
+        q8: {
+            question: 'Can I use DriveFinance on mobile?',
+            answer: 'Yes! DriveFinance is fully responsive and works on all devices. We also offer a progressive web app (PWA) that you can install on your phone for a native app-like experience.',
+        },
+        q9: {
+            question: 'What payment methods do you accept?',
+            answer: 'We accept all major credit cards (Visa, Mastercard, American Express) and debit cards through Stripe, our secure payment processor.',
+        },
+        q10: {
+            question: 'How does the search feature work?',
+            answer: 'DriveFinance uses Algolia for lightning-fast search across all your financial records. You can search by amount, date, driver, vehicle, or any other field. Each user has isolated search indexes for data privacy.',
+        },
     },
     footer: {
         links: {
@@ -513,6 +533,8 @@ export default {
             faq: 'FAQ',
             login: 'Login',
             contact: 'Contact',
+            terms: 'Terms',
+            privacy: 'Privacy',
         },
         copyright: '© {year} DriveFinance. All rights reserved',
     },

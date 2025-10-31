@@ -505,6 +505,26 @@ export default {
             question: 'Meus dados estão seguros?',
             answer: 'Absolutamente. Usamos criptografia padrão da indústria para proteger seus dados. O plano Pro inclui recursos de backup automático e recuperação para garantir que seus registros financeiros estejam sempre seguros.',
         },
+        q6: {
+            question: 'Como cancelo minha assinatura?',
+            answer: 'Você pode cancelar sua assinatura a qualquer momento na página de Faturamento nas configurações da sua conta. Seu acesso continuará até o final do período de cobrança atual.',
+        },
+        q7: {
+            question: 'Vocês oferecem período de teste gratuito?',
+            answer: 'O plano grátis está disponível indefinidamente sem necessidade de cartão de crédito. Você pode fazer upgrade para Pro a qualquer momento para acessar recursos avançados.',
+        },
+        q8: {
+            question: 'Posso usar o DriveFinance no celular?',
+            answer: 'Sim! O DriveFinance é totalmente responsivo e funciona em todos os dispositivos. Também oferecemos um aplicativo web progressivo (PWA) que você pode instalar no seu telefone para uma experiência semelhante a um aplicativo nativo.',
+        },
+        q9: {
+            question: 'Quais formas de pagamento vocês aceitam?',
+            answer: 'Aceitamos todos os principais cartões de crédito (Visa, Mastercard, American Express) e cartões de débito através do Stripe, nosso processador de pagamento seguro.',
+        },
+        q10: {
+            question: 'Como funciona a busca?',
+            answer: 'O DriveFinance usa Algolia para busca ultra-rápida em todos os seus registros financeiros. Você pode buscar por valor, data, motorista, veículo ou qualquer outro campo. Cada usuário tem índices de busca isolados para privacidade de dados.',
+        },
     },
     footer: {
         links: {
@@ -513,6 +533,8 @@ export default {
             faq: 'FAQ',
             login: 'Entrar',
             contact: 'Contato',
+            terms: 'Termos',
+            privacy: 'Privacidade',
         },
         copyright: '© {{year}} DriveFinance. Todos os direitos reservados',
     },
