@@ -46,7 +46,6 @@ export async function createExpenseType(input: unknown) {
     },
   });
 
-  // Add to search index
   await addRecordToIndex(buildExpenseTypeSearchRecord(expenseType));
 
   revalidateTag(CacheTags.EXPENSE_TYPES);
@@ -77,7 +76,6 @@ export async function updateExpenseType(id: string, input: unknown) {
     },
   });
 
-  // Update in search index
   await updateRecordInIndex(buildExpenseTypeSearchRecord(updatedExpenseType));
 
   revalidateTag(CacheTags.EXPENSE_TYPES);
@@ -105,7 +103,6 @@ export async function deleteExpenseType(id: string) {
     where: { id },
   });
 
-  // Remove from search index
   await removeRecordFromIndex(`expense-type-${id}`);
 
   revalidateTag(CacheTags.EXPENSE_TYPES);

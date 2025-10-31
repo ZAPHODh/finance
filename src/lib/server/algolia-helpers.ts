@@ -1,6 +1,3 @@
-// Helper functions to build search records
-// These are NOT server actions, just pure data transformers
-
 export interface SearchRecord {
   objectID: string;
   title: string;
@@ -13,9 +10,6 @@ export interface SearchRecord {
   _tags: string[];
 }
 
-/**
- * Build search records for expenses
- */
 export function buildExpenseSearchRecord(expense: {
   id: string;
   amount: number;
@@ -42,9 +36,6 @@ export function buildExpenseSearchRecord(expense: {
   };
 }
 
-/**
- * Build search records for revenues
- */
 export function buildRevenueSearchRecord(revenue: {
   id: string;
   amount: number;
@@ -73,9 +64,6 @@ export function buildRevenueSearchRecord(revenue: {
   };
 }
 
-/**
- * Build search records for drivers
- */
 export function buildDriverSearchRecord(driver: {
   id: string;
   name: string;
@@ -91,9 +79,6 @@ export function buildDriverSearchRecord(driver: {
   };
 }
 
-/**
- * Build search records for vehicles
- */
 export function buildVehicleSearchRecord(vehicle: {
   id: string;
   name: string;
@@ -111,9 +96,6 @@ export function buildVehicleSearchRecord(vehicle: {
   };
 }
 
-/**
- * Build search records for platforms
- */
 export function buildPlatformSearchRecord(platform: {
   id: string;
   name: string;
@@ -129,9 +111,6 @@ export function buildPlatformSearchRecord(platform: {
   };
 }
 
-/**
- * Build search records for expense types
- */
 export function buildExpenseTypeSearchRecord(expenseType: {
   id: string;
   name: string;
@@ -147,9 +126,6 @@ export function buildExpenseTypeSearchRecord(expenseType: {
   };
 }
 
-/**
- * Build search records for payment methods
- */
 export function buildPaymentMethodSearchRecord(paymentMethod: {
   id: string;
   name: string;

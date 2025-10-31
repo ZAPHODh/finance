@@ -44,7 +44,6 @@ export async function createDriver(input: unknown) {
     },
   });
 
-  // Add to search index
   await addRecordToIndex(buildDriverSearchRecord(driver));
 
   revalidateTag(CacheTags.DRIVERS);
@@ -75,7 +74,6 @@ export async function updateDriver(id: string, input: unknown) {
     },
   });
 
-  // Update in search index
   await updateRecordInIndex(buildDriverSearchRecord(updatedDriver));
 
   revalidateTag(CacheTags.DRIVERS);
@@ -104,7 +102,6 @@ export async function deleteDriver(id: string) {
     where: { id },
   });
 
-  // Remove from search index
   await removeRecordFromIndex(`driver-${id}`);
 
   revalidateTag(CacheTags.DRIVERS);

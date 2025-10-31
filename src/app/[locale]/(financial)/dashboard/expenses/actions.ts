@@ -52,7 +52,6 @@ export async function createExpense(input: unknown) {
     },
   });
 
-  // Add to search index
   await addRecordToIndex(buildExpenseSearchRecord(expense));
 
   revalidateTag(CacheTags.EXPENSES);
@@ -97,7 +96,6 @@ export async function updateExpense(id: string, input: unknown) {
     },
   });
 
-  // Update in search index
   await updateRecordInIndex(buildExpenseSearchRecord(updatedExpense));
 
   revalidateTag(CacheTags.EXPENSES);
@@ -131,7 +129,6 @@ export async function deleteExpense(id: string) {
     where: { id },
   });
 
-  // Remove from search index
   await removeRecordFromIndex(`expense-${id}`);
 
   revalidateTag(CacheTags.EXPENSES);

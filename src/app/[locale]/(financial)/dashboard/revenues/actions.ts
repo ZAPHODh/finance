@@ -103,7 +103,6 @@ export async function createRevenue(input: unknown) {
     },
   });
 
-  // Add to search index
   await addRecordToIndex(buildRevenueSearchRecord(revenue));
 
   revalidateTag(CacheTags.REVENUES);
@@ -161,7 +160,6 @@ export async function updateRevenue(id: string, input: unknown) {
     },
   });
 
-  // Update in search index
   await updateRecordInIndex(buildRevenueSearchRecord(updatedRevenue));
 
   revalidateTag(CacheTags.REVENUES);
@@ -196,7 +194,6 @@ export async function deleteRevenue(id: string) {
     where: { id },
   });
 
-  // Remove from search index
   await removeRecordFromIndex(`revenue-${id}`);
 
   revalidateTag(CacheTags.REVENUES);

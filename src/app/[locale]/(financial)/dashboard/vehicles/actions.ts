@@ -52,7 +52,6 @@ export async function createVehicle(input: unknown) {
     },
   });
 
-  // Add to search index
   await addRecordToIndex(buildVehicleSearchRecord(vehicle));
 
   revalidateTag(CacheTags.VEHICLES);
@@ -85,7 +84,6 @@ export async function updateVehicle(id: string, input: unknown) {
     },
   });
 
-  // Update in search index
   await updateRecordInIndex(buildVehicleSearchRecord(updatedVehicle));
 
   revalidateTag(CacheTags.VEHICLES);
@@ -113,7 +111,6 @@ export async function deleteVehicle(id: string) {
     where: { id },
   });
 
-  // Remove from search index
   await removeRecordFromIndex(`vehicle-${id}`);
 
   revalidateTag(CacheTags.VEHICLES);

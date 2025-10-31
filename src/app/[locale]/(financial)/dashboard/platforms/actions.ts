@@ -46,7 +46,6 @@ export async function createPlatform(input: unknown) {
     },
   });
 
-  // Add to search index
   await addRecordToIndex(buildPlatformSearchRecord(platform));
 
   revalidateTag(CacheTags.PLATFORMS);
@@ -77,7 +76,6 @@ export async function updatePlatform(id: string, input: unknown) {
     },
   });
 
-  // Update in search index
   await updateRecordInIndex(buildPlatformSearchRecord(updatedPlatform));
 
   revalidateTag(CacheTags.PLATFORMS);
@@ -105,7 +103,6 @@ export async function deletePlatform(id: string) {
     where: { id },
   });
 
-  // Remove from search index
   await removeRecordFromIndex(`platform-${id}`);
 
   revalidateTag(CacheTags.PLATFORMS);

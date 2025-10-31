@@ -9,15 +9,11 @@ const client = algoliasearch(
   process.env.ALGOLIA_WRITE_KEY!
 );
 
-// Check if auto-indexing is enabled (defaults to true if not set)
 const isAutoIndexingEnabled = () => {
   const enabled = process.env.ENABLE_AUTO_INDEXING;
   return enabled === undefined || enabled === 'true';
 };
 
-/**
- * Add a single record to the user's search index
- */
 export async function addRecordToIndex(record: SearchRecord): Promise<void> {
   if (!isAutoIndexingEnabled()) return;
 
@@ -32,14 +28,10 @@ export async function addRecordToIndex(record: SearchRecord): Promise<void> {
       objects: [record as unknown as Record<string, unknown>],
     });
   } catch (error) {
-    // Fail silently - don't block the main operation
     console.error('Error adding record to search index:', error);
   }
 }
 
-/**
- * Update a single record in the user's search index
- */
 export async function updateRecordInIndex(record: SearchRecord): Promise<void> {
   if (!isAutoIndexingEnabled()) return;
 
@@ -59,9 +51,6 @@ export async function updateRecordInIndex(record: SearchRecord): Promise<void> {
   }
 }
 
-/**
- * Remove a single record from the user's search index
- */
 export async function removeRecordFromIndex(objectID: string): Promise<void> {
   if (!isAutoIndexingEnabled()) return;
 

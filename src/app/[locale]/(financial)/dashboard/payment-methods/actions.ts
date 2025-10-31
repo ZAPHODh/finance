@@ -52,7 +52,6 @@ export async function createPaymentMethod(input: unknown) {
     },
   });
 
-  // Add to search index
   await addRecordToIndex(buildPaymentMethodSearchRecord(paymentMethod));
 
   revalidateTag(CacheTags.PAYMENT_METHODS);
@@ -85,7 +84,6 @@ export async function updatePaymentMethod(id: string, input: unknown) {
     },
   });
 
-  // Update in search index
   await updateRecordInIndex(buildPaymentMethodSearchRecord(updatedPaymentMethod));
 
   revalidateTag(CacheTags.PAYMENT_METHODS);
@@ -113,7 +111,6 @@ export async function deletePaymentMethod(id: string) {
     where: { id },
   });
 
-  // Remove from search index
   await removeRecordFromIndex(`payment-method-${id}`);
 
   revalidateTag(CacheTags.PAYMENT_METHODS);

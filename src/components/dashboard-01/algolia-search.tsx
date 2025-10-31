@@ -4,21 +4,23 @@ import Search from '@/components/search';
 
 interface AlgoliaSearchProps {
   userId: string;
+  applicationId?: string;
+  apiKey?: string;
 }
 
-export function AlgoliaSearch({ userId }: AlgoliaSearchProps) {
-  const applicationId = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '';
-  const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY || '';
+export function AlgoliaSearch({ userId, applicationId, apiKey }: AlgoliaSearchProps) {
+  const appId = applicationId || process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '';
+  const searchKey = apiKey || process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY || '';
   const indexName = `financial_${userId}`;
 
-  if (!applicationId || !apiKey) {
+  if (!appId || !searchKey) {
     return null;
   }
 
   return (
     <Search
-      applicationId={applicationId}
-      apiKey={apiKey}
+      applicationId={appId}
+      apiKey={searchKey}
       indexName={indexName}
       placeholder="O que você está procurando?"
       hitsPerPage={10}

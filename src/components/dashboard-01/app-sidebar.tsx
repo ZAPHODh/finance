@@ -25,7 +25,6 @@ import { NavMain } from "./nav-main"
 import { NavSecondary } from "./nav-secondary"
 import { NavUser } from "./nav-user"
 import { NavDocuments } from "./nav-documents"
-import { AlgoliaSearch } from "./algolia-search"
 import {
   Sidebar,
   SidebarContent,
@@ -42,9 +41,10 @@ import { useScopedI18n } from "@/locales/client"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user: User | null
+  searchComponent?: React.ReactNode
 }
 
-export function AppSidebar({ user, ...props }: AppSidebarProps) {
+export function AppSidebar({ user, searchComponent, ...props }: AppSidebarProps) {
   const t = useScopedI18n('shared.sidebar')
 
   const navMain = [
@@ -150,15 +150,17 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                {user && <AlgoliaSearch userId={user.id} />}
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {searchComponent && (
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  {searchComponent}
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
         <NavMain items={navMain} title={t('navigation.main')} />
         <NavMain items={navFinancial} title={t('financial.title')} />
         <NavMain items={navPlanning} title={t('planning.title')} />
