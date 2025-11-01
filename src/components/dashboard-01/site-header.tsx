@@ -19,12 +19,14 @@ export function SiteHeader({ title, actions, mobileActions }: SiteHeaderProps) {
           className="mx-2 data-[orientation=vertical]:h-4"
         />
         <h1 className="text-base font-medium truncate">{title}</h1>
-        <ModeSwitcher />
+        <div className="ml-auto flex items-center gap-2">
+          <ModeSwitcher />
+        </div>
         {mobileActions && (
-          <div className="ml-auto flex md:hidden">{mobileActions}</div>
+          <div className="flex md:hidden">{mobileActions}</div>
         )}
         {actions && (
-          <div className="ml-auto hidden md:flex items-center gap-2">{actions}</div>
+          <div className="hidden md:flex items-center gap-2">{actions}</div>
         )}
       </div>
     </header>
