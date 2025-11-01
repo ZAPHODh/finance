@@ -1,10 +1,8 @@
 "use client"
 
 import {
-  CreditCard,
   MoreVertical,
   LogOut,
-  Bell,
   UserCircle,
 } from "lucide-react"
 import Link from "next/link"
@@ -30,7 +28,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Button } from "../ui/button"
 import { logout } from "@/app/[locale]/actions"
 
 export function NavUser({
@@ -100,21 +97,9 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href="/account" onClick={handleLinkClick}>
+                <Link href="/dashboard/account" onClick={handleLinkClick}>
                   <UserCircle />
-                  Conta
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/billing" onClick={handleLinkClick}>
-                  <CreditCard />
-                  Assinatura
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/notifications" onClick={handleLinkClick}>
-                  <Bell />
-                  Notificações
+                  Ver Perfil
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>

@@ -188,11 +188,13 @@ export default {
         settings: {
             title: 'Settings',
             account: 'Account',
+            preferences: 'Preferences',
+            settings: 'Settings',
+            billing: 'Billing',
             profileSettings: 'Profile settings',
             security: 'Security',
             notifications: 'Notifications',
             workspace: 'Workspace',
-            preferences: 'Preferences',
             integrations: 'Integrations',
         },
         planning: {

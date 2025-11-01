@@ -19,6 +19,8 @@ import {
   Database,
   FileText,
   FileSpreadsheet,
+  UserCircle,
+  Sliders,
 } from "lucide-react"
 
 import { NavMain } from "./nav-main"
@@ -114,15 +116,33 @@ export function AppSidebar({ user, searchComponent, ...props }: AppSidebarProps)
     },
   ]
 
-  const navSecondary = [
+  const navSettings = [
     {
-      title: t('settings.title'),
-      url: "/settings",
+      title: t('settings.account'),
+      url: "/dashboard/account",
+      icon: UserCircle,
+    },
+    {
+      title: t('settings.preferences'),
+      url: "/dashboard/preferences",
+      icon: Sliders,
+    },
+    {
+      title: t('settings.settings'),
+      url: "/dashboard/settings",
       icon: Settings,
     },
     {
+      title: t('settings.billing'),
+      url: "/dashboard/billing",
+      icon: CreditCard,
+    },
+  ]
+
+  const navSecondary = [
+    {
       title: t('help'),
-      url: "/help",
+      url: "/dashboard/help",
       icon: HelpCircle,
     },
   ]
@@ -167,6 +187,7 @@ export function AppSidebar({ user, searchComponent, ...props }: AppSidebarProps)
         <NavMain items={navMain} title={t('navigation.main')} />
         <NavMain items={navFinancial} title={t('financial.title')} />
         <NavMain items={navPlanning} title={t('planning.title')} />
+        <NavMain items={navSettings} title={t('settings.title')} />
         <NavDocuments items={documents} />
         <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>

@@ -13,7 +13,7 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field"
-import { updateAppearance, updateRegionalSettings } from "../../app/[locale]/(user)/preferences/actions"
+import { updatePreferences } from "@/app/[locale]/(financial)/dashboard/preferences/actions"
 
 interface PreferencesFormProps {
   initialData: {
@@ -64,28 +64,15 @@ export function PreferencesForm({ initialData, translations }: PreferencesFormPr
     onSubmit: async ({ value }) => {
       startTransition(async () => {
         try {
-          const appearanceResult = await updateAppearance({
+          const result = await updatePreferences({
             theme: value.theme as "light" | "dark" | "system",
-            language: value.language as "en" | "pt",
-          })
-
-          if (appearanceResult?.serverError) {
-            toast.error(appearanceResult.serverError.message)
-            return
-          }
-
-          const regionalResult = await updateRegionalSettings({
-            currency: value.currency as "usd" | "brl" | "eur",
+            language: value.language,
             timezone: value.timezone,
-            use24HourFormat: value.use24Hour,
           })
 
-          if (regionalResult?.serverError) {
-            toast.error(regionalResult.serverError.message)
-            return
+          if (result.success) {
+            toast.success("Preferences saved successfully")
           }
-
-          toast.success("Preferences saved successfully")
         } catch (error) {
           toast.error("Failed to save preferences")
         }

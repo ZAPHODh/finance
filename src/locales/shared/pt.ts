@@ -188,11 +188,13 @@ export default {
         settings: {
             title: 'Configurações',
             account: 'Conta',
+            preferences: 'Preferências',
+            settings: 'Configurações',
+            billing: 'Assinatura',
             profileSettings: 'Configurações de perfil',
             security: 'Segurança',
             notifications: 'Notificações',
             workspace: 'Espaço de trabalho',
-            preferences: 'Preferências',
             integrations: 'Integrações',
         },
         planning: {

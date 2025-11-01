@@ -12,7 +12,7 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field"
-import { updateNotificationSettings, updatePrivacySettings } from "@/app/[locale]/(user)/settings/actions"
+import { updateNotificationSettings, updatePrivacySettings } from "@/app/[locale]/(financial)/dashboard/settings/actions"
 
 interface SettingsFormProps {
   initialData: {
@@ -62,8 +62,8 @@ export function SettingsForm({ initialData, translations }: SettingsFormProps) {
             marketingEmails: value.marketing,
           })
 
-          if (notificationsResult?.serverError) {
-            toast.error(notificationsResult.serverError.message)
+          if (!notificationsResult.success) {
+            toast.error("Failed to update notification settings")
             return
           }
 
@@ -72,8 +72,8 @@ export function SettingsForm({ initialData, translations }: SettingsFormProps) {
             profileVisibility: value.profileVisibility,
           })
 
-          if (privacyResult?.serverError) {
-            toast.error(privacyResult.serverError.message)
+          if (!privacyResult.success) {
+            toast.error("Failed to update privacy settings")
             return
           }
 

@@ -9,7 +9,7 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field"
-import { updateProfileAction } from "@/app/[locale]/(user)/account/actions"
+import { updateProfileAction } from "@/app/[locale]/(financial)/dashboard/account/actions"
 import { toast } from "sonner"
 import { useTransition } from "react"
 
@@ -37,12 +37,14 @@ export function ProfileForm({ defaultName, defaultEmail, translations }: Profile
     },
     onSubmit: async ({ value }) => {
       startTransition(async () => {
-        const result = await updateProfileAction({ name: value.name })
+        try {
+          const result = await updateProfileAction({ name: value.name, email: value.email })
 
-        if (result?.serverError) {
+          if (result.success) {
+            toast.success(translations.profileUpdated)
+          }
+        } catch (error) {
           toast.error(translations.profileUpdateError)
-        } else {
-          toast.success(translations.profileUpdated)
         }
       })
     },
