@@ -90,9 +90,7 @@ export default async function FinancialLayout({
               </>
             }
           />
-          <div className="p-4 md:p-6">
-            {children}
-          </div>
+          {children}
           {driverDialog}
           {vehicleDialog}
           {platformDialog}
