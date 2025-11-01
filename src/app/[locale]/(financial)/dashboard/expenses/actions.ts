@@ -6,12 +6,6 @@ import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
 import { z } from "zod";
-import {
-  addRecordToIndex,
-  updateRecordInIndex,
-  removeRecordFromIndex
-} from "@/lib/server/algolia";
-import { buildExpenseSearchRecord } from "@/lib/server/algolia-helpers";
 
 const expenseFormSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
@@ -51,8 +45,6 @@ export async function createExpense(input: unknown) {
       vehicle: { select: { name: true } },
     },
   });
-
-  await addRecordToIndex(buildExpenseSearchRecord(expense));
 
   revalidateTag(CacheTags.EXPENSES);
   revalidateTag(CacheTags.DASHBOARD);
@@ -96,8 +88,6 @@ export async function updateExpense(id: string, input: unknown) {
     },
   });
 
-  await updateRecordInIndex(buildExpenseSearchRecord(updatedExpense));
-
   revalidateTag(CacheTags.EXPENSES);
   revalidateTag(CacheTags.DASHBOARD);
   revalidatePath("/dashboard/expenses");
@@ -128,8 +118,6 @@ export async function deleteExpense(id: string) {
   await prisma.expense.delete({
     where: { id },
   });
-
-  await removeRecordFromIndex(`expense-${id}`);
 
   revalidateTag(CacheTags.EXPENSES);
   revalidateTag(CacheTags.DASHBOARD);

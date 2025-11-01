@@ -7,12 +7,6 @@ import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfPaymentMethodLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
-import {
-  addRecordToIndex,
-  updateRecordInIndex,
-  removeRecordFromIndex
-} from "@/lib/server/algolia";
-import { buildPaymentMethodSearchRecord } from "@/lib/server/algolia-helpers";
 
 const paymentMethodFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -52,8 +46,6 @@ export async function createPaymentMethod(input: unknown) {
     },
   });
 
-  await addRecordToIndex(buildPaymentMethodSearchRecord(paymentMethod));
-
   revalidateTag(CacheTags.PAYMENT_METHODS);
   revalidatePath("/dashboard/payment-methods");
 }
@@ -84,8 +76,6 @@ export async function updatePaymentMethod(id: string, input: unknown) {
     },
   });
 
-  await updateRecordInIndex(buildPaymentMethodSearchRecord(updatedPaymentMethod));
-
   revalidateTag(CacheTags.PAYMENT_METHODS);
   revalidatePath("/dashboard/payment-methods");
 }
@@ -110,8 +100,6 @@ export async function deletePaymentMethod(id: string) {
   await prisma.paymentMethod.delete({
     where: { id },
   });
-
-  await removeRecordFromIndex(`payment-method-${id}`);
 
   revalidateTag(CacheTags.PAYMENT_METHODS);
   revalidatePath("/dashboard/payment-methods");

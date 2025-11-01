@@ -2,7 +2,11 @@
 
 import { algoliasearch } from 'algoliasearch';
 import { getCurrentSession } from '@/lib/server/auth/session';
-import type { SearchRecord } from '@/lib/server/algolia-helpers';
+
+interface SearchRecord {
+  objectID: string;
+  [key: string]: unknown;
+}
 
 const client = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!,

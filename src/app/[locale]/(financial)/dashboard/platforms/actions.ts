@@ -7,12 +7,6 @@ import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfPlatformLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
-import {
-  addRecordToIndex,
-  updateRecordInIndex,
-  removeRecordFromIndex
-} from "@/lib/server/algolia";
-import { buildPlatformSearchRecord } from "@/lib/server/algolia-helpers";
 
 const platformFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -46,8 +40,6 @@ export async function createPlatform(input: unknown) {
     },
   });
 
-  await addRecordToIndex(buildPlatformSearchRecord(platform));
-
   revalidateTag(CacheTags.PLATFORMS);
   revalidatePath("/dashboard/platforms");
 }
@@ -76,8 +68,6 @@ export async function updatePlatform(id: string, input: unknown) {
     },
   });
 
-  await updateRecordInIndex(buildPlatformSearchRecord(updatedPlatform));
-
   revalidateTag(CacheTags.PLATFORMS);
   revalidatePath("/dashboard/platforms");
 }
@@ -102,8 +92,6 @@ export async function deletePlatform(id: string) {
   await prisma.platform.delete({
     where: { id },
   });
-
-  await removeRecordFromIndex(`platform-${id}`);
 
   revalidateTag(CacheTags.PLATFORMS);
   revalidatePath("/dashboard/platforms");

@@ -7,12 +7,6 @@ import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
 import type { Prisma } from "@prisma/client";
 import { z } from "zod";
-import {
-  addRecordToIndex,
-  updateRecordInIndex,
-  removeRecordFromIndex
-} from "@/lib/server/algolia";
-import { buildRevenueSearchRecord } from "@/lib/server/algolia-helpers";
 
 const revenueFormSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
@@ -103,8 +97,6 @@ export async function createRevenue(input: unknown) {
     },
   });
 
-  await addRecordToIndex(buildRevenueSearchRecord(revenue));
-
   revalidateTag(CacheTags.REVENUES);
   revalidateTag(CacheTags.DASHBOARD);
   revalidatePath("/dashboard/revenues");
@@ -160,8 +152,6 @@ export async function updateRevenue(id: string, input: unknown) {
     },
   });
 
-  await updateRecordInIndex(buildRevenueSearchRecord(updatedRevenue));
-
   revalidateTag(CacheTags.REVENUES);
   revalidateTag(CacheTags.DASHBOARD);
   revalidatePath("/dashboard/revenues");
@@ -193,8 +183,6 @@ export async function deleteRevenue(id: string) {
   await prisma.revenue.delete({
     where: { id },
   });
-
-  await removeRecordFromIndex(`revenue-${id}`);
 
   revalidateTag(CacheTags.REVENUES);
   revalidateTag(CacheTags.DASHBOARD);

@@ -7,12 +7,6 @@ import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfVehicleLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
-import {
-  addRecordToIndex,
-  updateRecordInIndex,
-  removeRecordFromIndex
-} from "@/lib/server/algolia";
-import { buildVehicleSearchRecord } from "@/lib/server/algolia-helpers";
 
 const vehicleFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -52,8 +46,6 @@ export async function createVehicle(input: unknown) {
     },
   });
 
-  await addRecordToIndex(buildVehicleSearchRecord(vehicle));
-
   revalidateTag(CacheTags.VEHICLES);
   revalidatePath("/dashboard/vehicles");
 }
@@ -84,8 +76,6 @@ export async function updateVehicle(id: string, input: unknown) {
     },
   });
 
-  await updateRecordInIndex(buildVehicleSearchRecord(updatedVehicle));
-
   revalidateTag(CacheTags.VEHICLES);
   revalidatePath("/dashboard/vehicles");
 }
@@ -110,8 +100,6 @@ export async function deleteVehicle(id: string) {
   await prisma.vehicle.delete({
     where: { id },
   });
-
-  await removeRecordFromIndex(`vehicle-${id}`);
 
   revalidateTag(CacheTags.VEHICLES);
   revalidatePath("/dashboard/vehicles");

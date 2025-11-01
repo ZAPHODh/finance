@@ -3,7 +3,6 @@
 import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { revalidatePath } from "next/cache";
-import { indexUserData } from "@/app/[locale]/actions/algolia-indexing";
 
 export interface OnboardingData {
   platforms: Array<{ name: string; icon?: string }>;
@@ -104,12 +103,6 @@ export async function completeOnboarding(data: OnboardingData) {
       data: { hasCompletedOnboarding: true },
     });
   });
-
-  try {
-    await indexUserData();
-  } catch (error) {
-    console.error('Failed to index user data during onboarding:', error);
-  }
 
   revalidatePath("/dashboard");
 }

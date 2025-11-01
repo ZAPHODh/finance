@@ -7,12 +7,6 @@ import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfDriverLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
-import {
-  addRecordToIndex,
-  updateRecordInIndex,
-  removeRecordFromIndex
-} from "@/lib/server/algolia";
-import { buildDriverSearchRecord } from "@/lib/server/algolia-helpers";
 
 const driverFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -44,8 +38,6 @@ export async function createDriver(input: unknown) {
     },
   });
 
-  await addRecordToIndex(buildDriverSearchRecord(driver));
-
   revalidateTag(CacheTags.DRIVERS);
   revalidatePath("/dashboard/drivers");
 }
@@ -74,8 +66,6 @@ export async function updateDriver(id: string, input: unknown) {
     },
   });
 
-  await updateRecordInIndex(buildDriverSearchRecord(updatedDriver));
-
   revalidateTag(CacheTags.DRIVERS);
   revalidatePath("/dashboard/drivers");
 }
@@ -101,8 +91,6 @@ export async function deleteDriver(id: string) {
   await prisma.driver.delete({
     where: { id },
   });
-
-  await removeRecordFromIndex(`driver-${id}`);
 
   revalidateTag(CacheTags.DRIVERS);
   revalidatePath("/dashboard/drivers");

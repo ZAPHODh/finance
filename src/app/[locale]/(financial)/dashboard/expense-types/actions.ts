@@ -7,12 +7,6 @@ import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfExpenseTypeLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
-import {
-  addRecordToIndex,
-  updateRecordInIndex,
-  removeRecordFromIndex
-} from "@/lib/server/algolia";
-import { buildExpenseTypeSearchRecord } from "@/lib/server/algolia-helpers";
 
 const expenseTypeFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -46,8 +40,6 @@ export async function createExpenseType(input: unknown) {
     },
   });
 
-  await addRecordToIndex(buildExpenseTypeSearchRecord(expenseType));
-
   revalidateTag(CacheTags.EXPENSE_TYPES);
   revalidatePath("/dashboard/expense-types");
 }
@@ -76,8 +68,6 @@ export async function updateExpenseType(id: string, input: unknown) {
     },
   });
 
-  await updateRecordInIndex(buildExpenseTypeSearchRecord(updatedExpenseType));
-
   revalidateTag(CacheTags.EXPENSE_TYPES);
   revalidatePath("/dashboard/expense-types");
 }
@@ -102,8 +92,6 @@ export async function deleteExpenseType(id: string) {
   await prisma.expenseType.delete({
     where: { id },
   });
-
-  await removeRecordFromIndex(`expense-type-${id}`);
 
   revalidateTag(CacheTags.EXPENSE_TYPES);
   revalidatePath("/dashboard/expense-types");
