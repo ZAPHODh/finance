@@ -13,6 +13,7 @@ import {
 } from "react-instantsearch";
 import { Button } from "@/components/ui/button";
 import { useKeyboardNavigation } from "@/hooks/use-keyboard-navigation";
+import { useRouter } from "next/navigation";
 
 export interface SearchConfig {
   /** Algolia Application ID (required) */
@@ -200,12 +201,14 @@ interface HitsListProps {
   query: string;
   selectedIndex: number;
   attributes?: HitsAttributesMapping;
+  onNavigate?: (url: string) => void;
 }
 
 const HitsList = memo(function HitsList({
   hits,
   selectedIndex,
   attributes,
+  onNavigate,
 }: HitsListProps) {
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
   const mapping = useMemo(
@@ -233,11 +236,13 @@ const HitsList = memo(function HitsList({
         const isImageFailed = failedImages[hit.objectID] || !hasImage;
         const primaryVal = getByPath<string>(hit, mapping.primaryText);
         return (
-          <a
+          <div
             key={hit.objectID}
-            href={url ?? "#"}
-            target={url ? "_blank" : undefined}
-            rel="noopener noreferrer"
+            onClick={() => {
+              if (url && onNavigate) {
+                onNavigate(url);
+              }
+            }}
             className="flex flex-row items-center gap-4 cursor-pointer text-decoration-none text-foreground bg-background rounded-sm p-4 hover:bg-blue-50 aria-selected:bg-blue-50 dark:hover:bg-slate-900 dark:aria-selected:bg-slate-900 animate-in fade-in-0 zoom-in-95"
             role="option"
             aria-selected={isSel}
@@ -290,7 +295,7 @@ const HitsList = memo(function HitsList({
                 </p>
               ) : null}
             </div>
-          </a>
+          </div>
         );
       })}
     </>
@@ -469,12 +474,14 @@ interface ResultsPanelProps {
   selectedIndex: number;
   refine: (query: string) => void;
   config: SearchConfig;
+  onNavigate: (url: string) => void;
 }
 
 const ResultsPanel = memo(function ResultsPanel({
   query,
   selectedIndex,
   config,
+  onNavigate,
 }: ResultsPanelProps) {
   const { items } = useHits();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -511,6 +518,7 @@ const ResultsPanel = memo(function ResultsPanel({
           query={query}
           selectedIndex={selectedIndex}
           attributes={config.attributes}
+          onNavigate={onNavigate}
         />
       </div>
     </>
@@ -525,6 +533,7 @@ interface SearchModalProps {
 export function SearchModal({ onClose, config }: SearchModalProps) {
   const { query, refine } = useSearchBox();
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
 
   const results = useInstantSearch();
   const { items } = useHits();
@@ -532,6 +541,11 @@ export function SearchModal({ onClose, config }: SearchModalProps) {
   const noResults = results.results?.nbHits === 0;
   const { selectedIndex, moveDown, moveUp, activateSelection } =
     useKeyboardNavigation(items, query);
+
+  const handleNavigate = useCallback((url: string) => {
+    router.push(url);
+    onClose?.();
+  }, [router, onClose]);
 
   const handleActivateSelection = useCallback((): boolean => {
     if (activateSelection()) {
@@ -564,6 +578,7 @@ export function SearchModal({ onClose, config }: SearchModalProps) {
             selectedIndex={selectedIndex}
             refine={refine}
             config={config}
+            onNavigate={handleNavigate}
           />
         )}
         {noResults && query && (
