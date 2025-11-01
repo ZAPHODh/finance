@@ -11,9 +11,10 @@ import { ModeSwitcher } from "./nav-components/theme-toggle"
 import Link from "next/link"
 import { useScopedI18n } from "@/locales/client";
 import { Logo } from "../logo";
+import { siteConfig } from "@/config/site";
 
 export default function Nav() {
-
+  const name = siteConfig().name
   const t = useScopedI18n("shared.nav")
 
   const navigationLinks = [
@@ -34,6 +35,7 @@ export default function Nav() {
                 size="icon"
               >
                 <Logo />
+                {name}
               </Button>
             </PopoverTrigger>
             <PopoverContent align="start" className="w-48 p-2 md:hidden">
