@@ -1,8 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useEffect } from "react"
-import { usePathname } from "next/navigation"
 import { LucideIcon } from "lucide-react"
 import Link from "next/link"
 
@@ -25,14 +23,13 @@ export function NavSecondary({
     icon: LucideIcon
   }[]
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
-  const pathname = usePathname()
   const { isMobile, setOpenMobile } = useSidebar()
 
-  useEffect(() => {
+  function handleLinkClick() {
     if (isMobile) {
       setOpenMobile(false)
     }
-  }, [pathname, isMobile, setOpenMobile])
+  }
 
   return (
     <SidebarGroup {...props}>
@@ -41,7 +38,7 @@ export function NavSecondary({
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
-                <Link href={item.url}>
+                <Link href={item.url} onClick={handleLinkClick}>
                   <item.icon />
                   <span>{item.title}</span>
                 </Link>

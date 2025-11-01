@@ -1,9 +1,6 @@
 "use client"
 
-import { LucideIcon, Plus, Mail } from "lucide-react"
-import { useEffect } from "react"
-import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
+import { LucideIcon } from "lucide-react"
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -26,14 +23,13 @@ export function NavMain({
   }[]
   title?: string
 }) {
-  const pathname = usePathname()
   const { isMobile, setOpenMobile } = useSidebar()
 
-  useEffect(() => {
+  function handleLinkClick() {
     if (isMobile) {
       setOpenMobile(false)
     }
-  }, [pathname, isMobile, setOpenMobile])
+  }
 
   return (
     <SidebarGroup>
@@ -43,7 +39,7 @@ export function NavMain({
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton tooltip={item.title} asChild>
-                <Link href={item.url}>
+                <Link href={item.url} onClick={handleLinkClick}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                 </Link>

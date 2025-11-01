@@ -1,7 +1,5 @@
 "use client"
 
-import { useEffect } from "react"
-import { usePathname } from "next/navigation"
 import { LucideIcon } from "lucide-react"
 import Link from "next/link"
 import { useScopedI18n } from "@/locales/client"
@@ -25,14 +23,13 @@ export function NavDocuments({
   }[]
 }) {
   const t = useScopedI18n('shared.sidebar')
-  const pathname = usePathname()
   const { isMobile, setOpenMobile } = useSidebar()
 
-  useEffect(() => {
+  function handleLinkClick() {
     if (isMobile) {
       setOpenMobile(false)
     }
-  }, [pathname, isMobile, setOpenMobile])
+  }
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -41,7 +38,7 @@ export function NavDocuments({
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
-              <Link href={item.url}>
+              <Link href={item.url} onClick={handleLinkClick}>
                 <item.icon />
                 <span>{item.name}</span>
               </Link>

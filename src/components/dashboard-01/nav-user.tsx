@@ -1,7 +1,5 @@
 "use client"
 
-import { useEffect } from "react"
-import { usePathname } from "next/navigation"
 import {
   CreditCard,
   MoreVertical,
@@ -40,14 +38,13 @@ export function NavUser({
 }: {
   user: User | null
 }) {
-  const pathname = usePathname()
   const { isMobile, setOpenMobile } = useSidebar()
 
-  useEffect(() => {
+  function handleLinkClick() {
     if (isMobile) {
       setOpenMobile(false)
     }
-  }, [pathname, isMobile, setOpenMobile])
+  }
 
   if (!user) return null
 
@@ -103,19 +100,19 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href="/account">
+                <Link href="/account" onClick={handleLinkClick}>
                   <UserCircle />
                   Conta
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/billing">
+                <Link href="/billing" onClick={handleLinkClick}>
                   <CreditCard />
                   Assinatura
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/notifications">
+                <Link href="/notifications" onClick={handleLinkClick}>
                   <Bell />
                   Notificações
                 </Link>
