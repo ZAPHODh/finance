@@ -37,7 +37,9 @@ import {
   SidebarGroupContent,
 } from "@/components/ui/sidebar"
 import type { User } from "@prisma/client"
-import { useScopedI18n } from "@/locales/client"
+import { useCurrentLocale, useScopedI18n } from "@/locales/client"
+import { siteConfig } from "@/config/site"
+import { Logo } from "../logo"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user: User | null
@@ -46,7 +48,8 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 
 export function AppSidebar({ user, searchComponent, ...props }: AppSidebarProps) {
   const t = useScopedI18n('shared.sidebar')
-
+  const locale = useCurrentLocale()
+  const logoName = siteConfig(locale).name
   const navMain = [
     {
       title: t('navigation.dashboard'),
@@ -142,8 +145,8 @@ export function AppSidebar({ user, searchComponent, ...props }: AppSidebarProps)
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="/dashboard">
-                <Database className="!size-5" />
-                <span className="text-base font-semibold">{t('brandName')}</span>
+                <Logo />
+                <span className="text-base font-semibold">{logoName}</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
