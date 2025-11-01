@@ -3,32 +3,32 @@ import { cn } from '@/lib/utils'
 export const Logo = ({ className, uniColor }: { className?: string; uniColor?: boolean }) => {
     return (
         <svg
-            viewBox="0 0 120 40"
+            viewBox="0 0 200 60"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             className={cn('text-foreground h-8 w-auto', className)}>
-
+            {/* First D */}
             <path
-                d="M8 8 L8 32 L18 32 C22 32 26 30 26 20 C26 10 22 8 18 8 Z M12 12 L18 12 C20 12 22 13 22 20 C22 27 20 28 18 28 L12 28 Z"
+                d="M10 10 L10 50 L30 50 C40 50 50 45 50 30 C50 15 40 10 30 10 Z M18 18 L30 18 C35 18 42 20 42 30 C42 40 35 42 30 42 L18 42 Z"
                 fill={uniColor ? 'currentColor' : 'url(#logo-gradient)'}
             />
-
+            {/* Number 2 */}
             <path
-                d="M38 18 C38 14 40 12 44 12 C48 12 50 14 50 18 L46 18 C46 16 45 15 44 15 C43 15 42 16 42 18 C42 19.5 42.5 20 46 23 C49.5 26 50 27 50 30 C50 34 48 36 44 36 C40 36 38 34 38 30 L42 30 C42 32 43 33 44 33 C45 33 46 32 46 30 C46 28.5 45.5 28 42 25 C38.5 22 38 21 38 18 Z"
+                d="M70 25 C70 18 75 15 85 15 C95 15 100 18 100 25 L92 25 C92 21 89 20 85 20 C81 20 78 21 78 25 C78 28 79 29 88 35 C97 41 100 43 100 48 C100 55 95 58 85 58 C75 58 70 55 70 48 L78 48 C78 52 81 53 85 53 C89 53 92 52 92 48 C92 45 91 44 82 38 C73 32 70 30 70 25 Z"
                 fill={uniColor ? 'currentColor' : 'url(#logo-gradient)'}
             />
-
+            {/* Second D */}
             <path
-                d="M60 8 L60 32 L70 32 C74 32 78 30 78 20 C78 10 74 8 70 8 Z M64 12 L70 12 C72 12 74 13 74 20 C74 27 72 28 70 28 L64 28 Z"
+                d="M120 10 L120 50 L140 50 C150 50 160 45 160 30 C160 15 150 10 140 10 Z M128 18 L140 18 C145 18 152 20 152 30 C152 40 145 42 140 42 L128 42 Z"
                 fill={uniColor ? 'currentColor' : 'url(#logo-gradient)'}
             />
             <defs>
                 <linearGradient
                     id="logo-gradient"
-                    x1="0"
-                    y1="0"
-                    x2="80"
-                    y2="40"
+                    x1="10"
+                    y1="10"
+                    x2="160"
+                    y2="50"
                     gradientUnits="userSpaceOnUse">
                     <stop stopColor="#9B99FE" />
                     <stop offset="0.5" stopColor="#7C7AE8" />
@@ -42,36 +42,36 @@ export const Logo = ({ className, uniColor }: { className?: string; uniColor?: b
 export const LogoIcon = ({ className, uniColor }: { className?: string; uniColor?: boolean }) => {
     return (
         <svg
-            width="40"
-            height="40"
-            viewBox="0 0 40 40"
+            width="60"
+            height="60"
+            viewBox="0 0 60 60"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             className={cn('size-8', className)}>
+            {/* Circular background */}
+            <circle cx="30" cy="30" r="28" fill={uniColor ? 'currentColor' : 'url(#icon-gradient)'} fillOpacity="0.08" />
 
-            <circle cx="20" cy="20" r="18" fill={uniColor ? 'currentColor' : 'url(#icon-gradient)'} fillOpacity="0.1" />
-
+            {/* Compact D2D */}
             <path
-                d="M10 12 L10 28 L16 28 C18.5 28 21 26.5 21 20 C21 13.5 18.5 12 16 12 Z M12.5 14.5 L16 14.5 C17.2 14.5 18.5 15 18.5 20 C18.5 25 17.2 25.5 16 25.5 L12.5 25.5 Z"
-                fill={uniColor ? 'currentColor' : 'url(#icon-gradient)'}
-            />
-
-            <path
-                d="M23 17 C23 15 24 14 25.5 14 C27 14 28 15 28 17 L26.5 17 C26.5 15.8 26 15.5 25.5 15.5 C25 15.5 24.5 15.8 24.5 17 C24.5 17.8 24.8 18 26.5 19.5 C28.2 21 28.5 21.5 28.5 23 C28.5 25 27.5 26 25.5 26 C23.5 26 23 25 23 23 L24.5 23 C24.5 24.2 25 24.5 25.5 24.5 C26 24.5 27 24.2 27 23 C27 22.2 26.7 22 25 20.5 C23.3 19 23 18.5 23 17 Z"
+                d="M12 18 L12 42 L22 42 C27 42 32 39 32 30 C32 21 27 18 22 18 Z M16 22 L22 22 C25 22 28 23 28 30 C28 37 25 38 22 38 L16 38 Z"
                 fill={uniColor ? 'currentColor' : 'url(#icon-gradient)'}
             />
             <path
-                d="M30 12 L30 28 L24 28 C21.5 28 19 26.5 19 20 C19 13.5 21.5 12 24 12 Z M27.5 14.5 L24 14.5 C22.8 14.5 21.5 15 21.5 20 C21.5 25 22.8 25.5 24 25.5 L27.5 25.5 Z"
+                d="M36 25 C36 22 37.5 20 40 20 C42.5 20 44 22 44 25 L42 25 C42 23 41 22.5 40 22.5 C39 22.5 38 23 38 25 C38 26.5 38.5 27 41 29 C43.5 31 44 32 44 34 C44 37 42.5 38.5 40 38.5 C37.5 38.5 36 37 36 34 L38 34 C38 36 39 36.5 40 36.5 C41 36.5 42 36 42 34 C42 32.5 41.5 32 39 30 C36.5 28 36 27 36 25 Z"
                 fill={uniColor ? 'currentColor' : 'url(#icon-gradient)'}
-                opacity="0.6"
+            />
+            <path
+                d="M48 18 L48 42 L38 42 C33 42 28 39 28 30 C28 21 33 18 38 18 Z M44 22 L38 22 C35 22 32 23 32 30 C32 37 35 38 38 38 L44 38 Z"
+                fill={uniColor ? 'currentColor' : 'url(#icon-gradient)'}
+                opacity="0.4"
             />
             <defs>
                 <linearGradient
                     id="icon-gradient"
-                    x1="5"
-                    y1="5"
-                    x2="35"
-                    y2="35"
+                    x1="12"
+                    y1="18"
+                    x2="48"
+                    y2="42"
                     gradientUnits="userSpaceOnUse">
                     <stop stopColor="#9B99FE" />
                     <stop offset="0.5" stopColor="#7C7AE8" />
@@ -86,28 +86,31 @@ export const LogoStroke = ({ className }: { className?: string }) => {
     return (
         <svg
             className={cn('h-10 w-auto', className)}
-            viewBox="0 0 120 40"
+            viewBox="0 0 200 60"
             fill="none"
             xmlns="http://www.w3.org/2000/svg">
+            {/* First D - Outlined */}
             <path
-                d="M8 8 L8 32 L18 32 C22 32 26 30 26 20 C26 10 22 8 18 8 Z M12 12 L18 12 C20 12 22 13 22 20 C22 27 20 28 18 28 L12 28 Z"
+                d="M10 10 L10 50 L30 50 C40 50 50 45 50 30 C50 15 40 10 30 10 Z M18 18 L30 18 C35 18 42 20 42 30 C42 40 35 42 30 42 L18 42 Z"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="2.5"
                 strokeLinejoin="round"
             />
+            {/* Number 2 - Outlined */}
             <path
-                d="M38 18 C38 14 40 12 44 12 C48 12 50 14 50 18 L46 18 C46 16 45 15 44 15 C43 15 42 16 42 18 C42 19.5 42.5 20 46 23 C49.5 26 50 27 50 30 C50 34 48 36 44 36 C40 36 38 34 38 30 L42 30 C42 32 43 33 44 33 C45 33 46 32 46 30 C46 28.5 45.5 28 42 25 C38.5 22 38 21 38 18 Z"
+                d="M70 25 C70 18 75 15 85 15 C95 15 100 18 100 25 L92 25 C92 21 89 20 85 20 C81 20 78 21 78 25 C78 28 79 29 88 35 C97 41 100 43 100 48 C100 55 95 58 85 58 C75 58 70 55 70 48 L78 48 C78 52 81 53 85 53 C89 53 92 52 92 48 C92 45 91 44 82 38 C73 32 70 30 70 25 Z"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="2.5"
                 strokeLinejoin="round"
             />
+            {/* Second D - Outlined */}
             <path
-                d="M60 8 L60 32 L70 32 C74 32 78 30 78 20 C78 10 74 8 70 8 Z M64 12 L70 12 C72 12 74 13 74 20 C74 27 72 28 70 28 L64 28 Z"
+                d="M120 10 L120 50 L140 50 C150 50 160 45 160 30 C160 15 150 10 140 10 Z M128 18 L140 18 C145 18 152 20 152 30 C152 40 145 42 140 42 L128 42 Z"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="2.5"
                 strokeLinejoin="round"
             />
         </svg>
