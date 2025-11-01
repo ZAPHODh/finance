@@ -2,7 +2,7 @@ export const siteUrl =
     process.env.NEXT_PUBLIC_APP_URL || "";
 
 export const siteConfig = (locale: string = "en") => ({
-    name: "Financial",
+    name: "D2D",
     url: siteUrl + "/" + locale,
     ogImage: `${siteUrl}/${locale}/opengraph-image`,
     description: "A financial management tool to track your income and expenses.",
