@@ -618,7 +618,7 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
   };
 
   return (
-    <div className="container max-w-3xl mx-auto py-10">
+    <div className="container max-w-3xl mx-auto py-6 px-4 md:py-10">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -631,7 +631,14 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
             <CardTitle>{t('title')}</CardTitle>
             <CardDescription>{t('subtitle')}</CardDescription>
             <div className="space-y-2">
-              <div className="flex justify-between text-sm">
+              {/* Mobile: Show only current step */}
+              <div className="block md:hidden text-sm text-center">
+                <span className="font-semibold">
+                  {steps[currentStep].title} ({currentStep + 1}/{steps.length})
+                </span>
+              </div>
+              {/* Desktop: Show all steps */}
+              <div className="hidden md:flex justify-between text-sm">
                 {steps.map((step, index) => (
                   <span
                     key={step.key}
@@ -641,28 +648,47 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                   </span>
                 ))}
               </div>
-              <Progress value={progress} />
+              <Progress value={progress} className="w-full" />
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
             {renderStepContent()}
-            <div className="flex justify-between">
-              <Button type="button" variant="outline" onClick={handlePrevious} disabled={currentStep === 0}>
+            <div className="flex flex-col sm:flex-row justify-between gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handlePrevious}
+                disabled={currentStep === 0}
+                className="w-full sm:w-auto"
+              >
                 {t('navigation.previous')}
               </Button>
               {currentStep < steps.length - 1 ? (
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                   {currentStep > 0 && (
-                    <Button type="button" variant="ghost" onClick={handleSkipStep}>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={handleSkipStep}
+                      className="w-full sm:w-auto"
+                    >
                       {t('navigation.skip')}
                     </Button>
                   )}
-                  <Button type="button" onClick={handleNext}>
+                  <Button
+                    type="button"
+                    onClick={handleNext}
+                    className="w-full sm:w-auto"
+                  >
                     {t('navigation.next')}
                   </Button>
                 </div>
               ) : (
-                <Button type="submit" disabled={isPending}>
+                <Button
+                  type="submit"
+                  disabled={isPending}
+                  className="w-full sm:w-auto"
+                >
                   {isPending ? t('completing') : t('navigation.finish')}
                 </Button>
               )}

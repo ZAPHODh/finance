@@ -906,4 +906,58 @@ export default {
         completing: 'Configurando sua conta...',
         success: 'Configuração completa! Redirecionando para o painel...',
     },
+    contact: {
+        title: 'Contato',
+        subtitle: 'Entre em contato conosco. Estamos aqui para ajudar.',
+        contactInfo: {
+            title: 'Informações de Contato',
+            supportEmail: {
+                title: 'Email de Suporte',
+                email: 'support@drivefinance.com',
+                description: 'Respondemos em até 24 horas úteis',
+            },
+            privacyEmail: {
+                title: 'Privacidade e Dados (DPO)',
+                email: 'privacy@drivefinance.com',
+                description: 'Para questões relacionadas à LGPD e proteção de dados',
+            },
+            address: {
+                title: 'Endereço',
+                city: 'São Paulo, SP',
+                country: 'Brasil',
+            },
+        },
+        businessHours: {
+            title: 'Horário de Atendimento',
+            weekdays: 'Segunda a Sexta: 9h às 18h (horário de Brasília)',
+            weekends: 'Sábado, Domingo e Feriados: Fechado',
+            note: 'Emails recebidos fora do horário comercial serão respondidos no próximo dia útil.',
+        },
+        faqSection: {
+            title: 'Perguntas Frequentes',
+            description: 'Antes de entrar em contato, confira nossa',
+            link: 'página de Perguntas Frequentes',
+            suffix: '. Muitas dúvidas comuns já estão respondidas lá.',
+        },
+        bugReport: {
+            title: 'Reportar Bug ou Problema',
+            description: 'Encontrou um bug ou problema técnico? Envie um email para',
+            withDetails: 'com uma descrição detalhada do problema, incluindo:',
+            browser: 'Navegador e versão que você está usando',
+            steps: 'Passos para reproduzir o problema',
+            screenshots: 'Screenshots, se possível',
+            errors: 'Mensagens de erro exibidas',
+        },
+        feedback: {
+            title: 'Feedback e Sugestões',
+            description: 'Sua opinião é muito importante para nós! Se você tem sugestões de melhorias ou novos recursos, envie para',
+        },
+        business: {
+            title: 'Empresarial',
+            companyName: 'Razão Social: DriveFinance Tecnologia Ltda',
+            cnpj: 'CNPJ: [A ser definido]',
+        },
+        stillHaveQuestions: 'Ainda tem dúvidas? Entre em contato conosco!',
+        contactSupport: 'Falar com o suporte',
+    },
 } as const

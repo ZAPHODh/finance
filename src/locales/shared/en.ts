@@ -906,4 +906,58 @@ export default {
         completing: 'Setting up your account...',
         success: 'Setup complete! Redirecting to dashboard...',
     },
+    contact: {
+        title: 'Contact',
+        subtitle: 'Get in touch with us. We\'re here to help.',
+        contactInfo: {
+            title: 'Contact Information',
+            supportEmail: {
+                title: 'Support Email',
+                email: 'support@drivefinance.com',
+                description: 'We respond within 24 business hours',
+            },
+            privacyEmail: {
+                title: 'Privacy and Data (DPO)',
+                email: 'privacy@drivefinance.com',
+                description: 'For LGPD and data protection related questions',
+            },
+            address: {
+                title: 'Address',
+                city: 'São Paulo, SP',
+                country: 'Brazil',
+            },
+        },
+        businessHours: {
+            title: 'Business Hours',
+            weekdays: 'Monday to Friday: 9am to 6pm (Brasília time)',
+            weekends: 'Saturday, Sunday and Holidays: Closed',
+            note: 'Emails received outside business hours will be answered on the next business day.',
+        },
+        faqSection: {
+            title: 'Frequently Asked Questions',
+            description: 'Before contacting us, check our',
+            link: 'Frequently Asked Questions page',
+            suffix: '. Many common questions are already answered there.',
+        },
+        bugReport: {
+            title: 'Report Bug or Problem',
+            description: 'Found a bug or technical problem? Send an email to',
+            withDetails: 'with a detailed description of the problem, including:',
+            browser: 'Browser and version you are using',
+            steps: 'Steps to reproduce the problem',
+            screenshots: 'Screenshots, if possible',
+            errors: 'Error messages displayed',
+        },
+        feedback: {
+            title: 'Feedback and Suggestions',
+            description: 'Your opinion is very important to us! If you have suggestions for improvements or new features, send to',
+        },
+        business: {
+            title: 'Business',
+            companyName: 'Company Name: DriveFinance Tecnologia Ltda',
+            cnpj: 'CNPJ: [To be defined]',
+        },
+        stillHaveQuestions: 'Still have questions? Contact us!',
+        contactSupport: 'Contact support',
+    },
 } as const

@@ -12,7 +12,7 @@ import { useScopedI18n } from "@/locales/client";
 
 export default function FAQPage() {
   const t = useScopedI18n('shared.faqs');
-  const tCommon = useScopedI18n('shared.common');
+  const tContact = useScopedI18n('shared.contact');
 
   const faqs = [
     { question: t('q1.question'), answer: t('q1.answer') },
@@ -53,13 +53,13 @@ export default function FAQPage() {
 
         <div className="mt-12 text-center">
           <p className="text-muted-foreground mb-4">
-            Ainda tem dúvidas? Entre em contato conosco!
+            {tContact('stillHaveQuestions')}
           </p>
           <a
             href="/contact"
             className="text-primary hover:underline font-semibold"
           >
-            Falar com o suporte
+            {tContact('contactSupport')}
           </a>
         </div>
       </main>

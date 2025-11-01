@@ -1,5 +1,7 @@
 "use client"
 
+import { useEffect } from "react"
+import { usePathname } from "next/navigation"
 import {
   CreditCard,
   MoreVertical,
@@ -38,7 +40,14 @@ export function NavUser({
 }: {
   user: User | null
 }) {
-  const { isMobile } = useSidebar()
+  const pathname = usePathname()
+  const { isMobile, setOpenMobile } = useSidebar()
+
+  useEffect(() => {
+    if (isMobile) {
+      setOpenMobile(false)
+    }
+  }, [pathname, isMobile, setOpenMobile])
 
   if (!user) return null
 
