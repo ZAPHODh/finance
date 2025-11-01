@@ -5,7 +5,6 @@ import {
   LayoutDashboard,
   Receipt,
   TrendingUp,
-  Clock,
   Users,
   Car,
   Building2,
@@ -15,10 +14,8 @@ import {
   Wallet,
   Settings,
   HelpCircle,
-  Search,
-  Database,
   FileText,
-  FileSpreadsheet,
+
   UserCircle,
   Sliders,
 } from "lucide-react"
@@ -70,7 +67,7 @@ export function AppSidebar({ user, searchComponent, ...props }: AppSidebarProps)
     },
     {
       title: t('configuration.platforms'),
-      url: "/dashboard/companies",
+      url: "/dashboard/platforms",
       icon: Building2,
     },
   ]
@@ -85,11 +82,6 @@ export function AppSidebar({ user, searchComponent, ...props }: AppSidebarProps)
       title: t('financial.revenues'),
       url: "/dashboard/revenues",
       icon: TrendingUp,
-    },
-    {
-      title: t('financial.workLogs'),
-      url: "/dashboard/work-logs",
-      icon: Clock,
     },
     {
       title: t('configuration.expenseTypes'),
