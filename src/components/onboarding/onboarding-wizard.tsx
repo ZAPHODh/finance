@@ -6,14 +6,14 @@ import { useScopedI18n } from '@/locales/client';
 import { useForm } from '@tanstack/react-form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Field, FieldLabel } from '@/components/ui/field';
 import { Progress } from '@/components/ui/progress';
 import { completeOnboarding, type OnboardingData } from '@/app/[locale]/(user)/onboarding/actions';
 import { toast } from 'sonner';
-import { CheckCircle2, Plus, X } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
+import { CheckCircle2 } from 'lucide-react';
+import { TagInput } from '@/components/ui/tag-input';
+import { VehicleCard, Vehicle } from './vehicle-card';
+import { AddVehicleCard } from './add-vehicle-card';
+import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 
 interface OnboardingWizardProps {
   locale: string;
@@ -22,31 +22,27 @@ interface OnboardingWizardProps {
 export function OnboardingWizard({ locale }: OnboardingWizardProps) {
   const router = useRouter();
   const t = useScopedI18n('shared.onboarding');
+  const tCommon = useScopedI18n('shared.common');
   const [isPending, startTransition] = useTransition();
   const [currentStep, setCurrentStep] = useState(0);
 
   const form = useForm({
     defaultValues: {
-      platforms: [] as Array<{ name: string; icon?: string }>,
-      platformInput: '',
-      drivers: [] as Array<{ name: string }>,
-      driverInput: '',
-      vehicles: [] as Array<{ name: string; plate?: string; model?: string; year?: number }>,
-      vehicleInput: { name: '', plate: '', model: '', year: '' },
-      expenseTypes: [] as Array<{ name: string; icon?: string }>,
-      expenseTypeInput: '',
-      paymentMethods: [] as Array<{ name: string; icon?: string }>,
-      paymentMethodInput: '',
+      platforms: [] as string[],
+      drivers: [] as string[],
+      vehicles: [] as Vehicle[],
+      expenseTypes: [] as string[],
+      paymentMethods: [] as string[],
     },
     onSubmit: async ({ value }) => {
       startTransition(async () => {
         try {
           const data: OnboardingData = {
-            platforms: value.platforms,
-            drivers: value.drivers,
+            platforms: value.platforms.map((name) => ({ name })),
+            drivers: value.drivers.map((name) => ({ name })),
             vehicles: value.vehicles,
-            expenseTypes: value.expenseTypes,
-            paymentMethods: value.paymentMethods,
+            expenseTypes: value.expenseTypes.map((name) => ({ name })),
+            paymentMethods: value.paymentMethods.map((name) => ({ name })),
             preferences: {
               language: locale,
               currency: locale === 'pt' ? 'brl' : 'usd',
@@ -74,73 +70,6 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
   ];
 
   const progress = ((currentStep + 1) / steps.length) * 100;
-
-  const handleAddPlatform = (platformInput: string, platforms: Array<{ name: string; icon?: string }>) => {
-    if (platformInput.trim()) {
-      form.setFieldValue('platforms', [...platforms, { name: platformInput.trim() }]);
-      form.setFieldValue('platformInput', '');
-    }
-  };
-
-  const handleRemovePlatform = (index: number, platforms: Array<{ name: string; icon?: string }>) => {
-    form.setFieldValue('platforms', platforms.filter((_, i) => i !== index));
-  };
-
-  const handleAddDriver = (driverInput: string, drivers: Array<{ name: string }>) => {
-    if (driverInput.trim()) {
-      form.setFieldValue('drivers', [...drivers, { name: driverInput.trim() }]);
-      form.setFieldValue('driverInput', '');
-    }
-  };
-
-  const handleRemoveDriver = (index: number, drivers: Array<{ name: string }>) => {
-    form.setFieldValue('drivers', drivers.filter((_, i) => i !== index));
-  };
-
-  const handleAddVehicle = (
-    vehicleInput: { name: string; plate: string; model: string; year: string },
-    vehicles: Array<{ name: string; plate?: string; model?: string; year?: number }>
-  ) => {
-    if (vehicleInput.name.trim()) {
-      form.setFieldValue('vehicles', [
-        ...vehicles,
-        {
-          name: vehicleInput.name.trim(),
-          plate: vehicleInput.plate.trim() || undefined,
-          model: vehicleInput.model.trim() || undefined,
-          year: vehicleInput.year ? parseInt(vehicleInput.year) : undefined,
-        },
-      ]);
-      form.setFieldValue('vehicleInput', { name: '', plate: '', model: '', year: '' });
-    }
-  };
-
-  const handleRemoveVehicle = (
-    index: number,
-    vehicles: Array<{ name: string; plate?: string; model?: string; year?: number }>
-  ) => {
-    form.setFieldValue('vehicles', vehicles.filter((_, i) => i !== index));
-  };
-
-  const handleAddExpenseType = (name: string, expenseTypes: Array<{ name: string; icon?: string }>) => {
-    if (name.trim() && !expenseTypes.find((t) => t.name === name.trim())) {
-      form.setFieldValue('expenseTypes', [...expenseTypes, { name: name.trim() }]);
-    }
-  };
-
-  const handleRemoveExpenseType = (index: number, expenseTypes: Array<{ name: string; icon?: string }>) => {
-    form.setFieldValue('expenseTypes', expenseTypes.filter((_, i) => i !== index));
-  };
-
-  const handleAddPaymentMethod = (name: string, paymentMethods: Array<{ name: string; icon?: string }>) => {
-    if (name.trim() && !paymentMethods.find((m) => m.name === name.trim())) {
-      form.setFieldValue('paymentMethods', [...paymentMethods, { name: name.trim() }]);
-    }
-  };
-
-  const handleRemovePaymentMethod = (index: number, paymentMethods: Array<{ name: string; icon?: string }>) => {
-    form.setFieldValue('paymentMethods', paymentMethods.filter((_, i) => i !== index));
-  };
 
   const handleNext = () => {
     const platforms = form.getFieldValue('platforms');
@@ -221,79 +150,17 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
               <h2 className="text-2xl font-bold">{t('platforms.title')}</h2>
               <p className="text-muted-foreground">{t('platforms.description')}</p>
             </div>
-            <form.Field name="platformInput">
-              {(field) => (
-                <div className="flex gap-2">
-                  <Field className="flex-1">
-                    <FieldLabel className="sr-only" htmlFor="platformInput">
-                      {t('platforms.placeholder')}
-                    </FieldLabel>
-                    <Input
-                      id="platformInput"
-                      placeholder={t('platforms.placeholder')}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          const platforms = form.getFieldValue('platforms');
-                          handleAddPlatform(field.state.value, platforms);
-                        }
-                      }}
-                    />
-                  </Field>
-                  <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const platforms = form.getFieldValue('platforms');
-                      handleAddPlatform(field.state.value, platforms);
-                    }}
-                    type="button"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
-            </form.Field>
-            <div className="space-y-2">
-              <Label className="text-sm text-muted-foreground">{t('suggestions')}</Label>
-              <div className="flex flex-wrap gap-2">
-                {['Uber', '99', 'iFood', 'Rappi', 'Loggi'].map((suggestion, index) => {
-                  const platforms = form.getFieldValue('platforms');
-                  return (
-                    <Badge
-                      key={index}
-                      variant="outline"
-                      className="cursor-pointer hover:bg-secondary"
-                      onClick={() => {
-                        if (!platforms.find((p) => p.name === suggestion)) {
-                          form.setFieldValue('platforms', [...platforms, { name: suggestion }]);
-                        }
-                      }}
-                    >
-                      <Plus className="h-3 w-3 mr-1" />
-                      {suggestion}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </div>
             <form.Field name="platforms">
               {(field) => (
-                <div className="flex flex-wrap gap-2">
-                  {field.state.value.map((platform, index) => (
-                    <Badge key={index} variant="secondary" className="gap-1">
-                      {platform.name}
-                      <button
-                        onClick={() => handleRemovePlatform(index, field.state.value)}
-                        className="ml-1 hover:text-destructive"
-                        type="button"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
+                <Field>
+                  <FieldLabel>{t('platforms.placeholder')}</FieldLabel>
+                  <TagInput
+                    value={field.state.value}
+                    onChange={field.handleChange}
+                    placeholder={t('platforms.placeholder')}
+                    suggestions={['Uber', '99', 'iFood', 'Rappi', 'Loggi']}
+                  />
+                </Field>
               )}
             </form.Field>
           </div>
@@ -306,56 +173,16 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
               <h2 className="text-2xl font-bold">{t('drivers.title')}</h2>
               <p className="text-muted-foreground">{t('drivers.description')}</p>
             </div>
-            <form.Field name="driverInput">
-              {(field) => (
-                <div className="flex gap-2">
-                  <Field className="flex-1">
-                    <FieldLabel className="sr-only" htmlFor="driverInput">
-                      {t('drivers.placeholder')}
-                    </FieldLabel>
-                    <Input
-                      id="driverInput"
-                      placeholder={t('drivers.placeholder')}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          const drivers = form.getFieldValue('drivers');
-                          handleAddDriver(field.state.value, drivers);
-                        }
-                      }}
-                    />
-                  </Field>
-                  <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const drivers = form.getFieldValue('drivers');
-                      handleAddDriver(field.state.value, drivers);
-                    }}
-                    type="button"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
-            </form.Field>
             <form.Field name="drivers">
               {(field) => (
-                <div className="flex flex-wrap gap-2">
-                  {field.state.value.map((driver, index) => (
-                    <Badge key={index} variant="secondary" className="gap-1">
-                      {driver.name}
-                      <button
-                        onClick={() => handleRemoveDriver(index, field.state.value)}
-                        className="ml-1 hover:text-destructive"
-                        type="button"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
+                <Field>
+                  <FieldLabel>{t('drivers.placeholder')}</FieldLabel>
+                  <TagInput
+                    value={field.state.value}
+                    onChange={field.handleChange}
+                    placeholder={t('drivers.placeholder')}
+                  />
+                </Field>
               )}
             </form.Field>
           </div>
@@ -368,79 +195,53 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
               <h2 className="text-2xl font-bold">{t('vehicles.title')}</h2>
               <p className="text-muted-foreground">{t('vehicles.description')}</p>
             </div>
-            <form.Field name="vehicleInput">
-              {(field) => (
-                <div className="space-y-3">
-                  <Field>
-                    <FieldLabel htmlFor="vehicleName">{t('vehicles.namePlaceholder')}</FieldLabel>
-                    <Input
-                      id="vehicleName"
-                      placeholder={t('vehicles.namePlaceholder')}
-                      value={field.state.value.name}
-                      onChange={(e) => field.handleChange({ ...field.state.value, name: e.target.value })}
-                    />
-                  </Field>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Field>
-                      <FieldLabel htmlFor="vehiclePlate">{t('vehicles.platePlaceholder')}</FieldLabel>
-                      <Input
-                        id="vehiclePlate"
-                        placeholder={t('vehicles.platePlaceholder')}
-                        value={field.state.value.plate}
-                        onChange={(e) => field.handleChange({ ...field.state.value, plate: e.target.value })}
-                      />
-                    </Field>
-                    <Field>
-                      <FieldLabel htmlFor="vehicleModel">{t('vehicles.modelPlaceholder')}</FieldLabel>
-                      <Input
-                        id="vehicleModel"
-                        placeholder={t('vehicles.modelPlaceholder')}
-                        value={field.state.value.model}
-                        onChange={(e) => field.handleChange({ ...field.state.value, model: e.target.value })}
-                      />
-                    </Field>
-                  </div>
-                  <Field>
-                    <FieldLabel htmlFor="vehicleYear">{t('vehicles.yearPlaceholder')}</FieldLabel>
-                    <Input
-                      id="vehicleYear"
-                      type="number"
-                      placeholder={t('vehicles.yearPlaceholder')}
-                      value={field.state.value.year}
-                      onChange={(e) => field.handleChange({ ...field.state.value, year: e.target.value })}
-                    />
-                  </Field>
-                  <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const vehicles = form.getFieldValue('vehicles');
-                      handleAddVehicle(field.state.value, vehicles);
-                    }}
-                    type="button"
-                    className="w-full"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    {t('vehicles.addAnother')}
-                  </Button>
-                </div>
-              )}
-            </form.Field>
             <form.Field name="vehicles">
               {(field) => (
-                <div className="flex flex-wrap gap-2">
-                  {field.state.value.map((vehicle, index) => (
-                    <Badge key={index} variant="secondary" className="gap-1">
-                      {vehicle.name} {vehicle.plate && `(${vehicle.plate})`}
-                      <button
-                        onClick={() => handleRemoveVehicle(index, field.state.value)}
-                        className="ml-1 hover:text-destructive"
-                        type="button"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
+                <FieldGroup>
+                  {field.state.value.length > 0 && (
+                    <div className="space-y-3">
+                      <FieldLabel className="text-sm text-muted-foreground">
+                        {t('vehicles.added')} ({field.state.value.length})
+                      </FieldLabel>
+                      {field.state.value.map((vehicle, index) => (
+                        <VehicleCard
+                          key={index}
+                          vehicle={vehicle}
+                          onUpdate={(updatedVehicle) => {
+                            const newVehicles = [...field.state.value];
+                            newVehicles[index] = updatedVehicle;
+                            field.handleChange(newVehicles);
+                          }}
+                          onRemove={() => {
+                            field.handleChange(field.state.value.filter((_, i) => i !== index));
+                          }}
+                          labels={{
+                            name: t('vehicles.namePlaceholder'),
+                            plate: t('vehicles.platePlaceholder'),
+                            model: t('vehicles.modelPlaceholder'),
+                            year: t('vehicles.yearPlaceholder'),
+                            save: tCommon('save'),
+                            cancel: tCommon('cancel'),
+                            edit: tCommon('edit'),
+                            remove: tCommon('delete'),
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  <AddVehicleCard
+                    onAdd={(vehicle) => field.handleChange([...field.state.value, vehicle])}
+                    labels={{
+                      addVehicle: t('vehicles.addAnother'),
+                      name: t('vehicles.namePlaceholder'),
+                      plate: t('vehicles.platePlaceholder'),
+                      model: t('vehicles.modelPlaceholder'),
+                      year: t('vehicles.yearPlaceholder'),
+                      save: tCommon('save'),
+                      cancel: tCommon('cancel'),
+                    }}
+                  />
+                </FieldGroup>
               )}
             </form.Field>
           </div>
@@ -453,77 +254,17 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
               <h2 className="text-2xl font-bold">{t('expenseTypes.title')}</h2>
               <p className="text-muted-foreground">{t('expenseTypes.description')}</p>
             </div>
-            <form.Field name="expenseTypeInput">
-              {(field) => (
-                <div className="flex gap-2">
-                  <Field className="flex-1">
-                    <FieldLabel className="sr-only" htmlFor="expenseTypeInput">
-                      {t('expenseTypes.placeholder')}
-                    </FieldLabel>
-                    <Input
-                      id="expenseTypeInput"
-                      placeholder={t('expenseTypes.placeholder')}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          const expenseTypes = form.getFieldValue('expenseTypes');
-                          handleAddExpenseType(field.state.value, expenseTypes);
-                          field.handleChange('');
-                        }
-                      }}
-                    />
-                  </Field>
-                  <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const expenseTypes = form.getFieldValue('expenseTypes');
-                      handleAddExpenseType(field.state.value, expenseTypes);
-                      field.handleChange('');
-                    }}
-                    type="button"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
-            </form.Field>
-            <div className="space-y-2">
-              <Label className="text-sm text-muted-foreground">{t('suggestions')}</Label>
-              <div className="flex flex-wrap gap-2">
-                {['Fuel', 'Maintenance', 'Insurance', 'Car Wash', 'Parking'].map((suggestion, index) => {
-                  const expenseTypes = form.getFieldValue('expenseTypes');
-                  return (
-                    <Badge
-                      key={index}
-                      variant="outline"
-                      className="cursor-pointer hover:bg-secondary"
-                      onClick={() => handleAddExpenseType(suggestion, expenseTypes)}
-                    >
-                      <Plus className="h-3 w-3 mr-1" />
-                      {suggestion}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </div>
             <form.Field name="expenseTypes">
               {(field) => (
-                <div className="flex flex-wrap gap-2">
-                  {field.state.value.map((type, index) => (
-                    <Badge key={index} variant="secondary" className="gap-1">
-                      {type.name}
-                      <button
-                        onClick={() => handleRemoveExpenseType(index, field.state.value)}
-                        className="ml-1 hover:text-destructive"
-                        type="button"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
+                <Field>
+                  <FieldLabel>{t('expenseTypes.placeholder')}</FieldLabel>
+                  <TagInput
+                    value={field.state.value}
+                    onChange={field.handleChange}
+                    placeholder={t('expenseTypes.placeholder')}
+                    suggestions={['Fuel', 'Maintenance', 'Insurance', 'Car Wash', 'Parking']}
+                  />
+                </Field>
               )}
             </form.Field>
           </div>
@@ -536,77 +277,17 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
               <h2 className="text-2xl font-bold">{t('paymentMethods.title')}</h2>
               <p className="text-muted-foreground">{t('paymentMethods.description')}</p>
             </div>
-            <form.Field name="paymentMethodInput">
-              {(field) => (
-                <div className="flex gap-2">
-                  <Field className="flex-1">
-                    <FieldLabel className="sr-only" htmlFor="paymentMethodInput">
-                      {t('paymentMethods.placeholder')}
-                    </FieldLabel>
-                    <Input
-                      id="paymentMethodInput"
-                      placeholder={t('paymentMethods.placeholder')}
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          const paymentMethods = form.getFieldValue('paymentMethods');
-                          handleAddPaymentMethod(field.state.value, paymentMethods);
-                          field.handleChange('');
-                        }
-                      }}
-                    />
-                  </Field>
-                  <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const paymentMethods = form.getFieldValue('paymentMethods');
-                      handleAddPaymentMethod(field.state.value, paymentMethods);
-                      field.handleChange('');
-                    }}
-                    type="button"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
-            </form.Field>
-            <div className="space-y-2">
-              <Label className="text-sm text-muted-foreground">{t('suggestions')}</Label>
-              <div className="flex flex-wrap gap-2">
-                {['PIX', 'Credit Card', 'Debit Card', 'Cash', 'Bank Transfer'].map((suggestion, index) => {
-                  const paymentMethods = form.getFieldValue('paymentMethods');
-                  return (
-                    <Badge
-                      key={index}
-                      variant="outline"
-                      className="cursor-pointer hover:bg-secondary"
-                      onClick={() => handleAddPaymentMethod(suggestion, paymentMethods)}
-                    >
-                      <Plus className="h-3 w-3 mr-1" />
-                      {suggestion}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </div>
             <form.Field name="paymentMethods">
               {(field) => (
-                <div className="flex flex-wrap gap-2">
-                  {field.state.value.map((method, index) => (
-                    <Badge key={index} variant="secondary" className="gap-1">
-                      {method.name}
-                      <button
-                        onClick={() => handleRemovePaymentMethod(index, field.state.value)}
-                        className="ml-1 hover:text-destructive"
-                        type="button"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
+                <Field>
+                  <FieldLabel>{t('paymentMethods.placeholder')}</FieldLabel>
+                  <TagInput
+                    value={field.state.value}
+                    onChange={field.handleChange}
+                    placeholder={t('paymentMethods.placeholder')}
+                    suggestions={['PIX', 'Credit Card', 'Debit Card', 'Cash', 'Bank Transfer']}
+                  />
+                </Field>
               )}
             </form.Field>
           </div>
@@ -631,13 +312,11 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
             <CardTitle>{t('title')}</CardTitle>
             <CardDescription>{t('subtitle')}</CardDescription>
             <div className="space-y-2">
-              {/* Mobile: Show only current step */}
               <div className="block md:hidden text-sm text-center">
                 <span className="font-semibold">
                   {steps[currentStep].title} ({currentStep + 1}/{steps.length})
                 </span>
               </div>
-              {/* Desktop: Show all steps */}
               <div className="hidden md:flex justify-between text-sm">
                 {steps.map((step, index) => (
                   <span
@@ -675,20 +354,12 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                       {t('navigation.skip')}
                     </Button>
                   )}
-                  <Button
-                    type="button"
-                    onClick={handleNext}
-                    className="w-full sm:w-auto"
-                  >
+                  <Button type="button" onClick={handleNext} className="w-full sm:w-auto">
                     {t('navigation.next')}
                   </Button>
                 </div>
               ) : (
-                <Button
-                  type="submit"
-                  disabled={isPending}
-                  className="w-full sm:w-auto"
-                >
+                <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
                   {isPending ? t('completing') : t('navigation.finish')}
                 </Button>
               )}
