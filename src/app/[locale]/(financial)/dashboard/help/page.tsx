@@ -40,13 +40,11 @@ export default async function HelpPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 md:p-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
         <p className="text-muted-foreground">{t("description")}</p>
       </div>
-
-      {/* Getting Started */}
       <Card>
         <CardHeader>
           <CardTitle>{t("gettingStarted.title")}</CardTitle>
@@ -61,8 +59,6 @@ export default async function HelpPage() {
           </ol>
         </CardContent>
       </Card>
-
-      {/* Key Features */}
       <div>
         <h2 className="text-2xl font-semibold mb-4">{t("features.title")}</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -83,8 +79,6 @@ export default async function HelpPage() {
           ))}
         </div>
       </div>
-
-      {/* Keyboard Shortcuts */}
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
@@ -112,8 +106,6 @@ export default async function HelpPage() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Support */}
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
