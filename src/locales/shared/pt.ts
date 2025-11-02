@@ -420,6 +420,15 @@ export default {
         alertThresholdHint: 'Você será alertado quando atingir este percentual do orçamento',
         dailyGoalHint: 'Para metas diárias, use formato YYYY-MM-DD',
     },
+    filters: {
+        filters: 'Filtros',
+        clearAll: 'Limpar tudo',
+        dateRange: 'Intervalo de Datas',
+        selectDateRange: 'Selecione o intervalo de datas',
+        amountRange: 'Faixa de Valor',
+        min: 'Mín',
+        max: 'Máx',
+    },
     hero: {
         title: 'Gerencie as Finanças da Sua Frota com Facilidade',
         subtitle: 'Acompanhe despesas, receitas e métricas de desempenho dos seus motoristas e veículos em uma plataforma poderosa.',

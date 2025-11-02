@@ -420,6 +420,15 @@ export default {
         alertThresholdHint: 'You will be alerted when you reach this percentage of the budget',
         dailyGoalHint: 'For daily goals, use YYYY-MM-DD format',
     },
+    filters: {
+        filters: 'Filters',
+        clearAll: 'Clear all',
+        dateRange: 'Date Range',
+        selectDateRange: 'Select date range',
+        amountRange: 'Amount Range',
+        min: 'Min',
+        max: 'Max',
+    },
     hero: {
         title: 'Manage Your Fleet Finances with Ease',
         subtitle: 'Track expenses, revenues, and performance metrics for your drivers and vehicles in one powerful platform.',

@@ -1,13 +1,6 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { useScopedI18n } from '@/locales/client';
 import { Edit, Trash } from 'lucide-react';
 import Link from 'next/link';
@@ -16,6 +9,12 @@ import { toast } from 'sonner';
 import { useState, useMemo, useTransition } from 'react';
 import { DataTable } from '@/components/ui/data-table/data-table-components';
 import { ColumnDef } from '@tanstack/react-table';
+import { FilterPopover } from '@/components/ui/filters/filter-popover';
+import { DateRangePicker } from '@/components/ui/filters/date-range-picker';
+import { AmountRangeFilter } from '@/components/ui/filters/amount-range-filter';
+import { MultiSelectFilter } from '@/components/ui/filters/multi-select-filter';
+import { ActiveFilterBadges, ActiveFilter } from '@/components/ui/filters/active-filter-badges';
+import { DateRange } from 'react-day-picker';
 
 interface RevenuesTableProps {
   revenues: RevenueWithRelations[];
@@ -27,22 +26,57 @@ interface RevenuesTableProps {
 export function RevenuesTable({ revenues, platforms, drivers, vehicles }: RevenuesTableProps) {
   const t = useScopedI18n('shared.financial.revenues');
   const tCommon = useScopedI18n('shared.common');
+  const tFilters = useScopedI18n('shared.filters');
   const tNoData = useScopedI18n('shared.sidebar.dashboard.breakdowns');
   const [isPending, startTransition] = useTransition();
 
-  const [selectedPlatform, setSelectedPlatform] = useState<string>('all');
-  const [selectedDriver, setSelectedDriver] = useState<string>('all');
-  const [selectedVehicle, setSelectedVehicle] = useState<string>('all');
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
+  const [minAmount, setMinAmount] = useState<string>('');
+  const [maxAmount, setMaxAmount] = useState<string>('');
+  const [selectedPlatformIds, setSelectedPlatformIds] = useState<string[]>([]);
+  const [selectedDriverIds, setSelectedDriverIds] = useState<string[]>([]);
+  const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
 
   const filteredRevenues = useMemo(() => {
     return revenues.filter((revenue) => {
-      const matchesPlatform = selectedPlatform === 'all' || revenue.platforms.some(p => p.platform.id === selectedPlatform);
-      const matchesDriver = selectedDriver === 'all' || revenue.driver?.id === selectedDriver;
-      const matchesVehicle = selectedVehicle === 'all' || revenue.vehicle?.id === selectedVehicle;
+      const matchesDateRange =
+        !dateRange?.from ||
+        (new Date(revenue.date) >= dateRange.from &&
+          (!dateRange.to || new Date(revenue.date) <= dateRange.to));
 
-      return matchesPlatform && matchesDriver && matchesVehicle;
+      const matchesMinAmount = !minAmount || revenue.amount >= parseFloat(minAmount);
+      const matchesMaxAmount = !maxAmount || revenue.amount <= parseFloat(maxAmount);
+
+      const matchesPlatform =
+        selectedPlatformIds.length === 0 ||
+        revenue.platforms.some((p) => selectedPlatformIds.includes(p.platform.id));
+
+      const matchesDriver =
+        selectedDriverIds.length === 0 ||
+        (revenue.driver && selectedDriverIds.includes(revenue.driver.id));
+
+      const matchesVehicle =
+        selectedVehicleIds.length === 0 ||
+        (revenue.vehicle && selectedVehicleIds.includes(revenue.vehicle.id));
+
+      return (
+        matchesDateRange &&
+        matchesMinAmount &&
+        matchesMaxAmount &&
+        matchesPlatform &&
+        matchesDriver &&
+        matchesVehicle
+      );
     });
-  }, [revenues, selectedPlatform, selectedDriver, selectedVehicle]);
+  }, [
+    revenues,
+    dateRange,
+    minAmount,
+    maxAmount,
+    selectedPlatformIds,
+    selectedDriverIds,
+    selectedVehicleIds,
+  ]);
 
   async function handleDelete(id: string) {
     if (!confirm(tCommon('confirmDelete'))) {
@@ -139,49 +173,128 @@ export function RevenuesTable({ revenues, platforms, drivers, vehicles }: Revenu
     },
   ];
 
+  function clearAllFilters() {
+    setDateRange(undefined);
+    setMinAmount('');
+    setMaxAmount('');
+    setSelectedPlatformIds([]);
+    setSelectedDriverIds([]);
+    setSelectedVehicleIds([]);
+  }
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (dateRange?.from) count++;
+    if (minAmount || maxAmount) count++;
+    count += selectedPlatformIds.length;
+    count += selectedDriverIds.length;
+    count += selectedVehicleIds.length;
+    return count;
+  }, [dateRange, minAmount, maxAmount, selectedPlatformIds, selectedDriverIds, selectedVehicleIds]);
+
+  const activeFilters = useMemo(() => {
+    const filters: ActiveFilter[] = [];
+
+    selectedPlatformIds.forEach((id) => {
+      const platform = platforms.find((p) => p.id === id);
+      if (platform) {
+        filters.push({
+          id: `platform-${id}`,
+          label: t('platform'),
+          value: platform.name,
+          onRemove: () =>
+            setSelectedPlatformIds((prev) => prev.filter((i) => i !== id)),
+        });
+      }
+    });
+
+    selectedDriverIds.forEach((id) => {
+      const driver = drivers.find((d) => d.id === id);
+      if (driver) {
+        filters.push({
+          id: `driver-${id}`,
+          label: t('driver'),
+          value: driver.name,
+          onRemove: () =>
+            setSelectedDriverIds((prev) => prev.filter((i) => i !== id)),
+        });
+      }
+    });
+
+    selectedVehicleIds.forEach((id) => {
+      const vehicle = vehicles.find((v) => v.id === id);
+      if (vehicle) {
+        filters.push({
+          id: `vehicle-${id}`,
+          label: t('vehicle'),
+          value: vehicle.name,
+          onRemove: () =>
+            setSelectedVehicleIds((prev) => prev.filter((i) => i !== id)),
+        });
+      }
+    });
+
+    return filters;
+  }, [selectedPlatformIds, selectedDriverIds, selectedVehicleIds, platforms, drivers, vehicles, t]);
+
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
-          <SelectTrigger>
-            <SelectValue placeholder={t('platform')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{tCommon('filter')}</SelectItem>
-            {platforms.map((platform) => (
-              <SelectItem key={platform.id} value={platform.id}>
-                {platform.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={selectedDriver} onValueChange={setSelectedDriver}>
-          <SelectTrigger>
-            <SelectValue placeholder={t('driver')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{tCommon('filter')}</SelectItem>
-            {drivers.map((driver) => (
-              <SelectItem key={driver.id} value={driver.id}>
-                {driver.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={selectedVehicle} onValueChange={setSelectedVehicle}>
-          <SelectTrigger>
-            <SelectValue placeholder={t('vehicle')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{tCommon('filter')}</SelectItem>
-            {vehicles.map((vehicle) => (
-              <SelectItem key={vehicle.id} value={vehicle.id}>
-                {vehicle.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="flex items-center gap-2">
+        <FilterPopover
+          activeFilterCount={activeFilterCount}
+          onClearAll={clearAllFilters}
+          clearAllLabel={tFilters('clearAll')}
+          filtersLabel={tFilters('filters')}
+        >
+          <DateRangePicker
+            dateRange={dateRange}
+            onDateRangeChange={setDateRange}
+            label={tFilters('dateRange')}
+            placeholder={tFilters('selectDateRange')}
+          />
+          <AmountRangeFilter
+            minAmount={minAmount}
+            maxAmount={maxAmount}
+            onMinAmountChange={setMinAmount}
+            onMaxAmountChange={setMaxAmount}
+            label={tFilters('amountRange')}
+            minPlaceholder={tFilters('min')}
+            maxPlaceholder={tFilters('max')}
+          />
+          <MultiSelectFilter
+            label={t('platforms')}
+            options={platforms}
+            selectedIds={selectedPlatformIds}
+            onSelectionChange={setSelectedPlatformIds}
+          />
+          <MultiSelectFilter
+            label={t('driver')}
+            options={drivers}
+            selectedIds={selectedDriverIds}
+            onSelectionChange={setSelectedDriverIds}
+          />
+          <MultiSelectFilter
+            label={t('vehicle')}
+            options={vehicles}
+            selectedIds={selectedVehicleIds}
+            onSelectionChange={setSelectedVehicleIds}
+          />
+        </FilterPopover>
       </div>
+
+      <ActiveFilterBadges
+        filters={activeFilters}
+        dateRange={dateRange}
+        onDateRangeRemove={() => setDateRange(undefined)}
+        dateRangeLabel={tFilters('dateRange')}
+        minAmount={minAmount}
+        maxAmount={maxAmount}
+        onAmountRangeRemove={() => {
+          setMinAmount('');
+          setMaxAmount('');
+        }}
+        amountRangeLabel={tFilters('amountRange')}
+      />
 
       <DataTable
         columns={columns}
