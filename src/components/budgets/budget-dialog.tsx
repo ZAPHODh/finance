@@ -15,7 +15,7 @@ import type { Budget } from "@prisma/client";
 interface BudgetDialogProps {
   mode: "create" | "edit";
   budget?: Budget;
-  expenseTypes?: Array<{ id: string; name: string; icon: string | null }>;
+  expenseTypes?: Array<{ id: string; name: string; }>;
 }
 
 export function BudgetDialog({

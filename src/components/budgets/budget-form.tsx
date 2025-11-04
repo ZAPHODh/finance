@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation"
 import type { Budget } from "@prisma/client"
 
 interface BudgetFormProps {
-    expenseTypes: { id: string; name: string; icon: string | null }[]
+    expenseTypes: { id: string; name: string; }[]
     budget?: Budget
 }
 

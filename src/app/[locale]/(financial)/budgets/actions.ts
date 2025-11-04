@@ -41,13 +41,6 @@ export interface UpdateBudgetData {
     isActive?: boolean;
 }
 
-// ============================================
-// Server Actions
-// ============================================
-
-/**
- * Get all user budgets
- */
 export async function getBudgets() {
     const { user } = await getCurrentSession()
     if (!user) redirect("/login")
@@ -56,7 +49,7 @@ export async function getBudgets() {
         where: { userId: user.id },
         include: {
             expenseType: {
-                select: { id: true, name: true, icon: true },
+                select: { id: true, name: true },
             },
         },
         orderBy: { createdAt: "desc" },
@@ -65,9 +58,7 @@ export async function getBudgets() {
     return budgets
 }
 
-/**
- * Get a single budget by ID
- */
+
 export async function getBudgetById(id: string) {
     const { user } = await getCurrentSession()
     if (!user) redirect("/login")
@@ -79,7 +70,7 @@ export async function getBudgetById(id: string) {
         },
         include: {
             expenseType: {
-                select: { id: true, name: true, icon: true },
+                select: { id: true, name: true, },
             },
         },
     })
@@ -87,9 +78,7 @@ export async function getBudgetById(id: string) {
     return budget
 }
 
-/**
- * Create a new budget
- */
+
 export async function createBudget(input: unknown) {
     const data = budgetFormSchema.parse(input);
     const { user } = await getCurrentSession()
@@ -97,7 +86,7 @@ export async function createBudget(input: unknown) {
         throw new Error("Unauthorized")
     }
 
-    // Verificar limite do plano
+
     const limitReached = await checkIfBudgetLimitReached()
     if (limitReached) {
         throw new Error("Você atingiu o limite de orçamentos do seu plano. Faça upgrade para adicionar mais.")
@@ -117,9 +106,7 @@ export async function createBudget(input: unknown) {
     revalidatePath("/budgets")
 }
 
-/**
- * Update a budget
- */
+
 export async function updateBudget(id: string, input: unknown) {
     const data = updateBudgetSchema.parse(input);
     const { user } = await getCurrentSession()
@@ -127,7 +114,6 @@ export async function updateBudget(id: string, input: unknown) {
         throw new Error("Unauthorized")
     }
 
-    // Verify ownership
     const existing = await prisma.budget.findFirst({
         where: {
             id,
@@ -154,9 +140,7 @@ export async function updateBudget(id: string, input: unknown) {
     revalidatePath("/budgets")
 }
 
-/**
- * Delete a budget
- */
+
 export async function deleteBudget(id: string) {
     const idSchema = z.string().min(1);
     idSchema.parse(id);
@@ -165,7 +149,6 @@ export async function deleteBudget(id: string) {
         throw new Error("Unauthorized")
     }
 
-    // Verify ownership
     const existing = await prisma.budget.findFirst({
         where: {
             id,
@@ -184,9 +167,7 @@ export async function deleteBudget(id: string) {
     revalidatePath("/budgets")
 }
 
-/**
- * Toggle budget active status
- */
+
 export async function toggleBudgetActive(id: string) {
     const { user } = await getCurrentSession()
     if (!user) redirect("/login")
@@ -212,9 +193,7 @@ export async function toggleBudgetActive(id: string) {
     revalidatePath("/budgets")
 }
 
-/**
- * Get budget usage
- */
+
 export async function getBudgetUsage(budgetId: string) {
     const { user } = await getCurrentSession()
     if (!user) redirect("/login")
@@ -267,9 +246,7 @@ export async function getBudgetUsage(budgetId: string) {
     }
 }
 
-/**
- * Get all budgets with usage
- */
+
 export async function getBudgetsWithUsage() {
     const { user } = await getCurrentSession()
     if (!user) redirect("/login")

@@ -12,7 +12,7 @@ export default async function NewBudgetPage() {
 
     const expenseTypes = await prisma.expenseType.findMany({
         where: { userId: user.id },
-        select: { id: true, name: true, icon: true },
+        select: { id: true, name: true, },
         orderBy: { name: "asc" },
     })
 
