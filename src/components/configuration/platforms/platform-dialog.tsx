@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter, usePathname } from "next/navigation";
 import { useScopedI18n } from "@/locales/client";
-import { createPlatform, updatePlatform, type PlatformFormData } from "@/app/[locale]/(financial)/dashboard/platforms/actions";
-import { useState, useTransition } from "react";
+import { createPlatform, updatePlatform } from "@/app/[locale]/(financial)/dashboard/platforms/actions";
+import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
+import { LoaderCircle } from "lucide-react";
 
 interface PlatformDialogProps {
   mode: "create" | "edit";
@@ -23,32 +24,29 @@ export function PlatformDialog({ mode, platform }: PlatformDialogProps) {
   const pathname = usePathname();
   const t = useScopedI18n('shared.configuration.platforms');
   const tCommon = useScopedI18n('shared.common');
-  const [isPending, startTransition] = useTransition();
-  const [formData, setFormData] = useState<PlatformFormData>({
-    name: platform?.name || "",
-  });
 
   const isOpen = pathname.includes("/dashboard/platforms");
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    startTransition(async () => {
+  const form = useForm({
+    defaultValues: {
+      name: platform?.name || "",
+    },
+    onSubmit: async ({ value }) => {
       try {
         if (mode === "create") {
-          await createPlatform(formData);
+          await createPlatform(value);
           toast.success(tCommon('createSuccess'));
           router.back();
         } else {
-          await updatePlatform(platform!.id, formData);
+          await updatePlatform(platform!.id, value);
           toast.success(tCommon('updateSuccess'));
           router.back();
         }
       } catch (error) {
         toast.error(error instanceof Error ? error.message : tCommon('error'));
       }
-    });
-  }
+    },
+  });
 
   return (
     <Dialog open={isOpen} onOpenChange={() => router.back()}>
@@ -58,21 +56,59 @@ export function PlatformDialog({ mode, platform }: PlatformDialogProps) {
             {mode === "create" ? t('new') : t('edit')}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">{t('name')}</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-            />
-          </div>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="space-y-4"
+        >
+          <form.Field
+            name="name"
+            validators={{
+              onChange: ({ value }) => {
+                if (!value) return t('nameRequired');
+                return undefined;
+              },
+            }}
+          >
+            {(field) => (
+              <div className="space-y-2">
+                <Label htmlFor={field.name}>{t('name')}</Label>
+                <Input
+                  id={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  required
+                />
+                {field.state.meta.errors?.[0] && (
+                  <p className="text-sm text-destructive">
+                    {field.state.meta.errors[0]}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
+
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => router.back()}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.back()}
+              disabled={form.state.isSubmitting}
+            >
               {tCommon('cancel')}
             </Button>
-            <Button type="submit" disabled={isPending}>
+            <Button
+              type="submit"
+              disabled={form.state.isSubmitting}
+            >
+              {form.state.isSubmitting && (
+                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+              )}
               {tCommon('save')}
             </Button>
           </div>

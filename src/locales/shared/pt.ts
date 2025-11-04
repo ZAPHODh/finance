@@ -256,6 +256,8 @@ export default {
     },
     configuration: {
         drivers: {
+            nameRequired: 'Nome é obrigatório',
+            nameTooShort: 'Nome é muito curto',
             title: 'Motoristas',
             new: 'Novo Motorista',
             edit: 'Editar Motorista',
@@ -264,6 +266,7 @@ export default {
             noDrivers: 'Nenhum motorista encontrado',
         },
         vehicles: {
+            nameRequired: 'Nome é obrigatório',
             title: 'Veículos',
             new: 'Novo Veículo',
             edit: 'Editar Veículo',
@@ -275,6 +278,7 @@ export default {
             noVehicles: 'Nenhum veículo encontrado',
         },
         platforms: {
+            nameRequired: 'Nome é obrigatório',
             title: 'Plataformas',
             new: 'Nova Plataforma',
             edit: 'Editar Plataforma',
@@ -284,6 +288,9 @@ export default {
             noPlatforms: 'Nenhuma plataforma encontrada',
         },
         expenseTypes: {
+            nameRequired: 'Nome é obrigatório',
+            nameTooShort: 'Nome é muito curto',
+            namePlaceholder: 'Ex: Combustível, Manutenção, Pedágio',
             title: 'Tipos de Despesas',
             new: 'Novo Tipo de Despesa',
             edit: 'Editar Tipo de Despesa',

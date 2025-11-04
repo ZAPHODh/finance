@@ -2,13 +2,14 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useRouter, usePathname } from "next/navigation";
 import { useScopedI18n } from "@/locales/client";
-import { createExpenseType, updateExpenseType, type ExpenseTypeFormData } from "@/app/[locale]/(financial)/dashboard/expense-types/actions";
-import { useState, useTransition } from "react";
+import { createExpenseType, updateExpenseType } from "@/app/[locale]/(financial)/dashboard/expense-types/actions";
+import { useForm } from "@tanstack/react-form";
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { LoaderCircle } from "lucide-react";
 
 interface ExpenseTypeDialogProps {
   mode: "create" | "edit";
@@ -23,32 +24,29 @@ export function ExpenseTypeDialog({ mode, expenseType }: ExpenseTypeDialogProps)
   const pathname = usePathname();
   const t = useScopedI18n('shared.configuration.expenseTypes');
   const tCommon = useScopedI18n('shared.common');
-  const [isPending, startTransition] = useTransition();
-  const [formData, setFormData] = useState<ExpenseTypeFormData>({
-    name: expenseType?.name || "",
-  });
 
-  const isOpen = pathname.includes("/dashboard/expense-types");
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    startTransition(async () => {
+  const form = useForm({
+    defaultValues: {
+      name: expenseType?.name || "",
+    },
+    onSubmit: async ({ value }) => {
       try {
         if (mode === "create") {
-          await createExpenseType(formData);
+          await createExpenseType(value);
           toast.success(tCommon('createSuccess'));
           router.back();
         } else {
-          await updateExpenseType(expenseType!.id, formData);
+          await updateExpenseType(expenseType!.id, value);
           toast.success(tCommon('updateSuccess'));
           router.back();
         }
       } catch (error) {
         toast.error(error instanceof Error ? error.message : tCommon('error'));
       }
-    });
-  }
+    },
+  });
+
+  const isOpen = pathname.includes("/dashboard/expense-types");
 
   return (
     <Dialog open={isOpen} onOpenChange={() => router.back()}>
@@ -58,21 +56,64 @@ export function ExpenseTypeDialog({ mode, expenseType }: ExpenseTypeDialogProps)
             {mode === "create" ? t('new') : t('edit')}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">{t('name')}</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-            />
-          </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="space-y-4"
+        >
+          <form.Field
+            name="name"
+            validators={{
+              onChange: ({ value }) => {
+                if (!value) return t('nameRequired');
+                if (value.length < 2) return t('nameTooShort');
+                return undefined;
+              },
+            }}
+          >
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>
+                  {t('name')}
+                </FieldLabel>
+                <Input
+                  id={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  disabled={form.state.isSubmitting}
+                  placeholder={t('namePlaceholder')}
+                />
+                <FieldError>
+                  {field.state.meta.errors?.[0] && (
+                    <p className="mt-2 text-xs text-destructive">
+                      {field.state.meta.errors[0]}
+                    </p>
+                  )}
+                </FieldError>
+              </Field>
+            )}
+          </form.Field>
+
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => router.back()}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.back()}
+              disabled={form.state.isSubmitting}
+            >
               {tCommon('cancel')}
             </Button>
-            <Button type="submit" disabled={isPending}>
+            <Button
+              type="submit"
+              disabled={form.state.isSubmitting}
+            >
+              {form.state.isSubmitting && (
+                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+              )}
               {tCommon('save')}
             </Button>
           </div>

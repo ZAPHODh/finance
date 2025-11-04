@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { useRouter, usePathname } from "next/navigation";
 import { useScopedI18n } from "@/locales/client";
 import { createVehicle, updateVehicle, type VehicleFormData } from "@/app/[locale]/(financial)/dashboard/vehicles/actions";
-import { useState, useTransition } from "react";
+import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
+import { LoaderCircle } from "lucide-react";
 
 interface VehicleDialogProps {
   mode: "create" | "edit";
@@ -26,35 +27,32 @@ export function VehicleDialog({ mode, vehicle }: VehicleDialogProps) {
   const pathname = usePathname();
   const t = useScopedI18n('shared.configuration.vehicles');
   const tCommon = useScopedI18n('shared.common');
-  const [isPending, startTransition] = useTransition();
-  const [formData, setFormData] = useState<VehicleFormData>({
-    name: vehicle?.name || "",
-    plate: vehicle?.plate || "",
-    model: vehicle?.model || "",
-    year: vehicle?.year || undefined,
-  });
 
   const isOpen = pathname.includes("/dashboard/vehicles");
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    startTransition(async () => {
+  const form = useForm({
+    defaultValues: {
+      name: vehicle?.name || "",
+      plate: vehicle?.plate || "",
+      model: vehicle?.model || "",
+      year: vehicle?.year || undefined,
+    },
+    onSubmit: async ({ value }) => {
       try {
         if (mode === "create") {
-          await createVehicle(formData);
+          await createVehicle(value);
           toast.success(tCommon('createSuccess'));
           router.back();
         } else {
-          await updateVehicle(vehicle!.id, formData);
+          await updateVehicle(vehicle!.id, value);
           toast.success(tCommon('updateSuccess'));
           router.back();
         }
       } catch (error) {
         toast.error(error instanceof Error ? error.message : tCommon('error'));
       }
-    });
-  }
+    },
+  });
 
   return (
     <Dialog open={isOpen} onOpenChange={() => router.back()}>
@@ -64,46 +62,106 @@ export function VehicleDialog({ mode, vehicle }: VehicleDialogProps) {
             {mode === "create" ? t('new') : t('edit')}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">{t('name')}</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="plate">{t('plate')}</Label>
-            <Input
-              id="plate"
-              value={formData.plate}
-              onChange={(e) => setFormData({ ...formData, plate: e.target.value })}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="model">{t('model')}</Label>
-            <Input
-              id="model"
-              value={formData.model}
-              onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="year">{t('year')}</Label>
-            <Input
-              id="year"
-              type="number"
-              value={formData.year || ""}
-              onChange={(e) => setFormData({ ...formData, year: e.target.value ? parseInt(e.target.value) : undefined })}
-            />
-          </div>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="space-y-4"
+        >
+          {/* Name Field */}
+          <form.Field
+            name="name"
+            validators={{
+              onChange: ({ value }) => {
+                if (!value?.trim()) return t('nameRequired');
+                return undefined;
+              },
+            }}
+          >
+            {(field) => (
+              <div className="space-y-2">
+                <Label htmlFor={field.name}>{t('name')}</Label>
+                <Input
+                  id={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  required
+                />
+                {field.state.meta.errors?.[0] && (
+                  <p className="text-sm text-destructive">
+                    {field.state.meta.errors[0]}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
+
+          {/* Plate Field */}
+          <form.Field name="plate">
+            {(field) => (
+              <div className="space-y-2">
+                <Label htmlFor={field.name}>{t('plate')}</Label>
+                <Input
+                  id={field.name}
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </div>
+            )}
+          </form.Field>
+
+          {/* Model Field */}
+          <form.Field name="model">
+            {(field) => (
+              <div className="space-y-2">
+                <Label htmlFor={field.name}>{t('model')}</Label>
+                <Input
+                  id={field.name}
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </div>
+            )}
+          </form.Field>
+
+          {/* Year Field */}
+          <form.Field name="year">
+            {(field) => (
+              <div className="space-y-2">
+                <Label htmlFor={field.name}>{t('year')}</Label>
+                <Input
+                  id={field.name}
+                  type="number"
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                />
+              </div>
+            )}
+          </form.Field>
+
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => router.back()}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.back()}
+              disabled={form.state.isSubmitting}
+            >
               {tCommon('cancel')}
             </Button>
-            <Button type="submit" disabled={isPending}>
+            <Button
+              type="submit"
+              disabled={form.state.isSubmitting}
+            >
+              {form.state.isSubmitting && (
+                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+              )}
               {tCommon('save')}
             </Button>
           </div>

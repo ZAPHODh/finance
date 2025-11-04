@@ -256,6 +256,8 @@ export default {
     },
     configuration: {
         drivers: {
+            nameRequired: 'Name is required',
+            nameTooShort: 'Name is too short',
             title: 'Drivers',
             new: 'New Driver',
             edit: 'Edit Driver',
@@ -264,6 +266,7 @@ export default {
             noDrivers: 'No drivers found',
         },
         vehicles: {
+            nameRequired: 'Name is required',
             title: 'Vehicles',
             new: 'New Vehicle',
             edit: 'Edit Vehicle',
@@ -275,6 +278,7 @@ export default {
             noVehicles: 'No vehicles found',
         },
         platforms: {
+            nameRequired: 'Name is required',
             title: 'Platforms',
             new: 'New Platform',
             edit: 'Edit Platform',
@@ -284,6 +288,9 @@ export default {
             noPlatforms: 'No platforms found',
         },
         expenseTypes: {
+            nameRequired: 'Name is required',
+            nameTooShort: 'Name is too short',
+            namePlaceholder: 'Ex: Fuel, Maintenance, Tolls',
             title: 'Expense Types',
             new: 'New Expense Type',
             edit: 'Edit Expense Type',
