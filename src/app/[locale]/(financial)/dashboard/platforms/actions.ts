@@ -10,12 +10,10 @@ import { z } from "zod";
 
 const platformFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  icon: z.string().optional(),
 });
 
 export interface PlatformFormData {
   name: string;
-  icon?: string;
 }
 
 export async function createPlatform(input: unknown) {
@@ -26,16 +24,14 @@ export async function createPlatform(input: unknown) {
     throw new Error("Unauthorized");
   }
 
-  // Verificar limite do plano
   const limitReached = await checkIfPlatformLimitReached();
   if (limitReached) {
     throw new Error("Você atingiu o limite de plataformas do seu plano. Faça upgrade para adicionar mais.");
   }
 
-  const platform = await prisma.platform.create({
+  await prisma.platform.create({
     data: {
       name: data.name,
-      icon: data.icon,
       userId: user.id,
     },
   });
@@ -60,11 +56,10 @@ export async function updatePlatform(id: string, input: unknown) {
     throw new Error("Platform not found or unauthorized");
   }
 
-  const updatedPlatform = await prisma.platform.update({
+  await prisma.platform.update({
     where: { id },
     data: {
       name: data.name,
-      icon: data.icon,
     },
   });
 

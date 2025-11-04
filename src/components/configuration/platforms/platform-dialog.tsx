@@ -15,7 +15,6 @@ interface PlatformDialogProps {
   platform?: {
     id: string;
     name: string;
-    icon: string | null;
   };
 }
 
@@ -27,7 +26,6 @@ export function PlatformDialog({ mode, platform }: PlatformDialogProps) {
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState<PlatformFormData>({
     name: platform?.name || "",
-    icon: platform?.icon || "",
   });
 
   const isOpen = pathname.includes("/dashboard/platforms");
@@ -68,15 +66,6 @@ export function PlatformDialog({ mode, platform }: PlatformDialogProps) {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="icon">{t('icon')}</Label>
-            <Input
-              id="icon"
-              value={formData.icon}
-              onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-              placeholder="🏢"
             />
           </div>
           <div className="flex justify-end gap-2">

@@ -117,7 +117,6 @@ model Vehicle {
 model Platform {
   id       String    @id @default(cuid())
   name     String
-  icon     String?
   userId   String
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -158,7 +157,6 @@ enum FeeType {
 model PaymentMethod {
   id               String            @id @default(cuid())
   name             String
-  icon             String?
   userId           String
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 

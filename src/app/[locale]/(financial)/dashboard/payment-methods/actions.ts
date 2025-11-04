@@ -30,7 +30,6 @@ export async function createPaymentMethod(input: unknown) {
     throw new Error("Unauthorized");
   }
 
-  // Verificar limite do plano
   const limitReached = await checkIfPaymentMethodLimitReached();
   if (limitReached) {
     throw new Error("Você atingiu o limite de formas de pagamento do seu plano. Faça upgrade para adicionar mais.");

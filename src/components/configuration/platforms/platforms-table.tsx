@@ -13,7 +13,6 @@ import { ColumnDef } from '@tanstack/react-table';
 interface Platform {
   id: string;
   name: string;
-  icon: string | null;
 }
 
 interface PlatformsTableProps {
@@ -42,11 +41,6 @@ export function PlatformsTable({ platforms }: PlatformsTableProps) {
   }
 
   const columns: ColumnDef<Platform>[] = [
-    {
-      accessorKey: 'icon',
-      header: t('icon'),
-      cell: ({ row }) => <div className="text-2xl">{row.getValue('icon') || '🏢'}</div>,
-    },
     {
       accessorKey: 'name',
       header: t('name'),
