@@ -37,10 +37,6 @@ export function PaymentMethodDialog({ mode, paymentMethod }: PaymentMethodDialog
 
   const isOpen = pathname.includes("/dashboard/payment-methods");
 
-  function handleClose() {
-    router.back();
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -49,11 +45,11 @@ export function PaymentMethodDialog({ mode, paymentMethod }: PaymentMethodDialog
         if (mode === "create") {
           await createPaymentMethod(formData);
           toast.success(tCommon('createSuccess'));
-          router.push('/dashboard/payment-methods');
+          router.back();
         } else {
           await updatePaymentMethod(paymentMethod!.id, formData);
           toast.success(tCommon('updateSuccess'));
-          router.push('/dashboard/payment-methods');
+          router.back();
         }
       } catch (error) {
         toast.error(error instanceof Error ? error.message : tCommon('error'));
@@ -62,7 +58,7 @@ export function PaymentMethodDialog({ mode, paymentMethod }: PaymentMethodDialog
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={isOpen} onOpenChange={() => router.back()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
@@ -136,7 +132,7 @@ export function PaymentMethodDialog({ mode, paymentMethod }: PaymentMethodDialog
           )}
 
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={handleClose}>
+            <Button type="button" variant="outline" onClick={() => router.back()}>
               {tCommon('cancel')}
             </Button>
             <Button type="submit" disabled={isPending}>

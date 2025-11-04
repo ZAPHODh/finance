@@ -2,10 +2,13 @@
 import { Button } from '@/components/ui/button'
 import { Check } from 'lucide-react'
 import Link from 'next/link'
-import { useScopedI18n } from '@/locales/client'
+import { useScopedI18n, useCurrentLocale } from '@/locales/client'
+import { getPricingForLocale } from '@/lib/pricing'
 
 export default function Pricing() {
     const t = useScopedI18n('shared.pricing')
+    const locale = useCurrentLocale()
+    const pricing = getPricingForLocale(locale)
 
     return (
         <section className="py-16 md:py-32">
@@ -20,7 +23,7 @@ export default function Pricing() {
                         <div className="space-y-4">
                             <div>
                                 <h2 className="font-medium">{t('free.name')}</h2>
-                                <span className="my-3 block text-2xl font-semibold">{t('free.price')}</span>
+                                <span className="my-3 block text-2xl font-semibold">{pricing.simple.currencySymbol}0 / {t('perMonth')}</span>
                                 <p className="text-muted-foreground text-sm">{t('perDriver')}</p>
                             </div>
 
@@ -55,7 +58,7 @@ export default function Pricing() {
                             <div className="space-y-4">
                                 <div>
                                     <h2 className="font-medium">{t('pro.name')}</h2>
-                                    <span className="my-3 block text-2xl font-semibold">{t('pro.price')}</span>
+                                    <span className="my-3 block text-2xl font-semibold">{pricing.pro.monthlyPriceFormatted} / {t('perMonth')}</span>
                                     <p className="text-muted-foreground text-sm">{t('perDriver')}</p>
                                 </div>
 

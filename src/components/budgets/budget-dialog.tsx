@@ -31,10 +31,6 @@ export function BudgetDialog({
 
   const isOpen = pathname.includes("/budgets");
 
-  function handleClose() {
-    router.back();
-  }
-
   const form = useForm({
     defaultValues: {
       name: budget?.name || "",
@@ -52,14 +48,14 @@ export function BudgetDialog({
               alertThreshold: value.alertThreshold / 100,
             });
             toast.success(tCommon("createSuccess"));
-            router.push('/budgets');
+            router.back();
           } else if (budget) {
             await updateBudget(budget.id, {
               ...value,
               alertThreshold: value.alertThreshold / 100,
             });
             toast.success(tCommon("updateSuccess"));
-            router.push('/budgets');
+            router.back();
           }
         } catch (error) {
           toast.error(error instanceof Error ? error.message : tCommon("error"));
@@ -69,7 +65,7 @@ export function BudgetDialog({
   });
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+    <Dialog open={isOpen} onOpenChange={() => router.back()}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
@@ -186,7 +182,7 @@ export function BudgetDialog({
             </FieldGroup>
 
             <div className="flex gap-2 justify-end">
-              <Button type="button" variant="outline" onClick={handleClose}>
+              <Button type="button" variant="outline" onClick={() => router.back()}>
                 {tCommon("cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>

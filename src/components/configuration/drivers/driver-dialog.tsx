@@ -30,10 +30,6 @@ export function DriverDialog({ mode, driver }: DriverDialogProps) {
 
   const isOpen = pathname.includes("/dashboard/drivers");
 
-  function handleClose() {
-    router.back();
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -42,11 +38,11 @@ export function DriverDialog({ mode, driver }: DriverDialogProps) {
         if (mode === "create") {
           await createDriver(formData);
           toast.success(tCommon('createSuccess'));
-          router.push('/dashboard/drivers');
+          router.back();
         } else {
           await updateDriver(driver!.id, formData);
           toast.success(tCommon('updateSuccess'));
-          router.push('/dashboard/drivers');
+          router.back();
         }
       } catch (error) {
         toast.error(error instanceof Error ? error.message : tCommon('error'));
@@ -55,7 +51,7 @@ export function DriverDialog({ mode, driver }: DriverDialogProps) {
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={isOpen} onOpenChange={() => router.back()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
@@ -73,7 +69,7 @@ export function DriverDialog({ mode, driver }: DriverDialogProps) {
             />
           </div>
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={handleClose}>
+            <Button type="button" variant="outline" onClick={() => router.back()}>
               {tCommon('cancel')}
             </Button>
             <Button type="submit" disabled={isPending}>

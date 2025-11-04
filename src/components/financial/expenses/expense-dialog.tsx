@@ -43,10 +43,6 @@ export function ExpenseDialog({
 
   const isOpen = pathname.includes("/expenses");
 
-  function handleClose() {
-    router.back();
-  }
-
   const form = useForm({
     defaultValues: {
       amount: expense?.amount || 0,
@@ -69,11 +65,11 @@ export function ExpenseDialog({
           if (mode === "create") {
             await createExpense(data);
             toast.success(tCommon('createSuccess'));
-            router.push('/dashboard/expenses');
+            router.back();
           } else if (expense) {
             await updateExpense(expense.id, data);
             toast.success(tCommon('updateSuccess'));
-            router.push('/dashboard/expenses');
+            router.back();
           }
         } catch (error) {
           toast.error(error instanceof Error ? error.message : tCommon('error'));
@@ -83,7 +79,7 @@ export function ExpenseDialog({
   });
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={isOpen} onOpenChange={() => router.back()}>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
@@ -202,7 +198,7 @@ export function ExpenseDialog({
               </form.Field>
 
               <Field orientation="horizontal">
-                <Button type="button" variant="outline" onClick={handleClose}>
+                <Button type="button" variant="outline" onClick={() => router.back()}>
                   {tCommon('cancel')}
                 </Button>
                 <Button type="submit" disabled={isPending}>

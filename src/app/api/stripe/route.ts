@@ -5,11 +5,13 @@ import { siteConfig } from "@/config/site";
 import { proPlan, simplePlan } from "@/config/subscription";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { getUserSubscriptionPlan, stripe } from "@/lib/server/payment";
+import { getStripePriceId, getCurrencyFromLocale } from "@/lib/pricing";
 
 export async function GET(req: NextRequest) {
   const locale = req.cookies.get("Next-Locale")?.value || "en";
   const searchParams = req.nextUrl.searchParams;
   const planParam = searchParams.get("plan") || "pro";
+  const intervalParam = searchParams.get("interval") || "monthly";
 
   const billingUrl = siteConfig(locale).url + "/dashboard/billing/";
   try {
@@ -30,7 +32,11 @@ export async function GET(req: NextRequest) {
       return Response.json({ url: stripeSession.url });
     }
 
-    const selectedPlan = planParam === "simple" ? simplePlan : proPlan;
+    const currency = getCurrencyFromLocale(locale);
+    const planType = planParam === "simple" ? "simple" : "pro";
+    const interval = intervalParam === "yearly" ? "yearly" : "monthly";
+
+    const stripePriceId = getStripePriceId(planType, currency, interval);
 
     const stripeSession = await stripe.checkout.sessions.create({
       success_url: billingUrl,
@@ -40,7 +46,7 @@ export async function GET(req: NextRequest) {
       customer_email: user.email!,
       line_items: [
         {
-          price: selectedPlan.stripePriceId,
+          price: stripePriceId,
           quantity: 1,
         },
       ],

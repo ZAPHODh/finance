@@ -32,10 +32,6 @@ export function PlatformDialog({ mode, platform }: PlatformDialogProps) {
 
   const isOpen = pathname.includes("/dashboard/platforms");
 
-  function handleClose() {
-    router.back();
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -44,11 +40,11 @@ export function PlatformDialog({ mode, platform }: PlatformDialogProps) {
         if (mode === "create") {
           await createPlatform(formData);
           toast.success(tCommon('createSuccess'));
-          router.push('/dashboard/platforms');
+          router.back();
         } else {
           await updatePlatform(platform!.id, formData);
           toast.success(tCommon('updateSuccess'));
-          router.push('/dashboard/platforms');
+          router.back();
         }
       } catch (error) {
         toast.error(error instanceof Error ? error.message : tCommon('error'));
@@ -57,7 +53,7 @@ export function PlatformDialog({ mode, platform }: PlatformDialogProps) {
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={isOpen} onOpenChange={() => router.back()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
@@ -84,7 +80,7 @@ export function PlatformDialog({ mode, platform }: PlatformDialogProps) {
             />
           </div>
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={handleClose}>
+            <Button type="button" variant="outline" onClick={() => router.back()}>
               {tCommon('cancel')}
             </Button>
             <Button type="submit" disabled={isPending}>

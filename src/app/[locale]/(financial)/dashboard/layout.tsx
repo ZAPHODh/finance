@@ -1,7 +1,7 @@
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { redirect } from "next/navigation"
 import { AppSidebar } from "@/components/dashboard-01/app-sidebar"
-import { AlgoliaSearchWrapper } from "@/components/dashboard-01/algolia-search-wrapper"
+import { SearchButton } from "@/components/dashboard-01/search-button"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { SiteHeader } from "@/components/dashboard-01/site-header";
 import { QuickActionsMenu } from "@/components/dashboard-01/quick-actions-menu";
@@ -48,7 +48,7 @@ export default async function FinancialLayout({
         } as React.CSSProperties
       }
     >
-      <AppSidebar user={user} searchComponent={<AlgoliaSearchWrapper />} variant="inset" />
+      <AppSidebar user={user} searchComponent={<SearchButton />} variant="inset" />
       <SidebarInset>
         <div className="flex flex-1 flex-col">
           <SiteHeader

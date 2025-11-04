@@ -34,7 +34,6 @@ export default function Nav() {
                 variant="ghost"
                 size="icon"
               >
-                <Logo />
                 {name}
               </Button>
             </PopoverTrigger>

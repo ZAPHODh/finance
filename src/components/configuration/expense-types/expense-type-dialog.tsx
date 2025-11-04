@@ -32,10 +32,6 @@ export function ExpenseTypeDialog({ mode, expenseType }: ExpenseTypeDialogProps)
 
   const isOpen = pathname.includes("/dashboard/expense-types");
 
-  function handleClose() {
-    router.back();
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -44,11 +40,11 @@ export function ExpenseTypeDialog({ mode, expenseType }: ExpenseTypeDialogProps)
         if (mode === "create") {
           await createExpenseType(formData);
           toast.success(tCommon('createSuccess'));
-          router.push('/dashboard/expense-types');
+          router.back();
         } else {
           await updateExpenseType(expenseType!.id, formData);
           toast.success(tCommon('updateSuccess'));
-          router.push('/dashboard/expense-types');
+          router.back();
         }
       } catch (error) {
         toast.error(error instanceof Error ? error.message : tCommon('error'));
@@ -57,7 +53,7 @@ export function ExpenseTypeDialog({ mode, expenseType }: ExpenseTypeDialogProps)
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={isOpen} onOpenChange={() => router.back()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
@@ -84,7 +80,7 @@ export function ExpenseTypeDialog({ mode, expenseType }: ExpenseTypeDialogProps)
             />
           </div>
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={handleClose}>
+            <Button type="button" variant="outline" onClick={() => router.back()}>
               {tCommon('cancel')}
             </Button>
             <Button type="submit" disabled={isPending}>

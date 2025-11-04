@@ -157,7 +157,6 @@ export function AppSidebar({ user, searchComponent, ...props }: AppSidebarProps)
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="/dashboard">
-                <Logo />
                 <span className="text-base font-semibold">{logoName}</span>
               </a>
             </SidebarMenuButton>

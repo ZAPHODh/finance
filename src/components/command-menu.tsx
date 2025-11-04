@@ -26,6 +26,9 @@ import {
   CreditCard,
   HelpCircle,
   Plus,
+  FileText,
+  Tag,
+  Wallet,
 } from 'lucide-react';
 import { useScopedI18n } from '@/locales/client';
 
@@ -70,6 +73,11 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
       action: () => router.push('/goals'),
     },
     {
+      icon: FileText,
+      label: t('reports'),
+      action: () => router.push('/dashboard/reports'),
+    },
+    {
       icon: Users,
       label: t('drivers'),
       action: () => router.push('/dashboard/drivers'),
@@ -83,6 +91,16 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
       icon: Building2,
       label: t('platforms'),
       action: () => router.push('/dashboard/platforms'),
+    },
+    {
+      icon: Tag,
+      label: t('expenseTypes'),
+      action: () => router.push('/dashboard/expense-types'),
+    },
+    {
+      icon: Wallet,
+      label: t('paymentMethods'),
+      action: () => router.push('/dashboard/payment-methods'),
     },
     {
       icon: User,
@@ -131,6 +149,31 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
       icon: Plus,
       label: t('newGoal'),
       action: () => router.push('/goals/new'),
+    },
+    {
+      icon: Plus,
+      label: t('newDriver'),
+      action: () => router.push('/dashboard/drivers/new'),
+    },
+    {
+      icon: Plus,
+      label: t('newVehicle'),
+      action: () => router.push('/dashboard/vehicles/new'),
+    },
+    {
+      icon: Plus,
+      label: t('newPlatform'),
+      action: () => router.push('/dashboard/platforms/new'),
+    },
+    {
+      icon: Plus,
+      label: t('newExpenseType'),
+      action: () => router.push('/dashboard/expense-types/new'),
+    },
+    {
+      icon: Plus,
+      label: t('newPaymentMethod'),
+      action: () => router.push('/dashboard/payment-methods/new'),
     },
   ];
 

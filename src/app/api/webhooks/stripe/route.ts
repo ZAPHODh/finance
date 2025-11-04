@@ -5,11 +5,10 @@ import { prisma } from "@/lib/server/db";
 import { stripe } from "@/lib/server/payment";
 import { simplePlan, proPlan } from "@/config/subscription";
 import { type PlanType } from "@prisma/client";
+import { getPlanTypeFromPriceId as getPlanTypeFromPrice } from "@/lib/pricing";
 
 function getPlanTypeFromPriceId(priceId: string): PlanType {
-  if (priceId === proPlan.stripePriceId) return "PRO";
-  if (priceId === simplePlan.stripePriceId) return "SIMPLE";
-  return "FREE";
+  return getPlanTypeFromPrice(priceId);
 }
 
 export async function POST(req: NextRequest) {
