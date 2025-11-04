@@ -15,7 +15,6 @@ interface ExpenseTypeDialogProps {
   expenseType?: {
     id: string;
     name: string;
-    icon: string | null;
   };
 }
 
@@ -27,7 +26,6 @@ export function ExpenseTypeDialog({ mode, expenseType }: ExpenseTypeDialogProps)
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState<ExpenseTypeFormData>({
     name: expenseType?.name || "",
-    icon: expenseType?.icon || "",
   });
 
   const isOpen = pathname.includes("/dashboard/expense-types");
@@ -68,15 +66,6 @@ export function ExpenseTypeDialog({ mode, expenseType }: ExpenseTypeDialogProps)
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="icon">{t('icon')}</Label>
-            <Input
-              id="icon"
-              value={formData.icon}
-              onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-              placeholder="💰"
             />
           </div>
           <div className="flex justify-end gap-2">

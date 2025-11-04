@@ -10,12 +10,10 @@ import { z } from "zod";
 
 const expenseTypeFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  icon: z.string().optional(),
 });
 
 export interface ExpenseTypeFormData {
   name: string;
-  icon?: string;
 }
 
 export async function createExpenseType(input: unknown) {
@@ -26,16 +24,14 @@ export async function createExpenseType(input: unknown) {
     throw new Error("Unauthorized");
   }
 
-  // Verificar limite do plano
   const limitReached = await checkIfExpenseTypeLimitReached();
   if (limitReached) {
     throw new Error("Você atingiu o limite de tipos de despesa do seu plano. Faça upgrade para adicionar mais.");
   }
 
-  const expenseType = await prisma.expenseType.create({
+  await prisma.expenseType.create({
     data: {
       name: data.name,
-      icon: data.icon,
       userId: user.id,
     },
   });
@@ -60,11 +56,10 @@ export async function updateExpenseType(id: string, input: unknown) {
     throw new Error("Expense type not found or unauthorized");
   }
 
-  const updatedExpenseType = await prisma.expenseType.update({
+  await prisma.expenseType.update({
     where: { id },
     data: {
       name: data.name,
-      icon: data.icon,
     },
   });
 

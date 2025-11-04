@@ -13,7 +13,6 @@ import { ColumnDef } from '@tanstack/react-table';
 interface ExpenseType {
   id: string;
   name: string;
-  icon: string | null;
 }
 
 interface ExpenseTypesTableProps {
@@ -42,11 +41,6 @@ export function ExpenseTypesTable({ expenseTypes }: ExpenseTypesTableProps) {
   }
 
   const columns: ColumnDef<ExpenseType>[] = [
-    {
-      accessorKey: 'icon',
-      header: t('icon'),
-      cell: ({ row }) => <div className="text-2xl">{row.getValue('icon') || '📝'}</div>,
-    },
     {
       accessorKey: 'name',
       header: t('name'),
