@@ -10,7 +10,6 @@ import { ModeSwitcher } from "./nav-components/theme-toggle"
 
 import Link from "next/link"
 import { useScopedI18n } from "@/locales/client";
-import { Logo } from "../logo";
 import { siteConfig } from "@/config/site";
 
 export default function Nav() {
@@ -53,7 +52,7 @@ export default function Nav() {
           </Popover>
           <div className="flex items-center gap-6">
             <Link href="/" className="text-primary hover:text-primary/90">
-              <Logo />
+              {name}
             </Link>
             <nav className="hidden md:flex items-center gap-6">
               {navigationLinks.map((link) => (
