@@ -3,11 +3,12 @@ import { Logo } from '@/components/logo'
 import Link from 'next/link'
 import { useScopedI18n } from '@/locales/client'
 import { usePathname } from 'next/navigation'
+import { siteConfig } from '@/config/site'
 
 export default function FooterSection() {
     const t = useScopedI18n('shared.footer')
     const pathname = usePathname()
-
+    const name = siteConfig().name
     if (pathname.includes('/dashboard')) {
         return null
     }
@@ -19,7 +20,7 @@ export default function FooterSection() {
                     href="/"
                     aria-label="go home"
                     className="mx-auto block size-fit">
-                    <Logo />
+                    {name}
                 </Link>
 
                 <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
