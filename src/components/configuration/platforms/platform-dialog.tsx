@@ -3,7 +3,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, FieldLabel, FieldError, FieldGroup, FieldSet } from "@/components/ui/field";
 import { useRouter, usePathname } from "next/navigation";
 import { useScopedI18n } from "@/locales/client";
 import { createPlatform, updatePlatform } from "@/app/[locale]/(financial)/dashboard/platforms/actions";
@@ -63,55 +63,61 @@ export function PlatformDialog({ mode, platform }: PlatformDialogProps) {
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className="space-y-4"
         >
-          <form.Field
-            name="name"
-            validators={{
-              onChange: ({ value }) => {
-                if (!value) return t('nameRequired');
-                return undefined;
-              },
-            }}
-          >
-            {(field) => (
-              <div className="space-y-2">
-                <Label htmlFor={field.name}>{t('name')}</Label>
-                <Input
-                  id={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  required
-                />
-                {field.state.meta.errors?.[0] && (
-                  <p className="text-sm text-destructive">
-                    {field.state.meta.errors[0]}
-                  </p>
+          <FieldSet>
+            <FieldGroup>
+              <form.Field
+                name="name"
+                validators={{
+                  onChange: ({ value }) => {
+                    if (!value) return t('nameRequired');
+                    return undefined;
+                  },
+                }}
+              >
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>{t('name')}</FieldLabel>
+                    <Input
+                      id={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      disabled={form.state.isSubmitting}
+                      required
+                    />
+                    <FieldError>
+                      {field.state.meta.errors?.[0] && (
+                        <p className="mt-2 text-xs text-destructive">
+                          {field.state.meta.errors[0]}
+                        </p>
+                      )}
+                    </FieldError>
+                  </Field>
                 )}
-              </div>
-            )}
-          </form.Field>
+              </form.Field>
+            </FieldGroup>
 
-          <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.back()}
-              disabled={form.state.isSubmitting}
-            >
-              {tCommon('cancel')}
-            </Button>
-            <Button
-              type="submit"
-              disabled={form.state.isSubmitting}
-            >
-              {form.state.isSubmitting && (
-                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              {tCommon('save')}
-            </Button>
-          </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.back()}
+                disabled={form.state.isSubmitting}
+              >
+                {tCommon('cancel')}
+              </Button>
+              <Button
+                type="submit"
+                disabled={form.state.isSubmitting}
+              >
+                {form.state.isSubmitting && (
+                  <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {tCommon('save')}
+              </Button>
+            </div>
+          </FieldSet>
         </form>
       </DialogContent>
     </Dialog>

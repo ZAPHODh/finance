@@ -6,7 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useScopedI18n } from "@/locales/client";
 import { createExpenseType, updateExpenseType } from "@/app/[locale]/(financial)/dashboard/expense-types/actions";
 import { useForm } from "@tanstack/react-form";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+import { Field, FieldLabel, FieldError, FieldGroup, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
@@ -62,61 +62,64 @@ export function ExpenseTypeDialog({ mode, expenseType }: ExpenseTypeDialogProps)
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className="space-y-4"
         >
-          <form.Field
-            name="name"
-            validators={{
-              onChange: ({ value }) => {
-                if (!value) return t('nameRequired');
-                if (value.length < 2) return t('nameTooShort');
-                return undefined;
-              },
-            }}
-          >
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>
-                  {t('name')}
-                </FieldLabel>
-                <Input
-                  id={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  disabled={form.state.isSubmitting}
-                  placeholder={t('namePlaceholder')}
-                />
-                <FieldError>
-                  {field.state.meta.errors?.[0] && (
-                    <p className="mt-2 text-xs text-destructive">
-                      {field.state.meta.errors[0]}
-                    </p>
-                  )}
-                </FieldError>
-              </Field>
-            )}
-          </form.Field>
+          <FieldSet>
+            <FieldGroup>
+              <form.Field
+                name="name"
+                validators={{
+                  onChange: ({ value }) => {
+                    if (!value) return t('nameRequired');
+                    if (value.length < 2) return t('nameTooShort');
+                    return undefined;
+                  },
+                }}
+              >
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>
+                      {t('name')}
+                    </FieldLabel>
+                    <Input
+                      id={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      disabled={form.state.isSubmitting}
+                      placeholder={t('namePlaceholder')}
+                    />
+                    <FieldError>
+                      {field.state.meta.errors?.[0] && (
+                        <p className="mt-2 text-xs text-destructive">
+                          {field.state.meta.errors[0]}
+                        </p>
+                      )}
+                    </FieldError>
+                  </Field>
+                )}
+              </form.Field>
+            </FieldGroup>
 
-          <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.back()}
-              disabled={form.state.isSubmitting}
-            >
-              {tCommon('cancel')}
-            </Button>
-            <Button
-              type="submit"
-              disabled={form.state.isSubmitting}
-            >
-              {form.state.isSubmitting && (
-                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              {tCommon('save')}
-            </Button>
-          </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.back()}
+                disabled={form.state.isSubmitting}
+              >
+                {tCommon('cancel')}
+              </Button>
+              <Button
+                type="submit"
+                disabled={form.state.isSubmitting}
+              >
+                {form.state.isSubmitting && (
+                  <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {tCommon('save')}
+              </Button>
+            </div>
+          </FieldSet>
         </form>
       </DialogContent>
     </Dialog>

@@ -3,7 +3,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, FieldLabel, FieldError, FieldGroup, FieldSet } from "@/components/ui/field";
 import { useRouter, usePathname } from "next/navigation";
 import { useScopedI18n } from "@/locales/client";
 import { createVehicle, updateVehicle, type VehicleFormData } from "@/app/[locale]/(financial)/dashboard/vehicles/actions";
@@ -69,102 +69,107 @@ export function VehicleDialog({ mode, vehicle }: VehicleDialogProps) {
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className="space-y-4"
         >
-          {/* Name Field */}
-          <form.Field
-            name="name"
-            validators={{
-              onChange: ({ value }) => {
-                if (!value?.trim()) return t('nameRequired');
-                return undefined;
-              },
-            }}
-          >
-            {(field) => (
-              <div className="space-y-2">
-                <Label htmlFor={field.name}>{t('name')}</Label>
-                <Input
-                  id={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  required
-                />
-                {field.state.meta.errors?.[0] && (
-                  <p className="text-sm text-destructive">
-                    {field.state.meta.errors[0]}
-                  </p>
+          <FieldSet>
+            <FieldGroup>
+              <form.Field
+                name="name"
+                validators={{
+                  onChange: ({ value }) => {
+                    if (!value?.trim()) return t('nameRequired');
+                    return undefined;
+                  },
+                }}
+              >
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>{t('name')}</FieldLabel>
+                    <Input
+                      id={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      disabled={form.state.isSubmitting}
+                      required
+                    />
+                    <FieldError>
+                      {field.state.meta.errors?.[0] && (
+                        <p className="mt-2 text-xs text-destructive">
+                          {field.state.meta.errors[0]}
+                        </p>
+                      )}
+                    </FieldError>
+                  </Field>
                 )}
-              </div>
-            )}
-          </form.Field>
+              </form.Field>
 
-          {/* Plate Field */}
-          <form.Field name="plate">
-            {(field) => (
-              <div className="space-y-2">
-                <Label htmlFor={field.name}>{t('plate')}</Label>
-                <Input
-                  id={field.name}
-                  value={field.state.value || ''}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </div>
-            )}
-          </form.Field>
+              <form.Field name="plate">
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>{t('plate')}</FieldLabel>
+                    <Input
+                      id={field.name}
+                      value={field.state.value || ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      disabled={form.state.isSubmitting}
+                    />
+                  </Field>
+                )}
+              </form.Field>
 
-          {/* Model Field */}
-          <form.Field name="model">
-            {(field) => (
-              <div className="space-y-2">
-                <Label htmlFor={field.name}>{t('model')}</Label>
-                <Input
-                  id={field.name}
-                  value={field.state.value || ''}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </div>
-            )}
-          </form.Field>
+              <form.Field name="model">
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>{t('model')}</FieldLabel>
+                    <Input
+                      id={field.name}
+                      value={field.state.value || ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      disabled={form.state.isSubmitting}
+                    />
+                  </Field>
+                )}
+              </form.Field>
 
-          {/* Year Field */}
-          <form.Field name="year">
-            {(field) => (
-              <div className="space-y-2">
-                <Label htmlFor={field.name}>{t('year')}</Label>
-                <Input
-                  id={field.name}
-                  type="number"
-                  value={field.state.value || ''}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value ? parseInt(e.target.value) : undefined)}
-                />
-              </div>
-            )}
-          </form.Field>
+              <form.Field name="year">
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>{t('year')}</FieldLabel>
+                    <Input
+                      id={field.name}
+                      type="number"
+                      value={field.state.value || ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                      disabled={form.state.isSubmitting}
+                    />
+                  </Field>
+                )}
+              </form.Field>
+            </FieldGroup>
 
-          <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.back()}
-              disabled={form.state.isSubmitting}
-            >
-              {tCommon('cancel')}
-            </Button>
-            <Button
-              type="submit"
-              disabled={form.state.isSubmitting}
-            >
-              {form.state.isSubmitting && (
-                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              {tCommon('save')}
-            </Button>
-          </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.back()}
+                disabled={form.state.isSubmitting}
+              >
+                {tCommon('cancel')}
+              </Button>
+              <Button
+                type="submit"
+                disabled={form.state.isSubmitting}
+              >
+                {form.state.isSubmitting && (
+                  <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {tCommon('save')}
+              </Button>
+            </div>
+          </FieldSet>
         </form>
       </DialogContent>
     </Dialog>
