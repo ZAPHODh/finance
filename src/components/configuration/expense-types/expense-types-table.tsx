@@ -20,9 +20,9 @@ interface ExpenseTypesTableProps {
 }
 
 export function ExpenseTypesTable({ expenseTypes }: ExpenseTypesTableProps) {
-  const t = useScopedI18n('shared.configuration.expenseTypes');
-  const tCommon = useScopedI18n('shared.common');
-  const tNoData = useScopedI18n('shared.sidebar.dashboard.breakdowns');
+  const t = useScopedI18n('configuration.expenseTypes');
+  const tCommon = useScopedI18n('common');
+  const tNoData = useScopedI18n('dashboard.breakdowns');
   const [isPending, startTransition] = useTransition();
 
   async function handleDelete(id: string) {

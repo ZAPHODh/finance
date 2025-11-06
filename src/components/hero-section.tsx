@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useScopedI18n } from '@/locales/client'
 
 export default function HeroSection() {
-    const t = useScopedI18n('shared.hero')
+    const t = useScopedI18n('marketing.hero')
 
     return (
         <main>

@@ -8,7 +8,7 @@ import { useScopedI18n } from "@/locales/client";
 import { useRouter } from "next/navigation";
 
 export default function PricingPage() {
-  const t = useScopedI18n("shared.pricing");
+  const t = useScopedI18n("marketing.pricing");
   const router = useRouter();
 
   return (

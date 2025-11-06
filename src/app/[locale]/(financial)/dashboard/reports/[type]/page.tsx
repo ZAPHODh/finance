@@ -14,7 +14,7 @@ interface ReportPageProps {
 
 export default async function ReportPage({ params }: ReportPageProps) {
   const { type } = await params;
-  const t = await getScopedI18n('shared.reports');
+  const t = await getScopedI18n('reports');
   const { user } = await getCurrentSession();
 
   if (!user) {

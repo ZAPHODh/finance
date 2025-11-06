@@ -11,7 +11,7 @@ export default async function GoalsPage() {
     const { user } = await getCurrentSession()
     if (!user) redirect("/login")
 
-    const tGoals = await getScopedI18n("shared.goals")
+    const tGoals = await getScopedI18n("ui.goals")
     const goals = await getGoals()
 
     return (

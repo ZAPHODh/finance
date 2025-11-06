@@ -21,8 +21,9 @@ interface GoalFormProps {
 
 export function GoalForm({ drivers, vehicles, goal }: GoalFormProps) {
     const router = useRouter()
-    const t = useScopedI18n("shared.goals")
-    const tCommon = useScopedI18n("shared.common")
+    const t = useScopedI18n("ui.goals")
+    const tCommon = useScopedI18n("common")
+    const tEntities = useScopedI18n("entities")
     const [isPending, startTransition] = useTransition()
 
     const form = useForm({
@@ -149,7 +150,7 @@ export function GoalForm({ drivers, vehicles, goal }: GoalFormProps) {
                         {(field) => (
                             <Field>
                                 <FieldLabel htmlFor="driverId">
-                                    {tCommon("driver")} ({tCommon("optional")})
+                                    {tEntities("driver")} ({tCommon("optional")})
                                 </FieldLabel>
                                 <select
                                     id="driverId"
@@ -157,7 +158,7 @@ export function GoalForm({ drivers, vehicles, goal }: GoalFormProps) {
                                     onChange={(e) => field.handleChange(e.target.value)}
                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                                 >
-                                    <option value="">{tCommon("allDrivers")}</option>
+                                    <option value="">{tEntities("allDrivers")}</option>
                                     {drivers.map((driver) => (
                                         <option key={driver.id} value={driver.id}>
                                             {driver.name}
@@ -172,7 +173,7 @@ export function GoalForm({ drivers, vehicles, goal }: GoalFormProps) {
                         {(field) => (
                             <Field>
                                 <FieldLabel htmlFor="vehicleId">
-                                    {tCommon("vehicle")} ({tCommon("optional")})
+                                    {tEntities("vehicle")} ({tCommon("optional")})
                                 </FieldLabel>
                                 <select
                                     id="vehicleId"
@@ -180,7 +181,7 @@ export function GoalForm({ drivers, vehicles, goal }: GoalFormProps) {
                                     onChange={(e) => field.handleChange(e.target.value)}
                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                                 >
-                                    <option value="">{tCommon("allVehicles")}</option>
+                                    <option value="">{tEntities("allVehicles")}</option>
                                     {vehicles.map((vehicle) => (
                                         <option key={vehicle.id} value={vehicle.id}>
                                             {vehicle.name}

@@ -6,7 +6,7 @@ import { useScopedI18n, useCurrentLocale } from '@/locales/client'
 import { getPricingForLocale } from '@/lib/pricing'
 
 export default function Pricing() {
-    const t = useScopedI18n('shared.pricing')
+    const t = useScopedI18n('marketing.pricing')
     const locale = useCurrentLocale()
     const pricing = getPricingForLocale(locale)
 

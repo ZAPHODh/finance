@@ -46,7 +46,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function AppSidebar({ user, searchComponent, ...props }: AppSidebarProps) {
-  const t = useScopedI18n('shared.sidebar')
+  const t = useScopedI18n('navigation.sidebar')
   const locale = useCurrentLocale()
   const logoName = siteConfig(locale).name
   const navMain = [

@@ -5,7 +5,7 @@ import { ReactNode } from 'react'
 import { useScopedI18n } from '@/locales/client'
 
 export default function Features() {
-    const t = useScopedI18n('shared.features')
+    const t = useScopedI18n('marketing.features')
 
     return (
         <section className="bg-zinc-50 py-16 md:py-32 dark:bg-transparent">

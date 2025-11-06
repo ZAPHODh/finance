@@ -37,8 +37,9 @@ interface ReportViewerProps {
 }
 
 export function ReportViewer({ reportConfig, filterOptions, userPlanType }: ReportViewerProps) {
-  const t = useScopedI18n('shared.reports');
-  const tCommon = useScopedI18n('shared.common');
+  const t = useScopedI18n('reports');
+  const tCommon = useScopedI18n('common');
+  const tEntities = useScopedI18n('entities');
   const [isPending, startTransition] = useTransition();
 
   const [filters, setFilters] = useState({
@@ -116,16 +117,16 @@ export function ReportViewer({ reportConfig, filterOptions, userPlanType }: Repo
             <div className="grid grid-cols-2 gap-4 pt-4 border-t">
               {showDriverFilter && (
                 <div className="space-y-2">
-                  <Label htmlFor="driver">{tCommon('driver')}</Label>
+                  <Label htmlFor="driver">{tEntities('driver')}</Label>
                   <Select
                     value={filters.driverId}
                     onValueChange={(value) => setFilters({ ...filters, driverId: value })}
                   >
                     <SelectTrigger id="driver">
-                      <SelectValue placeholder={tCommon('allDrivers')} />
+                      <SelectValue placeholder={tEntities('allDrivers')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">{tCommon('allDrivers')}</SelectItem>
+                      <SelectItem value="all">{tEntities('allDrivers')}</SelectItem>
                       {filterOptions.drivers.map((driver) => (
                         <SelectItem key={driver.id} value={driver.id}>
                           {driver.name}
@@ -138,16 +139,16 @@ export function ReportViewer({ reportConfig, filterOptions, userPlanType }: Repo
 
               {showVehicleFilter && (
                 <div className="space-y-2">
-                  <Label htmlFor="vehicle">{tCommon('vehicle')}</Label>
+                  <Label htmlFor="vehicle">{tEntities('vehicle')}</Label>
                   <Select
                     value={filters.vehicleId}
                     onValueChange={(value) => setFilters({ ...filters, vehicleId: value })}
                   >
                     <SelectTrigger id="vehicle">
-                      <SelectValue placeholder={tCommon('allVehicles')} />
+                      <SelectValue placeholder={tEntities('allVehicles')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">{tCommon('allVehicles')}</SelectItem>
+                      <SelectItem value="all">{tEntities('allVehicles')}</SelectItem>
                       {filterOptions.vehicles.map((vehicle) => (
                         <SelectItem key={vehicle.id} value={vehicle.id}>
                           {vehicle.name}

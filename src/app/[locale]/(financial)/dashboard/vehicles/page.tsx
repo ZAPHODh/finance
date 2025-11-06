@@ -13,12 +13,12 @@ export default async function VehiclesPage() {
     <div className="container mx-auto px-4 md:px-0 py-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t('shared.configuration.vehicles.title')}</h1>
+          <h1 className="text-3xl font-bold">{t('configuration.vehicles.title')}</h1>
         </div>
         <Link href="/dashboard/vehicles/new">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
-            {t('shared.configuration.vehicles.new')}
+            {t('configuration.vehicles.new')}
           </Button>
         </Link>
       </div>

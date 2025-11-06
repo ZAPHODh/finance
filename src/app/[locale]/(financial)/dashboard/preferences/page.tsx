@@ -9,7 +9,7 @@ export default async function PreferencesPage() {
   const { user } = await getCurrentSession()
   if (!user) redirect("/login")
 
-  const t = await getScopedI18n("shared.userPages.preferences")
+  const t = await getScopedI18n("ui.userPages.preferences")
   const initialData = await getUserPreferences()
 
   return (

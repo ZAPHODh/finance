@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LayoutDashboard, TrendingDown, TrendingUp, PiggyBank, Target, Keyboard, HelpCircle } from "lucide-react";
 
 export default async function HelpPage() {
-  const t = await getScopedI18n("shared.help");
+  const t = await getScopedI18n("ui.help");
 
   const features = [
     {

@@ -2,7 +2,7 @@
 import { useScopedI18n } from '@/locales/client'
 
 export default function FAQs() {
-    const t = useScopedI18n('shared.faqs')
+    const t = useScopedI18n('marketing.faqs')
 
     return (
         <section className="scroll-py-16 py-16 md:scroll-py-32 md:py-32">

@@ -39,7 +39,7 @@ interface CommandMenuProps {
 
 export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
   const router = useRouter();
-  const t = useScopedI18n('shared.commandMenu');
+  const t = useScopedI18n('ui.commandMenu');
 
   const runCommand = React.useCallback((callback: () => void) => {
     onOpenChange(false);

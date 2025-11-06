@@ -6,7 +6,7 @@ import { Mail, MapPin } from "lucide-react";
 import { useScopedI18n } from "@/locales/client";
 
 export default function ContactPage() {
-  const t = useScopedI18n('shared.contact');
+  const t = useScopedI18n('marketing.contact');
 
   return (
     <>

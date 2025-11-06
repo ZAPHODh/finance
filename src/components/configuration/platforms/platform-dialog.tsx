@@ -22,8 +22,8 @@ interface PlatformDialogProps {
 export function PlatformDialog({ mode, platform }: PlatformDialogProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const t = useScopedI18n('shared.configuration.platforms');
-  const tCommon = useScopedI18n('shared.common');
+  const t = useScopedI18n('configuration.platforms');
+  const tCommon = useScopedI18n('common');
 
   const isOpen = pathname.includes("/dashboard/platforms");
 

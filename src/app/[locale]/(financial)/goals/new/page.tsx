@@ -10,7 +10,7 @@ export default async function NewGoalPage() {
     const { user } = await getCurrentSession()
     if (!user) redirect("/login")
 
-    const tGoals = await getScopedI18n("shared.goals")
+    const tGoals = await getScopedI18n("ui.goals")
 
     const [drivers, vehicles] = await Promise.all([
         prisma.driver.findMany({

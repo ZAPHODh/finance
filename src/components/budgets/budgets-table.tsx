@@ -12,8 +12,8 @@ interface BudgetsTableProps {
 }
 
 export function BudgetsTable({ budgets }: BudgetsTableProps) {
-    const t = useScopedI18n("shared.budgets")
-    const tCommon = useScopedI18n("shared.common")
+    const t = useScopedI18n("ui.budgets")
+    const tCommon = useScopedI18n("common")
     const [isPending, startTransition] = useTransition()
 
     async function handleDelete(id: string) {

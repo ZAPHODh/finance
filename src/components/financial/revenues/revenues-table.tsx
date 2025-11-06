@@ -24,10 +24,11 @@ interface RevenuesTableProps {
 }
 
 export function RevenuesTable({ revenues, platforms, drivers, vehicles }: RevenuesTableProps) {
-  const t = useScopedI18n('shared.financial.revenues');
-  const tCommon = useScopedI18n('shared.common');
-  const tFilters = useScopedI18n('shared.filters');
-  const tNoData = useScopedI18n('shared.sidebar.dashboard.breakdowns');
+  const t = useScopedI18n('financial.revenues');
+  const tCommon = useScopedI18n('common');
+  const tFilters = useScopedI18n('ui.filters');
+  const tEntities = useScopedI18n('entities');
+  const tNoData = useScopedI18n('dashboard.breakdowns');
   const [isPending, startTransition] = useTransition();
 
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
@@ -132,12 +133,12 @@ export function RevenuesTable({ revenues, platforms, drivers, vehicles }: Revenu
     },
     {
       id: 'driver',
-      header: t('driver'),
+      header: tEntities('driver'),
       cell: ({ row }) => <div>{row.original.driver?.name || '-'}</div>,
     },
     {
       id: 'vehicle',
-      header: t('vehicle'),
+      header: tEntities('vehicle'),
       cell: ({ row }) => <div>{row.original.vehicle?.name || '-'}</div>,
     },
     {
@@ -213,7 +214,7 @@ export function RevenuesTable({ revenues, platforms, drivers, vehicles }: Revenu
       if (driver) {
         filters.push({
           id: `driver-${id}`,
-          label: t('driver'),
+          label: tEntities('driver'),
           value: driver.name,
           onRemove: () =>
             setSelectedDriverIds((prev) => prev.filter((i) => i !== id)),
@@ -226,7 +227,7 @@ export function RevenuesTable({ revenues, platforms, drivers, vehicles }: Revenu
       if (vehicle) {
         filters.push({
           id: `vehicle-${id}`,
-          label: t('vehicle'),
+          label: tEntities('vehicle'),
           value: vehicle.name,
           onRemove: () =>
             setSelectedVehicleIds((prev) => prev.filter((i) => i !== id)),
@@ -235,7 +236,7 @@ export function RevenuesTable({ revenues, platforms, drivers, vehicles }: Revenu
     });
 
     return filters;
-  }, [selectedPlatformIds, selectedDriverIds, selectedVehicleIds, platforms, drivers, vehicles, t]);
+  }, [selectedPlatformIds, selectedDriverIds, selectedVehicleIds, platforms, drivers, vehicles, t, tEntities]);
 
   return (
     <div className="space-y-4">
@@ -268,13 +269,13 @@ export function RevenuesTable({ revenues, platforms, drivers, vehicles }: Revenu
             onSelectionChange={setSelectedPlatformIds}
           />
           <MultiSelectFilter
-            label={t('driver')}
+            label={tEntities('driver')}
             options={drivers}
             selectedIds={selectedDriverIds}
             onSelectionChange={setSelectedDriverIds}
           />
           <MultiSelectFilter
-            label={t('vehicle')}
+            label={tEntities('vehicle')}
             options={vehicles}
             selectedIds={selectedVehicleIds}
             onSelectionChange={setSelectedVehicleIds}

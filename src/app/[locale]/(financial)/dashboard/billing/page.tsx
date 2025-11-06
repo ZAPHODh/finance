@@ -10,7 +10,7 @@ export default async function BillingPage() {
   const { user } = await getCurrentSession()
   if (!user) redirect("/login")
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
-  const t = await getScopedI18n("shared.userPages.billing")
+  const t = await getScopedI18n("ui.userPages.billing")
 
   const getPlanConfig = () => {
     if (subscriptionPlan.name === "PRO") return proPlanConfig

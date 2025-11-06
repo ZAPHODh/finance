@@ -21,8 +21,8 @@ interface OnboardingWizardProps {
 
 export function OnboardingWizard({ locale }: OnboardingWizardProps) {
   const router = useRouter();
-  const t = useScopedI18n('shared.onboarding');
-  const tCommon = useScopedI18n('shared.common');
+  const t = useScopedI18n('ui.onboarding');
+  const tCommon = useScopedI18n('common');
   const [isPending, startTransition] = useTransition();
   const [currentStep, setCurrentStep] = useState(0);
 

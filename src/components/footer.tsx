@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { siteConfig } from '@/config/site'
 
 export default function FooterSection() {
-    const t = useScopedI18n('shared.footer')
+    const t = useScopedI18n('marketing.footer')
     const pathname = usePathname()
     const name = siteConfig().name
     if (pathname.includes('/dashboard')) {

@@ -16,8 +16,8 @@ interface GoalsTableProps {
 }
 
 export function GoalsTable({ goals }: GoalsTableProps) {
-    const t = useScopedI18n("shared.goals")
-    const tCommon = useScopedI18n("shared.common")
+    const t = useScopedI18n("ui.goals")
+    const tCommon = useScopedI18n("common")
     const [isPending, startTransition] = useTransition()
 
     async function handleToggleActive(id: string) {

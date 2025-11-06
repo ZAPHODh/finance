@@ -9,7 +9,7 @@ export default async function EditGoalPage({ params }: { params: { id: string } 
     const { user } = await getCurrentSession()
     if (!user) redirect("/login")
 
-    const tGoals = await getScopedI18n("shared.goals")
+    const tGoals = await getScopedI18n("ui.goals")
 
     const goal = await getGoalById(params.id)
     if (!goal) redirect("/goals")

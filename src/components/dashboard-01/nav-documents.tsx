@@ -22,7 +22,7 @@ export function NavDocuments({
     icon: LucideIcon
   }[]
 }) {
-  const t = useScopedI18n('shared.sidebar')
+  const t = useScopedI18n('navigation.sidebar')
   const { isMobile, setOpenMobile } = useSidebar()
 
   function handleLinkClick() {

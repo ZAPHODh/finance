@@ -143,7 +143,7 @@ function DraggableRow({ row }: { row: Row<Transaction> }) {
 }
 
 export function DataTable({ data }: DataTableProps) {
-  const t = useScopedI18n("shared.sidebar.dashboard.table")
+  const t = useScopedI18n("dashboard.table")
   const [transactions, setTransactions] = React.useState<Transaction[]>(data)
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])

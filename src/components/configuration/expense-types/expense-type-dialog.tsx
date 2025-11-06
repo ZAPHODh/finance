@@ -22,8 +22,8 @@ interface ExpenseTypeDialogProps {
 export function ExpenseTypeDialog({ mode, expenseType }: ExpenseTypeDialogProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const t = useScopedI18n('shared.configuration.expenseTypes');
-  const tCommon = useScopedI18n('shared.common');
+  const t = useScopedI18n('configuration.expenseTypes');
+  const tCommon = useScopedI18n('common');
 
   const form = useForm({
     defaultValues: {

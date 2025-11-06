@@ -26,7 +26,7 @@ export function NavUser({
   locale,
   className
 }: NavUserProps) {
-  const t = useScopedI18n("shared.common");
+  const t = useScopedI18n("ui.accountCommon");
   if (!user) {
     return (
       <Button asChild size={'sm'}>

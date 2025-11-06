@@ -21,7 +21,7 @@ interface ReportListItem {
 }
 
 export function ReportsList() {
-  const t = useScopedI18n('shared.reports');
+  const t = useScopedI18n('reports');
   const router = useRouter();
 
   const reportItems: ReportListItem[] = useMemo(() => {

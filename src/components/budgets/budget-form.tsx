@@ -18,8 +18,8 @@ interface BudgetFormProps {
 
 export function BudgetForm({ expenseTypes, budget }: BudgetFormProps) {
     const router = useRouter()
-    const t = useScopedI18n("shared.budgets")
-    const tCommon = useScopedI18n("shared.common")
+    const t = useScopedI18n("ui.budgets")
+    const tCommon = useScopedI18n("common")
     const [isPending, startTransition] = useTransition()
 
     const form = useForm({

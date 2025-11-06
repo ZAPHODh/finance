@@ -8,7 +8,7 @@ export default async function NewBudgetPage() {
     const { user } = await getCurrentSession()
     if (!user) redirect("/login")
 
-    const tBudgets = await getScopedI18n("shared.budgets")
+    const tBudgets = await getScopedI18n("ui.budgets")
 
     const expenseTypes = await prisma.expenseType.findMany({
         where: { userId: user.id },

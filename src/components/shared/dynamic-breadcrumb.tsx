@@ -18,9 +18,9 @@ interface DynamicBreadcrumbProps {
 
 export function DynamicBreadcrumb({ locale }: DynamicBreadcrumbProps) {
   const pathname = usePathname()
-  const tSidebar = useScopedI18n("shared.sidebar")
-  const tConfig = useScopedI18n("shared.configuration")
-  const tFinancial = useScopedI18n("shared.financial")
+  const tSidebar = useScopedI18n("navigation.sidebar")
+  const tConfig = useScopedI18n("configuration")
+  const tFinancial = useScopedI18n("financial")
 
   const pathWithoutLocale = pathname.replace(`/${locale}`, "")
   const segments = pathWithoutLocale.split("/").filter(Boolean)

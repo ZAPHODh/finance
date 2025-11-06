@@ -25,8 +25,8 @@ interface VehicleDialogProps {
 export function VehicleDialog({ mode, vehicle }: VehicleDialogProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const t = useScopedI18n('shared.configuration.vehicles');
-  const tCommon = useScopedI18n('shared.common');
+  const t = useScopedI18n('configuration.vehicles');
+  const tCommon = useScopedI18n('common');
 
   const isOpen = pathname.includes("/dashboard/vehicles");
 

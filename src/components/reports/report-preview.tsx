@@ -24,7 +24,7 @@ interface ReportPreviewProps {
 const COLORS = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
 export function ReportPreview({ reportType, startDate, endDate, filters }: ReportPreviewProps) {
-  const t = useScopedI18n('shared.reports.preview');
+  const t = useScopedI18n('reports.preview');
   const [data, setData] = useState<any>(null);
   const [isPending, startTransition] = useTransition();
 

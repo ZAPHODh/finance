@@ -49,8 +49,8 @@ export function ExportButtons({
   filters,
   disabled
 }: ExportButtonsProps) {
-  const t = useScopedI18n('shared.reports');
-  const tCommon = useScopedI18n('shared.common');
+  const t = useScopedI18n('reports');
+  const tCommon = useScopedI18n('common');
   const [isPending, startTransition] = useTransition();
 
   async function handleExport(format: ExportFormat) {

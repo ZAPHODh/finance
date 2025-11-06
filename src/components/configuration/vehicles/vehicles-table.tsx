@@ -22,9 +22,9 @@ interface VehiclesTableProps {
 }
 
 export function VehiclesTable({ vehicles }: VehiclesTableProps) {
-  const t = useScopedI18n('shared.configuration.vehicles');
-  const tCommon = useScopedI18n('shared.common');
-  const tNoData = useScopedI18n('shared.sidebar.dashboard.breakdowns');
+  const t = useScopedI18n('configuration.vehicles');
+  const tCommon = useScopedI18n('common');
+  const tNoData = useScopedI18n('dashboard.breakdowns');
   const [isPending, startTransition] = useTransition();
 
   async function handleDelete(id: string) {

@@ -25,8 +25,8 @@ interface PaymentMethodDialogProps {
 export function PaymentMethodDialog({ mode, paymentMethod }: PaymentMethodDialogProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const t = useScopedI18n('shared.configuration.paymentMethods');
-  const tCommon = useScopedI18n('shared.common');
+  const t = useScopedI18n('configuration.paymentMethods');
+  const tCommon = useScopedI18n('common');
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState<PaymentMethodFormData>({
     name: paymentMethod?.name || "",

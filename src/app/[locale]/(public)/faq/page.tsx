@@ -11,8 +11,8 @@ import {
 import { useScopedI18n } from "@/locales/client";
 
 export default function FAQPage() {
-  const t = useScopedI18n('shared.faqs');
-  const tContact = useScopedI18n('shared.contact');
+  const t = useScopedI18n('marketing.faqs');
+  const tContact = useScopedI18n('marketing.contact');
 
   const faqs = [
     { question: t('q1.question'), answer: t('q1.answer') },

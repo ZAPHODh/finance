@@ -14,7 +14,7 @@ import { siteConfig } from "@/config/site";
 
 export default function Nav() {
   const name = siteConfig().name
-  const t = useScopedI18n("shared.nav")
+  const t = useScopedI18n("navigation.nav")
 
   const navigationLinks = [
     { href: "/", label: t("home") },

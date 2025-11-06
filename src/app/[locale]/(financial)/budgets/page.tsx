@@ -11,7 +11,7 @@ export default async function BudgetsPage() {
     const { user } = await getCurrentSession()
     if (!user) redirect("/login")
 
-    const tBudgets = await getScopedI18n("shared.budgets")
+    const tBudgets = await getScopedI18n("ui.budgets")
     const budgets = await getBudgetsWithUsage()
 
     return (

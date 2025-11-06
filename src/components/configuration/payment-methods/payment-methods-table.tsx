@@ -20,9 +20,9 @@ interface PaymentMethodsTableProps {
 }
 
 export function PaymentMethodsTable({ paymentMethods }: PaymentMethodsTableProps) {
-  const t = useScopedI18n('shared.configuration.paymentMethods');
-  const tCommon = useScopedI18n('shared.common');
-  const tNoData = useScopedI18n('shared.sidebar.dashboard.breakdowns');
+  const t = useScopedI18n('configuration.paymentMethods');
+  const tCommon = useScopedI18n('common');
+  const tNoData = useScopedI18n('dashboard.breakdowns');
   const [isPending, startTransition] = useTransition();
 
   async function handleDelete(id: string) {

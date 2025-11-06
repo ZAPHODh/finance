@@ -22,8 +22,8 @@ interface DriverDialogProps {
 export function DriverDialog({ mode, driver }: DriverDialogProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const t = useScopedI18n('shared.configuration.drivers');
-  const tCommon = useScopedI18n('shared.common');
+  const t = useScopedI18n('configuration.drivers');
+  const tCommon = useScopedI18n('common');
 
   const form = useForm({
     defaultValues: {

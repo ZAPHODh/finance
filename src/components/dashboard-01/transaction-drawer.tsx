@@ -38,7 +38,7 @@ export function TransactionDrawer({
   open,
   onOpenChange,
 }: TransactionDrawerProps) {
-  const t = useScopedI18n("shared.sidebar.dashboard.table")
+  const t = useScopedI18n("dashboard.table")
 
   if (!transaction) return null
 

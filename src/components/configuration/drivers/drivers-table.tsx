@@ -20,9 +20,9 @@ interface DriversTableProps {
 }
 
 export function DriversTable({ drivers }: DriversTableProps) {
-  const t = useScopedI18n('shared.configuration.drivers');
-  const tCommon = useScopedI18n('shared.common');
-  const tNoData = useScopedI18n('shared.sidebar.dashboard.breakdowns');
+  const t = useScopedI18n('configuration.drivers');
+  const tCommon = useScopedI18n('common');
+  const tNoData = useScopedI18n('dashboard.breakdowns');
   const [isPending, startTransition] = useTransition();
 
   async function handleDelete(id: string) {

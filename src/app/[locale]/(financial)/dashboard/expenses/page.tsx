@@ -21,12 +21,12 @@ export default async function ExpensesPage() {
     <div className="container mx-auto px-4 md:px-0 py-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t('shared.financial.expenses.title')}</h1>
+          <h1 className="text-3xl font-bold">{t('financial.expenses.title')}</h1>
         </div>
         <Link href="/dashboard/expenses/new">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
-            {t('shared.financial.expenses.new')}
+            {t('financial.expenses.new')}
           </Button>
         </Link>
       </div>

@@ -9,7 +9,7 @@ export default async function SettingsPage() {
   const { user } = await getCurrentSession()
   if (!user) redirect("/login")
 
-  const t = await getScopedI18n("shared.userPages.settings")
+  const t = await getScopedI18n("ui.userPages.settings")
   const initialData = await getUserSettings()
 
   return (

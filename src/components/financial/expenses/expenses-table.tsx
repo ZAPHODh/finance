@@ -42,10 +42,11 @@ interface ExpensesTableProps {
 }
 
 export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: ExpensesTableProps) {
-  const t = useScopedI18n('shared.financial.expenses');
-  const tCommon = useScopedI18n('shared.common');
-  const tFilters = useScopedI18n('shared.filters');
-  const tNoData = useScopedI18n('shared.sidebar.dashboard.breakdowns');
+  const t = useScopedI18n('financial.expenses');
+  const tCommon = useScopedI18n('common');
+  const tFilters = useScopedI18n('ui.filters');
+  const tEntities = useScopedI18n('entities');
+  const tNoData = useScopedI18n('dashboard.breakdowns');
   const [isPending, startTransition] = useTransition();
 
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
@@ -135,12 +136,12 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
     },
     {
       id: 'driver',
-      header: t('driver'),
+      header: tEntities('driver'),
       cell: ({ row }) => <div>{row.original.driver?.name || '-'}</div>,
     },
     {
       id: 'vehicle',
-      header: t('vehicle'),
+      header: tEntities('vehicle'),
       cell: ({ row }) => <div>{row.original.vehicle?.name || '-'}</div>,
     },
     {
@@ -216,7 +217,7 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
       if (driver) {
         filters.push({
           id: `driver-${id}`,
-          label: t('driver'),
+          label: tEntities('driver'),
           value: driver.name,
           onRemove: () =>
             setSelectedDriverIds((prev) => prev.filter((i) => i !== id)),
@@ -229,7 +230,7 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
       if (vehicle) {
         filters.push({
           id: `vehicle-${id}`,
-          label: t('vehicle'),
+          label: tEntities('vehicle'),
           value: vehicle.name,
           onRemove: () =>
             setSelectedVehicleIds((prev) => prev.filter((i) => i !== id)),
@@ -238,7 +239,7 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
     });
 
     return filters;
-  }, [selectedExpenseTypeIds, selectedDriverIds, selectedVehicleIds, expenseTypes, drivers, vehicles, t]);
+  }, [selectedExpenseTypeIds, selectedDriverIds, selectedVehicleIds, expenseTypes, drivers, vehicles, t, tEntities]);
 
   return (
     <div className="space-y-4">
@@ -271,13 +272,13 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
             onSelectionChange={setSelectedExpenseTypeIds}
           />
           <MultiSelectFilter
-            label={t('driver')}
+            label={tEntities('driver')}
             options={drivers}
             selectedIds={selectedDriverIds}
             onSelectionChange={setSelectedDriverIds}
           />
           <MultiSelectFilter
-            label={t('vehicle')}
+            label={tEntities('vehicle')}
             options={vehicles}
             selectedIds={selectedVehicleIds}
             onSelectionChange={setSelectedVehicleIds}

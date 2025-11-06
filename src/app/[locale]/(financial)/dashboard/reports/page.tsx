@@ -4,7 +4,7 @@ import { ReportsList } from "@/components/reports/reports-list";
 import { getScopedI18n } from "@/locales/server";
 
 export default async function ReportsPage() {
-  const t = await getScopedI18n('shared.reports');
+  const t = await getScopedI18n('reports');
   const { user } = await getCurrentSession();
 
   if (!user) {

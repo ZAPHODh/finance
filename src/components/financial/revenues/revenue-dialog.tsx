@@ -43,8 +43,9 @@ export function RevenueDialog({
 }: RevenueDialogProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const t = useScopedI18n('shared.financial.revenues');
-  const tCommon = useScopedI18n('shared.common');
+  const t = useScopedI18n('financial.revenues');
+  const tCommon = useScopedI18n('common');
+  const tEntities = useScopedI18n('entities');
   const [isPending, startTransition] = useTransition();
 
   const isOpen = pathname.includes("/revenues");
@@ -196,13 +197,13 @@ export function RevenueDialog({
               <form.Field name="driverId">
                 {(field) => (
                   <Field>
-                    <FieldLabel htmlFor="driverId">{t('driver')}</FieldLabel>
+                    <FieldLabel htmlFor="driverId">{tEntities('driver')}</FieldLabel>
                     <Select
                       value={field.state.value}
                       onValueChange={field.handleChange}
                     >
                       <SelectTrigger id="driverId">
-                        <SelectValue placeholder={t('driver')} />
+                        <SelectValue placeholder={tEntities('driver')} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">-</SelectItem>
@@ -220,13 +221,13 @@ export function RevenueDialog({
               <form.Field name="vehicleId">
                 {(field) => (
                   <Field>
-                    <FieldLabel htmlFor="vehicleId">{t('vehicle')}</FieldLabel>
+                    <FieldLabel htmlFor="vehicleId">{tEntities('vehicle')}</FieldLabel>
                     <Select
                       value={field.state.value}
                       onValueChange={field.handleChange}
                     >
                       <SelectTrigger id="vehicleId">
-                        <SelectValue placeholder={t('vehicle')} />
+                        <SelectValue placeholder={tEntities('vehicle')} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">-</SelectItem>

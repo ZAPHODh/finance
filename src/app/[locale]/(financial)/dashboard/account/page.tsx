@@ -7,7 +7,7 @@ export default async function AccountPage() {
   const { user } = await getCurrentSession()
   if (!user) redirect("/login")
 
-  const t = await getScopedI18n("shared.userPages.account")
+  const t = await getScopedI18n("ui.userPages.account")
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-6 max-w-3xl space-y-6">

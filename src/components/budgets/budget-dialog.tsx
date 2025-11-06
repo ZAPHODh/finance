@@ -25,8 +25,8 @@ export function BudgetDialog({
 }: BudgetDialogProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const t = useScopedI18n("shared.budgets");
-  const tCommon = useScopedI18n("shared.common");
+  const t = useScopedI18n("ui.budgets");
+  const tCommon = useScopedI18n("common");
   const [isPending, startTransition] = useTransition();
 
   const isOpen = pathname.includes("/budgets");
