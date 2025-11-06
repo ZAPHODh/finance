@@ -1,0 +1,5 @@
+import { DataTableSkeleton } from "@/components/skeletons"
+
+export default function Loading() {
+  return <DataTableSkeleton rows={10} columns={5} />
+}
