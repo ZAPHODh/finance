@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import { Plus, Check, X } from 'lucide-react';
 import { Vehicle } from './vehicle-card';
@@ -16,6 +17,8 @@ interface AddVehicleCardProps {
     plate: string;
     model: string;
     year: string;
+    isPrimary: string;
+    isPrimaryDescription: string;
     save: string;
     cancel: string;
   };
@@ -37,14 +40,15 @@ export function AddVehicleCard({ onAdd, labels }: AddVehicleCardProps) {
         plate: newVehicle.plate?.trim() || undefined,
         model: newVehicle.model?.trim() || undefined,
         year: newVehicle.year,
+        isPrimary: newVehicle.isPrimary,
       });
-      setNewVehicle({ name: '', plate: '', model: '', year: undefined });
+      setNewVehicle({ name: '', plate: '', model: '', year: undefined, isPrimary: false });
       setIsAdding(false);
     }
   }
 
   function handleCancel() {
-    setNewVehicle({ name: '', plate: '', model: '', year: undefined });
+    setNewVehicle({ name: '', plate: '', model: '', year: undefined, isPrimary: false });
     setIsAdding(false);
   }
 
@@ -100,6 +104,21 @@ export function AddVehicleCard({ onAdd, labels }: AddVehicleCardProps) {
             placeholder={labels.year}
           />
         </Field>
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="new-vehicle-isprimary"
+            checked={newVehicle.isPrimary || false}
+            onCheckedChange={(checked) =>
+              setNewVehicle({ ...newVehicle, isPrimary: checked as boolean })
+            }
+          />
+          <label
+            htmlFor="new-vehicle-isprimary"
+            className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            {labels.isPrimary}
+          </label>
+        </div>
         <div className="flex gap-2">
           <Button type="button" size="sm" onClick={handleAdd} className="flex-1">
             <Check className="h-4 w-4 mr-2" />

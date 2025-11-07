@@ -302,7 +302,16 @@ export async function getSmartDefaults(): Promise<SmartDefaults> {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const [revenues, expenses] = await Promise.all([
+  // First, check for isSelf driver and isPrimary vehicle
+  const [selfDriver, primaryVehicle, revenues, expenses] = await Promise.all([
+    prisma.driver.findFirst({
+      where: { userId: user.id, isSelf: true },
+      select: { id: true }
+    }),
+    prisma.vehicle.findFirst({
+      where: { userId: user.id, isPrimary: true },
+      select: { id: true }
+    }),
     prisma.revenue.findMany({
       where: {
         platforms: {
@@ -378,11 +387,15 @@ export async function getSmartDefaults(): Promise<SmartDefaults> {
   const mostUsedPaymentMethod = Array.from(paymentMethodCounts.entries())
     .sort((a, b) => b[1] - a[1])[0]?.[0] || null;
 
-  const mostUsedDriver = Array.from(driverCounts.entries())
+  // Prioritize isSelf driver over usage history
+  const mostUsedDriverFromHistory = Array.from(driverCounts.entries())
     .sort((a, b) => b[1] - a[1])[0]?.[0] || null;
+  const mostUsedDriver = selfDriver?.id || mostUsedDriverFromHistory;
 
-  const mostUsedVehicle = Array.from(vehicleCounts.entries())
+  // Prioritize isPrimary vehicle over usage history
+  const mostUsedVehicleFromHistory = Array.from(vehicleCounts.entries())
     .sort((a, b) => b[1] - a[1])[0]?.[0] || null;
+  const mostUsedVehicle = primaryVehicle?.id || mostUsedVehicleFromHistory;
 
   const mostUsedExpenseType = Array.from(expenseTypeCounts.entries())
     .sort((a, b) => b[1] - a[1])[0]?.[0] || null;

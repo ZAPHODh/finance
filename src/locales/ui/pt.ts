@@ -339,6 +339,8 @@ export default {
             addAnother: 'Adicionar outro motorista',
             skip: 'Pular por enquanto',
             atLeastOne: 'Adicione pelo menos um motorista para continuar',
+            justMe: 'Apenas eu',
+            justMeDescription: 'Este motorista sou eu',
         },
         vehicles: {
             title: 'Adicione seu Primeiro Veículo',
@@ -351,6 +353,8 @@ export default {
             added: 'Seus Veículos',
             skip: 'Pular por enquanto',
             atLeastOne: 'Adicione pelo menos um veículo para continuar',
+            isPrimary: 'Meu veículo principal',
+            isPrimaryDescription: 'Este é o veículo que mais uso',
         },
         expenseTypes: {
             title: 'Tipos Comuns de Despesas',

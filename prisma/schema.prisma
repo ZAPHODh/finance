@@ -77,6 +77,7 @@ enum PlanType {
 model Driver {
   id               String            @id @default(cuid())
   name             String
+  isSelf           Boolean           @default(false)
   userId           String
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -90,6 +91,7 @@ model Driver {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+  @@index([userId, isSelf])
 }
 
 model Vehicle {
@@ -98,6 +100,7 @@ model Vehicle {
   plate            String?
   model            String?
   year             Int?
+  isPrimary        Boolean           @default(false)
   userId           String
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -112,6 +115,7 @@ model Vehicle {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+  @@index([userId, isPrimary])
 }
 
 model Platform {

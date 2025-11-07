@@ -339,6 +339,8 @@ export default {
             addAnother: 'Add another driver',
             skip: 'Skip for now',
             atLeastOne: 'Add at least one driver to continue',
+            justMe: 'Just me',
+            justMeDescription: 'This driver is me',
         },
         vehicles: {
             title: 'Add Your First Vehicle',
@@ -351,6 +353,8 @@ export default {
             added: 'Your Vehicles',
             skip: 'Skip for now',
             atLeastOne: 'Add at least one vehicle to continue',
+            isPrimary: 'My primary vehicle',
+            isPrimaryDescription: 'This is the vehicle I use most',
         },
         expenseTypes: {
             title: 'Common Expense Types',
