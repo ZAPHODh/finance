@@ -6,15 +6,16 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
-import { Separator } from "@/components/ui/separator";
 import { useRouter, usePathname } from "next/navigation";
 import { useQueryStates, parseAsBoolean, parseAsFloat, parseAsString } from "nuqs";
 import { useScopedI18n } from "@/locales/client";
 import { toast } from "sonner";
 import { useForm } from "@tanstack/react-form";
-import { createQuickDailyEntry, createCompleteDailyEntry, getDailyEntryFormData, getSmartDefaults, type SmartDefaults } from "@/app/[locale]/(financial)/dashboard/daily-entry/actions";
-import { useTransition, useEffect, useState } from "react";
+import { createQuickDailyEntry, createCompleteDailyEntry } from "@/app/[locale]/(financial)/dashboard/daily-entry/actions";
+import { useTransition, useEffect } from "react";
 import { useDailyEntryMode } from "./use-daily-entry-mode";
+import { useDailyEntryFormData, useSmartDefaults } from "@/hooks/use-daily-entry-data";
+import { useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 
 interface DailyEntryDialogProps {
@@ -53,30 +54,14 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
   const tExpenses = useScopedI18n('financial.expenses');
   const [isPending, startTransition] = useTransition();
   const { mode: entryMode, toggleMode, isQuick, isComplete } = useDailyEntryMode("quick");
-  const [formData, setFormData] = useState<FormDataOptions | null>(null);
-  const [smartDefaults, setSmartDefaults] = useState<SmartDefaults | null>(null);
+  const queryClient = useQueryClient();
+
+  const { data: formData, isLoading: isLoadingFormData } = useDailyEntryFormData();
+  const { data: smartDefaults, isLoading: isLoadingDefaults } = useSmartDefaults();
+  const isLoading = isLoadingFormData || isLoadingDefaults;
 
   const isOpen = pathname.includes("/daily-entry");
   const isRepeat = params.repeat === true;
-
-  useEffect(() => {
-    async function loadFormData() {
-      try {
-        const [data, defaults] = await Promise.all([
-          getDailyEntryFormData(),
-          getSmartDefaults()
-        ]);
-        setFormData(data);
-        setSmartDefaults(defaults);
-      } catch (error) {
-        console.error("Failed to load form data:", error);
-        toast.error(tCommon('error'));
-      }
-    }
-    if (isOpen) {
-      loadFormData();
-    }
-  }, [isOpen, tCommon]);
 
   const form = useForm({
     defaultValues: {
@@ -137,6 +122,7 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
           } else {
             await createCompleteDailyEntry(data);
           }
+          queryClient.invalidateQueries({ queryKey: ['smart-defaults'] });
           toast.success(tCommon('createSuccess'));
           router.back();
         } catch (error) {
@@ -182,7 +168,7 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
     }
   }, [isRepeat, isOpen, params, form, t, smartDefaults]);
 
-  if (!formData) {
+  if (isLoading || !formData) {
     return (
       <Dialog open={isOpen} onOpenChange={() => router.back()}>
         <DialogContent>
@@ -196,8 +182,8 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={() => router.back()}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-2xl">
-        <DialogHeader>
+      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-xl p-4">
+        <DialogHeader className="pb-2">
           <DialogTitle className="flex items-center justify-between">
             <span>{t('new')}</span>
             <Button
@@ -243,10 +229,8 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
                 )}
               </form.Field>
 
-              <Separator className="my-4" />
-
-              <div className="text-sm font-semibold text-foreground/80 mb-2">
-                💰 {t('revenueSection')}
+              <div className="text-sm font-semibold text-foreground/80 mb-1 mt-3">
+                {t('revenueSection')}
               </div>
 
               <form.Field name="revenueAmount">
@@ -398,10 +382,8 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
                 </>
               )}
 
-              <Separator className="my-4" />
-
-              <div className="text-sm font-semibold text-foreground/80 mb-2">
-                💸 {t('expenseSection')}
+              <div className="text-sm font-semibold text-foreground/80 mb-1 mt-3">
+                {t('expenseSection')}
               </div>
 
               <form.Field name="expenseAmount">
@@ -530,7 +512,7 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
               )}
             </FieldGroup>
 
-            <div className="flex justify-end gap-2 mt-4">
+            <div className="flex justify-end gap-2 mt-2">
               <Button type="button" variant="outline" onClick={() => router.back()} disabled={isPending}>
                 {tCommon('cancel')}
               </Button>

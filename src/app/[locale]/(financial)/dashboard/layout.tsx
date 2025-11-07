@@ -61,10 +61,6 @@ export default async function FinancialLayout({
             mobileActions={
               <QuickActionsWrapper
                 labels={{
-                  newExpense: tFinancial("expenses.new"),
-                  newRevenue: tFinancial("revenues.new"),
-                  newBudget: tBudgets("new"),
-                  newGoal: tGoals("new"),
                   newDailyEntry: tDaily("new"),
                   repeatLast: tDaily("repeatLast"),
                   noLastEntry: tDaily("noLastEntry"),
@@ -73,36 +69,12 @@ export default async function FinancialLayout({
               />
             }
             actions={
-              <>
-                <Button asChild size="sm" variant="outline">
-                  <Link href="/dashboard/budgets/new">
-                    <Plus className="h-4 w-4 mr-1" />
-                    {tBudgets("new")}
-                  </Link>
-                </Button>
-                <Button asChild size="sm" variant="outline">
-                  <Link href="/dashboard/goals/new">
-                    <Plus className="h-4 w-4 mr-1" />
-                    {tGoals("new")}
-                  </Link>
-                </Button>
-                <Button asChild size="sm" variant="default">
-                  <Link href="/dashboard/daily-entry/new">
-                    <Plus className="h-4 w-4 mr-1" />
-                    {tDaily("new")}
-                  </Link>
-                </Button>
-                <Button asChild size="sm" variant="outline">
-                  <Link href="/dashboard/expenses/new">
-                    {tFinancial("expenses.new")}
-                  </Link>
-                </Button>
-                <Button asChild size="sm" variant="outline">
-                  <Link href="/dashboard/revenues/new">
-                    {tFinancial("revenues.new")}
-                  </Link>
-                </Button>
-              </>
+              <Button asChild size="sm" variant="default">
+                <Link href="/dashboard/daily-entry/new">
+                  <Plus className="h-4 w-4 mr-1" />
+                  {tDaily("new")}
+                </Link>
+              </Button>
             }
           />
           {children}

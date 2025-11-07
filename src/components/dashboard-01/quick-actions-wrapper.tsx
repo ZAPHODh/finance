@@ -8,10 +8,6 @@ import { toast } from "sonner";
 
 interface QuickActionsWrapperProps {
   labels: {
-    newExpense: string;
-    newRevenue: string;
-    newBudget: string;
-    newGoal: string;
     newDailyEntry: string;
     repeatLast: string;
     noLastEntry: string;

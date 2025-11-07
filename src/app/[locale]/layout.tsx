@@ -8,6 +8,7 @@ import { CookieConsent } from "@/components/legal/cookie-consent";
 import { PosthogProvider } from "@/components/analytics/posthog-provider";
 import { CrispChat } from "@/components/support/crisp-chat";
 import { CommandMenuProvider } from "@/components/command-menu-provider";
+import { QueryProvider } from "@/components/query-provider";
 import { cn } from "@/lib/utils";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
@@ -129,19 +130,21 @@ export default async function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <PosthogProvider>
-            <I18nProviderClient locale={locale}>
-              <CommandMenuProvider>
-                <NuqsAdapter>
-                  <main>
-                    {children}
-                    {loginDialog}
-                  </main>
-                </NuqsAdapter>
-              </CommandMenuProvider>
-            </I18nProviderClient>
-            <Toaster />
-            <CookieConsent />
-            <CrispChat />
+            <QueryProvider>
+              <I18nProviderClient locale={locale}>
+                <CommandMenuProvider>
+                  <NuqsAdapter>
+                    <main>
+                      {children}
+                      {loginDialog}
+                    </main>
+                  </NuqsAdapter>
+                </CommandMenuProvider>
+              </I18nProviderClient>
+              <Toaster />
+              <CookieConsent />
+              <CrispChat />
+            </QueryProvider>
           </PosthogProvider>
         </ThemeProvider>
       </body>
