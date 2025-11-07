@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter, usePathname } from "next/navigation";
 import { useQueryStates, parseAsBoolean, parseAsFloat, parseAsString } from "nuqs";
 import { useScopedI18n } from "@/locales/client";
@@ -171,9 +172,25 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
   if (isLoading || !formData) {
     return (
       <Dialog open={isOpen} onOpenChange={() => router.back()}>
-        <DialogContent>
-          <div className="flex items-center justify-center p-8">
-            Loading...
+        <DialogContent className="max-w-xl p-4">
+          <DialogHeader className="pb-2">
+            <Skeleton className="h-6 w-48" />
+          </DialogHeader>
+          <div className="space-y-3">
+            <Skeleton className="h-10 w-full" />
+            <div className="space-y-2 mt-3">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="space-y-2 mt-3">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="flex justify-end gap-2 mt-2">
+              <Skeleton className="h-9 w-20" />
+              <Skeleton className="h-9 w-20" />
+            </div>
           </div>
         </DialogContent>
       </Dialog>
