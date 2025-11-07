@@ -246,10 +246,6 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
                 )}
               </form.Field>
 
-              <div className="text-sm font-semibold text-foreground/80 mb-1 mt-3">
-                {t('revenueSection')}
-              </div>
-
               <form.Field name="revenueAmount">
                 {(field) => (
                   <Field>
@@ -398,10 +394,6 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
                   </div>
                 </>
               )}
-
-              <div className="text-sm font-semibold text-foreground/80 mb-1 mt-3">
-                {t('expenseSection')}
-              </div>
 
               <form.Field name="expenseAmount">
                 {(field) => (
