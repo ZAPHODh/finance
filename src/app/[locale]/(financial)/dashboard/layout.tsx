@@ -4,7 +4,8 @@ import { AppSidebar } from "@/components/dashboard-01/app-sidebar"
 import { SearchButton } from "@/components/dashboard-01/search-button"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { SiteHeader } from "@/components/dashboard-01/site-header";
-import { QuickActionsMenu } from "@/components/dashboard-01/quick-actions-menu";
+import { QuickActionsWrapper } from "@/components/dashboard-01/quick-actions-wrapper";
+import { KeyboardShortcuts } from "@/components/dashboard-01/keyboard-shortcuts";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
@@ -21,6 +22,7 @@ export default async function FinancialLayout({
   revenueDialog,
   budgetDialog,
   goalDialog,
+  dailyEntryDialog,
 }: {
   children: React.ReactNode;
   driverDialog: React.ReactNode;
@@ -32,6 +34,7 @@ export default async function FinancialLayout({
   revenueDialog: React.ReactNode;
   budgetDialog: React.ReactNode;
   goalDialog: React.ReactNode;
+  dailyEntryDialog: React.ReactNode;
 }) {
   const { user } = await getCurrentSession()
   if (!user) redirect('/login')
@@ -39,6 +42,7 @@ export default async function FinancialLayout({
   const tFinancial = await getScopedI18n("financial")
   const tBudgets = await getScopedI18n("ui.budgets")
   const tGoals = await getScopedI18n("ui.goals")
+  const tDaily = await getScopedI18n("financial.dailyEntry")
   return (
     <SidebarProvider
       style={
@@ -48,18 +52,23 @@ export default async function FinancialLayout({
         } as React.CSSProperties
       }
     >
+      <KeyboardShortcuts />
       <AppSidebar user={user} searchComponent={<SearchButton />} variant="inset" />
       <SidebarInset>
         <div className="flex flex-1 flex-col">
           <SiteHeader
             title={tDashboard("title")}
             mobileActions={
-              <QuickActionsMenu
+              <QuickActionsWrapper
                 labels={{
                   newExpense: tFinancial("expenses.new"),
                   newRevenue: tFinancial("revenues.new"),
                   newBudget: tBudgets("new"),
                   newGoal: tGoals("new"),
+                  newDailyEntry: tDaily("new"),
+                  repeatLast: tDaily("repeatLast"),
+                  noLastEntry: tDaily("noLastEntry"),
+                  loadingLastEntry: tDaily("loadingLastEntry"),
                 }}
               />
             }
@@ -77,12 +86,18 @@ export default async function FinancialLayout({
                     {tGoals("new")}
                   </Link>
                 </Button>
-                <Button asChild size="sm">
+                <Button asChild size="sm" variant="default">
+                  <Link href="/dashboard/daily-entry/new">
+                    <Plus className="h-4 w-4 mr-1" />
+                    {tDaily("new")}
+                  </Link>
+                </Button>
+                <Button asChild size="sm" variant="outline">
                   <Link href="/dashboard/expenses/new">
                     {tFinancial("expenses.new")}
                   </Link>
                 </Button>
-                <Button asChild size="sm">
+                <Button asChild size="sm" variant="outline">
                   <Link href="/dashboard/revenues/new">
                     {tFinancial("revenues.new")}
                   </Link>
@@ -100,6 +115,7 @@ export default async function FinancialLayout({
           {revenueDialog}
           {budgetDialog}
           {goalDialog}
+          {dailyEntryDialog}
         </div>
       </SidebarInset>
     </SidebarProvider>

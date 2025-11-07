@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Plus, TrendingUp, TrendingDown, Target, PiggyBank } from "lucide-react";
+import { Plus, TrendingUp, TrendingDown, Target, PiggyBank, CalendarDays, RefreshCw } from "lucide-react";
 import Link from "next/link";
 
 interface QuickActionsMenuProps {
@@ -17,10 +17,13 @@ interface QuickActionsMenuProps {
     newRevenue: string;
     newBudget: string;
     newGoal: string;
+    newDailyEntry: string;
+    repeatLast: string;
   };
+  onRepeatLast?: () => void;
 }
 
-export function QuickActionsMenu({ labels }: QuickActionsMenuProps) {
+export function QuickActionsMenu({ labels, onRepeatLast }: QuickActionsMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,6 +32,19 @@ export function QuickActionsMenu({ labels }: QuickActionsMenuProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard/daily-entry/new" className="cursor-pointer font-semibold">
+            <CalendarDays className="h-4 w-4 mr-2" />
+            {labels.newDailyEntry}
+          </Link>
+        </DropdownMenuItem>
+        {onRepeatLast && (
+          <DropdownMenuItem onClick={onRepeatLast} className="cursor-pointer">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            {labels.repeatLast}
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/dashboard/expenses/new" className="cursor-pointer">
             <TrendingDown className="h-4 w-4 mr-2" />
