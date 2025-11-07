@@ -7,7 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useRouter, usePathname } from "next/navigation";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
 import { useQueryStates, parseAsBoolean, parseAsFloat, parseAsString } from "nuqs";
 import { useScopedI18n } from "@/locales/client";
 import { toast } from "sonner";
@@ -66,7 +70,7 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
 
   const form = useForm({
     defaultValues: {
-      date: new Date().toISOString().split('T')[0],
+      date: new Date(),
       revenueAmount: 0,
       revenuePlatformIds: [] as string[],
       revenuePaymentMethodId: "",
@@ -111,7 +115,7 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
       }
 
       const data = {
-        date: new Date(value.date),
+        date: value.date,
         revenue,
         expense,
       };
@@ -235,13 +239,28 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
                 {(field) => (
                   <Field>
                     <FieldLabel htmlFor="date">{tRevenues('date')}</FieldLabel>
-                    <Input
-                      id="date"
-                      type="date"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      disabled={isPending}
-                    />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          id="date"
+                          variant="outline"
+                          className="w-full justify-start text-left font-normal"
+                          disabled={isPending}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.state.value ? format(field.state.value, "PPP") : t('selectDate')}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.state.value}
+                          onSelect={(date) => date && field.handleChange(date)}
+                          disabled={isPending}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </Field>
                 )}
               </form.Field>

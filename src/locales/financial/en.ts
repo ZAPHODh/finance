@@ -45,6 +45,7 @@ export default {
         repeatLast: 'Repeat Last',
         noLastEntry: 'No previous entry found',
         loadingLastEntry: 'Loading last entry...',
+        selectDate: 'Select date',
     },
     workLogs: {
         title: 'Work Logs',

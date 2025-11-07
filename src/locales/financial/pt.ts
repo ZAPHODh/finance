@@ -45,6 +45,7 @@ export default {
         repeatLast: 'Repetir Último',
         noLastEntry: 'Nenhum lançamento anterior encontrado',
         loadingLastEntry: 'Carregando último lançamento...',
+        selectDate: 'Selecione a data',
     },
     workLogs: {
         title: 'Registros de Trabalho',
