@@ -6,6 +6,7 @@ import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
 import { z } from "zod";
+import { checkBudgetAlerts } from "@/lib/server/email-triggers";
 
 const expenseFormSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
@@ -45,6 +46,8 @@ export async function createExpense(input: unknown) {
       vehicle: { select: { name: true } },
     },
   });
+
+  await checkBudgetAlerts();
 
   revalidateTag(CacheTags.EXPENSES);
   revalidateTag(CacheTags.DASHBOARD);
@@ -87,6 +90,8 @@ export async function updateExpense(id: string, input: unknown) {
       vehicle: { select: { name: true } },
     },
   });
+
+  await checkBudgetAlerts();
 
   revalidateTag(CacheTags.EXPENSES);
   revalidateTag(CacheTags.DASHBOARD);

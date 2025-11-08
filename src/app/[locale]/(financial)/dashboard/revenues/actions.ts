@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
 import type { Prisma } from "@prisma/client";
 import { z } from "zod";
+import { checkGoalAchievements } from "@/lib/server/email-triggers";
 
 const revenueFormSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
@@ -97,6 +98,8 @@ export async function createRevenue(input: unknown) {
     },
   });
 
+  await checkGoalAchievements();
+
   revalidateTag(CacheTags.REVENUES);
   revalidateTag(CacheTags.DASHBOARD);
   revalidatePath("/dashboard/revenues");
@@ -151,6 +154,8 @@ export async function updateRevenue(id: string, input: unknown) {
       vehicle: { select: { name: true } },
     },
   });
+
+  await checkGoalAchievements();
 
   revalidateTag(CacheTags.REVENUES);
   revalidateTag(CacheTags.DASHBOARD);

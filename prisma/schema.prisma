@@ -362,9 +362,7 @@ model UserPreferences {
   @@index([userId])
 }
 
-// ============================================
-// New Features: Goals, Budgets, Insights, etc.
-// ============================================
+
 
 enum GoalType {
   DAILY_REVENUE
