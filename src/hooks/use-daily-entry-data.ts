@@ -7,6 +7,9 @@ export function useDailyEntryFormData() {
     queryFn: getDailyEntryFormData,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: 1,
   });
 }
 
@@ -16,5 +19,8 @@ export function useSmartDefaults() {
     queryFn: getSmartDefaults,
     staleTime: 2 * 60 * 1000,
     gcTime: 5 * 60 * 1000,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: 1,
   });
 }
