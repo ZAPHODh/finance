@@ -188,7 +188,7 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                   {field.state.value.length > 0 && (
                     <div className="space-y-2">
                       <FieldLabel className="text-sm text-muted-foreground">
-                        {t('drivers.addAnother').replace('Adicionar outro motorista', 'Motoristas adicionados').replace('Add another driver', 'Drivers added')} ({field.state.value.length})
+                        {t('drivers.added')} ({field.state.value.length})
                       </FieldLabel>
                       {field.state.value.map((driver, index) => (
                         <Card key={index} className="p-3 transition-colors hover:bg-accent/50">
@@ -262,7 +262,7 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                         className="w-full"
                       >
                         <Plus className="h-4 w-4 mr-2" />
-                        {field.state.value.length === 0 ? t('drivers.addAnother').replace('Adicionar outro motorista', 'Adicionar motorista').replace('Add another driver', 'Add driver') : t('drivers.addAnother')}
+                        {field.state.value.length === 0 ? t('drivers.addFirst') : t('drivers.addAnother')}
                       </Button>
                     </div>
                   </Card>

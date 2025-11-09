@@ -7,9 +7,9 @@ export const isRedisEnabled = !!(REDIS_URL && REDIS_TOKEN)
 
 export const redis = isRedisEnabled
   ? new Redis({
-      url: REDIS_URL,
-      token: REDIS_TOKEN,
-    })
+    url: REDIS_URL,
+    token: REDIS_TOKEN,
+  })
   : null
 
 export async function getCached<T>(key: string): Promise<T | null> {
