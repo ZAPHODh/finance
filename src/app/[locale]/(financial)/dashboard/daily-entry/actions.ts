@@ -1,10 +1,10 @@
 'use server';
 
 import { prisma } from "@/lib/server/db";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
-import { cacheWithTag, CacheTags } from "@/lib/server/cache";
+import { cacheWithTag, CacheTags, invalidateCache } from "@/lib/server/cache";
 import { z } from "zod";
 
 const quickDailyEntrySchema = z.object({
@@ -111,9 +111,9 @@ export async function createQuickDailyEntry(input: z.infer<typeof quickDailyEntr
     return created;
   });
 
-  revalidateTag(CacheTags.REVENUES);
-  revalidateTag(CacheTags.EXPENSES);
-  revalidateTag(CacheTags.DASHBOARD);
+  await invalidateCache(CacheTags.REVENUES);
+  await invalidateCache(CacheTags.EXPENSES);
+  await invalidateCache(CacheTags.DASHBOARD);
   revalidatePath("/dashboard");
 
   return results;
@@ -200,9 +200,9 @@ export async function createCompleteDailyEntry(input: z.infer<typeof completeDai
     return created;
   });
 
-  revalidateTag(CacheTags.REVENUES);
-  revalidateTag(CacheTags.EXPENSES);
-  revalidateTag(CacheTags.DASHBOARD);
+  await invalidateCache(CacheTags.REVENUES);
+  await invalidateCache(CacheTags.EXPENSES);
+  await invalidateCache(CacheTags.DASHBOARD);
   revalidatePath("/dashboard");
 
   return results;

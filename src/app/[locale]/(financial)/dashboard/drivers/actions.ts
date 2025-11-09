@@ -2,9 +2,9 @@
 
 import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { CacheTags } from "@/lib/server/cache";
+import { CacheTags, invalidateCache } from "@/lib/server/cache";
 import { checkIfDriverLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
 import type { DriverFormData } from "@/types/forms";
@@ -34,7 +34,7 @@ export async function createDriver(input: DriverFormData) {
     },
   });
 
-  revalidateTag(CacheTags.DRIVERS);
+  await invalidateCache(CacheTags.DRIVERS);
   revalidatePath("/dashboard/drivers");
 }
 
@@ -62,7 +62,7 @@ export async function updateDriver(id: string, input: DriverFormData) {
     },
   });
 
-  revalidateTag(CacheTags.DRIVERS);
+  await invalidateCache(CacheTags.DRIVERS);
   revalidatePath("/dashboard/drivers");
 }
 
@@ -88,7 +88,7 @@ export async function deleteDriver(id: string) {
     where: { id },
   });
 
-  revalidateTag(CacheTags.DRIVERS);
+  await invalidateCache(CacheTags.DRIVERS);
   revalidatePath("/dashboard/drivers");
 }
 

@@ -1,10 +1,10 @@
 'use server';
 
 import { prisma } from "@/lib/server/db";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
-import { cacheWithTag, CacheTags } from "@/lib/server/cache";
+import { cacheWithTag, CacheTags, invalidateCache } from "@/lib/server/cache";
 import { z } from "zod";
 import { checkGoalAchievements } from "@/lib/server/email-triggers";
 import type { RevenueFormData } from "@/types/forms";
@@ -57,8 +57,8 @@ export async function createRevenue(input: RevenueFormData) {
 
   await checkGoalAchievements();
 
-  revalidateTag(CacheTags.REVENUES);
-  revalidateTag(CacheTags.DASHBOARD);
+  await invalidateCache(CacheTags.REVENUES);
+  await invalidateCache(CacheTags.DASHBOARD);
   revalidatePath("/dashboard/revenues");
 }
 
@@ -114,8 +114,8 @@ export async function updateRevenue(id: string, input: RevenueFormData) {
 
   await checkGoalAchievements();
 
-  revalidateTag(CacheTags.REVENUES);
-  revalidateTag(CacheTags.DASHBOARD);
+  await invalidateCache(CacheTags.REVENUES);
+  await invalidateCache(CacheTags.DASHBOARD);
   revalidatePath("/dashboard/revenues");
 }
 
@@ -146,8 +146,8 @@ export async function deleteRevenue(id: string) {
     where: { id },
   });
 
-  revalidateTag(CacheTags.REVENUES);
-  revalidateTag(CacheTags.DASHBOARD);
+  await invalidateCache(CacheTags.REVENUES);
+  await invalidateCache(CacheTags.DASHBOARD);
   revalidatePath("/dashboard/revenues");
 }
 

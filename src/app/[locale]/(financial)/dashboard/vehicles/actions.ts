@@ -2,9 +2,9 @@
 
 import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { CacheTags } from "@/lib/server/cache";
+import { CacheTags, invalidateCache } from "@/lib/server/cache";
 import { checkIfVehicleLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
 import type { VehicleFormData } from "@/types/forms";
@@ -40,7 +40,7 @@ export async function createVehicle(input: VehicleFormData) {
     },
   });
 
-  revalidateTag(CacheTags.VEHICLES);
+  await invalidateCache(CacheTags.VEHICLES);
   revalidatePath("/dashboard/vehicles");
 }
 
@@ -70,7 +70,7 @@ export async function updateVehicle(id: string, input: VehicleFormData) {
     },
   });
 
-  revalidateTag(CacheTags.VEHICLES);
+  await invalidateCache(CacheTags.VEHICLES);
   revalidatePath("/dashboard/vehicles");
 }
 
@@ -95,7 +95,7 @@ export async function deleteVehicle(id: string) {
     where: { id },
   });
 
-  revalidateTag(CacheTags.VEHICLES);
+  await invalidateCache(CacheTags.VEHICLES);
   revalidatePath("/dashboard/vehicles");
 }
 

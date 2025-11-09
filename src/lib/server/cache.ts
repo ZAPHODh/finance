@@ -1,7 +1,8 @@
 import { unstable_cache } from 'next/cache'
+import { getCached, setCached, invalidateCacheByTag } from './redis'
 
 /**
- * Cache wrapper with tag-based revalidation
+ * Cache wrapper with Redis and tag-based revalidation
  * @example
  * const getData = cacheWithTag(
  *   async (userId: string) => { ... },
@@ -16,10 +17,47 @@ export function cacheWithTag<T extends (...args: any[]) => Promise<any>>(
   tags: string[],
   revalidate?: number
 ): T {
-  return unstable_cache(fn, keyParts, {
-    tags,
-    revalidate: revalidate ?? 60 // 1 minute default
+  const ttl = revalidate ?? 60
+
+  return (async (...args: Parameters<T>): Promise<ReturnType<T>> => {
+    const argsKey = JSON.stringify(args)
+    const cacheKey = `cache:${keyParts.join(':')}:${tags.join(':')}:${argsKey}`
+
+    try {
+      const cached = await getCached<ReturnType<T>>(cacheKey)
+      if (cached !== null) {
+        return cached
+      }
+    } catch (error) {
+      console.error('Redis cache read error:', error)
+    }
+
+    const result = await fn(...args)
+
+    try {
+      await setCached(cacheKey, result, ttl)
+    } catch (error) {
+      console.error('Redis cache write error:', error)
+    }
+
+    return result
   }) as T
+}
+
+export async function revalidateCacheTag(tag: string): Promise<void> {
+  try {
+    await invalidateCacheByTag(tag)
+  } catch (error) {
+    console.error('Redis cache invalidation error:', error)
+  }
+}
+
+export async function invalidateCache(tag: string): Promise<void> {
+  const { revalidateTag } = await import('next/cache')
+
+  revalidateTag(tag)
+
+  await revalidateCacheTag(tag)
 }
 
 

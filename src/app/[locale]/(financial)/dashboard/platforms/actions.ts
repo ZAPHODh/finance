@@ -2,9 +2,9 @@
 
 import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { CacheTags } from "@/lib/server/cache";
+import { CacheTags, invalidateCache } from "@/lib/server/cache";
 import { checkIfPlatformLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
 import type { PlatformFormData } from "@/types/forms";
@@ -33,7 +33,7 @@ export async function createPlatform(input: PlatformFormData) {
     },
   });
 
-  revalidateTag(CacheTags.PLATFORMS);
+  await invalidateCache(CacheTags.PLATFORMS);
   revalidatePath("/dashboard/platforms");
 }
 
@@ -60,7 +60,7 @@ export async function updatePlatform(id: string, input: PlatformFormData) {
     },
   });
 
-  revalidateTag(CacheTags.PLATFORMS);
+  await invalidateCache(CacheTags.PLATFORMS);
   revalidatePath("/dashboard/platforms");
 }
 
@@ -85,7 +85,7 @@ export async function deletePlatform(id: string) {
     where: { id },
   });
 
-  revalidateTag(CacheTags.PLATFORMS);
+  await invalidateCache(CacheTags.PLATFORMS);
   revalidatePath("/dashboard/platforms");
 }
 

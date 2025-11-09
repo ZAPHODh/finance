@@ -2,9 +2,9 @@
 
 import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { CacheTags } from "@/lib/server/cache";
+import { CacheTags, invalidateCache } from "@/lib/server/cache";
 import { checkIfExpenseTypeLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
 import type { ExpenseTypeFormData } from "@/types/forms";
@@ -33,7 +33,7 @@ export async function createExpenseType(input: ExpenseTypeFormData) {
     },
   });
 
-  revalidateTag(CacheTags.EXPENSE_TYPES);
+  await invalidateCache(CacheTags.EXPENSE_TYPES);
   revalidatePath("/dashboard/expense-types");
 }
 
@@ -60,7 +60,7 @@ export async function updateExpenseType(id: string, input: ExpenseTypeFormData) 
     },
   });
 
-  revalidateTag(CacheTags.EXPENSE_TYPES);
+  await invalidateCache(CacheTags.EXPENSE_TYPES);
   revalidatePath("/dashboard/expense-types");
 }
 
@@ -85,7 +85,7 @@ export async function deleteExpenseType(id: string) {
     where: { id },
   });
 
-  revalidateTag(CacheTags.EXPENSE_TYPES);
+  await invalidateCache(CacheTags.EXPENSE_TYPES);
   revalidatePath("/dashboard/expense-types");
 }
 

@@ -1,10 +1,10 @@
 'use server';
 
 import { prisma } from "@/lib/server/db";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
-import { cacheWithTag, CacheTags } from "@/lib/server/cache";
+import { cacheWithTag, CacheTags, invalidateCache } from "@/lib/server/cache";
 import { z } from "zod";
 import { checkBudgetAlerts } from "@/lib/server/email-triggers";
 import type { ExpenseFormData } from "@/types/forms";
@@ -42,8 +42,8 @@ export async function createExpense(input: ExpenseFormData) {
 
   await checkBudgetAlerts();
 
-  revalidateTag(CacheTags.EXPENSES);
-  revalidateTag(CacheTags.DASHBOARD);
+  await invalidateCache(CacheTags.EXPENSES);
+  await invalidateCache(CacheTags.DASHBOARD);
   revalidatePath("/dashboard/expenses");
 }
 
@@ -86,8 +86,8 @@ export async function updateExpense(id: string, input: ExpenseFormData) {
 
   await checkBudgetAlerts();
 
-  revalidateTag(CacheTags.EXPENSES);
-  revalidateTag(CacheTags.DASHBOARD);
+  await invalidateCache(CacheTags.EXPENSES);
+  await invalidateCache(CacheTags.DASHBOARD);
   revalidatePath("/dashboard/expenses");
 }
 
@@ -117,8 +117,8 @@ export async function deleteExpense(id: string) {
     where: { id },
   });
 
-  revalidateTag(CacheTags.EXPENSES);
-  revalidateTag(CacheTags.DASHBOARD);
+  await invalidateCache(CacheTags.EXPENSES);
+  await invalidateCache(CacheTags.DASHBOARD);
   revalidatePath("/dashboard/expenses");
 }
 

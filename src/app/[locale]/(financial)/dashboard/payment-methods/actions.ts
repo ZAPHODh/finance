@@ -2,9 +2,9 @@
 
 import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { CacheTags } from "@/lib/server/cache";
+import { CacheTags, invalidateCache } from "@/lib/server/cache";
 import { checkIfPaymentMethodLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
 import type { PaymentMethodFormData } from "@/types/forms";
@@ -39,7 +39,7 @@ export async function createPaymentMethod(input: PaymentMethodFormData) {
     },
   });
 
-  revalidateTag(CacheTags.PAYMENT_METHODS);
+  await invalidateCache(CacheTags.PAYMENT_METHODS);
   revalidatePath("/dashboard/payment-methods");
 }
 
@@ -69,7 +69,7 @@ export async function updatePaymentMethod(id: string, input: PaymentMethodFormDa
     },
   });
 
-  revalidateTag(CacheTags.PAYMENT_METHODS);
+  await invalidateCache(CacheTags.PAYMENT_METHODS);
   revalidatePath("/dashboard/payment-methods");
 }
 
@@ -94,7 +94,7 @@ export async function deletePaymentMethod(id: string) {
     where: { id },
   });
 
-  revalidateTag(CacheTags.PAYMENT_METHODS);
+  await invalidateCache(CacheTags.PAYMENT_METHODS);
   revalidatePath("/dashboard/payment-methods");
 }
 
