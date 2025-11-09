@@ -36,7 +36,29 @@ export async function getUserPreferences() {
     currency: preferences.currency,
     timezone: preferences.timezone,
     use24HourFormat: preferences.use24HourFormat,
+    defaultDriverId: preferences.defaultDriverId,
+    defaultVehicleId: preferences.defaultVehicleId,
   }
+}
+
+export async function getDriversAndVehicles() {
+  const { user } = await getCurrentSession()
+  if (!user) throw new Error("Unauthorized")
+
+  const [drivers, vehicles] = await Promise.all([
+    prisma.driver.findMany({
+      where: { userId: user.id },
+      select: { id: true, name: true, isSelf: true },
+      orderBy: { name: "asc" },
+    }),
+    prisma.vehicle.findMany({
+      where: { userId: user.id },
+      select: { id: true, name: true, isPrimary: true },
+      orderBy: { name: "asc" },
+    }),
+  ])
+
+  return { drivers, vehicles }
 }
 
 const updatePreferencesSchema = z.object({
@@ -75,4 +97,26 @@ export async function updatePreferences(input: z.infer<typeof updatePreferencesS
   })
 
   return { success: true, data: updatedPreferences }
+}
+
+const updateDefaultsSchema = z.object({
+  defaultDriverId: z.string().nullable().optional(),
+  defaultVehicleId: z.string().nullable().optional(),
+})
+
+export async function updateDefaults(input: z.infer<typeof updateDefaultsSchema>) {
+  const { user } = await getCurrentSession()
+  if (!user) throw new Error("Unauthorized")
+
+  const validatedInput = updateDefaultsSchema.parse(input)
+
+  await prisma.userPreferences.update({
+    where: { userId: user.id },
+    data: {
+      defaultDriverId: validatedInput.defaultDriverId,
+      defaultVehicleId: validatedInput.defaultVehicleId,
+    },
+  })
+
+  return { success: true }
 }

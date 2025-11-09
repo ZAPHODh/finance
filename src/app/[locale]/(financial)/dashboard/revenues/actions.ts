@@ -5,9 +5,10 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
-import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { checkGoalAchievements } from "@/lib/server/email-triggers";
+import type { RevenueFormData } from "@/types/forms";
+import type { RevenueWithRelations } from "@/types/prisma";
 
 const revenueFormSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
@@ -20,51 +21,7 @@ const revenueFormSchema = z.object({
   vehicleId: z.string().optional(),
 });
 
-export type RevenueWithRelations = Prisma.RevenueGetPayload<{
-  include: {
-    platforms: {
-      include: {
-        platform: {
-          select: {
-            id: true;
-            name: true;
-          };
-        };
-      };
-    };
-    paymentMethod: {
-      select: {
-        id: true;
-        name: true;
-      };
-    };
-    driver: {
-      select: {
-        id: true;
-        name: true;
-      };
-    };
-    vehicle: {
-      select: {
-        id: true;
-        name: true;
-      };
-    };
-  };
-}>;
-
-export interface RevenueFormData {
-  amount: number;
-  date: Date;
-  kmDriven?: number;
-  hoursWorked?: number;
-  platformIds: string[];
-  paymentMethodId?: string;
-  driverId?: string;
-  vehicleId?: string;
-}
-
-export async function createRevenue(input: unknown) {
+export async function createRevenue(input: RevenueFormData) {
   const data = revenueFormSchema.parse(input);
 
   const { user } = await getCurrentSession();
@@ -105,7 +62,7 @@ export async function createRevenue(input: unknown) {
   revalidatePath("/dashboard/revenues");
 }
 
-export async function updateRevenue(id: string, input: unknown) {
+export async function updateRevenue(id: string, input: RevenueFormData) {
   const data = revenueFormSchema.parse(input);
 
   const { user } = await getCurrentSession();

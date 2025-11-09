@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache"
 import { GoalType } from "@prisma/client"
 import { checkIfGoalLimitReached } from "@/lib/plans/plan-checker"
 import { z } from "zod"
+import type { GoalFormData, UpdateGoalData } from "@/types/forms"
 
 const goalFormSchema = z.object({
     name: z.string().optional(),
@@ -25,24 +26,6 @@ const updateGoalSchema = z.object({
     vehicleId: z.string().optional(),
     isActive: z.boolean().optional(),
 });
-
-export interface GoalFormData {
-    name?: string;
-    type: GoalType;
-    targetValue: number;
-    period: string;
-    driverId?: string;
-    vehicleId?: string;
-}
-
-export interface UpdateGoalData {
-    name?: string;
-    targetValue?: number;
-    period?: string;
-    driverId?: string;
-    vehicleId?: string;
-    isActive?: boolean;
-}
 
 // ============================================
 // Server Actions
@@ -99,7 +82,7 @@ export async function getGoalById(id: string) {
 /**
  * Create a new goal
  */
-export async function createGoal(input: unknown) {
+export async function createGoal(input: GoalFormData) {
     const data = goalFormSchema.parse(input);
     const { user } = await getCurrentSession()
     if (!user) {
@@ -130,7 +113,7 @@ export async function createGoal(input: unknown) {
 /**
  * Update a goal
  */
-export async function updateGoal(id: string, input: unknown) {
+export async function updateGoal(id: string, input: UpdateGoalData) {
     const data = updateGoalSchema.parse(input);
     const { user } = await getCurrentSession()
     if (!user) {

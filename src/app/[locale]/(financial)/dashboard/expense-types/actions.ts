@@ -7,16 +7,13 @@ import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfExpenseTypeLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
+import type { ExpenseTypeFormData } from "@/types/forms";
 
 const expenseTypeFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
 });
 
-export interface ExpenseTypeFormData {
-  name: string;
-}
-
-export async function createExpenseType(input: unknown) {
+export async function createExpenseType(input: ExpenseTypeFormData) {
   const data = expenseTypeFormSchema.parse(input);
   const { user } = await getCurrentSession();
 
@@ -40,7 +37,7 @@ export async function createExpenseType(input: unknown) {
   revalidatePath("/dashboard/expense-types");
 }
 
-export async function updateExpenseType(id: string, input: unknown) {
+export async function updateExpenseType(id: string, input: ExpenseTypeFormData) {
   const data = expenseTypeFormSchema.parse(input);
   const { user } = await getCurrentSession();
 

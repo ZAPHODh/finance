@@ -40,27 +40,39 @@ export async function completeOnboarding(data: OnboardingData) {
       });
     }
 
+    let createdDriverIds: string[] = [];
     if (data.drivers && data.drivers.length > 0) {
-      await tx.driver.createMany({
-        data: data.drivers.map((driver) => ({
-          name: driver.name,
-          isSelf: driver.isSelf || false,
-          userId: user.id,
-        })),
-      });
+      const drivers = await Promise.all(
+        data.drivers.map((driver) =>
+          tx.driver.create({
+            data: {
+              name: driver.name,
+              isSelf: driver.isSelf || false,
+              userId: user.id,
+            },
+          })
+        )
+      );
+      createdDriverIds = drivers.map(d => d.id);
     }
 
+    let createdVehicleIds: string[] = [];
     if (data.vehicles && data.vehicles.length > 0) {
-      await tx.vehicle.createMany({
-        data: data.vehicles.map((vehicle) => ({
-          name: vehicle.name,
-          plate: vehicle.plate || null,
-          model: vehicle.model || null,
-          year: vehicle.year || null,
-          isPrimary: vehicle.isPrimary || false,
-          userId: user.id,
-        })),
-      });
+      const vehicles = await Promise.all(
+        data.vehicles.map((vehicle) =>
+          tx.vehicle.create({
+            data: {
+              name: vehicle.name,
+              plate: vehicle.plate || null,
+              model: vehicle.model || null,
+              year: vehicle.year || null,
+              isPrimary: vehicle.isPrimary || false,
+              userId: user.id,
+            },
+          })
+        )
+      );
+      createdVehicleIds = vehicles.map(v => v.id);
     }
 
     if (data.expenseTypes && data.expenseTypes.length > 0) {
@@ -83,6 +95,22 @@ export async function completeOnboarding(data: OnboardingData) {
       });
     }
 
+    const defaultDriverId = createdDriverIds.length === 1 && data.drivers?.[0]?.isSelf
+      ? createdDriverIds[0]
+      : createdDriverIds.length > 1
+      ? data.drivers?.find(d => d.isSelf)
+        ? createdDriverIds[data.drivers.findIndex(d => d.isSelf)]
+        : null
+      : null;
+
+    const defaultVehicleId = createdVehicleIds.length === 1 && data.vehicles?.[0]?.isPrimary
+      ? createdVehicleIds[0]
+      : createdVehicleIds.length > 1
+      ? data.vehicles?.find(v => v.isPrimary)
+        ? createdVehicleIds[data.vehicles.findIndex(v => v.isPrimary)]
+        : null
+      : null;
+
     if (data.preferences) {
       await tx.userPreferences.upsert({
         where: { userId: user.id },
@@ -91,11 +119,15 @@ export async function completeOnboarding(data: OnboardingData) {
           language: data.preferences.language || 'pt',
           currency: data.preferences.currency || 'brl',
           timezone: data.preferences.timezone || 'America/Sao_Paulo',
+          defaultDriverId,
+          defaultVehicleId,
         },
         update: {
           language: data.preferences.language,
           currency: data.preferences.currency,
           timezone: data.preferences.timezone,
+          defaultDriverId,
+          defaultVehicleId,
         },
       });
     }

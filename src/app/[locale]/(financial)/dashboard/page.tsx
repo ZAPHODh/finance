@@ -21,9 +21,9 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
 
   const params = await searchParams
   const period = params.period || "thisMonth"
-  const driverId = params.driver || undefined
-  const vehicleId = params.vehicle || undefined
-  const platformId = params.platform || undefined
+  const driverId = params.driver || null
+  const vehicleId = params.vehicle || null
+  const platformId = params.platform || null
 
   const dashboardData = await getDashboardData({
     period,

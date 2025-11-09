@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { useRouter, usePathname } from "next/navigation";
 import { useScopedI18n } from "@/locales/client";
-import { createPaymentMethod, updatePaymentMethod, type PaymentMethodFormData } from "@/app/[locale]/(financial)/dashboard/payment-methods/actions";
+import { createPaymentMethod, updatePaymentMethod } from "@/app/[locale]/(financial)/dashboard/payment-methods/actions";
+import type { PaymentMethodFormData } from "@/types/forms";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { useForm } from "@tanstack/react-form";

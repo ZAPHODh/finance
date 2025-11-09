@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags } from "@/lib/server/cache";
 import { z } from "zod";
 import { checkBudgetAlerts } from "@/lib/server/email-triggers";
+import type { ExpenseFormData } from "@/types/forms";
 
 const expenseFormSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
@@ -16,15 +17,7 @@ const expenseFormSchema = z.object({
   vehicleId: z.string().optional(),
 });
 
-export interface ExpenseFormData {
-  amount: number;
-  date: Date;
-  expenseTypeId: string;
-  driverId?: string;
-  vehicleId?: string;
-}
-
-export async function createExpense(input: unknown) {
+export async function createExpense(input: ExpenseFormData) {
   const data = expenseFormSchema.parse(input);
 
   const { user } = await getCurrentSession();
@@ -32,7 +25,7 @@ export async function createExpense(input: unknown) {
     throw new Error("Unauthorized");
   }
 
-  const expense = await prisma.expense.create({
+  await prisma.expense.create({
     data: {
       amount: data.amount,
       date: data.date,
@@ -54,7 +47,7 @@ export async function createExpense(input: unknown) {
   revalidatePath("/dashboard/expenses");
 }
 
-export async function updateExpense(id: string, input: unknown) {
+export async function updateExpense(id: string, input: ExpenseFormData) {
   const data = expenseFormSchema.parse(input);
 
   const { user } = await getCurrentSession();
@@ -75,7 +68,7 @@ export async function updateExpense(id: string, input: unknown) {
     throw new Error("Expense not found or unauthorized");
   }
 
-  const updatedExpense = await prisma.expense.update({
+  await prisma.expense.update({
     where: { id },
     data: {
       amount: data.amount,

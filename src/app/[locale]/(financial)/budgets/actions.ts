@@ -6,6 +6,7 @@ import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import { checkIfBudgetLimitReached } from "@/lib/plans/plan-checker"
 import { z } from "zod"
+import type { BudgetFormData, UpdateBudgetData } from "@/types/forms"
 
 const budgetFormSchema = z.object({
     name: z.string().optional(),
@@ -23,23 +24,6 @@ const updateBudgetSchema = z.object({
     period: z.string().optional(),
     isActive: z.boolean().optional(),
 });
-
-export interface BudgetFormData {
-    name?: string;
-    expenseTypeId: string;
-    monthlyLimit: number;
-    alertThreshold: number;
-    period: string;
-}
-
-export interface UpdateBudgetData {
-    name?: string;
-    expenseTypeId?: string;
-    monthlyLimit?: number;
-    alertThreshold?: number;
-    period?: string;
-    isActive?: boolean;
-}
 
 export async function getBudgets() {
     const { user } = await getCurrentSession()
@@ -79,7 +63,7 @@ export async function getBudgetById(id: string) {
 }
 
 
-export async function createBudget(input: unknown) {
+export async function createBudget(input: BudgetFormData) {
     const data = budgetFormSchema.parse(input);
     const { user } = await getCurrentSession()
     if (!user) {
@@ -107,7 +91,7 @@ export async function createBudget(input: unknown) {
 }
 
 
-export async function updateBudget(id: string, input: unknown) {
+export async function updateBudget(id: string, input: UpdateBudgetData) {
     const data = updateBudgetSchema.parse(input);
     const { user } = await getCurrentSession()
     if (!user) {

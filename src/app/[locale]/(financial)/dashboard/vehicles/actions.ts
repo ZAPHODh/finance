@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfVehicleLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
+import type { VehicleFormData } from "@/types/forms";
 
 const vehicleFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -15,14 +16,7 @@ const vehicleFormSchema = z.object({
   year: z.number().optional(),
 });
 
-export interface VehicleFormData {
-  name: string;
-  plate?: string;
-  model?: string;
-  year?: number;
-}
-
-export async function createVehicle(input: unknown) {
+export async function createVehicle(input: VehicleFormData) {
   const data = vehicleFormSchema.parse(input);
   const { user } = await getCurrentSession();
 
@@ -50,7 +44,7 @@ export async function createVehicle(input: unknown) {
   revalidatePath("/dashboard/vehicles");
 }
 
-export async function updateVehicle(id: string, input: unknown) {
+export async function updateVehicle(id: string, input: VehicleFormData) {
   const data = vehicleFormSchema.parse(input);
   const { user } = await getCurrentSession();
 

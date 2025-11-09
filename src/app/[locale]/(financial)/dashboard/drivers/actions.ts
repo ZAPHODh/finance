@@ -7,16 +7,13 @@ import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfDriverLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
+import type { DriverFormData } from "@/types/forms";
 
 const driverFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
 });
 
-export interface DriverFormData {
-  name: string;
-}
-
-export async function createDriver(input: unknown) {
+export async function createDriver(input: DriverFormData) {
   const data = driverFormSchema.parse(input);
 
   const { user } = await getCurrentSession();
@@ -25,13 +22,12 @@ export async function createDriver(input: unknown) {
     throw new Error("Unauthorized");
   }
 
-  // Verificar limite do plano
   const limitReached = await checkIfDriverLimitReached();
   if (limitReached) {
     throw new Error("Você atingiu o limite de motoristas do seu plano. Faça upgrade para adicionar mais.");
   }
 
-  const driver = await prisma.driver.create({
+  await prisma.driver.create({
     data: {
       name: data.name,
       userId: user.id,
@@ -42,7 +38,7 @@ export async function createDriver(input: unknown) {
   revalidatePath("/dashboard/drivers");
 }
 
-export async function updateDriver(id: string, input: unknown) {
+export async function updateDriver(id: string, input: DriverFormData) {
   const data = driverFormSchema.parse(input);
 
   const { user } = await getCurrentSession();

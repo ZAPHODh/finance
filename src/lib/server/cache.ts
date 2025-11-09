@@ -22,9 +22,7 @@ export function cacheWithTag<T extends (...args: any[]) => Promise<any>>(
   }) as T
 }
 
-/**
- * Cache tags for different data types
- */
+
 export const CacheTags = {
   DASHBOARD: 'dashboard',
   EXPENSES: 'expenses',

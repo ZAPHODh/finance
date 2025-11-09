@@ -3,6 +3,7 @@ import { getScopedI18n } from "@/locales/server"
 import { redirect } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
 import { PreferencesForm } from "@/components/layout/preferences-form"
+import { DefaultsForm } from "@/components/layout/defaults-form"
 import { getUserPreferences } from "./actions"
 
 export default async function PreferencesPage() {
@@ -47,6 +48,27 @@ export default async function PreferencesPage() {
           timeFormatDescription: t("timeFormatDescription"),
           saveChanges: t("saveChanges"),
           saving: t("saving"),
+        }}
+      />
+
+      <Separator />
+
+      <DefaultsForm
+        initialData={{
+          defaultDriverId: initialData.defaultDriverId,
+          defaultVehicleId: initialData.defaultVehicleId,
+        }}
+        translations={{
+          defaultsTitle: t("defaultsTitle"),
+          defaultsDescription: t("defaultsDescription"),
+          defaultDriver: t("defaultDriver"),
+          defaultDriverDescription: t("defaultDriverDescription"),
+          defaultVehicle: t("defaultVehicle"),
+          defaultVehicleDescription: t("defaultVehicleDescription"),
+          none: t("none"),
+          saveChanges: t("saveChanges"),
+          saving: t("saving"),
+          successMessage: t("defaultsSuccessMessage"),
         }}
       />
     </div>

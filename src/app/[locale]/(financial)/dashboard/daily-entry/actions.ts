@@ -45,39 +45,7 @@ const completeDailyEntrySchema = z.object({
   { message: "At least revenue or expense must be filled with amount greater than 0" }
 );
 
-export interface QuickDailyEntryFormData {
-  date: Date;
-  revenue: {
-    amount: number;
-    platformIds: string[];
-  } | null;
-  expense: {
-    amount: number;
-  } | null;
-}
-
-export interface CompleteDailyEntryFormData {
-  date: Date;
-  revenue: {
-    amount: number;
-    platformIds: string[];
-    driverId?: string;
-    vehicleId?: string;
-    paymentMethodId?: string;
-    kmDriven?: number;
-    hoursWorked?: number;
-  } | null;
-  expense: {
-    amount: number;
-    expenseTypeId?: string;
-    driverId?: string;
-    vehicleId?: string;
-    useSameDriver?: boolean;
-    useSameVehicle?: boolean;
-  } | null;
-}
-
-export async function createQuickDailyEntry(input: unknown) {
+export async function createQuickDailyEntry(input: z.infer<typeof quickDailyEntrySchema>) {
   const data = quickDailyEntrySchema.parse(input);
   const { user } = await getCurrentSession();
 
@@ -151,7 +119,7 @@ export async function createQuickDailyEntry(input: unknown) {
   return results;
 }
 
-export async function createCompleteDailyEntry(input: unknown) {
+export async function createCompleteDailyEntry(input: z.infer<typeof completeDailyEntrySchema>) {
   const data = completeDailyEntrySchema.parse(input);
   const { user } = await getCurrentSession();
 
@@ -302,15 +270,19 @@ export async function getSmartDefaults(): Promise<SmartDefaults> {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  // First, check for isSelf driver and isPrimary vehicle
-  const [selfDriver, primaryVehicle, revenues, expenses] = await Promise.all([
-    prisma.driver.findFirst({
-      where: { userId: user.id, isSelf: true },
-      select: { id: true }
+  // First, check user preferences for defaults, then check for isSelf/isPrimary, then count all
+  const [preferences, drivers, vehicles, revenues, expenses] = await Promise.all([
+    prisma.userPreferences.findUnique({
+      where: { userId: user.id },
+      select: { defaultDriverId: true, defaultVehicleId: true }
     }),
-    prisma.vehicle.findFirst({
-      where: { userId: user.id, isPrimary: true },
-      select: { id: true }
+    prisma.driver.findMany({
+      where: { userId: user.id },
+      select: { id: true, isSelf: true }
+    }),
+    prisma.vehicle.findMany({
+      where: { userId: user.id },
+      select: { id: true, isPrimary: true }
     }),
     prisma.revenue.findMany({
       where: {
@@ -387,15 +359,25 @@ export async function getSmartDefaults(): Promise<SmartDefaults> {
   const mostUsedPaymentMethod = Array.from(paymentMethodCounts.entries())
     .sort((a, b) => b[1] - a[1])[0]?.[0] || null;
 
-  // Prioritize isSelf driver over usage history
+  // Driver selection hierarchy:
+  const selfDriver = drivers.find(d => d.isSelf);
   const mostUsedDriverFromHistory = Array.from(driverCounts.entries())
     .sort((a, b) => b[1] - a[1])[0]?.[0] || null;
-  const mostUsedDriver = selfDriver?.id || mostUsedDriverFromHistory;
 
-  // Prioritize isPrimary vehicle over usage history
+  const mostUsedDriver = preferences?.defaultDriverId
+    || (drivers.length === 1 && selfDriver ? selfDriver.id : null)
+    || selfDriver?.id
+    || mostUsedDriverFromHistory;
+
+  // Vehicle selection hierarchy:
+  const primaryVehicle = vehicles.find(v => v.isPrimary);
   const mostUsedVehicleFromHistory = Array.from(vehicleCounts.entries())
     .sort((a, b) => b[1] - a[1])[0]?.[0] || null;
-  const mostUsedVehicle = primaryVehicle?.id || mostUsedVehicleFromHistory;
+
+  const mostUsedVehicle = preferences?.defaultVehicleId
+    || (vehicles.length === 1 && primaryVehicle ? primaryVehicle.id : null)
+    || primaryVehicle?.id
+    || mostUsedVehicleFromHistory;
 
   const mostUsedExpenseType = Array.from(expenseTypeCounts.entries())
     .sort((a, b) => b[1] - a[1])[0]?.[0] || null;

@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { CacheTags } from "@/lib/server/cache";
 import { checkIfPaymentMethodLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
+import type { PaymentMethodFormData } from "@/types/forms";
 
 const paymentMethodFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -15,14 +16,7 @@ const paymentMethodFormSchema = z.object({
   feeFixed: z.number().nullable(),
 });
 
-export interface PaymentMethodFormData {
-  name: string;
-  feeType: string;
-  feePercentage: number | null;
-  feeFixed: number | null;
-}
-
-export async function createPaymentMethod(input: unknown) {
+export async function createPaymentMethod(input: PaymentMethodFormData) {
   const data = paymentMethodFormSchema.parse(input);
   const { user } = await getCurrentSession();
 
@@ -35,7 +29,7 @@ export async function createPaymentMethod(input: unknown) {
     throw new Error("Você atingiu o limite de formas de pagamento do seu plano. Faça upgrade para adicionar mais.");
   }
 
-  const paymentMethod = await prisma.paymentMethod.create({
+  await prisma.paymentMethod.create({
     data: {
       name: data.name,
       feeType: data.feeType as any,
@@ -49,7 +43,7 @@ export async function createPaymentMethod(input: unknown) {
   revalidatePath("/dashboard/payment-methods");
 }
 
-export async function updatePaymentMethod(id: string, input: unknown) {
+export async function updatePaymentMethod(id: string, input: PaymentMethodFormData) {
   const data = paymentMethodFormSchema.parse(input);
   const { user } = await getCurrentSession();
 
@@ -65,7 +59,7 @@ export async function updatePaymentMethod(id: string, input: unknown) {
     throw new Error("Payment method not found or unauthorized");
   }
 
-  const updatedPaymentMethod = await prisma.paymentMethod.update({
+  await prisma.paymentMethod.update({
     where: { id },
     data: {
       name: data.name,

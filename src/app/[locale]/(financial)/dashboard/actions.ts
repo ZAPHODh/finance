@@ -13,13 +13,7 @@ import {
   endOfMonth,
   subDays
 } from "date-fns"
-
-interface DashboardFilters {
-  period?: string
-  driverId?: string | null
-  vehicleId?: string | null
-  platformId?: string | null
-}
+import type { DashboardFilters } from "@/hooks/use-dashboard-query-filters"
 
 function getDateRange(period: string = "thisMonth") {
   const now = new Date()
@@ -69,9 +63,10 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
       ...(filters.platformId && filters.platformId !== "all" && {
         platforms: { some: { platformId: filters.platformId } }
       }),
-      driver: {
-        userId: userId,
-      },
+      OR: [
+        { driver: { userId: userId } },
+        { platforms: { some: { platform: { userId: userId } } } }
+      ],
     },
     include: {
       platforms: {
@@ -89,7 +84,7 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
       date: dateFilter,
       ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
       ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
-      driver: {
+      expenseType: {
         userId: userId,
       },
     },

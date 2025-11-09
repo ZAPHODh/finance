@@ -86,6 +86,7 @@ model Driver {
   workLogs         WorkLog[]
   goals            Goal[]
   expenseTemplates ExpenseTemplate[]
+  defaultForUsers  UserPreferences[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -110,6 +111,7 @@ model Vehicle {
   maintenances     Maintenance[]
   goals            Goal[]
   expenseTemplates ExpenseTemplate[]
+  defaultForUsers  UserPreferences[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -355,6 +357,13 @@ model UserPreferences {
   // Privacy
   analytics          Boolean @default(true)
   profileVisibility  Boolean @default(false)
+
+  // Defaults
+  defaultDriverId  String?
+  defaultDriver    Driver?  @relation(fields: [defaultDriverId], references: [id], onDelete: SetNull)
+
+  defaultVehicleId String?
+  defaultVehicle   Vehicle? @relation(fields: [defaultVehicleId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
