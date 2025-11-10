@@ -71,14 +71,14 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
   const form = useForm({
     defaultValues: {
       date: new Date(),
-      revenueAmount: 0,
+      revenueAmount: undefined as number | undefined,
       revenuePlatformIds: [] as string[],
       revenuePaymentMethodId: "",
       revenueDriverId: "",
       revenueVehicleId: "",
       revenueKmDriven: undefined as number | undefined,
       revenueHoursWorked: undefined as number | undefined,
-      expenseAmount: 0,
+      expenseAmount: undefined as number | undefined,
       expenseTypeId: "",
       expenseDriverId: "",
       expenseVehicleId: "",
@@ -86,7 +86,7 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
       useSameVehicle: false,
     },
     onSubmit: async ({ value }) => {
-      const revenue = value.revenueAmount > 0 ? {
+      const revenue = value.revenueAmount && value.revenueAmount > 0 ? {
         amount: Number(value.revenueAmount),
         platformIds: value.revenuePlatformIds,
         ...(isComplete && {
@@ -98,7 +98,7 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
         }),
       } : null;
 
-      const expense = value.expenseAmount > 0 ? {
+      const expense = value.expenseAmount && value.expenseAmount > 0 ? {
         amount: Number(value.expenseAmount),
         ...(isComplete && {
           expenseTypeId: value.expenseTypeId && value.expenseTypeId !== "none" ? value.expenseTypeId : undefined,
@@ -274,8 +274,8 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
                       type="number"
                       step="0.01"
                       min="0"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(Number(e.target.value))}
+                      value={field.state.value || ""}
+                      onChange={(e) => field.handleChange(e.target.value ? Number(e.target.value) : undefined)}
                       disabled={isPending}
                       placeholder="0.00"
                     />
@@ -423,8 +423,8 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
                       type="number"
                       step="0.01"
                       min="0"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(Number(e.target.value))}
+                      value={field.state.value || ""}
+                      onChange={(e) => field.handleChange(e.target.value ? Number(e.target.value) : undefined)}
                       disabled={isPending}
                       placeholder="0.00"
                     />
