@@ -53,6 +53,11 @@ export async function createQuickDailyEntry(input: z.infer<typeof quickDailyEntr
     throw new Error("Unauthorized");
   }
 
+  const preferences = await prisma.userPreferences.findUnique({
+    where: { userId: user.id },
+    select: { defaultDriverId: true, defaultVehicleId: true }
+  });
+
   let defaultExpenseTypeId: string | undefined;
 
   if (data.expense && data.expense.amount > 0) {
@@ -89,6 +94,8 @@ export async function createQuickDailyEntry(input: z.infer<typeof quickDailyEntr
         data: {
           amount: data.revenue.amount,
           date: data.date,
+          driverId: preferences?.defaultDriverId || null,
+          vehicleId: preferences?.defaultVehicleId || null,
           platforms: {
             create: data.revenue.platformIds.map((platformId) => ({
               platform: { connect: { id: platformId } },
@@ -104,6 +111,8 @@ export async function createQuickDailyEntry(input: z.infer<typeof quickDailyEntr
           amount: data.expense.amount,
           date: data.date,
           expenseTypeId: defaultExpenseTypeId!,
+          driverId: preferences?.defaultDriverId || null,
+          vehicleId: preferences?.defaultVehicleId || null,
         },
       });
     }

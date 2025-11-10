@@ -266,9 +266,8 @@ export function DataTable({ data }: DataTableProps) {
         const amount = parseFloat(row.getValue("amount"))
         const type = row.original.type
         return (
-          <div className={`font-semibold tabular-nums ${
-            type === "revenue" ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
-          }`}>
+          <div className={`font-semibold tabular-nums ${type === "revenue" ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"
+            }`}>
             {formatCurrency(amount)}
           </div>
         )
@@ -332,7 +331,14 @@ export function DataTable({ data }: DataTableProps) {
               >
                 {t("viewDetails")}
               </DropdownMenuItem>
-              <DropdownMenuItem>{t("edit")}</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setSelectedTransaction(transaction)
+                  setDrawerOpen(true)
+                }}
+              >
+                {t("edit")}
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-destructive">
                 {t("delete")}
@@ -455,9 +461,9 @@ export function DataTable({ data }: DataTableProps) {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </TableHead>
                     )
                   })}
