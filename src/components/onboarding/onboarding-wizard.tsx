@@ -9,13 +9,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress';
 import { completeOnboarding, type OnboardingData } from '@/app/[locale]/(user)/onboarding/actions';
 import { toast } from 'sonner';
-import { CheckCircle2, Plus, Check, X } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { TagInput } from '@/components/ui/tag-input';
 import { VehicleCard, Vehicle } from './vehicle-card';
 import { AddVehicleCard } from './add-vehicle-card';
+import { DriverCard, Driver } from './driver-card';
+import { AddDriverCard } from './add-driver-card';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
 
 interface OnboardingWizardProps {
   locale: string;
@@ -27,13 +27,6 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
   const tCommon = useScopedI18n('common');
   const [isPending, startTransition] = useTransition();
   const [currentStep, setCurrentStep] = useState(0);
-  const [newDriverName, setNewDriverName] = useState('');
-  const [newDriverIsSelf, setNewDriverIsSelf] = useState(false);
-
-  interface Driver {
-    name: string;
-    isSelf?: boolean;
-  }
 
   const form = useForm({
     defaultValues: {
@@ -186,86 +179,60 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
               {(field) => (
                 <FieldGroup>
                   {field.state.value.length > 0 && (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <FieldLabel className="text-sm text-muted-foreground">
                         {t('drivers.added')} ({field.state.value.length})
                       </FieldLabel>
                       {field.state.value.map((driver, index) => (
-                        <Card key={index} className="p-3 transition-colors hover:bg-accent/50">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium">{driver.name}</span>
-                              {driver.isSelf && (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                                  {t('drivers.justMe')}
-                                </span>
-                              )}
-                            </div>
-                            <Button
-                              type="button"
-                              size="icon"
-                              variant="ghost"
-                              onClick={() => {
-                                field.handleChange(field.state.value.filter((_, i) => i !== index));
-                              }}
-                              className="hover:text-destructive"
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </Card>
+                        <DriverCard
+                          key={index}
+                          driver={driver}
+                          onUpdate={(updatedDriver) => {
+                            const newDrivers = [...field.state.value];
+                            // Ensure only one driver can have isSelf = true
+                            if (updatedDriver.isSelf) {
+                              newDrivers.forEach((d, i) => {
+                                if (i !== index) d.isSelf = false;
+                              });
+                            }
+                            newDrivers[index] = updatedDriver;
+                            field.handleChange(newDrivers);
+                          }}
+                          onRemove={() => {
+                            field.handleChange(field.state.value.filter((_, i) => i !== index));
+                          }}
+                          labels={{
+                            name: t('drivers.placeholder'),
+                            isSelf: t('drivers.justMe'),
+                            isSelfDescription: t('drivers.justMeDescription'),
+                            save: tCommon('save'),
+                            cancel: tCommon('cancel'),
+                            edit: tCommon('edit'),
+                            remove: tCommon('delete'),
+                          }}
+                        />
                       ))}
                     </div>
                   )}
-                  <Card className="p-4 border-dashed">
-                    <div className="space-y-3">
-                      <Field>
-                        <FieldLabel htmlFor="new-driver-name">{t('drivers.placeholder')}</FieldLabel>
-                        <Input
-                          id="new-driver-name"
-                          value={newDriverName}
-                          onChange={(e) => setNewDriverName(e.target.value)}
-                          placeholder={t('drivers.placeholder')}
-                        />
-                      </Field>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="new-driver-isself"
-                          checked={newDriverIsSelf}
-                          onCheckedChange={(checked) => setNewDriverIsSelf(checked as boolean)}
-                        />
-                        <label
-                          htmlFor="new-driver-isself"
-                          className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
-                          {t('drivers.justMe')}
-                        </label>
-                      </div>
-                      <Button
-                        type="button"
-                        size="sm"
-                        onClick={() => {
-                          if (newDriverName.trim()) {
-                            // Ensure only one driver can have isSelf = true
-                            const updatedDrivers = newDriverIsSelf
-                              ? field.state.value.map(d => ({ ...d, isSelf: false }))
-                              : field.state.value;
-
-                            field.handleChange([
-                              ...updatedDrivers,
-                              { name: newDriverName.trim(), isSelf: newDriverIsSelf }
-                            ]);
-                            setNewDriverName('');
-                            setNewDriverIsSelf(false);
-                          }
-                        }}
-                        className="w-full"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        {field.state.value.length === 0 ? t('drivers.addFirst') : t('drivers.addAnother')}
-                      </Button>
-                    </div>
-                  </Card>
+                  <AddDriverCard
+                    onAdd={(driver) => {
+                      // Ensure only one driver can have isSelf = true
+                      const updatedDrivers = driver.isSelf
+                        ? field.state.value.map(d => ({ ...d, isSelf: false }))
+                        : field.state.value;
+                      field.handleChange([...updatedDrivers, driver]);
+                    }}
+                    hasDrivers={field.state.value.length > 0}
+                    labels={{
+                      addDriver: t('drivers.addFirst'),
+                      addAnother: t('drivers.addAnother'),
+                      name: t('drivers.placeholder'),
+                      isSelf: t('drivers.justMe'),
+                      isSelfDescription: t('drivers.justMeDescription'),
+                      save: tCommon('save'),
+                      cancel: tCommon('cancel'),
+                    }}
+                  />
                 </FieldGroup>
               )}
             </form.Field>

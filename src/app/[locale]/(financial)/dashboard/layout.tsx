@@ -39,9 +39,6 @@ export default async function FinancialLayout({
   const { user } = await getCurrentSession()
   if (!user) redirect('/login')
   const tDashboard = await getScopedI18n("dashboard")
-  const tFinancial = await getScopedI18n("financial")
-  const tBudgets = await getScopedI18n("ui.budgets")
-  const tGoals = await getScopedI18n("ui.goals")
   const tDaily = await getScopedI18n("financial.dailyEntry")
   return (
     <SidebarProvider

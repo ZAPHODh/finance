@@ -5,11 +5,11 @@ import { getCurrentSession } from "@/lib/server/auth/session";
 import { revalidatePath } from "next/cache";
 
 export interface OnboardingData {
-  platforms: Array<{ name: string; icon?: string }>;
+  platforms: Array<{ name: string; }>;
   drivers: Array<{ name: string; isSelf?: boolean }>;
   vehicles: Array<{ name: string; plate?: string; model?: string; year?: number; isPrimary?: boolean }>;
-  expenseTypes: Array<{ name: string; icon?: string }>;
-  paymentMethods: Array<{ name: string; icon?: string }>;
+  expenseTypes: Array<{ name: string }>;
+  paymentMethods: Array<{ name: string }>;
   preferences?: {
     language?: string;
     currency?: string;
@@ -34,7 +34,6 @@ export async function completeOnboarding(data: OnboardingData) {
       await tx.platform.createMany({
         data: data.platforms.map((platform) => ({
           name: platform.name,
-          icon: platform.icon || null,
           userId: user.id,
         })),
       });
@@ -79,7 +78,6 @@ export async function completeOnboarding(data: OnboardingData) {
       await tx.expenseType.createMany({
         data: data.expenseTypes.map((type) => ({
           name: type.name,
-          icon: type.icon || null,
           userId: user.id,
         })),
       });
@@ -89,7 +87,6 @@ export async function completeOnboarding(data: OnboardingData) {
       await tx.paymentMethod.createMany({
         data: data.paymentMethods.map((method) => ({
           name: method.name,
-          icon: method.icon || null,
           userId: user.id,
         })),
       });
@@ -98,18 +95,18 @@ export async function completeOnboarding(data: OnboardingData) {
     const defaultDriverId = createdDriverIds.length === 1 && data.drivers?.[0]?.isSelf
       ? createdDriverIds[0]
       : createdDriverIds.length > 1
-      ? data.drivers?.find(d => d.isSelf)
-        ? createdDriverIds[data.drivers.findIndex(d => d.isSelf)]
-        : null
-      : null;
+        ? data.drivers?.find(d => d.isSelf)
+          ? createdDriverIds[data.drivers.findIndex(d => d.isSelf)]
+          : null
+        : null;
 
     const defaultVehicleId = createdVehicleIds.length === 1 && data.vehicles?.[0]?.isPrimary
       ? createdVehicleIds[0]
       : createdVehicleIds.length > 1
-      ? data.vehicles?.find(v => v.isPrimary)
-        ? createdVehicleIds[data.vehicles.findIndex(v => v.isPrimary)]
-        : null
-      : null;
+        ? data.vehicles?.find(v => v.isPrimary)
+          ? createdVehicleIds[data.vehicles.findIndex(v => v.isPrimary)]
+          : null
+        : null;
 
     if (data.preferences) {
       await tx.userPreferences.upsert({
