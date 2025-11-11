@@ -24,7 +24,7 @@ export default function Nav() {
   ]
 
   return (
-    <header className="px-4 md:px-6 container mx-auto max-w-5xl">
+    <header className="px-4 md:px-6 container mx-auto max-w-6xl">
       <div className="flex h-16 items-center justify-between gap-4">
         <div className="flex flex-1 items-center gap-2">
           <Popover>
