@@ -8,18 +8,15 @@ const I18nMiddleware = createI18nMiddleware({
 });
 
 export function middleware(request: NextRequest) {
-    // Generate nonce for this request
+
     const nonce = generateNonce();
 
-    // Get the i18n response
     const response = I18nMiddleware(request);
 
-    // Ensure we have a NextResponse to modify
     const nextResponse = response instanceof NextResponse
         ? response
         : NextResponse.next();
 
-    // Set CSP headers with nonce
     const isDevelopment = process.env.NODE_ENV === 'development';
     setCSPHeaders(nextResponse, nonce, isDevelopment);
 
