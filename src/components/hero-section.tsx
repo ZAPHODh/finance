@@ -39,15 +39,19 @@ export default function HeroSection() {
                                 className="hidden dark:block"
                                 src={Car.src}
                                 alt="app illustration"
-                                width={2796}
-                                height={2008}
+                                fill
+                                priority
+                                sizes="(max-width: 1024px) 100vw, 1200px"
+                                style={{ objectFit: 'cover' }}
                             />
                             <Image
                                 className="dark:hidden"
                                 src={Car.src}
                                 alt="app illustration"
-                                width={2796}
-                                height={2008}
+                                fill
+                                priority
+                                sizes="(max-width: 1024px) 100vw, 1200px"
+                                style={{ objectFit: 'cover' }}
                             />
                         </div>
                     </div>
