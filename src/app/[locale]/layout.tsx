@@ -1,16 +1,17 @@
 import { siteConfig, siteUrl } from "@/config/site";
 import { Inter } from "next/font/google";
 import { Metadata } from "next";
+import { headers } from "next/headers";
 import { I18nProviderClient } from "@/locales/client";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { CookieConsent } from "@/components/legal/cookie-consent";
 import { PosthogProvider } from "@/components/analytics/posthog-provider";
-import { CrispChat } from "@/components/support/crisp-chat";
 import { CommandMenuProvider } from "@/components/command-menu-provider";
 import { QueryProvider } from "@/components/query-provider";
 import { cn } from "@/lib/utils";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { getNonceFromHeaders } from "@/lib/csp";
 
 import "../globals.css";
 
@@ -120,6 +121,9 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const headersList = await headers();
+  const nonce = getNonceFromHeaders(headersList) || undefined;
+
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
@@ -127,6 +131,7 @@ export default async function RootLayout({
           "font-sans antialiased",
           fontSans.variable,
         )}
+        nonce={nonce}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <PosthogProvider>
@@ -143,7 +148,6 @@ export default async function RootLayout({
               </I18nProviderClient>
               <Toaster />
               <CookieConsent />
-              <CrispChat />
             </QueryProvider>
           </PosthogProvider>
         </ThemeProvider>
