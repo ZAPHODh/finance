@@ -43,8 +43,6 @@ export function buildCSPHeader(nonce: string, isDevelopment: boolean = false): s
       'https://accounts.google.com',
       'https://github.com',
       'https://api.github.com',
-      'https://*.ingest.sentry.io',
-      'https://*.sentry.io',
     ],
     'frame-src': [
       'https://checkout.stripe.com',
