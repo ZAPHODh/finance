@@ -69,7 +69,6 @@ export default function Nav() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <ModeSwitcher />
           <Button asChild variant="ghost" size="sm" className="hidden sm:flex">
             <Link href="/login">{t("login")}</Link>
           </Button>

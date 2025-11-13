@@ -133,7 +133,7 @@ export default async function RootLayout({
         )}
         nonce={nonce}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem nonce={nonce}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem nonce={nonce}>
           <PosthogProvider>
             <QueryProvider>
               <I18nProviderClient locale={locale}>
