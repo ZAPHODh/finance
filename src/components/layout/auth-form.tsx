@@ -172,7 +172,7 @@ export default function AuthForm() {
                             <button
                                 type="submit"
                                 className={cn(buttonVariants())}
-                                disabled={isLoading || isGithubLoading || isVerifying}
+                                disabled={isLoading || isFacebookLoading || isVerifying}
                             >
                                 {isLoading && (
                                     <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
