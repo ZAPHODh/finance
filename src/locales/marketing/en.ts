@@ -12,7 +12,7 @@ export default {
         customizable: '100% Customizable',
     },
     features: {
-        title: 'Built for Individual Drivers',
+        title: 'Built for Drivers',
         subtitle: 'Comprehensive financial tracking and analytics designed specifically for drivers and transportation professionals.',
         card1: {
             title: 'Complete Expense Tracking',

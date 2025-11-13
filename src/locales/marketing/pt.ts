@@ -12,7 +12,7 @@ export default {
         customizable: '100% Personalizável',
     },
     features: {
-        title: 'Feito para Motoristas Individuais',
+        title: 'Feito para Motoristas',
         subtitle: 'Rastreamento financeiro e análises abrangentes projetadas especificamente para motoristas e profissionais de transporte.',
         card1: {
             title: 'Rastreamento Completo de Despesas',
