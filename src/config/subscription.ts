@@ -115,7 +115,7 @@ export const simplePlan: SubscriptionPlan = {
 
 export const proPlan: SubscriptionPlan = {
     name: "PRO",
-    description: "For fleet managers and multi-vehicle operations",
+    description: "For professional drivers managing multiple vehicles",
     stripePriceId: process.env.STRIPE_PRO_PLAN_ID || process.env.STRIPE_PRO_BRL_MONTHLY_ID as string,
 };
 

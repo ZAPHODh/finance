@@ -1,26 +1,26 @@
 export default {
     hero: {
-        title: 'Gerencie as Finanças da Sua Frota com Facilidade',
-        subtitle: 'Acompanhe despesas, receitas e métricas de desempenho dos seus motoristas e veículos em uma plataforma poderosa.',
+        title: 'Motorista, Gerencie as suas finanças com facilidade',
+        subtitle: 'Acompanhe despesas, receitas e métricas do seu dia adia em uma plataforma poderosa.',
         startBuilding: 'Começar',
         getStarted: 'Comece Agora',
         viewPricing: 'Ver Preços',
         requestDemo: 'Solicitar Demo',
-        powering: 'Confiado por empresas de transporte',
+        powering: 'Confiado por motoristas independentes',
         faster: 'Mais Rápido',
         modern: 'Moderno',
         customizable: '100% Personalizável',
     },
     features: {
-        title: 'Feito para Gestores de Frotas',
-        subtitle: 'Rastreamento financeiro e análises abrangentes projetadas especificamente para profissionais de transporte e gestão de frotas.',
+        title: 'Feito para Motoristas Individuais',
+        subtitle: 'Rastreamento financeiro e análises abrangentes projetadas especificamente para motoristas e profissionais de transporte.',
         card1: {
             title: 'Rastreamento Completo de Despesas',
             description: 'Rastreie todas as despesas do veículo incluindo combustível, manutenção, pedágios e mais. Categorize e analise padrões de gastos para otimizar custos.',
         },
         card2: {
             title: 'Análises de Receita',
-            description: 'Monitore seus ganhos em múltiplas plataformas e empresas. Obtenha insights em tempo real sobre lucratividade e métricas de desempenho.',
+            description: 'Monitore seus ganhos em múltiplas plataformas. Obtenha insights em tempo real sobre lucratividade e métricas de desempenho.',
         },
         card3: {
             title: 'Relatórios Inteligentes',
@@ -33,7 +33,7 @@ export default {
     },
     pricing: {
         title: 'Preços que Escalam com Você',
-        subtitle: 'Escolha o plano perfeito para o tamanho da sua frota. Comece grátis e faça upgrade conforme cresce.',
+        subtitle: 'Escolha o plano perfeito para suas necessidades. Comece grátis e faça upgrade conforme cresce.',
         perDriver: 'Por motorista',
         perMonth: 'Por mês',
         perYear: 'Por ano',
@@ -49,7 +49,7 @@ export default {
             includes: 'Tudo do plano grátis mais:',
             feature1: '3 motoristas',
             feature2: '3 veículos',
-            feature3: 'Empresas ilimitadas',
+            feature3: 'Plataformas ilimitadas',
             feature4: 'Lançamentos ilimitados',
             feature5: 'Análises avançadas',
             feature6: '10 exportações/mês',
@@ -64,7 +64,7 @@ export default {
             feature3: 'Dashboard de análises avançadas',
             feature4: 'Rastreamento de receitas',
             feature5: 'Gestão de registros de trabalho',
-            feature6: 'Múltiplas empresas/apps',
+            feature6: 'Múltiplas plataformas/apps',
             feature7: 'Tipos de despesas personalizados',
             feature8: 'Exportar para PDF/Excel',
             feature9: 'Suporte prioritário',
@@ -77,7 +77,7 @@ export default {
             line2: 'Mais',
             line3: 'Frequentes',
         },
-        subtitle: 'Tudo que você precisa saber sobre gestão financeira da sua frota',
+        subtitle: 'Tudo que você precisa saber sobre gestão das suas finanças como motorista',
         q1: {
             question: 'Como funciona o preço?',
             answer: 'Nosso preço é simples e transparente. Comece com o plano grátis para até 2 motoristas, ou faça upgrade para o Pro para motoristas e veículos ilimitados com recursos avançados. Você paga apenas pelo que usa.',
@@ -107,16 +107,8 @@ export default {
             answer: 'O plano grátis está disponível indefinidamente sem necessidade de cartão de crédito. Você pode fazer upgrade para Pro a qualquer momento para acessar recursos avançados.',
         },
         q8: {
-            question: 'Posso usar o DriveFinance no celular?',
+            question: 'Posso usar o dive into drive no celular?',
             answer: 'Sim! O DriveFinance é totalmente responsivo e funciona em todos os dispositivos. Também oferecemos um aplicativo web progressivo (PWA) que você pode instalar no seu telefone para uma experiência semelhante a um aplicativo nativo.',
-        },
-        q9: {
-            question: 'Quais formas de pagamento vocês aceitam?',
-            answer: 'Aceitamos todos os principais cartões de crédito (Visa, Mastercard, American Express) e cartões de débito através do Stripe, nosso processador de pagamento seguro.',
-        },
-        q10: {
-            question: 'Como funciona a busca?',
-            answer: 'O DriveFinance usa Algolia para busca ultra-rápida em todos os seus registros financeiros. Você pode buscar por valor, data, motorista, veículo ou qualquer outro campo. Cada usuário tem índices de busca isolados para privacidade de dados.',
         },
     },
     footer: {
@@ -129,7 +121,7 @@ export default {
             terms: 'Termos',
             privacy: 'Privacidade',
         },
-        copyright: '© {{year}} DriveFinance. Todos os direitos reservados',
+        copyright: '© {year} Dive into Drive. Todos os direitos reservados',
     },
     contact: {
         title: 'Contato',
@@ -138,24 +130,18 @@ export default {
             title: 'Informações de Contato',
             supportEmail: {
                 title: 'Email de Suporte',
-                email: 'support@drivefinance.com',
-                description: 'Respondemos em até 24 horas úteis',
+                description: 'Respondemos em até {responseTime}',
             },
             privacyEmail: {
                 title: 'Privacidade e Dados (DPO)',
-                email: 'privacy@drivefinance.com',
                 description: 'Para questões relacionadas à LGPD e proteção de dados',
             },
             address: {
                 title: 'Endereço',
-                city: 'São Paulo, SP',
-                country: 'Brasil',
             },
         },
         businessHours: {
             title: 'Horário de Atendimento',
-            weekdays: 'Segunda a Sexta: 9h às 18h (horário de Brasília)',
-            weekends: 'Sábado, Domingo e Feriados: Fechado',
             note: 'Emails recebidos fora do horário comercial serão respondidos no próximo dia útil.',
         },
         faqSection: {
@@ -179,8 +165,8 @@ export default {
         },
         business: {
             title: 'Empresarial',
-            companyName: 'Razão Social: DriveFinance Tecnologia Ltda',
-            cnpj: 'CNPJ: [A ser definido]',
+            companyName: 'Razão Social: {legalName}',
+            cnpj: 'CNPJ: {cnpj}',
         },
         stillHaveQuestions: 'Ainda tem dúvidas? Entre em contato conosco!',
         contactSupport: 'Falar com o suporte',

@@ -23,8 +23,6 @@ export default function FAQPage() {
     { question: t('q6.question'), answer: t('q6.answer') },
     { question: t('q7.question'), answer: t('q7.answer') },
     { question: t('q8.question'), answer: t('q8.answer') },
-    { question: t('q9.question'), answer: t('q9.answer') },
-    { question: t('q10.question'), answer: t('q10.answer') },
   ];
 
   return (

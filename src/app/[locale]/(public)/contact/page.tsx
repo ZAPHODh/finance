@@ -4,9 +4,11 @@ import Nav from "@/components/shared/nav";
 import FooterSection from "@/components/footer";
 import { Mail, MapPin } from "lucide-react";
 import { useScopedI18n } from "@/locales/client";
+import { siteConfig } from "@/config/site";
 
 export default function ContactPage() {
   const t = useScopedI18n('marketing.contact');
+  const config = siteConfig();
 
   return (
     <>
@@ -27,9 +29,9 @@ export default function ContactPage() {
                 <Mail className="h-5 w-5 mt-1 text-primary" />
                 <div>
                   <h3 className="font-semibold">{t('contactInfo.supportEmail.title')}</h3>
-                  <p className="text-muted-foreground">{t('contactInfo.supportEmail.email')}</p>
+                  <p className="text-muted-foreground">{config.contact.support.email}</p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    {t('contactInfo.supportEmail.description')}
+                    {t('contactInfo.supportEmail.description', { responseTime: config.contact.support.responseTime })}
                   </p>
                 </div>
               </div>
@@ -37,8 +39,8 @@ export default function ContactPage() {
               <div className="flex items-start gap-3">
                 <Mail className="h-5 w-5 mt-1 text-primary" />
                 <div>
-                  <h3 className="font-semibold">{t('contactInfo.privacyEmail.title')}</h3>
-                  <p className="text-muted-foreground">{t('contactInfo.privacyEmail.email')}</p>
+                  <h3 className="font-semibold">{config.contact.privacy.title}</h3>
+                  <p className="text-muted-foreground">{config.contact.privacy.email}</p>
                   <p className="text-sm text-muted-foreground mt-1">
                     {t('contactInfo.privacyEmail.description')}
                   </p>
@@ -50,8 +52,8 @@ export default function ContactPage() {
                 <div>
                   <h3 className="font-semibold">{t('contactInfo.address.title')}</h3>
                   <p className="text-muted-foreground">
-                    {t('contactInfo.address.city')}<br />
-                    {t('contactInfo.address.country')}
+                    {config.contact.address.city}, {config.contact.address.state}<br />
+                    {config.contact.address.country}
                   </p>
                 </div>
               </div>
@@ -61,8 +63,8 @@ export default function ContactPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">{t('businessHours.title')}</h2>
             <p className="text-muted-foreground">
-              {t('businessHours.weekdays')}<br />
-              {t('businessHours.weekends')}
+              {config.contact.businessHours.weekdays}<br />
+              {config.contact.businessHours.weekends}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               {t('businessHours.note')}
@@ -84,8 +86,8 @@ export default function ContactPage() {
             <h2 className="text-2xl font-semibold mb-4">{t('bugReport.title')}</h2>
             <p className="text-muted-foreground">
               {t('bugReport.description')}{" "}
-              <a href={`mailto:${t('contactInfo.supportEmail.email')}`} className="text-primary hover:underline">
-                {t('contactInfo.supportEmail.email')}
+              <a href={`mailto:${config.contact.support.email}`} className="text-primary hover:underline">
+                {config.contact.support.email}
               </a>{" "}
               {t('bugReport.withDetails')}
             </p>
@@ -101,8 +103,8 @@ export default function ContactPage() {
             <h2 className="text-2xl font-semibold mb-4">{t('feedback.title')}</h2>
             <p className="text-muted-foreground">
               {t('feedback.description')}{" "}
-              <a href={`mailto:${t('contactInfo.supportEmail.email')}`} className="text-primary hover:underline">
-                {t('contactInfo.supportEmail.email')}
+              <a href={`mailto:${config.contact.support.email}`} className="text-primary hover:underline">
+                {config.contact.support.email}
               </a>
               .
             </p>
@@ -111,8 +113,8 @@ export default function ContactPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">{t('business.title')}</h2>
             <p className="text-muted-foreground">
-              <strong>{t('business.companyName')}</strong><br />
-              <strong>{t('business.cnpj')}</strong>
+              <strong>{t('business.companyName', { legalName: config.company.legalName })}</strong><br />
+              <strong>{t('business.cnpj', { cnpj: config.company.cnpj || '[A ser definido]' })}</strong>
             </p>
           </section>
         </div>

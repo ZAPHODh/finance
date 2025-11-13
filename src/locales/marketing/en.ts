@@ -1,19 +1,19 @@
 export default {
     hero: {
-        title: 'Manage Your Fleet Finances with Ease',
-        subtitle: 'Track expenses, revenues, and performance metrics for your drivers and vehicles in one powerful platform.',
+        title: 'Driver, Manage Your Finances with Ease',
+        subtitle: 'Track expenses, revenues, and metrics of your day-to-day in one powerful platform.',
         startBuilding: 'Get Started',
         getStarted: 'Get Started',
         viewPricing: 'View Pricing',
         requestDemo: 'Request Demo',
-        powering: 'Trusted by transportation companies',
+        powering: 'Trusted by independent drivers',
         faster: 'Faster',
         modern: 'Modern',
         customizable: '100% Customizable',
     },
     features: {
-        title: 'Built for Fleet Managers',
-        subtitle: 'Comprehensive financial tracking and analytics designed specifically for transportation and fleet management professionals.',
+        title: 'Built for Individual Drivers',
+        subtitle: 'Comprehensive financial tracking and analytics designed specifically for drivers and transportation professionals.',
         card1: {
             title: 'Complete Expense Tracking',
             description: 'Track all vehicle expenses including fuel, maintenance, tolls, and more. Categorize and analyze spending patterns to optimize costs.',
@@ -33,7 +33,7 @@ export default {
     },
     pricing: {
         title: 'Pricing that Scales with You',
-        subtitle: 'Choose the perfect plan for your fleet size. Start free and upgrade as you grow.',
+        subtitle: 'Choose the perfect plan for your needs. Start free and upgrade as you grow.',
         perDriver: 'Per driver',
         perMonth: 'Per month',
         perYear: 'Per year',
@@ -49,7 +49,7 @@ export default {
             includes: 'Everything in free plus:',
             feature1: '3 drivers',
             feature2: '3 vehicles',
-            feature3: 'Unlimited companies',
+            feature3: 'Unlimited platforms',
             feature4: 'Unlimited entries',
             feature5: 'Advanced analytics',
             feature6: '10 exports/month',
@@ -64,7 +64,7 @@ export default {
             feature3: 'Advanced analytics dashboard',
             feature4: 'Revenue tracking',
             feature5: 'Work logs management',
-            feature6: 'Multiple companies/apps',
+            feature6: 'Multiple platforms/apps',
             feature7: 'Custom expense types',
             feature8: 'Export to PDF/Excel',
             feature9: 'Priority support',
@@ -77,7 +77,7 @@ export default {
             line2: 'Asked',
             line3: 'Questions',
         },
-        subtitle: 'Everything you need to know about managing your fleet finances',
+        subtitle: 'Everything you need to know about managing your finances as a driver',
         q1: {
             question: 'How does the pricing work?',
             answer: 'Our pricing is simple and transparent. Start with the free plan for up to 2 drivers, or upgrade to Pro for unlimited drivers and vehicles with advanced features. You only pay for what you use.',
@@ -107,16 +107,8 @@ export default {
             answer: 'The free plan is available indefinitely with no credit card required. You can upgrade to Pro at any time to access advanced features.',
         },
         q8: {
-            question: 'Can I use DriveFinance on mobile?',
+            question: 'Can I use dive into drive on mobile?',
             answer: 'Yes! DriveFinance is fully responsive and works on all devices. We also offer a progressive web app (PWA) that you can install on your phone for a native app-like experience.',
-        },
-        q9: {
-            question: 'What payment methods do you accept?',
-            answer: 'We accept all major credit cards (Visa, Mastercard, American Express) and debit cards through Stripe, our secure payment processor.',
-        },
-        q10: {
-            question: 'How does the search feature work?',
-            answer: 'DriveFinance uses Algolia for lightning-fast search across all your financial records. You can search by amount, date, driver, vehicle, or any other field. Each user has isolated search indexes for data privacy.',
         },
     },
     footer: {
@@ -129,7 +121,7 @@ export default {
             terms: 'Terms',
             privacy: 'Privacy',
         },
-        copyright: '© {year} DriveFinance. All rights reserved',
+        copyright: '© {year} Dive into Drive. All rights reserved',
     },
     contact: {
         title: 'Contact',
@@ -138,24 +130,17 @@ export default {
             title: 'Contact Information',
             supportEmail: {
                 title: 'Support Email',
-                email: 'support@drivefinance.com',
-                description: 'We respond within 24 business hours',
+                description: 'We respond within {responseTime}',
             },
             privacyEmail: {
-                title: 'Privacy and Data (DPO)',
-                email: 'privacy@drivefinance.com',
                 description: 'For LGPD and data protection related questions',
             },
             address: {
                 title: 'Address',
-                city: 'São Paulo, SP',
-                country: 'Brazil',
             },
         },
         businessHours: {
             title: 'Business Hours',
-            weekdays: 'Monday to Friday: 9am to 6pm (Brasília time)',
-            weekends: 'Saturday, Sunday and Holidays: Closed',
             note: 'Emails received outside business hours will be answered on the next business day.',
         },
         faqSection: {
@@ -179,8 +164,8 @@ export default {
         },
         business: {
             title: 'Business',
-            companyName: 'Company Name: DriveFinance Tecnologia Ltda',
-            cnpj: 'CNPJ: [To be defined]',
+            companyName: 'Company Name: {legalName}',
+            cnpj: 'CNPJ: {cnpj}',
         },
         stillHaveQuestions: 'Still have questions? Contact us!',
         contactSupport: 'Contact support',
