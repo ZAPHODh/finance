@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { sendWelcomeEmail } from "@/lib/server/mail";
 import { setSessionTokenCookie } from "@/lib/server/auth/cookies";
-import { github } from "@/lib/server/auth/github";
+import { facebook } from "@/lib/server/auth/facebook";
 import { createSession, generateSessionToken } from "@/lib/server/auth/session";
 import { prisma } from "@/lib/server/db";
 
@@ -12,7 +12,7 @@ export const GET = async (request: Request) => {
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const cookieStore = await cookies();
-  const storedState = cookieStore.get("github_oauth_state")?.value ?? null;
+  const storedState = cookieStore.get("facebook_oauth_state")?.value ?? null;
   if (!code || !state || !storedState || state !== storedState) {
     return new Response(null, {
       status: 400,
@@ -20,42 +20,25 @@ export const GET = async (request: Request) => {
   }
 
   try {
-    const tokens = await github.validateAuthorizationCode(code);
-    const githubUserResponse = await fetch("https://api.github.com/user", {
-      headers: {
-        Authorization: `Bearer ${tokens.accessToken()}`,
-      },
-    });
-    const githubUser: GitHubUser = await githubUserResponse.json();
-
-    if (!githubUser.email) {
-      const githubEmailsResponse = await fetch(
-        "https://api.github.com/user/emails",
-        {
-          headers: {
-            Authorization: `Bearer ${tokens.accessToken()}`,
-          },
-        }
-      );
-      const githubEmails: {
-        email: string;
-        primary: boolean;
-        verified: boolean;
-      }[] = await githubEmailsResponse.json();
-      const verifiedEmail = githubEmails.find(
-        (email) => email.primary && email.verified
-      );
-      if (verifiedEmail) githubUser.email = verifiedEmail.email;
-    }
+    const tokens = await facebook.validateAuthorizationCode(code);
+    const facebookUserResponse = await fetch(
+      "https://graph.facebook.com/me?fields=id,name,email,picture",
+      {
+        headers: {
+          Authorization: `Bearer ${tokens.accessToken()}`,
+        },
+      }
+    );
+    const facebookUser: FacebookUser = await facebookUserResponse.json();
 
     const existingUser = await prisma.user.findFirst({
       where: {
         OR: [
           {
-            githubId: githubUser.id,
+            facebookId: facebookUser.id,
           },
           {
-            email: githubUser.email,
+            email: facebookUser.email,
           },
         ],
       },
@@ -66,7 +49,6 @@ export const GET = async (request: Request) => {
       const session = await createSession(sessionTokenCookie, existingUser.id);
       await setSessionTokenCookie(sessionTokenCookie, session.expiresAt);
 
-      // Redirect to onboarding if not completed, otherwise to dashboard
       const redirectPath = existingUser.hasCompletedOnboarding ? "/dashboard" : "/onboarding";
       revalidatePath(redirectPath, "layout");
 
@@ -80,15 +62,15 @@ export const GET = async (request: Request) => {
 
     const newUser = await prisma.user.create({
       data: {
-        githubId: githubUser.id,
-        name: githubUser.name,
-        email: githubUser.email,
-        picture: githubUser.avatar_url,
-        emailVerified: Boolean(githubUser.email),
+        facebookId: facebookUser.id,
+        name: facebookUser.name,
+        email: facebookUser.email,
+        picture: facebookUser.picture?.data?.url,
+        emailVerified: Boolean(facebookUser.email),
       },
     });
 
-    if (githubUser.email) {
+    if (facebookUser.email) {
       sendWelcomeEmail({ toMail: newUser.email!, userName: newUser.name! });
     }
     const sessionTokenCookie = generateSessionToken();
@@ -115,17 +97,19 @@ export const GET = async (request: Request) => {
       });
     }
 
-
-
     return new Response("Internal Server Error", {
       status: 500,
     });
   }
 };
 
-interface GitHubUser {
-  id: number;
+interface FacebookUser {
+  id: string;
   name: string;
   email: string;
-  avatar_url: string;
+  picture?: {
+    data?: {
+      url: string;
+    };
+  };
 }

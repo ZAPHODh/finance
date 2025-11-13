@@ -20,8 +20,8 @@ export default function AuthForm() {
     const { push } = useRouter()
     const [currentStep, setCurrentStep] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
-    const [isGithubLoading, setIsGithubLoading] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+    const [isFacebookLoading, setIsFacebookLoading] = useState(false);
     const [isVerifying, setIsVerifying] = useState(false);
     const [otp, setOTP] = useState("");
     const [countdown, setCountdown] = useState(30);
@@ -154,7 +154,7 @@ export default function AuthForm() {
                                             id={field.name}
                                             placeholder={t("emailPlaceholder")}
                                             type="email"
-                                            disabled={isLoading || isGithubLoading}
+                                            disabled={isLoading || isGoogleLoading || isFacebookLoading}
                                             value={field.state.value}
                                             onBlur={field.handleBlur}
                                             onChange={(e) => field.handleChange(e.target.value)}
@@ -184,19 +184,6 @@ export default function AuthForm() {
                     <div className="relative flex justify-center text-xs uppercase">
                         <span className="bg-background px-2 text-muted-foreground">/</span>
                     </div>
-                    {isGithubLoading ? (
-                        <Button className="w-full cursor-not-allowed" variant="outline">
-                            <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-                        </Button>
-                    ) : (
-                        <Link
-                            href="/api/auth/login/github"
-                            className={cn(buttonVariants({ variant: "outline" }))}
-                            onClick={() => setIsGithubLoading(true)}
-                        >
-                            {t("continueWith")} <Icons.gitHub className="ml-2 h-4 w-4" />
-                        </Link>
-                    )}
                     {isGoogleLoading ? (
                         <Button className="w-full cursor-not-allowed" variant="outline">
                             <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
@@ -208,6 +195,19 @@ export default function AuthForm() {
                             onClick={() => setIsGoogleLoading(true)}
                         >
                             {t("continueWith")} <Icons.google className="ml-2 h-4 w-4" />
+                        </Link>
+                    )}
+                    {isFacebookLoading ? (
+                        <Button className="w-full cursor-not-allowed" variant="outline">
+                            <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                        </Button>
+                    ) : (
+                        <Link
+                            href="/api/auth/login/facebook"
+                            className={cn(buttonVariants({ variant: "outline" }))}
+                            onClick={() => setIsFacebookLoading(true)}
+                        >
+                            {t("continueWith")} <Icons.facebook className="ml-2 h-4 w-4" />
                         </Link>
                     )}
                 </>

@@ -1,13 +1,13 @@
 import { generateState } from "arctic";
 import { cookies } from "next/headers";
-import { github } from "@/lib/server/auth/github";
+import { facebook } from "@/lib/server/auth/facebook";
 
 export const GET = async () => {
     const state = generateState();
-    const url = github.createAuthorizationURL(state, ["read:user", "user:email"]);
+    const url = facebook.createAuthorizationURL(state, ["email", "public_profile"]);
 
     const cookieStore = await cookies();
-    cookieStore.set("github_oauth_state", state, {
+    cookieStore.set("facebook_oauth_state", state, {
         path: "/",
         secure: process.env.NODE_ENV === "production",
         httpOnly: true,

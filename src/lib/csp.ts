@@ -30,7 +30,7 @@ export function buildCSPHeader(nonce: string, isDevelopment: boolean = false): s
       'data:',
       'blob:',
       'https://lh3.googleusercontent.com',
-      'https://avatars.githubusercontent.com',
+      'https://graph.facebook.com',
     ],
     'font-src': ["'self'"],
     'connect-src': [
@@ -41,8 +41,8 @@ export function buildCSPHeader(nonce: string, isDevelopment: boolean = false): s
       'https://us.i.posthog.com',
       'https://openidconnect.googleapis.com',
       'https://accounts.google.com',
-      'https://github.com',
-      'https://api.github.com',
+      'https://www.facebook.com',
+      'https://graph.facebook.com',
     ],
     'frame-src': [
       'https://checkout.stripe.com',
