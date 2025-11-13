@@ -1,7 +1,7 @@
 export default {
     hero: {
         title: 'Motorista, Gerencie as suas finanças com facilidade',
-        subtitle: 'Acompanhe despesas, receitas e métricas do seu dia adia em uma plataforma poderosa.',
+        subtitle: 'Acompanhe despesas, receitas e métricas do seu dia a dia em uma plataforma poderosa.',
         startBuilding: 'Começar',
         getStarted: 'Comece Agora',
         viewPricing: 'Ver Preços',
