@@ -8,6 +8,7 @@ import { Toggle } from "@/components/ui/toggle"
 import { Label } from "@/components/ui/label"
 import { type Plan } from "@/types"
 import { cn } from "@/lib/utils"
+import { useScopedI18n } from "@/locales/client"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useState } from "react"
 
@@ -22,6 +23,7 @@ export interface UpdatePlanDialogProps {
 }
 
 export function UpdatePlanDialog({ currentPlan, plans, onPlanChange, className, title, triggerText }: UpdatePlanDialogProps) {
+    const t = useScopedI18n("ui.userPages.billing")
     const [isYearly, setIsYearly] = useState(false);
     const [selectedPlan, setSelectedPlan] = useState<string | undefined>(undefined);
     const [isOpen, setIsOpen] = useState(false);
@@ -37,12 +39,12 @@ export function UpdatePlanDialog({ currentPlan, plans, onPlanChange, className, 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button>{triggerText || "Update Plan"}</Button>
+                <Button>{triggerText || t('updatePlan')}</Button>
             </DialogTrigger>
             <DialogContent className={cn("space-y-3 max-h-[90vh] flex flex-col text-foreground", className)}>
                 <DialogHeader className="flex flex-row items-center justify-between py-2">
                     <DialogTitle className="text-base font-semibold">
-                        {title || "Upgrade Plan"}
+                        {title || t('updatePlanTitle')}
                     </DialogTitle>
                     <div className="flex items-center gap-2 text-sm">
                         <Toggle
@@ -51,14 +53,14 @@ export function UpdatePlanDialog({ currentPlan, plans, onPlanChange, className, 
                             onPressedChange={(pressed) => setIsYearly(!pressed)}
                             className="px-3"
                         >
-                            Monthly
+                            {t('monthly')}
                         </Toggle>
                         <Toggle
                             pressed={isYearly}
                             onPressedChange={(pressed) => setIsYearly(pressed)}
                             className="px-3"
                         >
-                            Yearly
+                            {t('yearly')}
                         </Toggle>
                     </div>
                 </DialogHeader>
@@ -124,7 +126,7 @@ export function UpdatePlanDialog({ currentPlan, plans, onPlanChange, className, 
                                                 }
                                             </div>
                                             <div className="text-xs text-muted-foreground">
-                                                /{isYearly ? "year" : "month"}
+                                                /{isYearly ? t('year') : t('month')}
                                             </div>
                                         </div>
                                     </div>
@@ -142,7 +144,7 @@ export function UpdatePlanDialog({ currentPlan, plans, onPlanChange, className, 
                                                         onPlanChange(plan.id)
                                                         setIsOpen(false)
                                                     }}
-                                                >{selectedPlan === currentPlan.id ? "Current Plan" : "Upgrade"}</Button>
+                                                >{selectedPlan === currentPlan.id ? t('currentPlanBadge') : t('upgrade')}</Button>
                                             </motion.div>
                                         )}
                                     </AnimatePresence>

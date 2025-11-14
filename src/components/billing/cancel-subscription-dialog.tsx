@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { type Plan } from "@/types";
 import { cn } from "@/lib/utils";
+import { useScopedI18n } from "@/locales/client";
 import { X, Circle } from "lucide-react";
 
 export interface CancelSubscriptionDialogProps {
@@ -55,6 +56,7 @@ export function CancelSubscriptionDialog({
     onDialogClose,
     className,
 }: CancelSubscriptionDialogProps) {
+    const t = useScopedI18n("ui.userPages.billing")
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -130,7 +132,7 @@ export function CancelSubscriptionDialog({
             }
         }}>
             <DialogTrigger asChild>
-                <Button variant="outline">{triggerButtonText || "Cancel Subscription"}</Button>
+                <Button variant="outline">{triggerButtonText || t('cancelSubscription')}</Button>
             </DialogTrigger>
             <DialogContent className={cn("sm:max-w-[1000px] flex flex-col md:flex-row p-0 overflow-hidden text-foreground w-[95%] md:w-[100%]", leftPanelImageUrl ? "" : "sm:max-w-[500px]", className)}>
                 <DialogTitle className="sr-only">{title}</DialogTitle>
@@ -144,7 +146,7 @@ export function CancelSubscriptionDialog({
                 {leftPanelImageUrl && (
                     <div className="w-full md:w-1/2 min-h-[500px] relative hidden md:block overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={leftPanelImageUrl} alt="Cancel Subscription" className="absolute inset-0 w-full h-full object-cover" />
+                        <img src={leftPanelImageUrl} alt={t('cancelSubscription')} className="absolute inset-0 w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/30 to-background/90 dark:block hidden"></div>
                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-background/20 dark:block hidden"></div>
                     </div>
@@ -160,19 +162,18 @@ export function CancelSubscriptionDialog({
                         )}
                     </div>
 
-                    {/* Plan Details */}
                     {!showConfirmation && (
                         <div className="flex flex-col gap-4 p-4 bg-muted/50 rounded-lg">
                             <div className="flex items-center justify-between">
                                 <div className="flex flex-col gap-1">
-                                    <span className="font-semibold text-lg">{plan.title} Plan</span>
-                                    <span className="text-sm text-muted-foreground">Current subscription</span>
+                                    <span className="font-semibold text-lg">{plan.title} {t('plan')}</span>
+                                    <span className="text-sm text-muted-foreground">{t('currentSubscription')}</span>
                                 </div>
                                 <Badge variant="secondary">
                                     {
                                         parseFloat(plan.monthlyPrice) >= 0 ?
-                                            `${plan.currency}${plan.monthlyPrice}/monthly` :
-                                            `${plan.monthlyPrice}/monthly`
+                                            `${plan.currency}${plan.monthlyPrice}/${t('monthly')}` :
+                                            `${plan.monthlyPrice}/${t('monthly')}`
                                     }
                                 </Badge>
                             </div>
@@ -187,7 +188,6 @@ export function CancelSubscriptionDialog({
                         </div>
                     )}
 
-                    {/* Warning Section */}
                     {!showConfirmation && (warningTitle || warningText) && (
                         <div className="p-4 bg-muted/30 border border-border rounded-lg">
                             {warningTitle && (
@@ -202,7 +202,6 @@ export function CancelSubscriptionDialog({
                             )}
                         </div>
                     )}
-                    {/* Action Buttons */}
                     {!showConfirmation ? (
                         <div className="flex flex-col sm:flex-row gap-3 mt-auto">
                             <Button
@@ -210,7 +209,7 @@ export function CancelSubscriptionDialog({
                                 onClick={handleKeepSubscription}
                                 disabled={isLoading}
                             >
-                                {isLoading ? "Processing..." : (keepButtonText || "Keep My Subscription")}
+                                {isLoading ? t('processing') : (keepButtonText || t('keepSubscription'))}
                             </Button>
                             <Button
                                 variant="destructive"
@@ -218,7 +217,7 @@ export function CancelSubscriptionDialog({
                                 onClick={handleContinueCancellation}
                                 disabled={isLoading}
                             >
-                                {continueButtonText || "Continue Cancellation"}
+                                {continueButtonText || t('continueCancellation')}
                             </Button>
                         </div>
                     ) : (

@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { SubscriptionManagement, type SubscriptionManagementProps } from "./subscription-management";
-import { useBillingActions } from "./billing-actions";
+import { useScopedI18n } from "@/locales/client";
 import { toast } from "sonner";
+import { openBillingPortal } from "@/app/[locale]/(public)/pricing/actions";
 
 interface SubscriptionManagementWrapperProps {
   currentPlan: SubscriptionManagementProps["currentPlan"];
@@ -13,37 +15,59 @@ export function SubscriptionManagementWrapper({
   currentPlan,
   allPlans,
 }: SubscriptionManagementWrapperProps) {
-  const { handleManageBilling, isPending } = useBillingActions();
+  const t = useScopedI18n("ui.userPages.billing");
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleManageBilling() {
+    setIsLoading(true);
+    const result = await openBillingPortal();
+
+    if (result.error) {
+      toast.error(result.error);
+      setIsLoading(false);
+      return;
+    }
+
+    if (result.url) {
+      window.location.href = result.url;
+    }
+  }
 
   return (
     <SubscriptionManagement
       currentPlan={currentPlan}
       cancelSubscription={{
-        title: "Cancel Subscription",
-        description: "We're sorry to see you go. Are you sure you want to cancel your subscription?",
+        title: t('cancelTitle'),
+        description: t('cancelDescription'),
         plan: currentPlan.plan,
-        triggerButtonText: "Cancel Subscription",
-        warningTitle: "What you'll lose:",
-        warningText: "Access to all premium features, unlimited entries, advanced analytics, and priority support.",
-        keepButtonText: "Keep Subscription",
-        continueButtonText: "Continue to Billing Portal",
-        finalTitle: "Manage via Stripe",
-        finalSubtitle: "You'll be redirected to Stripe's billing portal to manage your subscription.",
-        finalWarningText: "You can cancel or update your subscription directly through Stripe.",
-        goBackButtonText: "Go Back",
-        confirmButtonText: "Open Billing Portal",
+        triggerButtonText: t('cancelSubscription'),
+        warningTitle: t('whatYouWillLose'),
+        warningText: [
+          t('loseFeature1'),
+          t('loseFeature2'),
+          t('loseFeature3'),
+          t('loseFeature4'),
+          t('loseFeature5'),
+        ].join(', '),
+        keepButtonText: t('keepSubscription'),
+        continueButtonText: t('continueCancellation'),
+        finalTitle: t('cancelTitle'),
+        finalSubtitle: t('cancelDescription'),
+        finalWarningText: t('whatYouWillLose'),
+        goBackButtonText: t('keepSubscription'),
+        confirmButtonText: t('continueCancellation'),
         onCancel: async () => {
           await handleManageBilling();
         },
         onKeepSubscription: async () => {
-          toast.success("Great! Your subscription remains active.");
+          toast.success(t('keepSubscription'));
         },
       }}
       updatePlan={{
         currentPlan: currentPlan.plan,
         plans: allPlans,
-        triggerText: "Update Plan",
-        title: "Choose Your Plan",
+        triggerText: t('updatePlan'),
+        title: t('chooseYourPlan'),
         onPlanChange: async () => {
           await handleManageBilling();
         },

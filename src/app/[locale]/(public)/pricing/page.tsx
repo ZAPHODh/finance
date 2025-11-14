@@ -23,15 +23,9 @@ export default function PricingPage() {
         </div>
         <PricingTableThree
           plans={plans}
-          onPlanSelect={(planId) => {
-            router.push('/login');
-          }}
           showFooter={true}
-          footerText="Questions about pricing? We're here to help."
-          footerButtonText="Contact Us"
           onFooterButtonClick={() => {
-            // Add contact logic here
-            console.log("Contact clicked");
+            router.push('/contact');
           }}
         />
       </main>

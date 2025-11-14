@@ -4,13 +4,11 @@ import { getUserSubscriptionPlan } from "@/lib/server/payment"
 import { BillingPageContent } from "@/components/billing/billing-page-content"
 import { freePlanConfig, simplePlanConfig, proPlanConfig } from "@/config/subscription"
 import { type CurrentPlan } from "@/types"
-import { getScopedI18n } from "@/locales/server"
 
 export default async function BillingPage() {
   const { user } = await getCurrentSession()
   if (!user) redirect("/login")
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
-  const t = await getScopedI18n("ui.userPages.billing")
 
   const getPlanConfig = () => {
     if (subscriptionPlan.name === "PRO") return proPlanConfig
@@ -34,24 +32,6 @@ export default async function BillingPage() {
     <BillingPageContent
       currentPlan={currentPlan}
       allPlans={allPlans}
-      translations={{
-        title: t("title"),
-        description: t("description"),
-        currentPlanTitle: t("currentPlanTitle"),
-        currentPlanDescription: t("currentPlanDescription"),
-        current: t("current"),
-        perMonth: t("perMonth"),
-        upgradeToPro: t("upgradeToPro"),
-        paymentMethodTitle: t("paymentMethodTitle"),
-        paymentMethodDescription: t("paymentMethodDescription"),
-        noPaymentMethod: t("noPaymentMethod"),
-        addPaymentMethodDescription: t("addPaymentMethodDescription"),
-        addPaymentMethod: t("addPaymentMethod"),
-        billingHistoryTitle: t("billingHistoryTitle"),
-        billingHistoryDescription: t("billingHistoryDescription"),
-        noBillingHistory: t("noBillingHistory"),
-        manageSubscription: t("manageSubscription"),
-      }}
     />
   )
 }
