@@ -156,7 +156,7 @@ export function PricingTableThree({ className, plans, showFooter, footerText, fo
 
   async function handlePlanSelect(planId: string, interval: "monthly" | "yearly") {
     if (planId === 'free') {
-      router.push('/signup')
+      router.push('/login')
       return
     }
 
