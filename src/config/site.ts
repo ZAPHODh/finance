@@ -22,16 +22,6 @@ export interface SiteContact {
     email: string;
     title: string;
   };
-  phone?: string;
-  address: {
-    city: string;
-    state: string;
-    country: string;
-  };
-  businessHours: {
-    weekdays: string;
-    weekends: string;
-  };
 }
 
 export const siteCompany: SiteCompany = {
@@ -55,15 +45,6 @@ export const siteContact: SiteContact = {
   privacy: {
     email: siteEmails.privacy,
     title: "Privacy and Data (DPO)",
-  },
-  address: {
-    city: "São Paulo",
-    state: "SP",
-    country: "Brasil",
-  },
-  businessHours: {
-    weekdays: "Monday to Friday: 9am to 6pm (Brasília time)",
-    weekends: "Saturday, Sunday and Holidays: Closed",
   },
 };
 

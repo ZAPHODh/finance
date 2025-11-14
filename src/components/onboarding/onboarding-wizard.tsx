@@ -101,11 +101,6 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
     }
   };
 
-  const handleSkipStep = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
 
   const renderStepContent = () => {
     switch (currentStep) {
@@ -398,21 +393,9 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                 {t('navigation.previous')}
               </Button>
               {currentStep < steps.length - 1 ? (
-                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                  {currentStep > 0 && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={handleSkipStep}
-                      className="w-full sm:w-auto"
-                    >
-                      {t('navigation.skip')}
-                    </Button>
-                  )}
-                  <Button type="button" onClick={handleNext} className="w-full sm:w-auto">
-                    {t('navigation.next')}
-                  </Button>
-                </div>
+                <Button type="button" onClick={handleNext} className="w-full sm:w-auto">
+                  {t('navigation.next')}
+                </Button>
               ) : (
                 <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
                   {isPending ? t('completing') : t('navigation.finish')}

@@ -20,249 +20,139 @@ import {
   Clock,
   Activity,
 } from 'lucide-react'
+import { useScopedI18n } from '@/locales/client'
 
 export function FeaturesDetailed() {
+  const t = useScopedI18n('marketing.featuresDetailed')
+
+  const badgeFeatures = ['expense', 'revenue', 'ai', 'team', 'api']
+
   const features = [
     {
       icon: Wallet,
-      title: "Complete Expense Tracking",
-      description: "Track all vehicle expenses including fuel, maintenance, tolls, insurance, and more with detailed categorization.",
-      benefits: [
-        "Custom expense categories",
-        "Receipt attachment support",
-        "Automatic calculations",
-        "Expense trends analysis"
-      ],
-      badge: "Core Feature"
+      key: 'expense',
     },
     {
       icon: TrendingUp,
-      title: "Revenue Analytics",
-      description: "Monitor earnings across multiple platforms (Uber, 99, Cabify) with real-time insights into profitability.",
-      benefits: [
-        "Multi-platform tracking",
-        "Daily/weekly/monthly summaries",
-        "Profit margin calculations",
-        "Revenue forecasting"
-      ],
-      badge: "Core Feature"
+      key: 'revenue',
     },
     {
       icon: BarChart3,
-      title: "Advanced Dashboard",
-      description: "Get a comprehensive view of your financial performance with interactive charts and key metrics.",
-      benefits: [
-        "Customizable KPI widgets",
-        "Interactive charts",
-        "Performance comparisons",
-        "Real-time data sync"
-      ]
+      key: 'dashboard',
     },
     {
       icon: FileText,
-      title: "Smart Reporting",
-      description: "Generate detailed reports on driver performance, vehicle efficiency, and financial summaries.",
-      benefits: [
-        "PDF and Excel exports",
-        "Automated report scheduling",
-        "Custom report builder",
-        "Tax-ready summaries"
-      ]
+      key: 'reporting',
     },
     {
       icon: Car,
-      title: "Vehicle Management",
-      description: "Manage multiple vehicles with individual tracking for expenses, revenues, and performance metrics.",
-      benefits: [
-        "Unlimited vehicles (PRO)",
-        "Maintenance scheduling",
-        "Fuel efficiency tracking",
-        "Vehicle ROI analysis"
-      ]
+      key: 'vehicle',
     },
     {
       icon: Users,
-      title: "Driver Management",
-      description: "Track performance across multiple drivers with individual dashboards and comparison tools.",
-      benefits: [
-        "Driver performance metrics",
-        "Individual profit tracking",
-        "Commission calculations",
-        "Driver leaderboards"
-      ]
+      key: 'driver',
     },
     {
       icon: Building2,
-      title: "Multi-Company Support",
-      description: "Track earnings from multiple ride-sharing platforms and delivery services in one place.",
-      benefits: [
-        "Uber, 99, Cabify integration",
-        "Platform comparison",
-        "Consolidated reporting",
-        "Revenue breakdown by company"
-      ]
+      key: 'multiCompany',
     },
     {
       icon: Target,
-      title: "Goals & Budgets",
-      description: "Set financial goals and budgets to track progress and stay on target with your earnings.",
-      benefits: [
-        "Daily/weekly/monthly goals",
-        "Budget alerts",
-        "Progress tracking",
-        "Achievement notifications"
-      ]
+      key: 'goals',
     },
     {
       icon: Calendar,
-      title: "Work Logs",
-      description: "Record work hours, kilometers driven, and trips completed for accurate tracking.",
-      benefits: [
-        "Shift tracking",
-        "KM/miles logging",
-        "Trip counters",
-        "Hourly rate calculations"
-      ]
+      key: 'workLogs',
     },
     {
       icon: Bell,
-      title: "Smart Reminders",
-      description: "Never miss important deadlines with automated reminders for payments, maintenance, and renewals.",
-      benefits: [
-        "Payment reminders",
-        "Maintenance alerts",
-        "Insurance renewal notices",
-        "Custom reminder setup"
-      ]
+      key: 'reminders',
     },
     {
       icon: Download,
-      title: "Data Export",
-      description: "Export your data in multiple formats for accounting, tax filing, or personal analysis.",
-      benefits: [
-        "PDF reports",
-        "Excel spreadsheets",
-        "CSV data export",
-        "Accounting software integration"
-      ]
+      key: 'export',
     },
     {
       icon: Cloud,
-      title: "Cloud Storage",
-      description: "Store receipts, invoices, and documents securely in the cloud with OCR scanning.",
-      benefits: [
-        "Up to 5GB storage (PRO)",
-        "OCR text recognition",
-        "Automatic backup",
-        "Secure encryption"
-      ]
+      key: 'storage',
     },
     {
       icon: Zap,
-      title: "AI-Powered Insights",
-      description: "Get intelligent recommendations to optimize costs and increase profitability.",
-      benefits: [
-        "Cost optimization tips",
-        "Anomaly detection",
-        "Predictive analytics",
-        "Smart suggestions"
-      ],
-      badge: "PRO Only"
+      key: 'ai',
     },
     {
       icon: Shield,
-      title: "Team Access & Permissions",
-      description: "Collaborate with your team with role-based access control and permissions.",
-      benefits: [
-        "Multi-user accounts",
-        "Role management",
-        "Access controls",
-        "Activity logs"
-      ],
-      badge: "PRO Only"
+      key: 'team',
     },
     {
       icon: Clock,
-      title: "Real-Time Sync",
-      description: "Access your data from any device with automatic synchronization across all platforms.",
-      benefits: [
-        "Cross-device sync",
-        "Mobile & web apps",
-        "Offline mode",
-        "Instant updates"
-      ]
+      key: 'sync',
     },
     {
       icon: Activity,
-      title: "API Access",
-      description: "Integrate with third-party tools and build custom workflows with our developer API.",
-      benefits: [
-        "RESTful API",
-        "Webhooks support",
-        "Custom integrations",
-        "Developer documentation"
-      ],
-      badge: "PRO Only"
+      key: 'api',
     },
   ]
 
   return (
     <div className="space-y-16">
-      {/* Hero Section */}
       <div className="text-center space-y-4">
-        <Badge variant="secondary" className="mb-2">Full Feature Set</Badge>
-        <h1 className="text-4xl md:text-5xl font-bold">Everything You Need to Manage Your Fleet</h1>
+        <Badge variant="secondary" className="mb-2">{t('badge')}</Badge>
+        <h1 className="text-4xl md:text-5xl font-bold">{t('title')}</h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          Comprehensive tools designed specifically for ride-sharing drivers and fleet managers
+          {t('subtitle')}
         </p>
       </div>
 
-      {/* Features Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {features.map((feature, idx) => (
-          <Card key={idx} className="relative overflow-hidden hover:shadow-lg transition-shadow">
-            {feature.badge && (
-              <div className="absolute top-4 right-4">
-                <Badge variant="outline" className="text-xs">{feature.badge}</Badge>
-              </div>
-            )}
-            <CardHeader>
-              <div className="flex items-start gap-4">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <feature.icon className="h-6 w-6 text-primary" />
+        {features.map((feature, idx) => {
+          const featureKey = `features.${feature.key}` as any
+          const hasBadge = badgeFeatures.includes(feature.key)
+
+          return (
+            <Card key={idx} className="relative overflow-hidden hover:shadow-lg transition-shadow">
+              {hasBadge && (
+                <div className="absolute top-4 right-4">
+                  <Badge variant="outline" className="text-xs">{t(`${featureKey}.badge` as any)}</Badge>
                 </div>
-                <div className="flex-1">
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
-                  <CardDescription className="mt-2">{feature.description}</CardDescription>
+              )}
+              <CardHeader>
+                <div className="flex items-start gap-4">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <feature.icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <CardTitle className="text-xl">{t(`${featureKey}.title` as any)}</CardTitle>
+                    <CardDescription className="mt-2">{t(`${featureKey}.description` as any)}</CardDescription>
+                  </div>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                {feature.benefits.map((benefit, benefitIdx) => (
-                  <li key={benefitIdx} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-                    <span>{benefit}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        ))}
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {[1, 2, 3, 4].map((benefitIdx) => (
+                    <li key={benefitIdx} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                      <span>{t(`${featureKey}.benefit${benefitIdx}` as any)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
 
-      {/* Categories Summary */}
       <div className="grid gap-6 md:grid-cols-3 pt-12">
         <Card className="text-center">
           <CardHeader>
             <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
               <BarChart3 className="h-6 w-6 text-primary" />
             </div>
-            <CardTitle>For Solo Drivers</CardTitle>
+            <CardTitle>{t('categories.solo.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Track your personal expenses, revenues, and performance to maximize your earnings
+              {t('categories.solo.description')}
             </p>
           </CardContent>
         </Card>
@@ -272,11 +162,11 @@ export function FeaturesDetailed() {
             <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
               <Users className="h-6 w-6 text-primary" />
             </div>
-            <CardTitle>For Small Fleets</CardTitle>
+            <CardTitle>{t('categories.small.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Manage multiple drivers and vehicles with consolidated reporting and analytics
+              {t('categories.small.description')}
             </p>
           </CardContent>
         </Card>
@@ -286,11 +176,11 @@ export function FeaturesDetailed() {
             <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
               <Building2 className="h-6 w-6 text-primary" />
             </div>
-            <CardTitle>For Fleet Managers</CardTitle>
+            <CardTitle>{t('categories.fleet.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Enterprise-grade tools with team access, API integration, and advanced analytics
+              {t('categories.fleet.description')}
             </p>
           </CardContent>
         </Card>

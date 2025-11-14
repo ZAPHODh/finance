@@ -2,7 +2,7 @@
 
 import Nav from "@/components/shared/nav";
 import FooterSection from "@/components/footer";
-import { Mail, MapPin } from "lucide-react";
+import { Mail } from "lucide-react";
 import { useScopedI18n } from "@/locales/client";
 import { siteConfig } from "@/config/site";
 
@@ -46,29 +46,7 @@ export default function ContactPage() {
                   </p>
                 </div>
               </div>
-
-              <div className="flex items-start gap-3">
-                <MapPin className="h-5 w-5 mt-1 text-primary" />
-                <div>
-                  <h3 className="font-semibold">{t('contactInfo.address.title')}</h3>
-                  <p className="text-muted-foreground">
-                    {config.contact.address.city}, {config.contact.address.state}<br />
-                    {config.contact.address.country}
-                  </p>
-                </div>
-              </div>
             </div>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">{t('businessHours.title')}</h2>
-            <p className="text-muted-foreground">
-              {config.contact.businessHours.weekdays}<br />
-              {config.contact.businessHours.weekends}
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              {t('businessHours.note')}
-            </p>
           </section>
 
           <section className="mb-8">
