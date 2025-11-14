@@ -25,8 +25,6 @@ import { useScopedI18n } from '@/locales/client'
 export function FeaturesDetailed() {
   const t = useScopedI18n('marketing.featuresDetailed')
 
-  const badgeFeatures = ['expense', 'revenue', 'ai', 'team', 'api']
-
   const features = [
     {
       icon: Wallet,
@@ -107,15 +105,9 @@ export function FeaturesDetailed() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {features.map((feature, idx) => {
           const featureKey = `features.${feature.key}` as any
-          const hasBadge = badgeFeatures.includes(feature.key)
 
           return (
-            <Card key={idx} className="relative overflow-hidden hover:shadow-lg transition-shadow">
-              {hasBadge && (
-                <div className="absolute top-4 right-4">
-                  <Badge variant="outline" className="text-xs">{t(`${featureKey}.badge` as any)}</Badge>
-                </div>
-              )}
+            <Card key={idx} className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <div className="flex items-start gap-4">
                   <div className="p-2 rounded-lg bg-primary/10">
