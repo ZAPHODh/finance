@@ -7,6 +7,8 @@ export default {
         buttonText: 'Atualizar Agora',
     },
     filters: {
+        filters: 'Filtros',
+        reset: 'Redefinir',
         period: 'Período',
         driver: 'Motorista',
         vehicle: 'Veículo',

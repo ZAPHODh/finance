@@ -19,7 +19,6 @@ export function UpgradeBanner() {
       description={t("description")}
       buttonText={t("buttonText")}
       buttonLink="/dashboard/billing"
-      variant="minimal"
       gradientColors={gradientColors}
     />
   );

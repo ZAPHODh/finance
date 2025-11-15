@@ -7,6 +7,8 @@ export default {
         buttonText: 'Upgrade Now',
     },
     filters: {
+        filters: 'Filters',
+        reset: 'Reset',
         period: 'Period',
         driver: 'Driver',
         vehicle: 'Vehicle',
