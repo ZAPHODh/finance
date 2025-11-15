@@ -44,7 +44,7 @@ export function DriverCard({ driver, onUpdate, onRemove, labels }: DriverCardPro
 
   if (isEditing) {
     return (
-      <Card className="p-4 border-dashed">
+      <Card className="p-4 border border-dashed">
         <FieldGroup>
           <Field>
             <FieldLabel htmlFor={`driver-name-${driver.name}`}>{labels.name}</FieldLabel>
@@ -85,7 +85,7 @@ export function DriverCard({ driver, onUpdate, onRemove, labels }: DriverCardPro
   }
 
   return (
-    <Card className="p-4 border-dashed transition-colors hover:bg-accent/50">
+    <Card className="p-4 border border-dashed transition-colors hover:bg-accent/50">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h4 className="font-semibold text-base">{driver.name}</h4>
