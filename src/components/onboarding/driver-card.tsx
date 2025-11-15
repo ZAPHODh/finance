@@ -7,11 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import { X, Check, Pencil } from 'lucide-react';
+import type { Driver } from '@/lib/schemas/onboarding';
 
-export interface Driver {
-  name: string;
-  isSelf?: boolean;
-}
+export type { Driver };
 
 interface DriverCardProps {
   driver: Driver;

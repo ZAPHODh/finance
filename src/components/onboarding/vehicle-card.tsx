@@ -7,14 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import { X, Check, Pencil } from 'lucide-react';
+import type { Vehicle } from '@/lib/schemas/onboarding';
 
-export interface Vehicle {
-  name: string;
-  plate?: string;
-  model?: string;
-  year?: number;
-  isPrimary?: boolean;
-}
+export type { Vehicle };
 
 interface VehicleCardProps {
   vehicle: Vehicle;
