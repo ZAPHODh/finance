@@ -92,19 +92,20 @@ const StepFields = (props: React.ComponentProps<"div"> & MotionProps) => {
     return null;
   }
   return (
-    <AnimatePresence mode="popLayout">
-      <motion.div
-        key={currentStepIndex}
-        layoutId="step-content"
-        initial={{ opacity: 0, x: 15 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -15 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-        {...props}
-      >
-        {currentFormStep.component}
-      </motion.div>
-    </AnimatePresence>
+    <div className="relative overflow-hidden">
+      <AnimatePresence mode="sync" initial={false}>
+        <motion.div
+          key={currentStepIndex}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20, position: "absolute", top: 0, width: "100%" }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
+          {...props}
+        >
+          {currentFormStep.component}
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 };
 
@@ -117,7 +118,6 @@ export {
   FormHeader,
   FormFooter,
   StepFields,
-  // Form Actions
   NextButton,
   PreviousButton,
   SubmitButton,
