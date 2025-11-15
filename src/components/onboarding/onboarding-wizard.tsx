@@ -64,9 +64,6 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
     },
   });
 
-  // Subscribe to form state to ensure it persists across re-renders
-  const formState = form.useStore((state) => state.values);
-
   const steps = [
     { key: 'welcome', title: t('steps.welcome') },
     { key: 'platforms', title: t('steps.platforms') },
