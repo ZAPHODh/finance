@@ -92,15 +92,14 @@ const StepFields = (props: React.ComponentProps<"div"> & MotionProps) => {
     return null;
   }
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="popLayout">
       <motion.div
         key={currentStepIndex}
+        layoutId="step-content"
         initial={{ opacity: 0, x: 15 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -15 }}
-        transition={{ duration: 0.4, type: "spring" }}
-        layout
-        className="min-h-[400px]"
+        transition={{ duration: 0.3, ease: "easeInOut" }}
         {...props}
       >
         {currentFormStep.component}
