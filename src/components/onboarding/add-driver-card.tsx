@@ -86,7 +86,7 @@ export function AddDriverCard({ onAdd, hasDrivers, labels }: AddDriverCardProps)
   }
 
   return (
-    <Card className="p-4 border-dashed cursor-pointer transition-colors hover:bg-accent/50" onClick={() => setIsAdding(true)}>
+    <Card className="p-4 border cursor-pointer transition-colors hover:bg-accent/50" onClick={() => setIsAdding(true)}>
       <div className="flex items-center justify-center gap-2 text-muted-foreground">
         <Plus className="h-5 w-5" />
         <span className="font-medium">{hasDrivers ? labels.addAnother : labels.addDriver}</span>
