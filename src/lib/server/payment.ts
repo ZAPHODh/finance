@@ -1,7 +1,8 @@
 import Stripe from "stripe";
-import { freePlan, proPlan, simplePlan } from "@/config/subscription";
+import { freePlan, proPlan, simplePlan, PLAN_LIMITS, type PlanLimits } from "@/config/subscription";
 import { prisma } from "@/lib/server/db";
 import { type UserSubscriptionPlan } from "@/types";
+import { type PlanType } from "@prisma/client";
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
     apiVersion: "2025-09-30.clover",
@@ -49,4 +50,9 @@ export async function getUserSubscriptionPlan(
         isPro,
         stripePriceId: user.stripePriceId || "",
     };
+}
+
+export function getPlanLimits(planName: string): PlanLimits {
+    const normalized = planName.toUpperCase() as PlanType;
+    return PLAN_LIMITS[normalized] || PLAN_LIMITS.FREE;
 }

@@ -25,6 +25,11 @@ export interface PlanLimits {
     hasReminders: boolean;
     hasMultiUser: boolean;
     hasAPIAccess: boolean;
+    hasPeriodComparisons: boolean;
+    hasEfficiencyMetrics: boolean;
+    hasFleetAnalytics: boolean;
+    hasForecasting: boolean;
+    hasDriverRankings: boolean;
 }
 
 export const PLAN_LIMITS: Record<PlanType, PlanLimits> = {
@@ -49,6 +54,11 @@ export const PLAN_LIMITS: Record<PlanType, PlanLimits> = {
         hasReminders: false,
         hasMultiUser: false,
         hasAPIAccess: false,
+        hasPeriodComparisons: false,
+        hasEfficiencyMetrics: false,
+        hasFleetAnalytics: false,
+        hasForecasting: false,
+        hasDriverRankings: false,
     },
     SIMPLE: {
         maxDrivers: 3,
@@ -71,6 +81,11 @@ export const PLAN_LIMITS: Record<PlanType, PlanLimits> = {
         hasReminders: true,
         hasMultiUser: false,
         hasAPIAccess: false,
+        hasPeriodComparisons: true,
+        hasEfficiencyMetrics: true,
+        hasFleetAnalytics: false,
+        hasForecasting: false,
+        hasDriverRankings: false,
     },
     PRO: {
         maxDrivers: -1,
@@ -93,6 +108,11 @@ export const PLAN_LIMITS: Record<PlanType, PlanLimits> = {
         hasReminders: true,
         hasMultiUser: true,
         hasAPIAccess: true,
+        hasPeriodComparisons: true,
+        hasEfficiencyMetrics: true,
+        hasFleetAnalytics: true,
+        hasForecasting: true,
+        hasDriverRankings: true,
     },
 };
 
@@ -115,7 +135,7 @@ export const simplePlan: SubscriptionPlan = {
 
 export const proPlan: SubscriptionPlan = {
     name: "PRO",
-    description: "For professional drivers managing multiple vehicles",
+    description: "For fleet managers and companies with multiple drivers",
     stripePriceId: process.env.STRIPE_PRO_PLAN_ID || process.env.STRIPE_PRO_BRL_MONTHLY_ID as string,
 };
 
@@ -149,54 +169,54 @@ export function getPlanConfigs(locale: string): {
         simple: {
             id: "simple",
             title: "Simple",
-            description: "Essential features for getting started",
+            description: "Complete financial management for professional drivers",
             currency: pricing.simple.currencySymbol,
             monthlyPrice: pricing.simple.monthlyPrice.toString(),
             yearlyPrice: pricing.simple.yearlyPrice.toString(),
             buttonText: "Upgrade to Simple",
             badge: "Popular",
             features: [
-                { name: "3 drivers", icon: "check" },
-                { name: "3 vehicles", icon: "check" },
-                { name: "Unlimited companies", icon: "check" },
-                { name: "Unlimited entries", icon: "check" },
+                { name: "Up to 3 drivers & 3 vehicles", icon: "check" },
+                { name: "Unlimited companies & entries", icon: "check" },
                 { name: "Unlimited history", icon: "check" },
-                { name: "Advanced analytics", icon: "check" },
+                { name: "Period comparisons & trends", icon: "check" },
+                { name: "Efficiency metrics (revenue/km, revenue/hour)", icon: "check" },
+                { name: "Net revenue after payment fees", icon: "check" },
+                { name: "Maintenance tracking & cost/km", icon: "check" },
                 { name: "10 exports/month (PDF/Excel)", icon: "check" },
-                { name: "5 goals tracking", icon: "check" },
-                { name: "10 budgets/month", icon: "check" },
-                { name: "Advanced insights & alerts", icon: "check" },
+                { name: "5 goals & 10 budgets tracking", icon: "check" },
+                { name: "Smart insights & alerts", icon: "check" },
                 { name: "500MB attachments storage", icon: "check" },
                 { name: "All reports", icon: "check" },
-                { name: "Reminders", icon: "check" },
+                { name: "Reminders & notifications", icon: "check" },
                 { name: "Priority support (24h)", icon: "check" },
             ],
         },
         pro: {
             id: "pro",
             title: "PRO",
-            description: "Advanced features for professionals",
+            description: "Fleet management & advanced analytics",
             currency: pricing.pro.currencySymbol,
             monthlyPrice: pricing.pro.monthlyPrice.toString(),
             yearlyPrice: pricing.pro.yearlyPrice.toString(),
             buttonText: "Upgrade to PRO",
-            badge: "Best Value",
+            badge: "For Teams",
             highlight: true,
             features: [
-                { name: "Unlimited drivers", icon: "check" },
-                { name: "Unlimited vehicles", icon: "check" },
-                { name: "Unlimited companies", icon: "check" },
-                { name: "Unlimited entries", icon: "check" },
-                { name: "Unlimited history", icon: "check" },
-                { name: "All analytics & insights", icon: "check" },
-                { name: "Unlimited exports", icon: "check" },
+                { name: "Unlimited drivers & vehicles", icon: "check" },
+                { name: "Fleet dashboard & analytics", icon: "check" },
+                { name: "Driver performance rankings", icon: "check" },
+                { name: "Vehicle efficiency comparisons", icon: "check" },
+                { name: "Platform profitability analysis", icon: "check" },
+                { name: "AI-powered insights & forecasting", icon: "check" },
+                { name: "Unlimited exports & scheduled reports", icon: "check" },
                 { name: "Unlimited goals & budgets", icon: "check" },
-                { name: "AI-powered insights", icon: "check" },
                 { name: "5GB attachments + OCR", icon: "check" },
-                { name: "All reports + scheduling", icon: "check" },
                 { name: "Multi-user/team access", icon: "check" },
+                { name: "Role-based permissions", icon: "check" },
                 { name: "API access", icon: "check" },
                 { name: "Live chat + WhatsApp support", icon: "check" },
+                { name: "Dedicated account manager", icon: "check" },
             ],
         },
     };

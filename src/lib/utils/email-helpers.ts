@@ -1,13 +1,6 @@
-export function formatCurrency(amount: number, currency: string): string {
-    const formatter = new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: currency,
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-    });
+import { formatCurrency } from "@/lib/utils"
 
-    return formatter.format(amount);
-}
+export { formatCurrency }
 
 export function formatDateInUserTimezone(date: Date, timezone?: string): string {
     const userTimezone = timezone || 'America/Sao_Paulo';

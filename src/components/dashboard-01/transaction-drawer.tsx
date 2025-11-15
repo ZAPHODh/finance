@@ -40,6 +40,7 @@ import {
 import { updateRevenue } from "@/app/[locale]/(financial)/dashboard/revenues/actions"
 import { updateExpense } from "@/app/[locale]/(financial)/dashboard/expenses/actions"
 import { toast } from "sonner"
+import { formatCurrency } from "@/lib/utils"
 
 interface Transaction {
   id: string
@@ -149,13 +150,6 @@ export function TransactionDrawer({
   }, [transaction, open])
 
   if (!transaction) return null
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value)
-  }
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("pt-BR", {

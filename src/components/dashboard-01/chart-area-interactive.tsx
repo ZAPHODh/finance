@@ -28,6 +28,7 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
+import { formatCurrency } from "@/lib/utils"
 
 const chartConfig = {
   visitors: {
@@ -76,15 +77,6 @@ export function ChartAreaInteractive({ data }: ChartAreaInteractiveProps) {
       return itemDate >= startDate
     })
   }, [data, timeRange])
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value)
-  }
 
   return (
     <Card className="@container/card">

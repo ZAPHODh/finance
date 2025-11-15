@@ -7,45 +7,22 @@ import { cacheWithTag, CacheTags } from "@/lib/server/cache"
 import {
   startOfToday,
   endOfToday,
+  startOfDay,
+  endOfDay,
   startOfWeek,
   endOfWeek,
   startOfMonth,
   endOfMonth,
-  subDays
+  subDays,
+  subMonths,
+  subWeeks,
+  differenceInDays
 } from "date-fns"
 import type { DashboardFilters } from "@/hooks/use-dashboard-query-filters"
+import { calculateGrowth, calculateEfficiencyMetrics, calculatePaymentFees } from "@/lib/analytics/metrics"
+import { getDateRange, getPreviousDateRange } from "@/lib/utils"
 
-function getDateRange(period: string = "thisMonth") {
-  const now = new Date()
 
-  switch (period) {
-    case "today":
-      return {
-        start: startOfToday(),
-        end: endOfToday(),
-      }
-    case "thisWeek":
-      return {
-        start: startOfWeek(now, { weekStartsOn: 1 }),
-        end: endOfWeek(now, { weekStartsOn: 1 }),
-      }
-    case "thisMonth":
-      return {
-        start: startOfMonth(now),
-        end: endOfMonth(now),
-      }
-    case "last30Days":
-      return {
-        start: subDays(startOfToday(), 30),
-        end: endOfToday(),
-      }
-    default:
-      return {
-        start: startOfMonth(now),
-        end: endOfMonth(now),
-      }
-  }
-}
 
 async function getDashboardDataUncached(userId: string, filters: DashboardFilters) {
   const { start, end } = getDateRange(filters.period)
@@ -117,6 +94,98 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
   const totalHours = [...revenues, ...workLogs].reduce((sum, item) => {
     return sum + ('hoursWorked' in item ? item.hoursWorked || 0 : 0)
   }, 0)
+
+  const previousDateRange = getPreviousDateRange(filters.period)
+  const previousDateFilter = {
+    gte: previousDateRange.start,
+    lte: previousDateRange.end,
+  }
+
+  const [previousRevenues, previousExpenses, previousWorkLogs] = await Promise.all([
+    prisma.revenue.findMany({
+      where: {
+        date: previousDateFilter,
+        ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
+        ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
+        ...(filters.platformId && filters.platformId !== "all" && {
+          platforms: { some: { platformId: filters.platformId } }
+        }),
+        OR: [
+          { driver: { userId: userId } },
+          { platforms: { some: { platform: { userId: userId } } } }
+        ],
+      },
+      include: {
+        paymentMethod: true,
+      },
+    }),
+    prisma.expense.findMany({
+      where: {
+        date: previousDateFilter,
+        ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
+        ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
+        expenseType: {
+          userId: userId,
+        },
+      },
+    }),
+    prisma.workLog.findMany({
+      where: {
+        date: previousDateFilter,
+        ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
+        ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
+        driver: {
+          userId: userId,
+        },
+      },
+    }),
+  ])
+
+  const previousTotalRevenue = previousRevenues.reduce((sum, r) => sum + r.amount, 0)
+  const previousTotalExpenses = previousExpenses.reduce((sum, e) => sum + e.amount, 0)
+  const previousNetProfit = previousTotalRevenue - previousTotalExpenses
+  const previousTotalKm = [...previousRevenues, ...previousWorkLogs].reduce((sum, item) => {
+    return sum + (item.kmDriven || 0)
+  }, 0)
+  const previousTotalHours = [...previousRevenues, ...previousWorkLogs].reduce((sum, item) => {
+    return sum + ('hoursWorked' in item ? item.hoursWorked || 0 : 0)
+  }, 0)
+
+  const growth = {
+    revenue: calculateGrowth(totalRevenue, previousTotalRevenue),
+    expenses: calculateGrowth(totalExpenses, previousTotalExpenses),
+    profit: calculateGrowth(netProfit, previousNetProfit),
+    km: calculateGrowth(totalKm, previousTotalKm),
+    hours: calculateGrowth(totalHours, previousTotalHours),
+  }
+
+  const efficiencyMetrics = calculateEfficiencyMetrics(
+    totalRevenue,
+    totalExpenses,
+    totalKm,
+    totalHours,
+    revenues.length
+  )
+
+  const revenuesWithPaymentMethod = await prisma.revenue.findMany({
+    where: {
+      date: dateFilter,
+      ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
+      ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
+      ...(filters.platformId && filters.platformId !== "all" && {
+        platforms: { some: { platformId: filters.platformId } }
+      }),
+      OR: [
+        { driver: { userId: userId } },
+        { platforms: { some: { platform: { userId: userId } } } }
+      ],
+    },
+    include: {
+      paymentMethod: true,
+    },
+  })
+
+  const paymentFees = calculatePaymentFees(revenuesWithPaymentMethod)
 
 
   const revenueByPlatform = revenues.reduce((acc, r) => {
@@ -236,6 +305,9 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
       totalKm,
       totalHours,
     },
+    growth,
+    efficiencyMetrics,
+    paymentFees,
     breakdowns: {
       revenueByPlatform: Object.entries(revenueByPlatform)
         .map(([name, value]) => ({ name, value, percentage: (value / totalRevenue) * 100 }))

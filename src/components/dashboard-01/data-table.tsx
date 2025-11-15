@@ -72,6 +72,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { TransactionDrawer } from "./transaction-drawer"
 import { useScopedI18n } from "@/locales/client"
+import { formatCurrency } from "@/lib/utils"
 
 interface Transaction {
   id: string
@@ -173,13 +174,6 @@ export function DataTable({ data }: DataTableProps) {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   )
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value)
-  }
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("pt-BR", {

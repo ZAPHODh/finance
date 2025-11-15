@@ -15,6 +15,7 @@ import { AmountRangeFilter } from '@/components/ui/filters/amount-range-filter';
 import { MultiSelectFilter } from '@/components/ui/filters/multi-select-filter';
 import { ActiveFilterBadges, ActiveFilter } from '@/components/ui/filters/active-filter-badges';
 import { DateRange } from 'react-day-picker';
+import { formatCurrency } from '@/lib/utils';
 
 type ExpenseWithRelations = {
   id: string;
@@ -111,13 +112,6 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
       }
     });
   }
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(amount);
-  };
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString('pt-BR');
