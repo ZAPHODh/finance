@@ -21,6 +21,14 @@ interface OnboardingWizardProps {
   locale: string;
 }
 
+const INITIAL_ONBOARDING_VALUES = {
+  platforms: [] as string[],
+  drivers: [] as Driver[],
+  vehicles: [] as Vehicle[],
+  expenseTypes: [] as string[],
+  paymentMethods: [] as string[],
+};
+
 export function OnboardingWizard({ locale }: OnboardingWizardProps) {
   const router = useRouter();
   const t = useScopedI18n('ui.onboarding');
@@ -29,13 +37,7 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
   const [currentStep, setCurrentStep] = useState(0);
 
   const form = useForm({
-    defaultValues: {
-      platforms: [] as string[],
-      drivers: [] as Driver[],
-      vehicles: [] as Vehicle[],
-      expenseTypes: [] as string[],
-      paymentMethods: [] as string[],
-    },
+    defaultValues: INITIAL_ONBOARDING_VALUES,
     onSubmit: async ({ value }) => {
       startTransition(async () => {
         try {
@@ -61,6 +63,9 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
       });
     },
   });
+
+  // Subscribe to form state to ensure it persists across re-renders
+  const formState = form.useStore((state) => state.values);
 
   const steps = [
     { key: 'welcome', title: t('steps.welcome') },

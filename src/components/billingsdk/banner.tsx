@@ -178,7 +178,7 @@ export function Banner({
           wrapper:
             "relative container mx-auto flex flex-col sm:flex-row md:items-start items-center justify-between px-3 sm:px-4 py-2 sm:py-3 gap-2 sm:gap-4",
           content:
-             "flex flex-col text-center sm:text-left sm:flex-row md:items-start items-center gap-2 w-full",
+            "flex flex-col text-center sm:text-left sm:flex-row md:items-start items-center gap-2 w-full",
           title: hasGradient
             ? "text-sm font-medium text-foreground leading-tight"
             : "text-sm font-medium text-primary-foreground leading-tight",
@@ -186,7 +186,7 @@ export function Banner({
             ? "text-xs text-foreground/80"
             : "text-xs text-primary-foreground/80",
           actions:
-           "flex items-center justify-center md:justify-start gap-2 sm:self-auto pr-12",
+            "flex items-center justify-center md:justify-start gap-2 sm:self-auto pr-12",
         };
     }
   };
@@ -196,13 +196,13 @@ export function Banner({
   const getGradientBackground = () => {
     if (!gradientColors || gradientColors.length === 0) return null;
 
-    // Use the exact gradient from the example or custom colors with proper spacing
+
     let gradientStops;
     if (gradientColors.length === 4) {
-      // Match the original example exactly
+
       gradientStops = `${gradientColors[0]} 0%, ${gradientColors[1]} 12.5%, ${gradientColors[2]} 25%, ${gradientColors[3]} 37.5%, ${gradientColors[0]} 50%`;
     } else {
-      // For other numbers of colors, use equal spacing
+
       gradientStops = gradientColors
         .map((color, index) => {
           const percentage = (index / gradientColors.length) * 100;
@@ -211,7 +211,6 @@ export function Banner({
         .join(", ");
     }
 
-    // Use consistent filter for better visibility
     const filterValue = "saturate(1.8) brightness(1.2)";
 
     return (
@@ -257,7 +256,6 @@ export function Banner({
         >
           {getGradientBackground()}
           <div className={styles.wrapper}>
-            {/* Content */}
             <div className={styles.content}>
               <div
                 className={
@@ -273,7 +271,6 @@ export function Banner({
               </div>
             </div>
 
-            {/* Actions */}
             <div className={styles.actions}>
               {buttonText && variant !== "minimal" && (
                 <Button
@@ -290,7 +287,6 @@ export function Banner({
               )}
             </div>
 
-            {/* Close button (always top-right) */}
             {dismissable && (
               <Button
                 variant="ghost"
@@ -301,25 +297,25 @@ export function Banner({
                   gradientColors && gradientColors.length > 0
                     ? "hover:bg-foreground/20 text-foreground"
                     : variant === "default" &&
-                        "hover:bg-primary-foreground/20 text-primary-foreground",
+                    "hover:bg-primary-foreground/20 text-primary-foreground",
                   variant === "popup" &&
-                    !gradientColors &&
-                    "hover:bg-accent text-popover-foreground",
+                  !gradientColors &&
+                  "hover:bg-accent text-popover-foreground",
                   variant === "minimal" &&
-                    !gradientColors &&
-                    "hover:bg-accent text-card-foreground",
+                  !gradientColors &&
+                  "hover:bg-accent text-card-foreground",
                   variant === "warning" &&
-                    !gradientColors &&
-                    "hover:bg-yellow-200 dark:hover:bg-yellow-800 text-yellow-800 dark:text-yellow-200",
+                  !gradientColors &&
+                  "hover:bg-yellow-200 dark:hover:bg-yellow-800 text-yellow-800 dark:text-yellow-200",
                   variant === "success" &&
-                    !gradientColors &&
-                    "hover:bg-green-200 dark:hover:bg-green-800 text-green-800 dark:text-green-200",
+                  !gradientColors &&
+                  "hover:bg-green-200 dark:hover:bg-green-800 text-green-800 dark:text-green-200",
                   variant === "info" &&
-                    !gradientColors &&
-                    "hover:bg-blue-200 dark:hover:bg-blue-800 text-blue-800 dark:text-blue-200",
+                  !gradientColors &&
+                  "hover:bg-blue-200 dark:hover:bg-blue-800 text-blue-800 dark:text-blue-200",
                   variant === "announcement" &&
-                    !gradientColors &&
-                    "hover:bg-purple-200 dark:hover:bg-purple-800 text-purple-800 dark:text-purple-200"
+                  !gradientColors &&
+                  "hover:bg-purple-200 dark:hover:bg-purple-800 text-purple-800 dark:text-purple-200"
                 )}
               >
                 <X className="h-4 w-4" />
@@ -333,7 +329,6 @@ export function Banner({
   );
 }
 
-// Add CSS keyframes for the moving banner animation
 if (typeof document !== "undefined") {
   const styleSheet = document.createElement("style");
   styleSheet.textContent = `
