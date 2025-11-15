@@ -1,6 +1,11 @@
 export default {
     title: 'Dashboard',
     overview: 'Overview',
+    upgradeBanner: {
+        title: '🚀 Unlock Premium Features',
+        description: 'Upgrade to Pro for unlimited drivers, vehicles, and advanced analytics',
+        buttonText: 'Upgrade Now',
+    },
     filters: {
         period: 'Period',
         driver: 'Driver',

@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { getScopedI18n } from "@/locales/server";
+import { getUserSubscriptionPlan } from "@/lib/server/payment";
+import { UpgradeBanner } from "@/components/dashboard/upgrade-banner";
 
 export default async function FinancialLayout({
   children,
@@ -38,6 +40,10 @@ export default async function FinancialLayout({
 }) {
   const { user } = await getCurrentSession()
   if (!user) redirect('/login')
+
+  const subscriptionPlan = await getUserSubscriptionPlan(user.id)
+
+
   const tDashboard = await getScopedI18n("dashboard")
   const tDaily = await getScopedI18n("financial.dailyEntry")
   return (
@@ -74,6 +80,7 @@ export default async function FinancialLayout({
               </Button>
             }
           />
+          {!subscriptionPlan.isPro && <UpgradeBanner />}
           {children}
           {driverDialog}
           {vehicleDialog}
