@@ -1,5 +1,6 @@
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { redirect } from "next/navigation"
+import { connection } from "next/server"
 import { getDashboardData, getDashboardFilterOptions } from "./actions"
 import { SectionCards } from "@/components/dashboard-01/section-cards"
 import { ChartAreaInteractive } from "@/components/dashboard-01/chart-area-interactive"
@@ -18,6 +19,8 @@ interface DashboardPageProps {
 }
 
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
+  await connection()
+
   const { user } = await getCurrentSession()
   if (!user) redirect("/login")
   if (!user.hasCompletedOnboarding) redirect("/onboarding")
@@ -46,12 +49,12 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   return (
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-2">
-        <DashboardFilters
-          drivers={filterOptions.drivers}
-          vehicles={filterOptions.vehicles}
-          platforms={filterOptions.platforms}
-        />
-        <div className="flex flex-col gap-4 pb-4 md:gap-6 md:pb-6">
+        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+          <DashboardFilters
+            drivers={filterOptions.drivers}
+            vehicles={filterOptions.vehicles}
+            platforms={filterOptions.platforms}
+          />
           <SectionCards
             kpis={dashboardData.kpis}
             trends={hasPeriodComparisons ? dashboardData.growth : undefined}

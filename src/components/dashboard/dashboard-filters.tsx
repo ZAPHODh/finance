@@ -143,7 +143,7 @@ export function DashboardFilters({
   return (
     <>
       {/* Mobile Accordion - visible only on small screens */}
-      <div className="px-4 py-4 md:hidden lg:px-6">
+      <div className="px-4 md:hidden lg:px-6">
         <Accordion type="single" collapsible defaultValue="filters">
           <AccordionItem value="filters" className="border-none">
             <AccordionTrigger className="hover:no-underline">
@@ -175,7 +175,7 @@ export function DashboardFilters({
       </div>
 
       {/* Desktop Layout - visible only on md and larger screens */}
-      <div className="hidden flex-col gap-4 px-4 py-4 md:flex lg:px-6">
+      <div className="hidden flex-col gap-4 px-4 md:flex lg:px-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold">{t("filters")}</h2>

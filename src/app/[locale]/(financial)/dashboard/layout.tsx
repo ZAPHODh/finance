@@ -43,7 +43,6 @@ export default async function FinancialLayout({
 
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
 
-
   const tDashboard = await getScopedI18n("dashboard")
   const tDaily = await getScopedI18n("financial.dailyEntry")
   return (
@@ -58,41 +57,39 @@ export default async function FinancialLayout({
       <KeyboardShortcuts />
       <AppSidebar user={user} searchComponent={<SearchButton />} variant="inset" />
       <SidebarInset>
-        <div className="flex flex-1 flex-col">
-          <SiteHeader
-            title={tDashboard("title")}
-            mobileActions={
-              <QuickActionsWrapper
-                labels={{
-                  newDailyEntry: tDaily("new"),
-                  repeatLast: tDaily("repeatLast"),
-                  noLastEntry: tDaily("noLastEntry"),
-                  loadingLastEntry: tDaily("loadingLastEntry"),
-                }}
-              />
-            }
-            actions={
-              <Button asChild size="sm" variant="default">
-                <Link href="/dashboard/daily-entry/new">
-                  <Plus className="h-4 w-4 mr-1" />
-                  {tDaily("new")}
-                </Link>
-              </Button>
-            }
-          />
-          {!subscriptionPlan.isPro && <UpgradeBanner />}
-          {children}
-          {driverDialog}
-          {vehicleDialog}
-          {platformDialog}
-          {expenseTypeDialog}
-          {paymentMethodDialog}
-          {expenseDialog}
-          {revenueDialog}
-          {budgetDialog}
-          {goalDialog}
-          {dailyEntryDialog}
-        </div>
+        <SiteHeader
+          title={tDashboard("title")}
+          mobileActions={
+            <QuickActionsWrapper
+              labels={{
+                newDailyEntry: tDaily("new"),
+                repeatLast: tDaily("repeatLast"),
+                noLastEntry: tDaily("noLastEntry"),
+                loadingLastEntry: tDaily("loadingLastEntry"),
+              }}
+            />
+          }
+          actions={
+            <Button asChild size="sm" variant="default">
+              <Link href="/dashboard/daily-entry/new">
+                <Plus className="h-4 w-4 mr-1" />
+                {tDaily("new")}
+              </Link>
+            </Button>
+          }
+        />
+        {!subscriptionPlan.isPro && <UpgradeBanner />}
+        {children}
+        {driverDialog}
+        {vehicleDialog}
+        {platformDialog}
+        {expenseTypeDialog}
+        {paymentMethodDialog}
+        {expenseDialog}
+        {revenueDialog}
+        {budgetDialog}
+        {goalDialog}
+        {dailyEntryDialog}
       </SidebarInset>
     </SidebarProvider>
   );

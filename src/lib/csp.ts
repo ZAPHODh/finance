@@ -15,16 +15,12 @@ export function generateNonce(): string {
 export function buildCSPHeader(nonce: string, isDevelopment: boolean = false): string {
   const directives: Record<string, string[]> = {
     'default-src': ["'self'"],
-    'script-src': [
-      "'self'",
-      `'nonce-${nonce}'`,
-      ...(isDevelopment ? ["'unsafe-eval'"] : []),
-    ],
-    'style-src': [
-      "'self'",
-      `'nonce-${nonce}'`,
-      "'unsafe-hashes'",
-    ],
+    'script-src': isDevelopment
+      ? ["'self'", "'unsafe-eval'", "'unsafe-inline'"]
+      : ["'self'", `'nonce-${nonce}'`],
+    'style-src': isDevelopment
+      ? ["'self'", "'unsafe-inline'"]
+      : ["'self'", `'nonce-${nonce}'`, "'unsafe-hashes'"],
     'img-src': [
       "'self'",
       'data:',
