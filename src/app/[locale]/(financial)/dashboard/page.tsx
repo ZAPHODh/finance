@@ -1,6 +1,5 @@
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { redirect } from "next/navigation"
-import { connection } from "next/server"
 import { getDashboardData, getDashboardFilterOptions } from "./actions"
 import { SectionCards } from "@/components/dashboard-01/section-cards"
 import { ChartAreaInteractive } from "@/components/dashboard-01/chart-area-interactive"
@@ -19,8 +18,6 @@ interface DashboardPageProps {
 }
 
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
-  await connection()
-
   const { user } = await getCurrentSession()
   if (!user) redirect("/login")
   if (!user.hasCompletedOnboarding) redirect("/onboarding")
