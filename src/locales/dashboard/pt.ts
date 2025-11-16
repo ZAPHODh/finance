@@ -2,7 +2,7 @@ export default {
     title: 'Painel',
     overview: 'Visão Geral',
     upgradeBanner: {
-        title: '🚀 Desbloqueie Recursos Premium',
+        title: 'Desbloqueie Recursos Premium',
         description: 'Atualize para Pro para motoristas ilimitados, veículos e análises avançadas',
         buttonText: 'Atualizar Agora',
     },
