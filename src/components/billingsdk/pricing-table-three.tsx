@@ -373,7 +373,7 @@ export function PricingTableThree({ className, plans, showFooter, footerText, fo
             <p className={cn(footerTextVariants({ variant }))}>{footerText || t('footerText')}</p>
             <Button
               className="bg-secondary hover:bg-secondary/80 text-secondary-foreground px-6"
-              onClick={onFooterButtonClick}
+              onClick={onFooterButtonClick || (() => router.push('/contact'))}
             >
               {footerButtonText || t('footerButtonText')}
             </Button>

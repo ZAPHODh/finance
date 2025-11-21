@@ -19,11 +19,6 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    sri: {
-      algorithm: 'sha256',
-    },
-  },
   async headers() {
     return [
       {

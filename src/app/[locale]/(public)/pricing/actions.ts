@@ -4,7 +4,7 @@ import { cookies } from "next/headers"
 import { siteConfig } from "@/config/site"
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { getUserSubscriptionPlan, stripe } from "@/lib/server/payment"
-import { getStripePriceId, getCurrencyFromLocale } from "@/lib/pricing"
+import { getStripePriceId, getCurrencyFromLocale } from "@/lib/server/pricing"
 
 export async function createCheckoutSession(
   plan: "simple" | "pro",
@@ -32,8 +32,8 @@ export async function createCheckoutSession(
       return { url: stripeSession.url, error: null }
     }
 
-    const currency = getCurrencyFromLocale(locale)
-    const stripePriceId = getStripePriceId(plan, currency, interval)
+    const currency = await getCurrencyFromLocale(locale)
+    const stripePriceId = await getStripePriceId(plan, currency, interval)
 
     const stripeSession = await stripe.checkout.sessions.create({
       success_url: billingUrl,

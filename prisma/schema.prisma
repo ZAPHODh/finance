@@ -628,4 +628,14 @@ model Reminder {
   @@index([isActive])
 }
 
+model StripeWebhookEvent {
+  id            String   @id @default(cuid())
+  stripeEventId String   @unique
+  type          String
+  processed     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  @@index([stripeEventId])
+  @@index([processed])
+}
 

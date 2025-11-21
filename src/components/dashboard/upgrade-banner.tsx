@@ -4,10 +4,10 @@ import { Banner } from "@/components/billingsdk/banner";
 import { useScopedI18n } from "@/locales/client";
 
 export const gradientColors = [
-  "rgba(0,149,255,0.56)",
-  "rgba(231,77,255,0.77)",
-  "rgba(255,0,0,0.73)",
-  "rgba(131,255,166,0.66)",
+  "oklch(0.6716 0.1368 48.5130)",
+  "oklch(0.5360 0.0398 196.0280)",
+  "oklch(0.6716 0.1368 48.5130)",
+  "oklch(0.5360 0.0398 196.0280)",
 ];
 
 export function UpgradeBanner() {

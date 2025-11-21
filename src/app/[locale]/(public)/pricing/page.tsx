@@ -1,16 +1,16 @@
-'use client';
-
 import Nav from "@/components/shared/nav";
 import FooterSection from "@/components/footer";
 import { PricingTableThree } from "@/components/billingsdk/pricing-table-three";
-import { plans } from "@/lib/billingsdk-config";
-import { useScopedI18n } from "@/locales/client";
-import { useRouter } from "next/navigation";
+import { getCurrentLocale, getScopedI18n } from "@/locales/server";
+import { getPlanConfigs } from "@/config/subscription";
 
-export default function PricingPage() {
-  const t = useScopedI18n("marketing.pricing");
-  const router = useRouter();
 
+
+export default async function PricingPage() {
+  const t = await getScopedI18n("marketing.pricing");
+  const locale = await getCurrentLocale()
+  const planConfigs = await getPlanConfigs(locale)
+  const plans = [planConfigs.free, planConfigs.simple, planConfigs.pro]
   return (
     <>
       <Nav />
@@ -24,9 +24,6 @@ export default function PricingPage() {
         <PricingTableThree
           plans={plans}
           showFooter={true}
-          onFooterButtonClick={() => {
-            router.push('/contact');
-          }}
         />
       </main>
       <FooterSection />

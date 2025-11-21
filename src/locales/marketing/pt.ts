@@ -11,6 +11,10 @@ export default {
         modern: 'Moderno',
         customizable: '100% Personalizável',
     },
+    hero2: {
+        title: 'Interface pensada para você.',
+        subtitle: 'Nossa plataforma oferece uma interface intuitiva e fácil de usar, projetada para simplificar suas finanças. Com painéis claros e ferramentas acessíveis, você pode gerenciar suas despesas, acompanhar seus investimentos e planejar seu futuro.',
+    },
     features: {
         title: 'Feito para Motoristas',
         subtitle: 'Rastreamento financeiro e análises abrangentes projetadas especificamente para motoristas e profissionais de transporte.',
@@ -527,5 +531,27 @@ export default {
                 description: 'Ferramentas de nível empresarial com acesso de equipe, integração de API e análises avançadas',
             },
         },
+    },
+    seo: {
+        keywords: [
+            "controle financeiro",
+            "gestão financeira para motoristas",
+            "controle de despesas motorista",
+            "controle de receitas motorista",
+            "app para motoristas de aplicativo",
+            "gestão uber",
+            "gestão 99",
+            "gestão cabify",
+            "finanças motorista",
+            "relatório financeiro motorista",
+            "controle de combustível",
+            "controle de quilometragem",
+            "lucro motorista",
+            "despesas veículo",
+            "orçamento motorista",
+            "metas financeiras",
+            "dashboard financeiro",
+            "controle de ganhos",
+        ],
     },
 } as const

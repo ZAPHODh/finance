@@ -5,10 +5,10 @@ import { prisma } from "@/lib/server/db";
 import { stripe } from "@/lib/server/payment";
 import { simplePlan, proPlan } from "@/config/subscription";
 import { type PlanType } from "@prisma/client";
-import { getPlanTypeFromPriceId as getPlanTypeFromPrice } from "@/lib/pricing";
+import { getPlanTypeFromPriceId as getPlanTypeFromPrice } from "@/lib/server/pricing";
 
-function getPlanTypeFromPriceId(priceId: string): PlanType {
-  return getPlanTypeFromPrice(priceId);
+async function getPlanTypeFromPriceId(priceId: string): Promise<PlanType> {
+  return await getPlanTypeFromPrice(priceId);
 }
 
 export async function POST(req: NextRequest) {
@@ -36,6 +36,29 @@ export async function POST(req: NextRequest) {
 
   console.log(`Processing webhook: ${event.id} - ${event.type}`);
 
+  // Check if event was already processed (idempotency)
+  const existingEvent = await prisma.stripeWebhookEvent.findUnique({
+    where: { stripeEventId: event.id },
+  });
+
+  if (existingEvent?.processed) {
+    console.log(`Event ${event.id} already processed, skipping`);
+    return new Response(null, { status: 200 });
+  }
+
+  // Create or update event record
+  await prisma.stripeWebhookEvent.upsert({
+    where: { stripeEventId: event.id },
+    create: {
+      stripeEventId: event.id,
+      type: event.type,
+      processed: false,
+    },
+    update: {
+      type: event.type,
+    },
+  });
+
   switch (event.type) {
     case "checkout.session.completed":
     case "checkout.session.async_payment_succeeded": {
@@ -54,24 +77,26 @@ export async function POST(req: NextRequest) {
       const subscription = await stripe.subscriptions.retrieve(
         session.subscription as string,
         { expand: ['items.data.price'] }
-      ) as any;
+      );
 
-      const priceId = subscription.items.data[0]?.price?.id;
+      const priceId = typeof subscription.items.data[0]?.price === 'string'
+        ? subscription.items.data[0].price
+        : subscription.items.data[0]?.price?.id;
       if (!priceId) {
         console.error("No price ID found in subscription");
         return new Response("Invalid subscription data", { status: 400 });
       }
 
-      const planType = getPlanTypeFromPriceId(priceId);
+      const planType = await getPlanTypeFromPriceId(priceId);
 
       try {
         await prisma.user.update({
           where: { id: session.metadata.userId },
           data: {
             stripeSubscriptionId: subscription.id,
-            stripeCustomerId: subscription.customer as string,
+            stripeCustomerId: typeof subscription.customer === 'string' ? subscription.customer : subscription.customer?.id,
             stripePriceId: priceId,
-            stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            stripeCurrentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
             planType,
           },
         });
@@ -92,28 +117,30 @@ export async function POST(req: NextRequest) {
 
       if (!subscriptionId) {
         console.error("No subscription in invoice");
-        break;
+        return new Response("No subscription in invoice", { status: 400 });
       }
 
       const subscription = await stripe.subscriptions.retrieve(
         subscriptionId,
         { expand: ['items.data.price'] }
-      ) as any;
+      );
 
-      const priceId = subscription.items.data[0]?.price?.id;
+      const priceId = typeof subscription.items.data[0]?.price === 'string'
+        ? subscription.items.data[0].price
+        : subscription.items.data[0]?.price?.id;
       if (!priceId) {
         console.error("No price ID found in subscription");
-        break;
+        return new Response("Invalid subscription data", { status: 400 });
       }
 
-      const planType = getPlanTypeFromPriceId(priceId);
+      const planType = await getPlanTypeFromPriceId(priceId);
 
       try {
         await prisma.user.update({
           where: { stripeSubscriptionId: subscription.id },
           data: {
             stripePriceId: priceId,
-            stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            stripeCurrentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
             planType,
           },
         });
@@ -126,7 +153,7 @@ export async function POST(req: NextRequest) {
     }
 
     case "customer.subscription.updated": {
-      const subscription = event.data.object as any;
+      const subscription = event.data.object as Stripe.Subscription;
 
       const priceItem = subscription.items.data[0];
       const priceId = typeof priceItem?.price === 'string'
@@ -135,17 +162,17 @@ export async function POST(req: NextRequest) {
 
       if (!priceId) {
         console.error("No price ID found in subscription update");
-        break;
+        return new Response("Invalid subscription data", { status: 400 });
       }
 
-      const planType = getPlanTypeFromPriceId(priceId);
+      const planType = await getPlanTypeFromPriceId(priceId);
 
       try {
         await prisma.user.update({
           where: { stripeSubscriptionId: subscription.id },
           data: {
             stripePriceId: priceId,
-            stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            stripeCurrentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
             planType,
           },
         });
@@ -181,6 +208,12 @@ export async function POST(req: NextRequest) {
     default:
       console.log(`Unhandled event type: ${event.type}`);
   }
+
+  // Mark event as processed
+  await prisma.stripeWebhookEvent.update({
+    where: { stripeEventId: event.id },
+    data: { processed: true },
+  });
 
   return new Response(null, { status: 200 });
 }

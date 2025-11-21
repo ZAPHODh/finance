@@ -3,9 +3,10 @@ import { freePlan, proPlan, simplePlan, PLAN_LIMITS, type PlanLimits } from "@/c
 import { prisma } from "@/lib/server/db";
 import { type UserSubscriptionPlan } from "@/types";
 import { type PlanType } from "@prisma/client";
+import { getPlanTypeFromPriceId } from "@/lib/server/pricing";
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-    apiVersion: "2025-09-30.clover",
+    apiVersion: "2025-11-17.clover",
     typescript: true,
 });
 
@@ -34,9 +35,11 @@ export async function getUserSubscriptionPlan(
 
     let plan = freePlan;
     if (isActive && user.stripePriceId) {
-        if (user.stripePriceId === proPlan.stripePriceId) {
+        const planType = await getPlanTypeFromPriceId(user.stripePriceId);
+
+        if (planType === "PRO") {
             plan = proPlan;
-        } else if (user.stripePriceId === simplePlan.stripePriceId) {
+        } else if (planType === "SIMPLE") {
             plan = simplePlan;
         }
     }

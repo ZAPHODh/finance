@@ -1,7 +1,7 @@
 import { type SubscriptionPlan } from "@/types";
 import { type Plan } from "@/types";
 import { type PlanType } from "@prisma/client";
-import { getPricingForLocale } from "@/lib/pricing";
+import { getPricingForLocale } from "@/lib/server/pricing";
 
 
 export interface PlanLimits {
@@ -139,12 +139,12 @@ export const proPlan: SubscriptionPlan = {
     stripePriceId: process.env.STRIPE_PRO_PLAN_ID || process.env.STRIPE_PRO_BRL_MONTHLY_ID as string,
 };
 
-export function getPlanConfigs(locale: string): {
+export async function getPlanConfigs(locale: string): Promise<{
     free: Plan;
     simple: Plan;
     pro: Plan;
-} {
-    const pricing = getPricingForLocale(locale);
+}> {
+    const pricing = await getPricingForLocale(locale);
 
     return {
         free: {
@@ -222,6 +222,8 @@ export function getPlanConfigs(locale: string): {
     };
 }
 
-export const freePlanConfig: Plan = getPlanConfigs("pt").free;
-export const simplePlanConfig: Plan = getPlanConfigs("pt").simple;
-export const proPlanConfig: Plan = getPlanConfigs("pt").pro;
+// Helper to get default plan configs (using "pt" as default locale)
+// For dynamic locale-based configs, use getPlanConfigs(locale) directly
+export async function getDefaultPlanConfigs() {
+    return await getPlanConfigs("pt");
+}

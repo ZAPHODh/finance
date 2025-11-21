@@ -11,6 +11,10 @@ export default {
         modern: 'Modern',
         customizable: '100% Customizable',
     },
+    hero2: {
+        title: 'Interface designed for you.',
+        subtitle: 'Our platform offers an intuitive and easy-to-use interface, designed to simplify your finances. With clear dashboards and accessible tools, you can manage your expenses, track your investments, and plan your future.',
+    },
     features: {
         title: 'Built for Drivers',
         subtitle: 'Comprehensive financial tracking and analytics designed specifically for drivers and transportation professionals.',
@@ -526,5 +530,26 @@ export default {
                 description: 'Enterprise-grade tools with team access, API integration, and advanced analytics',
             },
         },
+    },
+    seo: {
+        keywords: [
+            "financial control",
+            "financial management for drivers",
+            "driver expense tracking",
+            "driver income tracking",
+            "rideshare driver app",
+            "uber management",
+            "lyft management",
+            "driver finances",
+            "driver financial report",
+            "fuel tracking",
+            "mileage tracking",
+            "driver profit",
+            "vehicle expenses",
+            "driver budget",
+            "financial goals",
+            "financial dashboard",
+            "earnings tracking",
+        ],
     },
 } as const
