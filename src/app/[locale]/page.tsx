@@ -8,6 +8,7 @@ import Nav from "@/components/shared/nav";
 import FooterSection from "@/components/footer";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
+import HeroSection2 from "@/components/hero-section-2";
 export default async function Home() {
   const { user } = await getCurrentSession()
   if (user) redirect('/dashboard')
@@ -15,8 +16,9 @@ export default async function Home() {
     <>
       <Nav />
       <HeroSection />
+      <HeroSection2 />
       <Features />
-      <Pricing />
+      {/* <Pricing /> */}
       <FAQs />
       <FooterSection />
     </>
