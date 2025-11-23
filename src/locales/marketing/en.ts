@@ -119,7 +119,7 @@ export default {
         },
         q8: {
             question: 'Can I use dive into drive on mobile?',
-            answer: 'Yes! DriveFinance is fully responsive and works on all devices. We also offer a progressive web app (PWA) that you can install on your phone for a native app-like experience.',
+            answer: 'Yes! Dive into Drive is fully responsive and works on all devices. We also offer a progressive web app (PWA) that you can install on your phone for a native app-like experience.',
         },
     },
     footer: {
@@ -172,11 +172,6 @@ export default {
         feedback: {
             title: 'Feedback and Suggestions',
             description: 'Your opinion is very important to us! If you have suggestions for improvements or new features, send to',
-        },
-        business: {
-            title: 'Business',
-            companyName: 'Company Name: {legalName}',
-            cnpj: 'CNPJ: {cnpj}',
         },
         stillHaveQuestions: 'Still have questions? Contact us!',
         contactSupport: 'Contact support',

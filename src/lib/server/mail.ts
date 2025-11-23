@@ -105,7 +105,7 @@ export const sendBudgetAlert = async ({
     }) as ReactNode;
 
     await resend.emails.send({
-        from: `DriveFinance <no-reply@loqano.com>`,
+        from: `Dive into Drive <no-reply@loqano.com>`,
         to: toMail,
         subject: t('preview', { budgetName, percentage: percentage.toFixed(0) }),
         headers: {
@@ -143,7 +143,7 @@ export const sendGoalAchievement = async ({
     }) as ReactNode;
 
     await resend.emails.send({
-        from: `DriveFinance <no-reply@loqano.com>`,
+        from: `Dive into Drive <no-reply@loqano.com>`,
         to: toMail,
         subject: t('preview', { goalName }),
         headers: {
@@ -187,7 +187,7 @@ export const sendWeeklySummary = async ({
     }) as ReactNode;
 
     await resend.emails.send({
-        from: `DriveFinance <no-reply@loqano.com>`,
+        from: `Dive into Drive <no-reply@loqano.com>`,
         to: toMail,
         subject: t('preview', { weekStart, weekEnd }),
         headers: {
@@ -240,7 +240,7 @@ export const sendMonthlyReport = async ({
     }) as ReactNode;
 
     await resend.emails.send({
-        from: `DriveFinance <no-reply@loqano.com>`,
+        from: `Dive into Drive <no-reply@loqano.com>`,
         to: toMail,
         subject: t('preview', { month, year }),
         headers: {
@@ -264,7 +264,7 @@ export const sendNewFeatures = async ({
     const temp = NewFeaturesTemp({ userName }) as ReactNode;
 
     await resend.emails.send({
-        from: `DriveFinance <no-reply@loqano.com>`,
+        from: `Dive into Drive <no-reply@loqano.com>`,
         to: toMail,
         subject: t('preview'),
         headers: {
@@ -288,7 +288,7 @@ export const sendTipsAndTricks = async ({
     const temp = TipsAndTricksTemp({ userName }) as ReactNode;
 
     await resend.emails.send({
-        from: `DriveFinance <no-reply@loqano.com>`,
+        from: `Dive into Drive <no-reply@loqano.com>`,
         to: toMail,
         subject: t('preview'),
         headers: {

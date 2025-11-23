@@ -87,14 +87,6 @@ export default function ContactPage() {
               .
             </p>
           </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">{t('business.title')}</h2>
-            <p className="text-muted-foreground">
-              <strong>{t('business.companyName', { legalName: config.company.legalName })}</strong><br />
-              <strong>{t('business.cnpj', { cnpj: config.company.cnpj || '[A ser definido]' })}</strong>
-            </p>
-          </section>
         </div>
       </main>
       <FooterSection />

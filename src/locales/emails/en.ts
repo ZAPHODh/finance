@@ -37,7 +37,7 @@ export default {
         actionMessage: 'Consider reviewing your expenses to stay within budget.',
         button: 'View Budgets',
         closing: 'Best regards,',
-        signature: 'The DriveFinance Team',
+        signature: 'The Dive into Drive Team',
     },
     goalAchievement: {
         preview: 'Congratulations! You achieved your goal: {goalName}',
@@ -50,7 +50,7 @@ export default {
         keepGoingMessage: 'Keep up the great work! How about setting an even more ambitious goal?',
         button: 'View My Goals',
         closing: 'Best regards,',
-        signature: 'The DriveFinance Team',
+        signature: 'The Dive into Drive Team',
     },
     weeklySummary: {
         preview: 'Your weekly summary: {weekStart} - {weekEnd}',
@@ -63,7 +63,7 @@ export default {
         detailsMessage: 'Access your dashboard for more detailed analytics.',
         button: 'View Full Report',
         closing: 'Best regards,',
-        signature: 'The DriveFinance Team',
+        signature: 'The Dive into Drive Team',
     },
     monthlyReport: {
         preview: 'Monthly report for {month} {year}',
@@ -81,10 +81,10 @@ export default {
         detailsMessage: 'Access your dashboard for detailed reports and charts.',
         button: 'View Full Report',
         closing: 'Best regards,',
-        signature: 'The DriveFinance Team',
+        signature: 'The Dive into Drive Team',
     },
     newFeatures: {
-        preview: 'Exciting new features in DriveFinance!',
+        preview: 'Exciting new features in Dive into Drive!',
         title: 'New Features',
         greeting: 'Hi {userName},',
         introMessage: 'We\'re excited to introduce new features that will make your experience even better:',
@@ -103,7 +103,7 @@ export default {
         tryItMessage: 'Try it now!',
         button: 'Explore Features',
         closing: 'Best regards,',
-        signature: 'The DriveFinance Team',
+        signature: 'The Dive into Drive Team',
         unsubscribeMessage: 'You can manage your email preferences in settings.',
     },
     tipsAndTricks: {
@@ -134,7 +134,7 @@ export default {
         feedbackMessage: 'Have any questions or suggestions? We\'d love to hear from you!',
         button: 'Go to Dashboard',
         closing: 'Best regards,',
-        signature: 'The DriveFinance Team',
+        signature: 'The Dive into Drive Team',
         unsubscribeMessage: 'You can manage your email preferences in settings.',
     },
 } as const

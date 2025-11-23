@@ -2,9 +2,6 @@ export const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "";
 
 export interface SiteCompany {
   displayName: string;
-  legalName: string;
-  cnpj?: string;
-  brandName: string;
 }
 
 export interface SiteEmails {
@@ -26,9 +23,6 @@ export interface SiteContact {
 
 export const siteCompany: SiteCompany = {
   displayName: "Dive into Drive",
-  legalName: "DriveFinance Tecnologia Ltda",
-  cnpj: undefined,
-  brandName: "DriveFinance",
 };
 
 export const siteEmails: SiteEmails = {

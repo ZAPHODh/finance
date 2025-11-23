@@ -9,7 +9,7 @@ export default {
         max: 'Máx',
     },
     userSidebar: {
-        brandName: 'DriveFinance',
+        brandName: 'Dive into Drive',
         title: 'Configurações de Usuário',
         account: 'Conta',
         settings: 'Configurações',
@@ -268,7 +268,7 @@ export default {
     },
     help: {
         title: 'Ajuda & Documentação',
-        description: 'Aprenda a usar o DriveFinance de forma eficaz',
+        description: 'Aprenda a usar o Dive into Drive de forma eficaz',
         gettingStarted: {
             title: 'Primeiros Passos',
             description: 'Guia rápido para começar',
@@ -343,7 +343,7 @@ export default {
         newPaymentMethod: 'Nova Forma de Pagamento',
     },
     onboarding: {
-        title: 'Bem-vindo ao DriveFinance',
+        title: 'Bem-vindo ao Dive into Drive',
         subtitle: 'Vamos configurar sua conta',
         steps: {
             welcome: 'Boas-vindas',
@@ -354,7 +354,7 @@ export default {
             paymentMethods: 'Formas de Pagamento',
         },
         welcome: {
-            title: 'Bem-vindo ao DriveFinance!',
+            title: 'Bem-vindo ao Dive into Drive!',
             description: 'Estamos animados para ajudá-lo a gerenciar suas finanças de transporte. Vamos começar configurando sua conta.',
             features: {
                 track: 'Acompanhe despesas e receitas',

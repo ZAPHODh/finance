@@ -119,7 +119,7 @@ export default {
         },
         q8: {
             question: 'Posso usar o dive into drive no celular?',
-            answer: 'Sim! O DriveFinance é totalmente responsivo e funciona em todos os dispositivos. Também oferecemos um aplicativo web progressivo (PWA) que você pode instalar no seu telefone para uma experiência semelhante a um aplicativo nativo.',
+            answer: 'Sim! O Dive into Drive é totalmente responsivo e funciona em todos os dispositivos. Também oferecemos um aplicativo web progressivo (PWA) que você pode instalar no seu telefone para uma experiência semelhante a um aplicativo nativo.',
         },
     },
     footer: {
@@ -173,11 +173,6 @@ export default {
         feedback: {
             title: 'Feedback e Sugestões',
             description: 'Sua opinião é muito importante para nós! Se você tem sugestões de melhorias ou novos recursos, envie para',
-        },
-        business: {
-            title: 'Empresarial',
-            companyName: 'Razão Social: {legalName}',
-            cnpj: 'CNPJ: {cnpj}',
         },
         stillHaveQuestions: 'Ainda tem dúvidas? Entre em contato conosco!',
         contactSupport: 'Falar com o suporte',

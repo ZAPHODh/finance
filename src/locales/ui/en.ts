@@ -9,7 +9,7 @@ export default {
         max: 'Max',
     },
     userSidebar: {
-        brandName: 'DriveFinance',
+        brandName: 'Dive into Drive',
         title: 'User Settings',
         account: 'Account',
         settings: 'Settings',
@@ -268,7 +268,7 @@ export default {
     },
     help: {
         title: 'Help & Documentation',
-        description: 'Learn how to use DriveFinance effectively',
+        description: 'Learn how to use Dive into Drive effectively',
         gettingStarted: {
             title: 'Getting Started',
             description: 'Quick guide to get you up and running',
@@ -343,7 +343,7 @@ export default {
         newPaymentMethod: 'New Payment Method',
     },
     onboarding: {
-        title: 'Welcome to DriveFinance',
+        title: 'Welcome to Dive into Drive',
         subtitle: 'Let\'s set up your account',
         steps: {
             welcome: 'Welcome',
@@ -354,7 +354,7 @@ export default {
             paymentMethods: 'Payment Methods',
         },
         welcome: {
-            title: 'Welcome to DriveFinance!',
+            title: 'Welcome to Dive into Drive!',
             description: 'We\'re excited to help you manage your transportation finances. Let\'s get started by setting up your account.',
             features: {
                 track: 'Track expenses and revenues',

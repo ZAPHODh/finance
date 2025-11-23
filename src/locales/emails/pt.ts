@@ -37,7 +37,7 @@ export default {
         actionMessage: 'Considere revisar seus gastos para manter-se dentro do orçamento.',
         button: 'Ver Orçamentos',
         closing: 'Atenciosamente,',
-        signature: 'A Equipe DriveFinance',
+        signature: 'A Equipe Dive into Drive',
     },
     goalAchievement: {
         preview: 'Parabéns! Você atingiu sua meta: {goalName}',
@@ -50,7 +50,7 @@ export default {
         keepGoingMessage: 'Continue com o ótimo trabalho! Que tal definir uma nova meta ainda mais ambiciosa?',
         button: 'Ver Minhas Metas',
         closing: 'Atenciosamente,',
-        signature: 'A Equipe DriveFinance',
+        signature: 'A Equipe Dive into Drive',
     },
     weeklySummary: {
         preview: 'Seu resumo semanal: {weekStart} - {weekEnd}',
@@ -63,7 +63,7 @@ export default {
         detailsMessage: 'Acesse o painel para ver análises mais detalhadas.',
         button: 'Ver Relatório Completo',
         closing: 'Atenciosamente,',
-        signature: 'A Equipe DriveFinance',
+        signature: 'A Equipe Dive into Drive',
     },
     monthlyReport: {
         preview: 'Relatório mensal de {month} {year}',
@@ -81,10 +81,10 @@ export default {
         detailsMessage: 'Acesse o painel para ver relatórios detalhados e gráficos.',
         button: 'Ver Relatório Completo',
         closing: 'Atenciosamente,',
-        signature: 'A Equipe DriveFinance',
+        signature: 'A Equipe Dive into Drive',
     },
     newFeatures: {
-        preview: 'Novos recursos incríveis no DriveFinance!',
+        preview: 'Novos recursos incríveis no Dive into Drive!',
         title: 'Novos Recursos',
         greeting: 'Olá {userName},',
         introMessage: 'Estamos animados em apresentar novos recursos que vão tornar sua experiência ainda melhor:',
@@ -103,7 +103,7 @@ export default {
         tryItMessage: 'Experimente agora mesmo!',
         button: 'Explorar Recursos',
         closing: 'Atenciosamente,',
-        signature: 'A Equipe DriveFinance',
+        signature: 'A Equipe Dive into Drive',
         unsubscribeMessage: 'Você pode gerenciar suas preferências de e-mail nas configurações.',
     },
     tipsAndTricks: {
@@ -134,7 +134,7 @@ export default {
         feedbackMessage: 'Tem alguma dúvida ou sugestão? Adoraríamos ouvir você!',
         button: 'Acessar Painel',
         closing: 'Atenciosamente,',
-        signature: 'A Equipe DriveFinance',
+        signature: 'A Equipe Dive into Drive',
         unsubscribeMessage: 'Você pode gerenciar suas preferências de e-mail nas configurações.',
     },
 } as const

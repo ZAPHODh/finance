@@ -1,4 +1,4 @@
-# DriveFinance
+# Dive into Drive
 
 A comprehensive financial management platform for transportation and fleet operations. Track expenses, revenues, and performance metrics for drivers and vehicles in one powerful SaaS application.
 
@@ -172,8 +172,8 @@ pnpm start
 ## Support
 
 For questions or issues:
-- Email: support@drivefinance.com
-- Privacy/LGPD: privacy@drivefinance.com
+- Email: notyet@diveintodrive.com
+- Privacy/LGPD: notyet@diveintodrive.com
 
 ## License
 

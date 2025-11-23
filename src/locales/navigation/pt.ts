@@ -10,7 +10,7 @@ export default {
         goToDashboard: 'Ir para Dashboard',
     },
     sidebar: {
-        brandName: 'DriveFinance',
+        brandName: 'Dive into Drive',
         search: 'Pesquisar...',
         searchPlaceholder: 'Pesquisar páginas e itens...',
         expandSidebar: 'Expandir barra lateral',
