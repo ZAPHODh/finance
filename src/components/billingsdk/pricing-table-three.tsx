@@ -153,7 +153,7 @@ export function PricingTableThree({ className, plans, showFooter, footerText, fo
   const t = useScopedI18n('marketing.pricing')
   const router = useRouter()
   const [isAnnually, setIsAnnually] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
 
   async function handlePlanSelect(planId: string, interval: "monthly" | "yearly") {
     if (planId === 'free') {
@@ -162,10 +162,11 @@ export function PricingTableThree({ className, plans, showFooter, footerText, fo
     }
 
     if (planId === 'simple' || planId === 'pro') {
-      setIsLoading(true)
+      setLoadingPlan(planId)
       const result = await createCheckoutSession(planId, interval)
 
       if (result.error === "Unauthorized") {
+        setLoadingPlan(null)
         setCheckoutCookies(planId, interval)
         router.push(`/login?plan=${planId}&interval=${interval}`)
         return
@@ -173,7 +174,7 @@ export function PricingTableThree({ className, plans, showFooter, footerText, fo
 
       if (result.error) {
         toast.error(result.error)
-        setIsLoading(false)
+        setLoadingPlan(null)
         return
       }
 
@@ -360,9 +361,9 @@ export function PricingTableThree({ className, plans, showFooter, footerText, fo
                     : "bg-secondary hover:bg-secondary/80 text-secondary-foreground"
                 )}
                 onClick={() => handlePlanSelect(plan.id, isAnnually ? "yearly" : "monthly")}
-                disabled={isLoading}
+                disabled={loadingPlan !== null}
               >
-                {isLoading ? t('loading') : plan.buttonText}
+                {loadingPlan === plan.id ? t('loading') : plan.buttonText}
               </Button>
             </CardContent>
           </Card>
