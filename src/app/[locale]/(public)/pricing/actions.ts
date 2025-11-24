@@ -5,22 +5,46 @@ import { siteConfig } from "@/config/site"
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { getUserSubscriptionPlan, stripe } from "@/lib/server/payment"
 import { getStripePriceId, getCurrencyFromLocale } from "@/lib/server/pricing"
+import { rateLimitByUser } from "@/lib/server/rate-limit"
 
 export async function createCheckoutSession(
   plan: "simple" | "pro",
   interval: "monthly" | "yearly" = "monthly"
 ) {
+  const validPlans = ['simple', 'pro'] as const
+  const validIntervals = ['monthly', 'yearly'] as const
+
+  if (!validPlans.includes(plan)) {
+    console.error(`Invalid plan attempted: ${plan}`)
+    return { error: "Invalid plan", url: null }
+  }
+
+  if (!validIntervals.includes(interval)) {
+    console.error(`Invalid interval attempted: ${interval}`)
+    return { error: "Invalid interval", url: null }
+  }
+
+  const { user, session } = await getCurrentSession()
+
+  if (!session) {
+    return { error: "Unauthorized", url: null }
+  }
+
+  const rateLimitResult = await rateLimitByUser(user.id, 5, "5 m")
+
+  if (!rateLimitResult.success) {
+    console.warn(`Rate limit exceeded for createCheckoutSession: userId=${user.id}`)
+    return {
+      error: `Too many checkout requests. Please try again in ${rateLimitResult.retryAfter} seconds.`,
+      url: null
+    }
+  }
+
   const cookieStore = await cookies()
   const locale = cookieStore.get("Next-Locale")?.value || "en"
   const billingUrl = siteConfig(locale).url + "/dashboard/billing/"
 
   try {
-    const { user, session } = await getCurrentSession()
-
-    if (!session) {
-      return { error: "Unauthorized", url: null }
-    }
-
     const subscriptionPlan = await getUserSubscriptionPlan(user.id)
 
     if (subscriptionPlan.isPro && subscriptionPlan.stripeCustomerId) {
@@ -60,17 +84,27 @@ export async function createCheckoutSession(
 }
 
 export async function openBillingPortal() {
+  const { user, session } = await getCurrentSession()
+
+  if (!session) {
+    return { error: "Unauthorized", url: null }
+  }
+
+  const rateLimitResult = await rateLimitByUser(user.id, 10, "5 m")
+
+  if (!rateLimitResult.success) {
+    console.warn(`Rate limit exceeded for openBillingPortal: userId=${user.id}`)
+    return {
+      error: `Too many billing portal requests. Please try again in ${rateLimitResult.retryAfter} seconds.`,
+      url: null
+    }
+  }
+
   const cookieStore = await cookies()
   const locale = cookieStore.get("Next-Locale")?.value || "en"
   const billingUrl = siteConfig(locale).url + "/dashboard/billing/"
 
   try {
-    const { user, session } = await getCurrentSession()
-
-    if (!session) {
-      return { error: "Unauthorized", url: null }
-    }
-
     const subscriptionPlan = await getUserSubscriptionPlan(user.id)
 
     if (!subscriptionPlan.stripeCustomerId) {

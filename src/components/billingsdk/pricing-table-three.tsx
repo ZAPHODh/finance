@@ -15,6 +15,7 @@ import { useScopedI18n } from "@/locales/client"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { createCheckoutSession } from "@/app/[locale]/(public)/pricing/actions"
+import { setCheckoutCookies } from "@/lib/checkout-cookies"
 
 const sectionVariants = cva("mt-10 max-w-7xl mx-auto", {
   variants: {
@@ -163,6 +164,12 @@ export function PricingTableThree({ className, plans, showFooter, footerText, fo
     if (planId === 'simple' || planId === 'pro') {
       setIsLoading(true)
       const result = await createCheckoutSession(planId, interval)
+
+      if (result.error === "Unauthorized") {
+        setCheckoutCookies(planId, interval)
+        router.push(`/login?plan=${planId}&interval=${interval}`)
+        return
+      }
 
       if (result.error) {
         toast.error(result.error)

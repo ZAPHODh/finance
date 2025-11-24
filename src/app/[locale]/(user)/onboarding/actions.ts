@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/server/db";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+import { getPostOnboardingCookies, clearPostOnboardingCookies } from "@/lib/checkout-cookies";
 
 export interface OnboardingData {
   platforms: Array<{ name: string; }>;
@@ -135,5 +137,19 @@ export async function completeOnboarding(data: OnboardingData) {
     });
   });
 
-  revalidatePath("/dashboard");
+  const cookieStore = await cookies();
+  const checkoutCookies = await getPostOnboardingCookies(cookieStore);
+
+  let redirectUrl = "/dashboard";
+
+  if (checkoutCookies.plan && (checkoutCookies.plan === 'simple' || checkoutCookies.plan === 'pro')) {
+    const queryParams = new URLSearchParams({ plan: checkoutCookies.plan });
+    if (checkoutCookies.interval) queryParams.append('interval', checkoutCookies.interval);
+    redirectUrl = `/dashboard/billing?${queryParams.toString()}`;
+  }
+
+  await clearPostOnboardingCookies(cookieStore);
+  revalidatePath(redirectUrl);
+
+  return { success: true, redirectUrl };
 }

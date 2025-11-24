@@ -6,6 +6,7 @@ import { setSessionTokenCookie } from "@/lib/server/auth/cookies";
 import { facebook } from "@/lib/server/auth/facebook";
 import { createSession, generateSessionToken } from "@/lib/server/auth/session";
 import { prisma } from "@/lib/server/db";
+import { getCheckoutCookiesServer, clearCheckoutCookiesServer, setPostOnboardingCookies } from "@/lib/checkout-cookies";
 
 export const GET = async (request: Request) => {
   const url = new URL(request.url);
@@ -13,6 +14,9 @@ export const GET = async (request: Request) => {
   const state = url.searchParams.get("state");
   const cookieStore = await cookies();
   const storedState = cookieStore.get("facebook_oauth_state")?.value ?? null;
+
+  const checkoutCookies = await getCheckoutCookiesServer(cookieStore);
+
   if (!code || !state || !storedState || state !== storedState) {
     return new Response(null, {
       status: 400,
@@ -49,7 +53,20 @@ export const GET = async (request: Request) => {
       const session = await createSession(sessionTokenCookie, existingUser.id);
       await setSessionTokenCookie(sessionTokenCookie, session.expiresAt);
 
-      const redirectPath = existingUser.hasCompletedOnboarding ? "/dashboard" : "/onboarding";
+      let redirectPath = "/dashboard";
+
+      if (!existingUser.hasCompletedOnboarding) {
+        redirectPath = "/onboarding";
+        if (checkoutCookies.plan && checkoutCookies.interval) {
+          await setPostOnboardingCookies(cookieStore, checkoutCookies.plan, checkoutCookies.interval);
+        }
+      } else if (checkoutCookies.plan && (checkoutCookies.plan === 'simple' || checkoutCookies.plan === 'pro')) {
+        const queryParams = new URLSearchParams({ plan: checkoutCookies.plan });
+        if (checkoutCookies.interval) queryParams.append('interval', checkoutCookies.interval);
+        redirectPath = `/dashboard/billing?${queryParams.toString()}`;
+      }
+
+      await clearCheckoutCookiesServer(cookieStore);
       revalidatePath(redirectPath, "layout");
 
       return new Response(null, {
@@ -73,14 +90,22 @@ export const GET = async (request: Request) => {
     if (facebookUser.email) {
       sendWelcomeEmail({ toMail: newUser.email!, userName: newUser.name! });
     }
+
     const sessionTokenCookie = generateSessionToken();
     const session = await createSession(sessionTokenCookie, newUser.id);
     await setSessionTokenCookie(sessionTokenCookie, session.expiresAt);
-    revalidatePath("/dashboard", "layout");
+
+    if (checkoutCookies.plan && checkoutCookies.interval) {
+      await setPostOnboardingCookies(cookieStore, checkoutCookies.plan, checkoutCookies.interval);
+    }
+    await clearCheckoutCookiesServer(cookieStore);
+
+    revalidatePath("/onboarding", "layout");
+
     return new Response(null, {
       status: 302,
       headers: {
-        Location: "/dashboard",
+        Location: "/onboarding",
       },
     });
   } catch (e) {

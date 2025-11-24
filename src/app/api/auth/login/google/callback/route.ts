@@ -6,6 +6,7 @@ import { createSession, generateSessionToken } from "@/lib/server/auth/session";
 import { setSessionTokenCookie } from "@/lib/server/auth/cookies";
 import { revalidatePath } from "next/cache";
 import { sendWelcomeEmail } from "@/lib/server/mail";
+import { getCheckoutCookiesServer, clearCheckoutCookiesServer, setPostOnboardingCookies } from "@/lib/checkout-cookies";
 
 export async function GET(request: Request) {
     const url = new URL(request.url);
@@ -15,6 +16,8 @@ export async function GET(request: Request) {
     const cookieStore = await cookies();
     const storedState = cookieStore.get("google_oauth_state")?.value ?? null;
     const codeVerifier = cookieStore.get("google_code_verifier")?.value ?? null;
+
+    const checkoutCookies = await getCheckoutCookiesServer(cookieStore);
 
     if (!code || !state || !storedState || !codeVerifier || state !== storedState) {
         return new Response("Invalid state or code", { status: 400 });
@@ -42,8 +45,20 @@ export async function GET(request: Request) {
             const session = await createSession(sessionTokenCookie, existingUser.id);
             await setSessionTokenCookie(sessionTokenCookie, session.expiresAt);
 
-            // Redirect to onboarding if not completed, otherwise to dashboard
-            const redirectPath = existingUser.hasCompletedOnboarding ? "/dashboard" : "/onboarding";
+            let redirectPath = "/dashboard";
+
+            if (!existingUser.hasCompletedOnboarding) {
+                redirectPath = "/onboarding";
+                if (checkoutCookies.plan && checkoutCookies.interval) {
+                    await setPostOnboardingCookies(cookieStore, checkoutCookies.plan, checkoutCookies.interval);
+                }
+            } else if (checkoutCookies.plan && (checkoutCookies.plan === 'simple' || checkoutCookies.plan === 'pro')) {
+                const queryParams = new URLSearchParams({ plan: checkoutCookies.plan });
+                if (checkoutCookies.interval) queryParams.append('interval', checkoutCookies.interval);
+                redirectPath = `/dashboard/billing?${queryParams.toString()}`;
+            }
+
+            await clearCheckoutCookiesServer(cookieStore);
             revalidatePath(redirectPath, "layout");
 
             return new Response(null, {
@@ -70,6 +85,12 @@ export async function GET(request: Request) {
         const sessionTokenCookie = generateSessionToken();
         const session = await createSession(sessionTokenCookie, newUser.id);
         await setSessionTokenCookie(sessionTokenCookie, session.expiresAt);
+
+        if (checkoutCookies.plan && checkoutCookies.interval) {
+            await setPostOnboardingCookies(cookieStore, checkoutCookies.plan, checkoutCookies.interval);
+        }
+        await clearCheckoutCookiesServer(cookieStore);
+
         revalidatePath("/onboarding", "layout");
 
         return new Response(null, {

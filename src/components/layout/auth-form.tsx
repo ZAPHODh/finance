@@ -14,8 +14,14 @@ import { LoaderCircle } from "lucide-react";
 import Icons from "@/components/shared/icons";
 import { useScopedI18n } from "@/locales/client";
 import { useRouter } from "next/navigation";
+import { setCheckoutCookies } from "@/lib/checkout-cookies";
 
-export default function AuthForm() {
+interface AuthFormProps {
+    plan?: string;
+    interval?: string;
+}
+
+export default function AuthForm({ plan, interval }: AuthFormProps) {
     const t = useScopedI18n('auth')
     const { push } = useRouter()
     const [currentStep, setCurrentStep] = useState(1);
@@ -100,7 +106,14 @@ export default function AuthForm() {
             toast.success(
                 t('verifiedSuccess')
             );
-            push('/dashboard')
+
+            if (plan && (plan === 'simple' || plan === 'pro')) {
+                const queryParams = new URLSearchParams({ plan });
+                if (interval) queryParams.append('interval', interval);
+                push(`/dashboard/billing?${queryParams.toString()}`);
+            } else {
+                push('/dashboard');
+            }
         } catch (error) {
             const errorMessage =
                 error instanceof Error ? error.message : "Something went wrong";
@@ -192,7 +205,12 @@ export default function AuthForm() {
                         <Link
                             href="/api/auth/login/google"
                             className={cn(buttonVariants({ variant: "outline" }))}
-                            onClick={() => setIsGoogleLoading(true)}
+                            onClick={() => {
+                                if (plan && interval) {
+                                    setCheckoutCookies(plan, interval);
+                                }
+                                setIsGoogleLoading(true);
+                            }}
                         >
                             {t("continueWith")} <Icons.google className="ml-2 h-4 w-4" />
                         </Link>
@@ -205,7 +223,12 @@ export default function AuthForm() {
                         <Link
                             href="/api/auth/login/facebook"
                             className={cn(buttonVariants({ variant: "outline" }))}
-                            onClick={() => setIsFacebookLoading(true)}
+                            onClick={() => {
+                                if (plan && interval) {
+                                    setCheckoutCookies(plan, interval);
+                                }
+                                setIsFacebookLoading(true);
+                            }}
                         >
                             {t("continueWith")} <Icons.facebook className="ml-2 h-4 w-4" />
                         </Link>

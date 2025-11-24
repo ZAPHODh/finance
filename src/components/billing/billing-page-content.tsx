@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -8,20 +8,51 @@ import { type CurrentPlan, type Plan } from "@/types";
 import { useScopedI18n } from "@/locales/client";
 import { toast } from "sonner";
 import { createCheckoutSession, openBillingPortal } from "@/app/[locale]/(public)/pricing/actions";
+import { useCheckoutFlow } from "@/hooks/use-checkout-flow";
+import { clearCheckoutCookies } from "@/lib/checkout-cookies";
 
 interface BillingPageContentProps {
   currentPlan: CurrentPlan;
   allPlans: Plan[];
+  preselectedPlan?: string;
+  preselectedInterval?: 'monthly' | 'yearly';
 }
 
 export function BillingPageContent({
   currentPlan,
   allPlans,
+  preselectedPlan,
+  preselectedInterval,
 }: BillingPageContentProps) {
   const t = useScopedI18n("ui.userPages.billing");
   const [isLoading, setIsLoading] = useState(false);
+  const { clearCheckoutParams } = useCheckoutFlow();
 
   const isFreePlan = currentPlan.plan.id === "free";
+
+  useEffect(() => {
+    const validPlans = ['simple', 'pro'] as const
+    const validIntervals = ['monthly', 'yearly'] as const
+
+    if (!preselectedPlan || !isFreePlan) return
+
+    if (!validPlans.includes(preselectedPlan as any)) {
+      console.warn(`Invalid preselected plan: ${preselectedPlan}`)
+      clearCheckoutParams()
+      clearCheckoutCookies()
+      return
+    }
+
+    const interval = preselectedInterval || 'monthly'
+    if (!validIntervals.includes(interval)) {
+      console.warn(`Invalid preselected interval: ${preselectedInterval}`)
+      clearCheckoutParams()
+      clearCheckoutCookies()
+      return
+    }
+
+    handleUpgrade(preselectedPlan as "simple" | "pro", interval)
+  }, [preselectedPlan, preselectedInterval, isFreePlan]);
 
   async function handleUpgrade(plan: "simple" | "pro", interval: "monthly" | "yearly" = "monthly") {
     setIsLoading(true);
@@ -32,6 +63,9 @@ export function BillingPageContent({
       setIsLoading(false);
       return;
     }
+
+    clearCheckoutParams();
+    clearCheckoutCookies();
 
     if (result.url) {
       window.location.href = result.url;
