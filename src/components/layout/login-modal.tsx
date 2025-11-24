@@ -9,7 +9,12 @@ import {
 } from "@/components/ui/dialog";
 import AuthForm from "./auth-form";
 
-export default function LoginModal() {
+interface LoginModalProps {
+    plan?: string;
+    interval?: string;
+}
+
+export default function LoginModal({ plan, interval }: LoginModalProps) {
     const router = useRouter();
     const pathname = usePathname();
 
@@ -24,7 +29,7 @@ export default function LoginModal() {
                         </h2>
                     </DialogTitle>
                 </DialogHeader>
-                <AuthForm />
+                <AuthForm plan={plan} interval={interval} />
             </DialogContent>
         </Dialog>
     );
