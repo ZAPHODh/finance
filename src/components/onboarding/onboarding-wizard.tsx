@@ -66,9 +66,14 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
           },
         };
 
-        await completeOnboarding(data);
+        const result = await completeOnboarding(data);
         toast.success(t('success'));
-        router.push('/dashboard');
+
+        if (result.redirectUrl.startsWith('http')) {
+          window.location.href = result.redirectUrl;
+        } else {
+          router.push(result.redirectUrl);
+        }
       } catch (error) {
         toast.error(error instanceof Error ? error.message : t('completing'));
       }

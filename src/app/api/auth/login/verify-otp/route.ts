@@ -8,6 +8,8 @@ import {
 } from "@/lib/server/auth/session";
 import { prisma } from "@/lib/server/db";
 import { rateLimitByEmail, rateLimitByIP, checkMultipleRateLimits, createRateLimitResponse, trackFailedAttempts, resetFailedAttempts } from "@/lib/server/rate-limit";
+import { cookies } from "next/headers";
+import { getCheckoutCookies, clearCheckoutCookiesServer, setPostOnboardingCookies } from "@/lib/checkout-cookies";
 
 function getClientIP(req: Request): string {
     const forwarded = req.headers.get("x-forwarded-for");
@@ -73,6 +75,7 @@ export const POST = async (req: Request) => {
                 id: true,
                 email: true,
                 emailVerified: true,
+                hasCompletedOnboarding: true,
             },
         });
 
@@ -121,6 +124,15 @@ export const POST = async (req: Request) => {
         const sessionToken = generateSessionToken();
         const session = await createSession(sessionToken, user.id);
         await setSessionTokenCookie(sessionToken, session.expiresAt);
+
+        const cookieStore = await cookies();
+        const checkoutCookies = await getCheckoutCookies(cookieStore);
+
+        if (!user.hasCompletedOnboarding && checkoutCookies.plan && checkoutCookies.interval) {
+            await setPostOnboardingCookies(cookieStore, checkoutCookies.plan, checkoutCookies.interval);
+        }
+
+        await clearCheckoutCookiesServer(cookieStore);
         revalidatePath("/", "layout");
         return new Response(null, {
             status: 200,

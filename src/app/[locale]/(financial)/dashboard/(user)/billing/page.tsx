@@ -6,17 +6,9 @@ import { getPlanConfigs } from "@/config/subscription"
 import { type CurrentPlan } from "@/types"
 import { getCurrentLocale } from "@/locales/server"
 
-interface BillingPageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}
-
-export default async function BillingPage({ searchParams }: BillingPageProps) {
+export default async function BillingPage() {
   const { user } = await getCurrentSession()
   if (!user) redirect("/login")
-
-  const params = await searchParams;
-  const preselectedPlan = typeof params.plan === 'string' ? params.plan : undefined;
-  const preselectedInterval = typeof params.interval === 'string' ? params.interval as 'monthly' | 'yearly' : undefined;
 
   const locale = await getCurrentLocale()
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
@@ -44,8 +36,6 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
     <BillingPageContent
       currentPlan={currentPlan}
       allPlans={allPlans}
-      preselectedPlan={preselectedPlan}
-      preselectedInterval={preselectedInterval}
     />
   )
 }

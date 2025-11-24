@@ -5,6 +5,7 @@ import { getCurrentSession } from "@/lib/server/auth/session";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { getPostOnboardingCookies, clearPostOnboardingCookies } from "@/lib/checkout-cookies";
+import { createCheckoutSession } from "@/app/[locale]/(public)/pricing/actions";
 
 export interface OnboardingData {
   platforms: Array<{ name: string; }>;
@@ -143,13 +144,18 @@ export async function completeOnboarding(data: OnboardingData) {
   let redirectUrl = "/dashboard";
 
   if (checkoutCookies.plan && (checkoutCookies.plan === 'simple' || checkoutCookies.plan === 'pro')) {
-    const queryParams = new URLSearchParams({ plan: checkoutCookies.plan });
-    if (checkoutCookies.interval) queryParams.append('interval', checkoutCookies.interval);
-    redirectUrl = `/dashboard/billing?${queryParams.toString()}`;
+    const interval = checkoutCookies.interval || 'monthly';
+    const checkoutResult = await createCheckoutSession(checkoutCookies.plan, interval as 'monthly' | 'yearly');
+
+    if (checkoutResult.url) {
+      redirectUrl = checkoutResult.url;
+    } else {
+      redirectUrl = "/dashboard";
+    }
   }
 
   await clearPostOnboardingCookies(cookieStore);
-  revalidatePath(redirectUrl);
+  revalidatePath("/dashboard");
 
   return { success: true, redirectUrl };
 }
