@@ -131,7 +131,7 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                   value={field.value}
                   onChange={field.onChange}
                   placeholder={t('platforms.placeholder')}
-                  suggestions={['Uber', '99', 'iFood', 'Rappi', 'Loggi']}
+                  suggestions={[...t('platforms.suggestions')]}
                 />
                 {fieldState.error && (
                   <p className="text-sm text-destructive">{fieldState.error.message}</p>
@@ -304,7 +304,7 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                   value={field.value}
                   onChange={field.onChange}
                   placeholder={t('expenseTypes.placeholder')}
-                  suggestions={['Fuel', 'Maintenance', 'Insurance', 'Car Wash', 'Parking']}
+                  suggestions={[...t('expenseTypes.suggestions')]}
                 />
                 {fieldState.error && (
                   <p className="text-sm text-destructive">{fieldState.error.message}</p>
@@ -333,7 +333,7 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                   value={field.value}
                   onChange={field.onChange}
                   placeholder={t('paymentMethods.placeholder')}
-                  suggestions={['PIX', 'Credit Card', 'Debit Card', 'Cash', 'Bank Transfer']}
+                  suggestions={[...t('paymentMethods.suggestions')]}
                 />
                 {fieldState.error && (
                   <p className="text-sm text-destructive">{fieldState.error.message}</p>
@@ -349,7 +349,7 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
   return (
     <div className="container max-w-3xl mx-auto py-6 px-4 md:py-10">
       <form onSubmit={handleSubmit}>
-        <Card>
+        <Card className='border-0'>
           <CardHeader>
             <CardTitle>{t('title')}</CardTitle>
             <CardDescription>{t('subtitle')}</CardDescription>
