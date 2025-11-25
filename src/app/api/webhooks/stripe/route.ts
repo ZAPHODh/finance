@@ -46,7 +46,6 @@ export async function POST(req: NextRequest) {
     return new Response(null, { status: 200 });
   }
 
-  // Create or update event record
   await prisma.stripeWebhookEvent.upsert({
     where: { stripeEventId: event.id },
     create: {
