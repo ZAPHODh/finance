@@ -12,7 +12,7 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field"
-import { updateNotificationSettings, updatePrivacySettings } from "@/app/[locale]/(financial)/dashboard/settings/actions"
+import { updateNotificationSettings, updatePrivacySettings } from "@/app/[locale]/(financial)/dashboard/(user)/settings/actions"
 
 interface SettingsFormProps {
   initialData: {

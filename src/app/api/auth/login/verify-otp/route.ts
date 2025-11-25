@@ -126,7 +126,7 @@ export const POST = async (req: Request) => {
         await setSessionTokenCookie(sessionToken, session.expiresAt);
 
         const cookieStore = await cookies();
-        const checkoutCookies = await getCheckoutCookies(cookieStore);
+        const checkoutCookies = getCheckoutCookies();
 
         if (!user.hasCompletedOnboarding && checkoutCookies.plan && checkoutCookies.interval) {
             await setPostOnboardingCookies(cookieStore, checkoutCookies.plan, checkoutCookies.interval);

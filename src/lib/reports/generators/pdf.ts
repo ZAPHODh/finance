@@ -5,37 +5,34 @@ import type { ReportType } from '@prisma/client';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-/**
- * Gera um arquivo PDF a partir dos dados do relatório
- */
+
 export async function generatePDF(
   reportType: ReportType,
   reportData: ReportData
 ): Promise<Buffer> {
   const doc = new jsPDF();
 
-  // Configurações
+
   const pageWidth = doc.internal.pageSize.getWidth();
   const margin = 14;
 
-  // Cabeçalho
+
   doc.setFontSize(20);
   doc.setFont('helvetica', 'bold');
   doc.text(getReportTitle(reportType), margin, 20);
 
-  // Data de geração
+
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
   doc.text(`Gerado em: ${format(new Date(), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })}`, margin, 28);
 
   let currentY = 35;
 
-  // Resumo financeiro
+
   if (reportData.summary) {
     currentY = addSummarySection(doc, reportData.summary, currentY, margin, pageWidth);
   }
 
-  // Adicionar dados específicos baseado no tipo
   switch (reportType) {
     case 'EXPENSE_BREAKDOWN':
       if (reportData.expenses) {
@@ -71,7 +68,6 @@ export async function generatePDF(
       break;
   }
 
-  // Rodapé em todas as páginas
   const pageCount = doc.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
@@ -85,7 +81,7 @@ export async function generatePDF(
     );
   }
 
-  // Converter para Buffer
+
   const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
   return pdfBuffer;
 }
@@ -118,7 +114,6 @@ function addSummarySection(
   const boxY = startY + 5;
   const boxHeight = 35;
 
-  // Caixa de fundo
   doc.setFillColor(245, 245, 245);
   doc.rect(margin, boxY, pageWidth - 2 * margin, boxHeight, 'F');
 

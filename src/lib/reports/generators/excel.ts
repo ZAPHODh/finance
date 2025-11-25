@@ -4,9 +4,7 @@ import type { ReportType } from '@prisma/client';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-/**
- * Gera um arquivo Excel (.xlsx) a partir dos dados do relatório
- */
+
 export async function generateExcel(
   reportType: ReportType,
   reportData: ReportData
@@ -15,10 +13,9 @@ export async function generateExcel(
   workbook.creator = 'Financial App';
   workbook.created = new Date();
 
-  // Adicionar worksheet principal
+
   const worksheet = workbook.addWorksheet('Relatório');
 
-  // Configurar larguras das colunas
   worksheet.columns = [
     { width: 15 },
     { width: 20 },
@@ -29,27 +26,23 @@ export async function generateExcel(
 
   let currentRow = 1;
 
-  // Título
   const titleCell = worksheet.getCell(`A${currentRow}`);
   titleCell.value = getReportTitle(reportType);
   titleCell.font = { size: 18, bold: true };
   worksheet.mergeCells(`A${currentRow}:E${currentRow}`);
   currentRow += 2;
 
-  // Data de geração
   const dateCell = worksheet.getCell(`A${currentRow}`);
   dateCell.value = `Gerado em: ${format(new Date(), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })}`;
   dateCell.font = { size: 10, italic: true };
   worksheet.mergeCells(`A${currentRow}:E${currentRow}`);
   currentRow += 2;
 
-  // Resumo financeiro
   if (reportData.summary) {
     currentRow = addSummarySection(worksheet, reportData.summary, currentRow);
     currentRow += 2;
   }
 
-  // Adicionar dados específicos baseado no tipo
   switch (reportType) {
     case 'EXPENSE_BREAKDOWN':
       if (reportData.expenses) {
@@ -85,7 +78,6 @@ export async function generateExcel(
       break;
   }
 
-  // Gerar buffer
   const buffer = await workbook.xlsx.writeBuffer();
   return Buffer.from(buffer);
 }
@@ -111,7 +103,6 @@ function addSummarySection(
 ): number {
   let row = startRow;
 
-  // Cabeçalho da seção
   const headerCell = worksheet.getCell(`A${row}`);
   headerCell.value = 'RESUMO FINANCEIRO';
   headerCell.font = { size: 14, bold: true };
@@ -123,7 +114,7 @@ function addSummarySection(
   worksheet.mergeCells(`A${row}:B${row}`);
   row++;
 
-  // Receita Total
+
   worksheet.getCell(`A${row}`).value = 'Receita Total:';
   worksheet.getCell(`A${row}`).font = { bold: true };
   worksheet.getCell(`B${row}`).value = summary.totalRevenue;
@@ -131,7 +122,7 @@ function addSummarySection(
   worksheet.getCell(`B${row}`).font = { color: { argb: 'FF22C55E' }, bold: true };
   row++;
 
-  // Despesas Total
+
   worksheet.getCell(`A${row}`).value = 'Despesas Total:';
   worksheet.getCell(`A${row}`).font = { bold: true };
   worksheet.getCell(`B${row}`).value = summary.totalExpenses;
@@ -139,7 +130,7 @@ function addSummarySection(
   worksheet.getCell(`B${row}`).font = { color: { argb: 'FFEF4444' }, bold: true };
   row++;
 
-  // Lucro Líquido
+
   worksheet.getCell(`A${row}`).value = 'Lucro Líquido:';
   worksheet.getCell(`A${row}`).font = { bold: true };
   worksheet.getCell(`B${row}`).value = summary.netProfit;
@@ -150,7 +141,7 @@ function addSummarySection(
   };
   row++;
 
-  // Margem de Lucro
+
   worksheet.getCell(`A${row}`).value = 'Margem de Lucro:';
   worksheet.getCell(`A${row}`).font = { bold: true };
   worksheet.getCell(`B${row}`).value = summary.profitMargin / 100;
@@ -172,14 +163,13 @@ function addExpensesSheet(
 
   let row = startRow;
 
-  // Cabeçalho
+
   const headerCell = worksheet.getCell(`A${row}`);
   headerCell.value = 'DESPESAS';
   headerCell.font = { size: 12, bold: true };
   worksheet.mergeCells(`A${row}:E${row}`);
   row++;
 
-  // Cabeçalhos da tabela
   const headers = ['Data', 'Tipo', 'Motorista', 'Veículo', 'Valor'];
   headers.forEach((header, index) => {
     const cell = worksheet.getCell(row, index + 1);
@@ -194,7 +184,7 @@ function addExpensesSheet(
   });
   row++;
 
-  // Dados
+
   expenses.forEach((expense) => {
     worksheet.getCell(row, 1).value = format(new Date(expense.date), 'dd/MM/yyyy');
     worksheet.getCell(row, 2).value = expense.expenseType.name;
@@ -205,7 +195,7 @@ function addExpensesSheet(
     row++;
   });
 
-  // Total
+
   worksheet.getCell(row, 4).value = 'Total:';
   worksheet.getCell(row, 4).font = { bold: true };
   worksheet.getCell(row, 4).alignment = { horizontal: 'right' };
@@ -234,14 +224,14 @@ function addRevenuesSheet(
 
   let row = startRow;
 
-  // Cabeçalho
+
   const headerCell = worksheet.getCell(`A${row}`);
   headerCell.value = 'RECEITAS';
   headerCell.font = { size: 12, bold: true };
   worksheet.mergeCells(`A${row}:E${row}`);
   row++;
 
-  // Cabeçalhos da tabela
+
   const headers = ['Data', 'Plataformas', 'Motorista', 'Veículo', 'Valor'];
   headers.forEach((header, index) => {
     const cell = worksheet.getCell(row, index + 1);
@@ -256,7 +246,7 @@ function addRevenuesSheet(
   });
   row++;
 
-  // Dados
+
   revenues.forEach((revenue) => {
     worksheet.getCell(row, 1).value = format(new Date(revenue.date), 'dd/MM/yyyy');
     worksheet.getCell(row, 2).value = revenue.platforms.map(p => p.platform.name).join(', ');
@@ -267,7 +257,7 @@ function addRevenuesSheet(
     row++;
   });
 
-  // Total
+
   worksheet.getCell(row, 4).value = 'Total:';
   worksheet.getCell(row, 4).font = { bold: true };
   worksheet.getCell(row, 4).alignment = { horizontal: 'right' };
@@ -296,17 +286,16 @@ function addDriversSheet(
 
   let row = startRow;
 
-  // Cabeçalho
+
   const headerCell = worksheet.getCell(`A${row}`);
   headerCell.value = 'PERFORMANCE POR MOTORISTA';
   headerCell.font = { size: 12, bold: true };
   worksheet.mergeCells(`A${row}:F${row}`);
   row++;
 
-  // Ajustar larguras
+
   worksheet.getColumn(6).width = 15;
 
-  // Cabeçalhos da tabela
   const headers = ['Motorista', 'Viagens', 'Receita', 'Despesas', 'Lucro Líquido', 'Média/Viagem'];
   headers.forEach((header, index) => {
     const cell = worksheet.getCell(row, index + 1);
@@ -321,7 +310,7 @@ function addDriversSheet(
   });
   row++;
 
-  // Dados
+
   drivers.forEach((driver) => {
     worksheet.getCell(row, 1).value = driver.name;
     worksheet.getCell(row, 2).value = driver.trips;
@@ -350,17 +339,16 @@ function addVehiclesSheet(
 
   let row = startRow;
 
-  // Cabeçalho
+
   const headerCell = worksheet.getCell(`A${row}`);
   headerCell.value = 'PERFORMANCE POR VEÍCULO';
   headerCell.font = { size: 12, bold: true };
   worksheet.mergeCells(`A${row}:F${row}`);
   row++;
 
-  // Ajustar larguras
   worksheet.getColumn(6).width = 15;
 
-  // Cabeçalhos da tabela
+
   const headers = ['Veículo', 'Receita', 'Despesas', 'Lucro Líquido', 'KM Rodados', 'Custo/KM'];
   headers.forEach((header, index) => {
     const cell = worksheet.getCell(row, index + 1);
@@ -375,7 +363,7 @@ function addVehiclesSheet(
   });
   row++;
 
-  // Dados
+
   vehicles.forEach((vehicle) => {
     worksheet.getCell(row, 1).value = vehicle.name;
     worksheet.getCell(row, 2).value = vehicle.totalRevenue;

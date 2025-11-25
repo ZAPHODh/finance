@@ -12,7 +12,7 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field"
-import { updateDefaults, getDriversAndVehicles } from "@/app/[locale]/(financial)/dashboard/preferences/actions"
+import { getDriversAndVehicles, updateDefaults } from "@/app/[locale]/(financial)/dashboard/(user)/preferences/actions"
 
 interface DefaultsFormProps {
   initialData: {

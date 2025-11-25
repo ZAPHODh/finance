@@ -58,7 +58,6 @@ function generateExpenseBreakdownCSV(reportData: ReportData): string {
     Valor: expense.amount.toFixed(2),
   }));
 
-  // Adicionar totais
   rows.push({
     Data: '',
     'Tipo de Despesa': 'TOTAL',
@@ -85,7 +84,6 @@ function generateRevenueBreakdownCSV(reportData: ReportData): string {
     Valor: revenue.amount.toFixed(2),
   }));
 
-  // Adicionar totais
   rows.push({
     Data: '',
     Plataformas: 'TOTAL',
@@ -110,13 +108,11 @@ function generateMonthlySummaryCSV(reportData: ReportData): string {
 
   let csv = Papa.unparse(summaryRows, { delimiter: ',', header: true });
 
-  // Adicionar despesas detalhadas
   if (reportData.expenses && reportData.expenses.length > 0) {
     csv += '\n\n';
     csv += generateExpenseBreakdownCSV(reportData);
   }
 
-  // Adicionar receitas detalhadas
   if (reportData.revenues && reportData.revenues.length > 0) {
     csv += '\n\n';
     csv += generateRevenueBreakdownCSV(reportData);

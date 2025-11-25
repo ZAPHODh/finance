@@ -136,7 +136,13 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                   value={field.value}
                   onChange={field.onChange}
                   placeholder={t('platforms.placeholder')}
-                  suggestions={[...t('platforms.suggestions')]}
+                  suggestions={[t('platforms.suggestions.0'),
+                  t('platforms.suggestions.1'),
+                  t('platforms.suggestions.2'),
+                  t('platforms.suggestions.3'),
+                  t('platforms.suggestions.4'),
+                  t('platforms.suggestions.5'),
+                  ]}
                 />
                 {fieldState.error && (
                   <p className="text-sm text-destructive">{fieldState.error.message}</p>
@@ -309,7 +315,13 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                   value={field.value}
                   onChange={field.onChange}
                   placeholder={t('expenseTypes.placeholder')}
-                  suggestions={[...t('expenseTypes.suggestions')]}
+                  suggestions={[t('expenseTypes.suggestions.0'),
+                  t('expenseTypes.suggestions.1'),
+                  t('expenseTypes.suggestions.2'),
+                  t('expenseTypes.suggestions.3'),
+                  t('expenseTypes.suggestions.4'),
+                  t('expenseTypes.suggestions.5'),
+                  ]}
                 />
                 {fieldState.error && (
                   <p className="text-sm text-destructive">{fieldState.error.message}</p>
@@ -338,7 +350,13 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                   value={field.value}
                   onChange={field.onChange}
                   placeholder={t('paymentMethods.placeholder')}
-                  suggestions={[...t('paymentMethods.suggestions')]}
+                  suggestions={[t('paymentMethods.suggestions.0'),
+                  t('paymentMethods.suggestions.1'),
+                  t('paymentMethods.suggestions.2'),
+                  t('paymentMethods.suggestions.3'),
+                  t('paymentMethods.suggestions.4'),
+                  t('paymentMethods.suggestions.5'),
+                  ]}
                 />
                 {fieldState.error && (
                   <p className="text-sm text-destructive">{fieldState.error.message}</p>

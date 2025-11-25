@@ -9,9 +9,9 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field"
-import { updateProfileAction } from "@/app/[locale]/(financial)/dashboard/account/actions"
 import { toast } from "sonner"
 import { useTransition } from "react"
+import { updateProfileAction } from "@/app/[locale]/(financial)/dashboard/(user)/account/actions"
 
 interface ProfileFormProps {
   defaultName: string

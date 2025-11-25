@@ -13,7 +13,7 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field"
-import { updatePreferences } from "@/app/[locale]/(financial)/dashboard/preferences/actions"
+import { updatePreferences } from "@/app/[locale]/(financial)/dashboard/(user)/preferences/actions"
 
 interface PreferencesFormProps {
   initialData: {
