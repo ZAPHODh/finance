@@ -86,15 +86,7 @@ export function BillingPageContent({
             </div>
           </div>
           <div className="pt-4">
-            {isFreePlan ? (
-              <Button
-                className="w-full"
-                onClick={() => handleUpgrade("pro")}
-                disabled={isLoading}
-              >
-                {isLoading ? t('loading') : t('upgradeToPro')}
-              </Button>
-            ) : (
+            {currentPlan.plan.id === "pro" ? (
               <Button
                 className="w-full"
                 variant="outline"
@@ -103,6 +95,25 @@ export function BillingPageContent({
               >
                 {isLoading ? t('loading') : t('manageSubscription')}
               </Button>
+            ) : (
+              <div className="flex gap-3">
+                <Button
+                  className="flex-1"
+                  onClick={() => handleUpgrade(currentPlan.plan.id === "free" ? "simple" : "pro")}
+                  disabled={isLoading}
+                >
+                  {isLoading ? t('loading') : t('upgradeToNextPlan', {
+                    plan: currentPlan.plan.id === "free" ? "Simple" : "Pro"
+                  })}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => window.location.href = "/pricing"}
+                  disabled={isLoading}
+                >
+                  {t('viewAllPlans')}
+                </Button>
+              </div>
             )}
           </div>
         </div>

@@ -94,6 +94,8 @@ export default {
             perMonth: 'por mês',
             perYear: 'por ano',
             upgradeToPro: 'Atualizar para Pro',
+            upgradeToNextPlan: 'Atualizar para {plan}',
+            viewAllPlans: 'Ver todos',
             manageSubscription: 'Gerenciar Assinatura',
             paymentMethodTitle: 'Método de Pagamento',
             paymentMethodDescription: 'Gerencie seus métodos de pagamento',
