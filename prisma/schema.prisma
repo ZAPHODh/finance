@@ -276,6 +276,7 @@ model Revenue {
   @@index([driverId, date])
   @@index([vehicleId, date])
   @@index([date, driverId])
+  @@index([paymentMethodId, date])
 }
 
 // Junction table for many-to-many relationship between Revenue and Platform
@@ -291,6 +292,7 @@ model RevenuePlatform {
   @@unique([revenueId, platformId])
   @@index([revenueId])
   @@index([platformId])
+  @@index([platformId, revenueId])
 }
 
 model WorkLog {

@@ -141,7 +141,6 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                   t('platforms.suggestions.2'),
                   t('platforms.suggestions.3'),
                   t('platforms.suggestions.4'),
-                  t('platforms.suggestions.5'),
                   ]}
                 />
                 {fieldState.error && (
@@ -320,7 +319,6 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                   t('expenseTypes.suggestions.2'),
                   t('expenseTypes.suggestions.3'),
                   t('expenseTypes.suggestions.4'),
-                  t('expenseTypes.suggestions.5'),
                   ]}
                 />
                 {fieldState.error && (
@@ -355,7 +353,6 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                   t('paymentMethods.suggestions.2'),
                   t('paymentMethods.suggestions.3'),
                   t('paymentMethods.suggestions.4'),
-                  t('paymentMethods.suggestions.5'),
                   ]}
                 />
                 {fieldState.error && (

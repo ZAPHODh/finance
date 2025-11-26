@@ -6,6 +6,8 @@ import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 import { cacheWithTag, CacheTags, invalidateCache } from "@/lib/server/cache";
 import { z } from "zod";
+import { dailyEntrySchema, type DailyEntryInput } from "@/types/daily-entry";
+import { getUserSubscriptionPlan } from "@/lib/server/payment";
 
 const quickDailyEntrySchema = z.object({
   date: z.date(),
@@ -477,5 +479,130 @@ export async function getLastDailyEntry(): Promise<LastDailyEntryData | null> {
       driverId: lastExpense.driverId,
       vehicleId: lastExpense.vehicleId,
     } : null,
+  };
+}
+
+// New unified daily entry action
+export async function createDailyEntry(input: DailyEntryInput) {
+  "use server";
+
+  const { user } = await getCurrentSession();
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  // Get user plan to enforce FREE plan restrictions
+  const plan = await getUserSubscriptionPlan(user.id);
+  const isFree = plan.name === "FREE";
+
+  // For FREE users, override driver/vehicle with their fixed ones
+  if (isFree) {
+    const [driver, vehicle] = await Promise.all([
+      prisma.driver.findFirst({ where: { userId: user.id }, select: { id: true } }),
+      prisma.vehicle.findFirst({ where: { userId: user.id }, select: { id: true } }),
+    ]);
+
+    input.driverId = driver?.id;
+    input.vehicleId = vehicle?.id;
+  }
+
+  const data = dailyEntrySchema.parse(input);
+
+  const results = await prisma.$transaction(async (tx) => {
+    const created = {
+      revenues: [] as any[],
+      expenses: [] as any[],
+    };
+
+    // Handle Revenue - Sum Mode
+    if (data.revenueMode === "sum" && data.totalRevenue && data.platformIds) {
+      const revenue = await tx.revenue.create({
+        data: {
+          amount: data.totalRevenue,
+          date: data.date,
+          driverId: data.driverId || null,
+          vehicleId: data.vehicleId || null,
+          paymentMethodId: data.paymentMethodId || null,
+          kmDriven: data.kmDriven || null,
+          hoursWorked: data.hoursWorked || null,
+          platforms: {
+            create: data.platformIds.map((platformId) => ({
+              platform: { connect: { id: platformId } },
+            })),
+          },
+        },
+      });
+      created.revenues.push(revenue);
+    }
+
+    // Handle Revenue - Individual Mode
+    if (data.revenueMode === "individual" && data.revenues) {
+      const kmPerRevenue = data.kmDriven ? data.kmDriven / data.revenues.length : null;
+      const hoursPerRevenue = data.hoursWorked ? data.hoursWorked / data.revenues.length : null;
+
+      for (const rev of data.revenues) {
+        const revenue = await tx.revenue.create({
+          data: {
+            amount: rev.amount,
+            date: data.date,
+            driverId: data.driverId || null,
+            vehicleId: data.vehicleId || null,
+            paymentMethodId: data.paymentMethodId || null,
+            kmDriven: kmPerRevenue,
+            hoursWorked: hoursPerRevenue,
+            platforms: {
+              create: [{
+                platform: { connect: { id: rev.platformId } },
+              }],
+            },
+          },
+        });
+        created.revenues.push(revenue);
+      }
+    }
+
+    // Handle Expense - Sum Mode
+    if (data.expenseMode === "sum" && data.totalExpense && data.expenseTypeIds) {
+      // For sum mode, create one expense with the first expense type
+      // (or we could create multiple expenses, one per type - let me know your preference)
+      const expense = await tx.expense.create({
+        data: {
+          amount: data.totalExpense,
+          date: data.date,
+          driverId: data.driverId || null,
+          vehicleId: data.vehicleId || null,
+          expenseTypeId: data.expenseTypeIds[0], // Using first type for now
+        },
+      });
+      created.expenses.push(expense);
+    }
+
+    // Handle Expense - Individual Mode
+    if (data.expenseMode === "individual" && data.expenses) {
+      for (const exp of data.expenses) {
+        const expense = await tx.expense.create({
+          data: {
+            amount: exp.amount,
+            date: data.date,
+            driverId: data.driverId || null,
+            vehicleId: data.vehicleId || null,
+            expenseTypeId: exp.expenseTypeId,
+          },
+        });
+        created.expenses.push(expense);
+      }
+    }
+
+    return created;
+  });
+
+  await invalidateCache(CacheTags.REVENUES);
+  await invalidateCache(CacheTags.EXPENSES);
+  await invalidateCache(CacheTags.DASHBOARD);
+  revalidatePath("/dashboard");
+
+  return {
+    success: true,
+    data: results,
   };
 }
