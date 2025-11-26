@@ -27,7 +27,6 @@ export default function AuthForm({ plan, interval }: AuthFormProps) {
     const [currentStep, setCurrentStep] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-    const [isFacebookLoading, setIsFacebookLoading] = useState(false);
     const [isVerifying, setIsVerifying] = useState(false);
     const [otp, setOTP] = useState("");
     const [countdown, setCountdown] = useState(30);
@@ -167,7 +166,7 @@ export default function AuthForm({ plan, interval }: AuthFormProps) {
                                             id={field.name}
                                             placeholder={t("emailPlaceholder")}
                                             type="email"
-                                            disabled={isLoading || isGoogleLoading || isFacebookLoading}
+                                            disabled={isLoading || isGoogleLoading}
                                             value={field.state.value}
                                             onBlur={field.handleBlur}
                                             onChange={(e) => field.handleChange(e.target.value)}
@@ -185,7 +184,7 @@ export default function AuthForm({ plan, interval }: AuthFormProps) {
                             <button
                                 type="submit"
                                 className={cn(buttonVariants())}
-                                disabled={isLoading || isFacebookLoading || isVerifying}
+                                disabled={isLoading || isVerifying}
                             >
                                 {isLoading && (
                                     <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
@@ -213,24 +212,6 @@ export default function AuthForm({ plan, interval }: AuthFormProps) {
                             }}
                         >
                             {t("continueWith")} <Icons.google className="ml-2 h-4 w-4" />
-                        </Link>
-                    )}
-                    {isFacebookLoading ? (
-                        <Button className="w-full cursor-not-allowed" variant="outline">
-                            <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-                        </Button>
-                    ) : (
-                        <Link
-                            href="/api/auth/login/facebook"
-                            className={cn(buttonVariants({ variant: "outline" }))}
-                            onClick={() => {
-                                if (plan && interval) {
-                                    setCheckoutCookies(plan, interval);
-                                }
-                                setIsFacebookLoading(true);
-                            }}
-                        >
-                            {t("continueWith")} <Icons.facebook className="ml-2 h-4 w-4" />
                         </Link>
                     )}
                 </>

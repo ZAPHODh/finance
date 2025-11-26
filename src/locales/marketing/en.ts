@@ -196,7 +196,7 @@ export default {
                 item1: 'Full name',
                 item2: 'Email address',
                 item3: 'Profile picture (if provided via OAuth)',
-                item4: 'Third-party authentication ID (Google, Facebook)',
+                item4: 'Third-party authentication ID (Google)',
             },
             financial: {
                 title: '2.2 Financial Data',

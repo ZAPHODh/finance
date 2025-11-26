@@ -32,7 +32,6 @@ model User {
   email                  String?                 @unique
   emailVerified          Boolean?                @default(false)
   picture                String?
-  facebookId             String?                 @unique
   sessions               Session[]
   emailVerificationCodes EmailVerificationCode[]
 
