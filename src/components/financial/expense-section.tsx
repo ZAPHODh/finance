@@ -170,27 +170,6 @@ export function ExpenseSection({
               }}
             />
           </Field>
-
-          <Field>
-            <FieldLabel>{t("selectExpenseTypes")}</FieldLabel>
-            <div className="space-y-2 rounded-md border p-3">
-              {expenseTypes.map((type) => (
-                <div key={type.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`expenseType-${type.id}`}
-                    checked={selectedExpenseTypes.includes(type.id)}
-                    onCheckedChange={() => handleExpenseTypeToggle(type.id)}
-                  />
-                  <label
-                    htmlFor={`expenseType-${type.id}`}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    {type.name}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </Field>
         </div>
       )}
 
@@ -281,6 +260,30 @@ export function ExpenseSection({
       {/* SHARED FIELDS (shown only when mode is not "none") */}
       {mode !== "none" && (
         <div className="space-y-4 border-t pt-4">
+          {/* Expense Types */}
+          {expenseTypes.length > 0 && (
+            <Field>
+              <FieldLabel>{t("selectExpenseTypes")}</FieldLabel>
+              <div className="space-y-2 rounded-md border p-3">
+                {expenseTypes.map((type) => (
+                  <div key={type.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`expenseType-${type.id}`}
+                      checked={selectedExpenseTypes.includes(type.id)}
+                      onCheckedChange={() => handleExpenseTypeToggle(type.id)}
+                    />
+                    <label
+                      htmlFor={`expenseType-${type.id}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {type.name}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </Field>
+          )}
+
           {/* Driver */}
           {isFree && defaultDriver ? (
             <Field>

@@ -231,7 +231,7 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
 
           {/* Expense Section */}
           <ExpenseSection
-            expenseTypes={smartDefaults?.expenseTypes || []}
+            expenseTypes={isFree && "expenseTypes" in defaults ? defaults.expenseTypes : smartDefaults?.expenseTypes || []}
             drivers={smartDefaults?.drivers}
             vehicles={smartDefaults?.vehicles}
             planType={config.planType}

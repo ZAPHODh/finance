@@ -10,6 +10,7 @@ interface FreePlanDefaults {
   driver: { id: string; name: string } | null;
   vehicle: { id: string; name: string } | null;
   platforms: Array<{ id: string; name: string }>;
+  expenseTypes: Array<{ id: string; name: string }>;
 }
 
 interface SmartPlanDefaults {
@@ -37,7 +38,7 @@ interface DailyEntryConfig {
 }
 
 async function getFreePlanDefaultsUncached(userId: string): Promise<FreePlanDefaults> {
-  const [driver, vehicle, platforms] = await Promise.all([
+  const [driver, vehicle, platforms, expenseTypes] = await Promise.all([
     prisma.driver.findFirst({
       where: { userId },
       select: { id: true, name: true },
@@ -51,12 +52,18 @@ async function getFreePlanDefaultsUncached(userId: string): Promise<FreePlanDefa
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
+    prisma.expenseType.findMany({
+      where: { userId },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
   ]);
 
   return {
     driver,
     vehicle,
     platforms,
+    expenseTypes,
   };
 }
 
@@ -64,7 +71,7 @@ const getFreePlanDefaults = (userId: string) =>
   cacheWithTag(
     () => getFreePlanDefaultsUncached(userId),
     ["free-plan-defaults", userId],
-    [`user-${userId}`, "DRIVERS", "VEHICLES", "PLATFORMS"],
+    [`user-${userId}`, "DRIVERS", "VEHICLES", "PLATFORMS", "EXPENSE_TYPES"],
     600 // 10 minutes
   )();
 
