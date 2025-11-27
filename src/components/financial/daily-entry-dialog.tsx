@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition, useMemo } from "react";
+import { useTransition, useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,17 +43,18 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
   const tCommon = useScopedI18n("common");
   const [isPending, startTransition] = useTransition();
 
+  const [revenueMode, setRevenueMode] = useState<"sum" | "individual" | "none">("none");
+  const [expenseMode, setExpenseMode] = useState<"sum" | "individual" | "none">("none");
+
   const form = useForm({
     defaultValues: {
       date: new Date(),
-      revenueMode: "none" as "sum" | "individual" | "none",
       totalRevenue: undefined as number | undefined,
       selectedPlatforms: [] as string[],
       revenues: [] as IndividualRevenue[],
       paymentMethodId: undefined as string | undefined,
       revenueDriverId: undefined as string | undefined,
       revenueVehicleId: undefined as string | undefined,
-      expenseMode: "none" as "sum" | "individual" | "none",
       totalExpense: undefined as number | undefined,
       selectedExpenseTypes: [] as string[],
       expenses: [] as IndividualExpense[],
@@ -65,12 +66,12 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
     onSubmit: async ({ value }) => {
       const input: DailyEntryInput = {
         date: value.date,
-        revenueMode: value.revenueMode,
+        revenueMode: revenueMode,
         totalRevenue: value.totalRevenue,
         platformIds: value.selectedPlatforms,
         revenues: value.revenues,
         paymentMethodId: value.paymentMethodId,
-        expenseMode: value.expenseMode,
+        expenseMode: expenseMode,
         totalExpense: value.totalExpense,
         expenseTypeIds: value.selectedExpenseTypes,
         expenses: value.expenses,
@@ -86,12 +87,12 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
 
           if (result.success) {
             let message = t("created");
-            if (value.revenueMode === "sum" && value.totalRevenue) {
+            if (revenueMode === "sum" && value.totalRevenue) {
               message = t("createdSumRevenue", {
                 amount: `R$ ${value.totalRevenue.toFixed(2)}`,
                 count: value.selectedPlatforms.length.toString(),
               });
-            } else if (value.revenueMode === "individual" && value.revenues.length > 0) {
+            } else if (revenueMode === "individual" && value.revenues.length > 0) {
               message = t("createdIndividualRevenue", {
                 count: value.revenues.length.toString(),
               });
@@ -124,14 +125,14 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
   const canSubmit = useMemo(() => {
     const v = form.state.values;
     return (
-      (v.revenueMode !== "none" &&
-        ((v.revenueMode === "sum" && v.totalRevenue && v.totalRevenue > 0 && v.selectedPlatforms.length > 0) ||
-          (v.revenueMode === "individual" && v.revenues.length > 0 && v.revenues.every(r => r.amount > 0 && r.platformId)))) ||
-      (v.expenseMode !== "none" &&
-        ((v.expenseMode === "sum" && v.totalExpense && v.totalExpense > 0 && v.selectedExpenseTypes.length > 0) ||
-          (v.expenseMode === "individual" && v.expenses.length > 0 && v.expenses.every(e => e.amount > 0 && e.expenseTypeId))))
+      (revenueMode !== "none" &&
+        ((revenueMode === "sum" && v.totalRevenue && v.totalRevenue > 0 && v.selectedPlatforms.length > 0) ||
+          (revenueMode === "individual" && v.revenues.length > 0 && v.revenues.every(r => r.amount > 0 && r.platformId)))) ||
+      (expenseMode !== "none" &&
+        ((expenseMode === "sum" && v.totalExpense && v.totalExpense > 0 && v.selectedExpenseTypes.length > 0) ||
+          (expenseMode === "individual" && v.expenses.length > 0 && v.expenses.every(e => e.amount > 0 && e.expenseTypeId))))
     );
-  }, [form.state.values]);
+  }, [form.state.values, revenueMode, expenseMode]);
 
   const isOpen = true;
 
@@ -187,8 +188,8 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
                 defaultDriverId={smartDefaults?.defaultDriverId}
                 defaultVehicleId={smartDefaults?.defaultVehicleId}
                 mostUsedPlatforms={smartDefaults?.mostUsedPlatforms || []}
-                mode={form.state.values.revenueMode}
-                onModeChange={(mode) => form.setFieldValue('revenueMode', mode)}
+                mode={revenueMode}
+                onModeChange={setRevenueMode}
                 totalRevenue={form.state.values.totalRevenue}
                 onTotalRevenueChange={(val) => form.setFieldValue('totalRevenue', val)}
                 selectedPlatforms={form.state.values.selectedPlatforms}
@@ -214,8 +215,8 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
                 defaultVehicle={freeVehicle}
                 defaultDriverId={smartDefaults?.defaultDriverId}
                 defaultVehicleId={smartDefaults?.defaultVehicleId}
-                mode={form.state.values.expenseMode}
-                onModeChange={(mode) => form.setFieldValue('expenseMode', mode)}
+                mode={expenseMode}
+                onModeChange={setExpenseMode}
                 totalExpense={form.state.values.totalExpense}
                 onTotalExpenseChange={(val) => form.setFieldValue('totalExpense', val)}
                 selectedExpenseTypes={form.state.values.selectedExpenseTypes}
@@ -229,7 +230,7 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
               />
 
               {/* Metrics Section (Inlined) */}
-              {(form.state.values.revenueMode !== "none" || form.state.values.expenseMode !== "none") && (
+              {(revenueMode !== "none" || expenseMode !== "none") && (
                 <>
                   <form.Field name="kmDriven">
                     {(field) => (
@@ -269,7 +270,7 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
                 </>
               )}
 
-              {!canSubmit && (form.state.values.revenueMode !== "none" || form.state.values.expenseMode !== "none") && (
+              {!canSubmit && (revenueMode !== "none" || expenseMode !== "none") && (
                 <p className="text-sm text-muted-foreground">
                   {t("atLeastOneRequired")}
                 </p>
