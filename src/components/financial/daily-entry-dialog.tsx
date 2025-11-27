@@ -1,26 +1,28 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { useTransition, useMemo } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useRouter, usePathname } from "next/navigation";
+import { Field, FieldLabel, FieldSet, FieldGroup } from "@/components/ui/field";
+import { useRouter } from "next/navigation";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { useScopedI18n } from "@/locales/client";
 import { toast } from "sonner";
-import { useQuery } from "@tanstack/react-query";
-import { getDailyEntryConfig } from "@/app/[locale]/(financial)/dashboard/daily-entry/queries";
+import { useForm } from "@tanstack/react-form";
+import type { DailyEntryConfig } from "@/app/[locale]/(financial)/dashboard/daily-entry/queries";
 import { createDailyEntry } from "@/app/[locale]/(financial)/dashboard/daily-entry/actions";
 import { RevenueSection } from "./revenue-section";
 import { ExpenseSection } from "./expense-section";
-import { MetricsSection } from "./metrics-section";
 import type { DailyEntryInput } from "@/types/daily-entry";
 
 interface DailyEntryDialogProps {
   mode: "create";
+  config: DailyEntryConfig;
 }
 
 interface IndividualRevenue {
@@ -35,134 +37,103 @@ interface IndividualExpense {
   expenseTypeId: string;
 }
 
-export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
+export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
   const router = useRouter();
-  const pathname = usePathname();
   const t = useScopedI18n("financial.dailyEntry");
   const tCommon = useScopedI18n("common");
   const [isPending, startTransition] = useTransition();
 
-  // Fetch configuration
-  const { data: config, isLoading } = useQuery({
-    queryKey: ["daily-entry-config"],
-    queryFn: () => getDailyEntryConfig(),
+  const form = useForm({
+    defaultValues: {
+      date: new Date(),
+      revenueMode: "none" as "sum" | "individual" | "none",
+      totalRevenue: undefined as number | undefined,
+      selectedPlatforms: [] as string[],
+      revenues: [] as IndividualRevenue[],
+      paymentMethodId: undefined as string | undefined,
+      revenueDriverId: undefined as string | undefined,
+      revenueVehicleId: undefined as string | undefined,
+      expenseMode: "none" as "sum" | "individual" | "none",
+      totalExpense: undefined as number | undefined,
+      selectedExpenseTypes: [] as string[],
+      expenses: [] as IndividualExpense[],
+      expenseDriverId: undefined as string | undefined,
+      expenseVehicleId: undefined as string | undefined,
+      kmDriven: undefined as number | undefined,
+      hoursWorked: undefined as number | undefined,
+    },
+    onSubmit: async ({ value }) => {
+      const input: DailyEntryInput = {
+        date: value.date,
+        revenueMode: value.revenueMode,
+        totalRevenue: value.totalRevenue,
+        platformIds: value.selectedPlatforms,
+        revenues: value.revenues,
+        paymentMethodId: value.paymentMethodId,
+        expenseMode: value.expenseMode,
+        totalExpense: value.totalExpense,
+        expenseTypeIds: value.selectedExpenseTypes,
+        expenses: value.expenses,
+        kmDriven: value.kmDriven,
+        hoursWorked: value.hoursWorked,
+        driverId: value.revenueDriverId || value.expenseDriverId,
+        vehicleId: value.revenueVehicleId || value.expenseVehicleId,
+      };
+
+      startTransition(async () => {
+        try {
+          const result = await createDailyEntry(input);
+
+          if (result.success) {
+            let message = t("created");
+            if (value.revenueMode === "sum" && value.totalRevenue) {
+              message = t("createdSumRevenue", {
+                amount: `R$ ${value.totalRevenue.toFixed(2)}`,
+                count: value.selectedPlatforms.length.toString(),
+              });
+            } else if (value.revenueMode === "individual" && value.revenues.length > 0) {
+              message = t("createdIndividualRevenue", {
+                count: value.revenues.length.toString(),
+              });
+            }
+
+            toast.success(message);
+            handleClose();
+          }
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : tCommon("error");
+          toast.error(errorMessage);
+        }
+      });
+    },
   });
-
-  // Form state
-  const [date, setDate] = useState<Date>(new Date());
-
-  // Revenue state
-  const [revenueMode, setRevenueMode] = useState<"sum" | "individual" | "none">("none");
-  const [totalRevenue, setTotalRevenue] = useState<number | undefined>();
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
-  const [revenues, setRevenues] = useState<IndividualRevenue[]>([]);
-  const [paymentMethodId, setPaymentMethodId] = useState<string | undefined>();
-  const [revenueDriverId, setRevenueDriverId] = useState<string | undefined>();
-  const [revenueVehicleId, setRevenueVehicleId] = useState<string | undefined>();
-
-  // Expense state
-  const [expenseMode, setExpenseMode] = useState<"sum" | "individual" | "none">("none");
-  const [totalExpense, setTotalExpense] = useState<number | undefined>();
-  const [selectedExpenseTypes, setSelectedExpenseTypes] = useState<string[]>([]);
-  const [expenses, setExpenses] = useState<IndividualExpense[]>([]);
-  const [expenseDriverId, setExpenseDriverId] = useState<string | undefined>();
-  const [expenseVehicleId, setExpenseVehicleId] = useState<string | undefined>();
-
-  // Metrics state
-  const [kmDriven, setKmDriven] = useState<number | undefined>();
-  const [hoursWorked, setHoursWorked] = useState<number | undefined>();
 
   function handleClose() {
     router.back();
   }
 
-  function handleSubmit() {
-    if (!config) return;
-
-    // Build input
-    const input: DailyEntryInput = {
-      date,
-      revenueMode,
-      totalRevenue,
-      platformIds: selectedPlatforms,
-      revenues,
-      paymentMethodId,
-      expenseMode,
-      totalExpense,
-      expenseTypeIds: selectedExpenseTypes,
-      expenses,
-      kmDriven,
-      hoursWorked,
-      driverId: revenueDriverId || expenseDriverId,
-      vehicleId: revenueVehicleId || expenseVehicleId,
-    };
-
-    startTransition(async () => {
-      try {
-        const result = await createDailyEntry(input);
-
-        if (result.success) {
-          // Build success message
-          let message = t("created");
-          if (revenueMode === "sum" && totalRevenue) {
-            message = t("createdSumRevenue", {
-              amount: `R$ ${totalRevenue.toFixed(2)}`,
-              count: selectedPlatforms.length.toString(),
-            });
-          } else if (revenueMode === "individual" && revenues.length > 0) {
-            message = t("createdIndividualRevenue", {
-              count: revenues.length.toString(),
-            });
-          }
-
-          toast.success(message);
-          handleClose();
-        }
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : "Failed to create daily entry";
-        toast.error(errorMessage);
-      }
-    });
-  }
-
-  const isOpen = true; // Always open when mounted
-
-  if (isLoading || !config) {
-    return (
-      <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{t("new")}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-40 w-full" />
-            <Skeleton className="h-40 w-full" />
-            <Skeleton className="h-20 w-full" />
-          </div>
-        </DialogContent>
-      </Dialog>
-    );
-  }
-
   const defaults = config.defaults;
   const isFree = config.planType === "FREE";
 
-  // For FREE plan, get driver/vehicle
   const freeDriver = isFree && "driver" in defaults ? defaults.driver : null;
   const freeVehicle = isFree && "vehicle" in defaults ? defaults.vehicle : null;
 
-  // For SIMPLE/PRO plan, get defaults
   const smartDefaults = !isFree && "drivers" in defaults ? defaults : null;
 
-  const canSubmit =
-    (revenueMode !== "none" &&
-      ((revenueMode === "sum" && totalRevenue && totalRevenue > 0 && selectedPlatforms.length > 0) ||
-        (revenueMode === "individual" && revenues.length > 0 && revenues.every(r => r.amount > 0)))) ||
-    (expenseMode !== "none" &&
-      ((expenseMode === "sum" && totalExpense && totalExpense > 0 && selectedExpenseTypes.length > 0) ||
-        (expenseMode === "individual" && expenses.length > 0 && expenses.every(e => e.amount > 0))));
+  const canSubmit = useMemo(() => {
+    const v = form.state.values;
+    return (
+      (v.revenueMode !== "none" &&
+        ((v.revenueMode === "sum" && v.totalRevenue && v.totalRevenue > 0 && v.selectedPlatforms.length > 0) ||
+          (v.revenueMode === "individual" && v.revenues.length > 0 && v.revenues.every(r => r.amount > 0 && r.platformId)))) ||
+      (v.expenseMode !== "none" &&
+        ((v.expenseMode === "sum" && v.totalExpense && v.totalExpense > 0 && v.selectedExpenseTypes.length > 0) ||
+          (v.expenseMode === "individual" && v.expenses.length > 0 && v.expenses.every(e => e.amount > 0 && e.expenseTypeId))))
+    );
+  }, [form.state.values]);
+
+  const isOpen = true;
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -171,117 +142,150 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
           <DialogTitle>{t("new")}</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Date Picker */}
-          <div>
-            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              {t("selectDate")}
-            </label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-left font-normal mt-2"
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {format(date, "PPP")}
+        <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }}>
+          <FieldSet>
+            <FieldGroup>
+              <form.Field name="date">
+                {(field) => (
+                  <Field>
+                    <FieldLabel>{t("selectDate")}</FieldLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left font-normal"
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {format(field.state.value, "PPP", { locale: ptBR })}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.state.value}
+                          onSelect={(date) => date && field.handleChange(date)}
+                          locale={ptBR}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </Field>
+                )}
+              </form.Field>
+
+              <RevenueSection
+                platforms={isFree && "platforms" in defaults ? defaults.platforms : smartDefaults?.platforms || []}
+                paymentMethods={smartDefaults?.paymentMethods || []}
+                drivers={smartDefaults?.drivers}
+                vehicles={smartDefaults?.vehicles}
+                planType={config.planType}
+                canSelectDriver={config.features.canSelectDriver}
+                canSelectVehicle={config.features.canSelectVehicle}
+                canSelectPaymentMethod={config.features.canSelectPaymentMethod}
+                defaultDriver={freeDriver}
+                defaultVehicle={freeVehicle}
+                defaultDriverId={smartDefaults?.defaultDriverId}
+                defaultVehicleId={smartDefaults?.defaultVehicleId}
+                mostUsedPlatforms={smartDefaults?.mostUsedPlatforms || []}
+                mode={form.state.values.revenueMode}
+                onModeChange={(mode) => form.setFieldValue('revenueMode', mode)}
+                totalRevenue={form.state.values.totalRevenue}
+                onTotalRevenueChange={(val) => form.setFieldValue('totalRevenue', val)}
+                selectedPlatforms={form.state.values.selectedPlatforms}
+                onSelectedPlatformsChange={(val) => form.setFieldValue('selectedPlatforms', val)}
+                revenues={form.state.values.revenues}
+                onRevenuesChange={(val) => form.setFieldValue('revenues', val)}
+                paymentMethodId={form.state.values.paymentMethodId}
+                onPaymentMethodChange={(val) => form.setFieldValue('paymentMethodId', val)}
+                driverId={form.state.values.revenueDriverId}
+                onDriverChange={(val) => form.setFieldValue('revenueDriverId', val)}
+                vehicleId={form.state.values.revenueVehicleId}
+                onVehicleChange={(val) => form.setFieldValue('revenueVehicleId', val)}
+              />
+
+              <ExpenseSection
+                expenseTypes={isFree && "expenseTypes" in defaults ? defaults.expenseTypes : smartDefaults?.expenseTypes || []}
+                drivers={smartDefaults?.drivers}
+                vehicles={smartDefaults?.vehicles}
+                planType={config.planType}
+                canSelectDriver={config.features.canSelectDriver}
+                canSelectVehicle={config.features.canSelectVehicle}
+                defaultDriver={freeDriver}
+                defaultVehicle={freeVehicle}
+                defaultDriverId={smartDefaults?.defaultDriverId}
+                defaultVehicleId={smartDefaults?.defaultVehicleId}
+                mode={form.state.values.expenseMode}
+                onModeChange={(mode) => form.setFieldValue('expenseMode', mode)}
+                totalExpense={form.state.values.totalExpense}
+                onTotalExpenseChange={(val) => form.setFieldValue('totalExpense', val)}
+                selectedExpenseTypes={form.state.values.selectedExpenseTypes}
+                onSelectedExpenseTypesChange={(val) => form.setFieldValue('selectedExpenseTypes', val)}
+                expenses={form.state.values.expenses}
+                onExpensesChange={(val) => form.setFieldValue('expenses', val)}
+                driverId={form.state.values.expenseDriverId}
+                onDriverChange={(val) => form.setFieldValue('expenseDriverId', val)}
+                vehicleId={form.state.values.expenseVehicleId}
+                onVehicleChange={(val) => form.setFieldValue('expenseVehicleId', val)}
+              />
+
+              {/* Metrics Section (Inlined) */}
+              {(form.state.values.revenueMode !== "none" || form.state.values.expenseMode !== "none") && (
+                <>
+                  <form.Field name="kmDriven">
+                    {(field) => (
+                      <Field>
+                        <FieldLabel htmlFor="kmDriven">{t("kmDriven")}</FieldLabel>
+                        <Input
+                          id="kmDriven"
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          placeholder="0.00"
+                          value={field.state.value ?? ""}
+                          onChange={(e) => field.handleChange(e.target.value ? parseFloat(e.target.value) : undefined)}
+                          disabled={isPending}
+                        />
+                      </Field>
+                    )}
+                  </form.Field>
+
+                  <form.Field name="hoursWorked">
+                    {(field) => (
+                      <Field>
+                        <FieldLabel htmlFor="hoursWorked">{t("hoursWorked")}</FieldLabel>
+                        <Input
+                          id="hoursWorked"
+                          type="number"
+                          step="0.5"
+                          min="0"
+                          placeholder="0.0"
+                          value={field.state.value ?? ""}
+                          onChange={(e) => field.handleChange(e.target.value ? parseFloat(e.target.value) : undefined)}
+                          disabled={isPending}
+                        />
+                      </Field>
+                    )}
+                  </form.Field>
+                </>
+              )}
+
+              {!canSubmit && (form.state.values.revenueMode !== "none" || form.state.values.expenseMode !== "none") && (
+                <p className="text-sm text-muted-foreground">
+                  {t("atLeastOneRequired")}
+                </p>
+              )}
+
+              <Field orientation="horizontal">
+                <Button type="button" variant="outline" onClick={handleClose} disabled={isPending}>
+                  {tCommon("cancel")}
                 </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={(date) => date && setDate(date)}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-
-          {/* Revenue Section */}
-          <RevenueSection
-            platforms={isFree && "platforms" in defaults ? defaults.platforms : smartDefaults?.platforms || []}
-            paymentMethods={smartDefaults?.paymentMethods}
-            drivers={smartDefaults?.drivers}
-            vehicles={smartDefaults?.vehicles}
-            planType={config.planType}
-            canSelectDriver={config.features.canSelectDriver}
-            canSelectVehicle={config.features.canSelectVehicle}
-            canSelectPaymentMethod={config.features.canSelectPaymentMethod}
-            defaultDriver={freeDriver}
-            defaultVehicle={freeVehicle}
-            defaultDriverId={smartDefaults?.defaultDriverId}
-            defaultVehicleId={smartDefaults?.defaultVehicleId}
-            mostUsedPlatforms={smartDefaults?.mostUsedPlatforms}
-            mode={revenueMode}
-            onModeChange={setRevenueMode}
-            totalRevenue={totalRevenue}
-            onTotalRevenueChange={setTotalRevenue}
-            selectedPlatforms={selectedPlatforms}
-            onSelectedPlatformsChange={setSelectedPlatforms}
-            revenues={revenues}
-            onRevenuesChange={setRevenues}
-            paymentMethodId={paymentMethodId}
-            onPaymentMethodChange={setPaymentMethodId}
-            driverId={revenueDriverId}
-            onDriverChange={setRevenueDriverId}
-            vehicleId={revenueVehicleId}
-            onVehicleChange={setRevenueVehicleId}
-          />
-
-          {/* Expense Section */}
-          <ExpenseSection
-            expenseTypes={isFree && "expenseTypes" in defaults ? defaults.expenseTypes : smartDefaults?.expenseTypes || []}
-            drivers={smartDefaults?.drivers}
-            vehicles={smartDefaults?.vehicles}
-            planType={config.planType}
-            canSelectDriver={config.features.canSelectDriver}
-            canSelectVehicle={config.features.canSelectVehicle}
-            defaultDriver={freeDriver}
-            defaultVehicle={freeVehicle}
-            defaultDriverId={smartDefaults?.defaultDriverId}
-            defaultVehicleId={smartDefaults?.defaultVehicleId}
-            mode={expenseMode}
-            onModeChange={setExpenseMode}
-            totalExpense={totalExpense}
-            onTotalExpenseChange={setTotalExpense}
-            selectedExpenseTypes={selectedExpenseTypes}
-            onSelectedExpenseTypesChange={setSelectedExpenseTypes}
-            expenses={expenses}
-            onExpensesChange={setExpenses}
-            driverId={expenseDriverId}
-            onDriverChange={setExpenseDriverId}
-            vehicleId={expenseVehicleId}
-            onVehicleChange={setExpenseVehicleId}
-          />
-
-          {/* Metrics Section */}
-          {(revenueMode !== "none" || expenseMode !== "none") && (
-            <MetricsSection
-              kmDriven={kmDriven}
-              hoursWorked={hoursWorked}
-              onKmChange={setKmDriven}
-              onHoursChange={setHoursWorked}
-              disabled={isPending}
-            />
-          )}
-
-          {/* Validation message */}
-          {!canSubmit && (revenueMode !== "none" || expenseMode !== "none") && (
-            <p className="text-sm text-muted-foreground">
-              {t("atLeastOneRequired")}
-            </p>
-          )}
-        </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={handleClose} disabled={isPending}>
-            {tCommon("cancel")}
-          </Button>
-          <Button onClick={handleSubmit} disabled={!canSubmit || isPending}>
-            {isPending ? tCommon("saving") : tCommon("save")}
-          </Button>
-        </DialogFooter>
+                <Button type="submit" disabled={!canSubmit || isPending}>
+                  {isPending ? tCommon("saving") : tCommon("save")}
+                </Button>
+              </Field>
+            </FieldGroup>
+          </FieldSet>
+        </form>
       </DialogContent>
     </Dialog>
   );

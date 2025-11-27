@@ -25,7 +25,7 @@ interface SmartPlanDefaults {
   mostUsedPlatforms: string[];
 }
 
-interface DailyEntryConfig {
+export interface DailyEntryConfig {
   planType: PlanType;
   features: {
     canSelectDriver: boolean;
