@@ -36,7 +36,7 @@ const completeDailyEntrySchema = z.object({
   }).nullable(),
   expense: z.object({
     amount: z.number().min(0),
-    expenseTypeId: z.string().optional(),
+    expenseTypeIds: z.array(z.string()).optional(),
     driverId: z.string().optional(),
     vehicleId: z.string().optional(),
     useSameDriver: z.boolean().optional(),
@@ -112,9 +112,13 @@ export async function createQuickDailyEntry(input: z.infer<typeof quickDailyEntr
         data: {
           amount: data.expense.amount,
           date: data.date,
-          expenseTypeId: defaultExpenseTypeId!,
           driverId: preferences?.defaultDriverId || null,
           vehicleId: preferences?.defaultVehicleId || null,
+          expenseTypes: {
+            create: [{
+              expenseType: { connect: { id: defaultExpenseTypeId! } }
+            }]
+          }
         },
       });
     }
@@ -140,7 +144,7 @@ export async function createCompleteDailyEntry(input: z.infer<typeof completeDai
 
   let defaultExpenseTypeId: string | undefined;
 
-  if (data.expense && data.expense.amount > 0 && !data.expense.expenseTypeId) {
+  if (data.expense && data.expense.amount > 0 && (!data.expense.expenseTypeIds || data.expense.expenseTypeIds.length === 0)) {
     const defaultExpenseType = await prisma.expenseType.findFirst({
       where: {
         userId: user.id,
@@ -201,9 +205,13 @@ export async function createCompleteDailyEntry(input: z.infer<typeof completeDai
         data: {
           amount: data.expense.amount,
           date: data.date,
-          expenseTypeId: data.expense.expenseTypeId || defaultExpenseTypeId!,
           driverId: expenseDriverId,
           vehicleId: expenseVehicleId,
+          expenseTypes: {
+            create: [{
+              expenseType: { connect: { id: data.expense.expenseTypeIds?.[0] || defaultExpenseTypeId! } }
+            }]
+          }
         },
       });
     }
@@ -322,15 +330,23 @@ export async function getSmartDefaults(): Promise<SmartDefaults> {
     }),
     prisma.expense.findMany({
       where: {
-        expenseType: {
-          userId: user.id
+        expenseTypes: {
+          some: {
+            expenseType: {
+              userId: user.id
+            }
+          }
         },
         date: {
           gte: thirtyDaysAgo
         }
       },
       select: {
-        expenseTypeId: true
+        expenseTypes: {
+          select: {
+            expenseTypeId: true
+          }
+        }
       }
     })
   ]);
@@ -357,9 +373,11 @@ export async function getSmartDefaults(): Promise<SmartDefaults> {
   });
 
   expenses.forEach(exp => {
-    if (exp.expenseTypeId) {
-      expenseTypeCounts.set(exp.expenseTypeId, (expenseTypeCounts.get(exp.expenseTypeId) || 0) + 1);
-    }
+    exp.expenseTypes.forEach(et => {
+      if (et.expenseTypeId) {
+        expenseTypeCounts.set(et.expenseTypeId, (expenseTypeCounts.get(et.expenseTypeId) || 0) + 1);
+      }
+    });
   });
 
   const mostUsedPlatforms = Array.from(platformCounts.entries())
@@ -419,7 +437,7 @@ export interface LastDailyEntryData {
   } | null;
   expense: {
     amount: number;
-    expenseTypeId?: string | null;
+    expenseTypeIds?: string[];
     driverId?: string | null;
     vehicleId?: string | null;
   } | null;
@@ -451,11 +469,22 @@ export async function getLastDailyEntry(): Promise<LastDailyEntryData | null> {
     }),
     prisma.expense.findFirst({
       where: {
-        expenseType: {
-          userId: user.id
+        expenseTypes: {
+          some: {
+            expenseType: {
+              userId: user.id
+            }
+          }
         }
       },
-      orderBy: { createdAt: "desc" }
+      orderBy: { createdAt: "desc" },
+      include: {
+        expenseTypes: {
+          select: {
+            expenseTypeId: true
+          }
+        }
+      }
     })
   ]);
 
@@ -475,7 +504,7 @@ export async function getLastDailyEntry(): Promise<LastDailyEntryData | null> {
     } : null,
     expense: lastExpense ? {
       amount: lastExpense.amount,
-      expenseTypeId: lastExpense.expenseTypeId,
+      expenseTypeIds: lastExpense.expenseTypes.map(et => et.expenseTypeId),
       driverId: lastExpense.driverId,
       vehicleId: lastExpense.vehicleId,
     } : null,
@@ -563,15 +592,17 @@ export async function createDailyEntry(input: DailyEntryInput) {
 
     // Handle Expense - Sum Mode
     if (data.expenseMode === "sum" && data.totalExpense && data.expenseTypeIds) {
-      // For sum mode, create one expense with the first expense type
-      // (or we could create multiple expenses, one per type - let me know your preference)
       const expense = await tx.expense.create({
         data: {
           amount: data.totalExpense,
           date: data.date,
           driverId: data.driverId || null,
           vehicleId: data.vehicleId || null,
-          expenseTypeId: data.expenseTypeIds[0], // Using first type for now
+          expenseTypes: {
+            create: data.expenseTypeIds.map(typeId => ({
+              expenseType: { connect: { id: typeId } }
+            }))
+          }
         },
       });
       created.expenses.push(expense);
@@ -586,7 +617,11 @@ export async function createDailyEntry(input: DailyEntryInput) {
             date: data.date,
             driverId: data.driverId || null,
             vehicleId: data.vehicleId || null,
-            expenseTypeId: exp.expenseTypeId,
+            expenseTypes: {
+              create: [{
+                expenseType: { connect: { id: exp.expenseTypeId } }
+              }]
+            }
           },
         });
         created.expenses.push(expense);

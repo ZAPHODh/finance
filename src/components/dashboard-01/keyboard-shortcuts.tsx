@@ -68,7 +68,9 @@ export function KeyboardShortcuts() {
 
           if (lastEntry.expense) {
             params.set('expenseAmount', lastEntry.expense.amount.toString());
-            if (lastEntry.expense.expenseTypeId) params.set('expenseTypeId', lastEntry.expense.expenseTypeId);
+            if (lastEntry.expense.expenseTypeIds && lastEntry.expense.expenseTypeIds.length > 0) {
+              lastEntry.expense.expenseTypeIds.forEach(id => params.append('expenseTypeId', id));
+            }
             if (lastEntry.expense.driverId) params.set('expenseDriverId', lastEntry.expense.driverId);
             if (lastEntry.expense.vehicleId) params.set('expenseVehicleId', lastEntry.expense.vehicleId);
           }

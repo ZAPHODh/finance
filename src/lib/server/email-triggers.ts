@@ -31,7 +31,11 @@ export async function checkBudgetAlerts() {
     for (const budget of budgets) {
         const expenses = await prisma.expense.findMany({
             where: {
-                expenseTypeId: budget.expenseTypeId,
+                expenseTypes: {
+                    some: {
+                        expenseTypeId: budget.expenseTypeId,
+                    }
+                },
                 date: {
                     gte: new Date(`${currentPeriod}-01`),
                     lt: new Date(new Date(`${currentPeriod}-01`).setMonth(new Date(`${currentPeriod}-01`).getMonth() + 1)),

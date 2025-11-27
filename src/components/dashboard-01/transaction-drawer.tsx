@@ -56,7 +56,7 @@ interface Transaction {
   company?: string
   platform?: string
   platformIds?: string[]
-  expenseTypeId?: string | null
+  expenseTypeIds?: string[]
   paymentMethodId?: string | null
   kmDriven?: number | null
   hoursWorked?: number | null
@@ -92,7 +92,7 @@ export function TransactionDrawer({
       date: transaction?.date || new Date(),
       driverId: transaction?.driverId || "",
       vehicleId: transaction?.vehicleId || "",
-      expenseTypeId: transaction?.expenseTypeId || "",
+      expenseTypeIds: transaction?.expenseTypeIds || [],
       paymentMethodId: transaction?.paymentMethodId || "",
       platformIds: transaction?.platformIds || [],
       kmDriven: transaction?.kmDriven || undefined,
@@ -118,7 +118,7 @@ export function TransactionDrawer({
             await updateExpense(transaction.id, {
               amount: value.amount,
               date: value.date,
-              expenseTypeId: value.expenseTypeId || "",
+              expenseTypeIds: value.expenseTypeIds || [],
               driverId: value.driverId || undefined,
               vehicleId: value.vehicleId || undefined,
             })
@@ -140,7 +140,7 @@ export function TransactionDrawer({
       form.setFieldValue("date", transaction.date)
       form.setFieldValue("driverId", transaction.driverId || "")
       form.setFieldValue("vehicleId", transaction.vehicleId || "")
-      form.setFieldValue("expenseTypeId", transaction.expenseTypeId || "")
+      form.setFieldValue("expenseTypeIds", transaction.expenseTypeIds || [])
       form.setFieldValue("paymentMethodId", transaction.paymentMethodId || "")
       form.setFieldValue("platformIds", transaction.platformIds || [])
       form.setFieldValue("kmDriven", transaction.kmDriven || undefined)
@@ -386,25 +386,36 @@ export function TransactionDrawer({
                     )}
 
                     {transaction.type === "expense" && formData?.expenseTypes && (
-                      <form.Field name="expenseTypeId">
+                      <form.Field name="expenseTypeIds">
                         {(field) => (
                           <Field>
-                            <FieldLabel htmlFor="expenseTypeId">{t("category")}</FieldLabel>
-                            <Select
-                              value={field.state.value}
-                              onValueChange={field.handleChange}
-                            >
-                              <SelectTrigger id="expenseTypeId">
-                                <SelectValue placeholder="Select expense type" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {formData.expenseTypes.map((type) => (
-                                  <SelectItem key={type.id} value={type.id}>
+                            <FieldLabel>{t("category")}</FieldLabel>
+                            <div className="space-y-2">
+                              {formData.expenseTypes.map((type) => (
+                                <div key={type.id} className="flex items-center space-x-2">
+                                  <input
+                                    type="checkbox"
+                                    id={`expenseType-${type.id}`}
+                                    checked={field.state.value?.includes(type.id) || false}
+                                    onChange={(e) => {
+                                      const checked = e.target.checked;
+                                      const currentValue = field.state.value || [];
+                                      if (checked) {
+                                        field.handleChange([...currentValue, type.id]);
+                                      } else {
+                                        field.handleChange(currentValue.filter((id: string) => id !== type.id));
+                                      }
+                                    }}
+                                  />
+                                  <label
+                                    htmlFor={`expenseType-${type.id}`}
+                                    className="text-sm font-medium cursor-pointer"
+                                  >
                                     {type.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                                  </label>
+                                </div>
+                              ))}
+                            </div>
                           </Field>
                         )}
                       </form.Field>

@@ -192,11 +192,19 @@ async function getSmartPlanDefaultsUncached(userId: string): Promise<SmartPlanDe
       take: 1,
     }),
 
-    prisma.expense.groupBy({
+    prisma.expenseExpenseType.groupBy({
       by: ["expenseTypeId"],
       where: {
-        date: { gte: thirtyDaysAgo },
-        driver: { userId },
+        expense: {
+          date: { gte: thirtyDaysAgo },
+          expenseTypes: {
+            some: {
+              expenseType: {
+                userId
+              }
+            }
+          }
+        }
       },
       _count: {
         expenseTypeId: true,

@@ -12,7 +12,7 @@ import type { ExpenseFormData } from "@/types/forms";
 const expenseFormSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
   date: z.date(),
-  expenseTypeId: z.string().min(1, "Expense type is required"),
+  expenseTypeIds: z.array(z.string()).min(1, "At least one expense type is required"),
   driverId: z.string().optional(),
   vehicleId: z.string().optional(),
 });
@@ -29,12 +29,20 @@ export async function createExpense(input: ExpenseFormData) {
     data: {
       amount: data.amount,
       date: data.date,
-      expenseTypeId: data.expenseTypeId,
       driverId: data.driverId || null,
       vehicleId: data.vehicleId || null,
+      expenseTypes: {
+        create: data.expenseTypeIds.map(typeId => ({
+          expenseType: { connect: { id: typeId } }
+        }))
+      }
     },
     include: {
-      expenseType: { select: { name: true } },
+      expenseTypes: {
+        include: {
+          expenseType: { select: { name: true } }
+        }
+      },
       driver: { select: { name: true } },
       vehicle: { select: { name: true } },
     },
@@ -58,8 +66,12 @@ export async function updateExpense(id: string, input: ExpenseFormData) {
   const expense = await prisma.expense.findFirst({
     where: {
       id,
-      expenseType: {
-        userId: user.id,
+      expenseTypes: {
+        some: {
+          expenseType: {
+            userId: user.id,
+          }
+        }
       },
     },
   });
@@ -73,12 +85,21 @@ export async function updateExpense(id: string, input: ExpenseFormData) {
     data: {
       amount: data.amount,
       date: data.date,
-      expenseTypeId: data.expenseTypeId,
       driverId: data.driverId || null,
       vehicleId: data.vehicleId || null,
+      expenseTypes: {
+        deleteMany: {},
+        create: data.expenseTypeIds.map(typeId => ({
+          expenseType: { connect: { id: typeId } }
+        }))
+      }
     },
     include: {
-      expenseType: { select: { name: true } },
+      expenseTypes: {
+        include: {
+          expenseType: { select: { name: true } }
+        }
+      },
       driver: { select: { name: true } },
       vehicle: { select: { name: true } },
     },
@@ -103,8 +124,12 @@ export async function deleteExpense(id: string) {
   const expense = await prisma.expense.findFirst({
     where: {
       id,
-      expenseType: {
-        userId: user.id,
+      expenseTypes: {
+        some: {
+          expenseType: {
+            userId: user.id,
+          }
+        }
       },
     },
   });
@@ -126,16 +151,24 @@ async function getExpensesDataUncached(userId: string) {
   const [expenses, expenseTypes, drivers, vehicles] = await Promise.all([
     prisma.expense.findMany({
       where: {
-        expenseType: {
-          userId,
+        expenseTypes: {
+          some: {
+            expenseType: {
+              userId,
+            }
+          }
         },
       },
       include: {
-        expenseType: {
-          select: {
-            id: true,
-            name: true,
-          },
+        expenseTypes: {
+          include: {
+            expenseType: {
+              select: {
+                id: true,
+                name: true,
+              },
+            }
+          }
         },
         driver: {
           select: {

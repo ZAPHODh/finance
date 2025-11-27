@@ -61,12 +61,20 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
       date: dateFilter,
       ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
       ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
-      expenseType: {
-        userId: userId,
+      expenseTypes: {
+        some: {
+          expenseType: {
+            userId: userId,
+          }
+        }
       },
     },
     include: {
-      expenseType: true,
+      expenseTypes: {
+        include: {
+          expenseType: true
+        }
+      },
       driver: true,
       vehicle: true,
     },
@@ -124,8 +132,12 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
         date: previousDateFilter,
         ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
         ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
-        expenseType: {
-          userId: userId,
+        expenseTypes: {
+          some: {
+            expenseType: {
+              userId: userId,
+            }
+          }
         },
       },
     }),
@@ -208,11 +220,13 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
   }, {} as Record<string, number>)
 
   const expensesByType = expenses.reduce((acc, e) => {
-    const typeName = e.expenseType.name
-    if (!acc[typeName]) {
-      acc[typeName] = 0
-    }
-    acc[typeName] += e.amount
+    e.expenseTypes.forEach(et => {
+      const typeName = et.expenseType.name
+      if (!acc[typeName]) {
+        acc[typeName] = 0
+      }
+      acc[typeName] += e.amount
+    })
     return acc
   }, {} as Record<string, number>)
 
@@ -264,8 +278,8 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
     })),
     ...expenses.map(e => ({
       id: `exp-${e.id}`,
-      description: `Despesa - ${e.expenseType.name}`,
-      category: e.expenseType.name,
+      description: `Despesa - ${e.expenseTypes.map(et => et.expenseType.name).join(', ')}`,
+      category: e.expenseTypes.map(et => et.expenseType.name).join(', '),
       amount: e.amount,
       type: 'expense' as const,
       date: e.date,

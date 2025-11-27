@@ -35,7 +35,11 @@ export type RevenueWithRelations = Prisma.RevenueGetPayload<{
 
 export type ExpenseWithRelations = Prisma.ExpenseGetPayload<{
   include: {
-    expenseType: true
+    expenseTypes: {
+      include: {
+        expenseType: true
+      }
+    }
     driver: true
     vehicle: true
   }

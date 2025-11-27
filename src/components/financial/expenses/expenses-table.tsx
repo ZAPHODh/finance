@@ -21,10 +21,12 @@ type ExpenseWithRelations = {
   id: string;
   amount: number;
   date: Date;
-  expenseType: {
-    id: string;
-    name: string;
-  };
+  expenseTypes: {
+    expenseType: {
+      id: string;
+      name: string;
+    };
+  }[];
   driver: {
     id: string;
     name: string;
@@ -69,7 +71,7 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
 
       const matchesType =
         selectedExpenseTypeIds.length === 0 ||
-        selectedExpenseTypeIds.includes(expense.expenseType.id);
+        expense.expenseTypes.some(et => selectedExpenseTypeIds.includes(et.expenseType.id));
 
       const matchesDriver =
         selectedDriverIds.length === 0 ||
@@ -124,9 +126,9 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
       cell: ({ row }) => <div className="font-medium">{formatDate(row.getValue('date'))}</div>,
     },
     {
-      accessorKey: 'expenseType.name',
-      header: t('expenseType'),
-      cell: ({ row }) => <div>{row.original.expenseType.name}</div>,
+      accessorKey: 'expenseTypes',
+      header: t('expenseTypes'),
+      cell: ({ row }) => <div>{row.original.expenseTypes.map(et => et.expenseType.name).join(', ')}</div>,
     },
     {
       id: 'driver',
@@ -297,7 +299,7 @@ export function ExpensesTable({ expenses, expenseTypes, drivers, vehicles }: Exp
       <DataTable
         columns={columns}
         data={filteredExpenses}
-        searchKey="expenseType.name"
+        searchKey="amount"
         searchPlaceholder={tCommon('search')}
         noResultsText={tNoData('noData')}
       />

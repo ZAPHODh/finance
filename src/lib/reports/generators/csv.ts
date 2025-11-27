@@ -51,7 +51,7 @@ function generateExpenseBreakdownCSV(reportData: ReportData): string {
 
   const rows = reportData.expenses.map(expense => ({
     Data: new Date(expense.date).toLocaleDateString('pt-BR'),
-    'Tipo de Despesa': expense.expenseType.name,
+    'Tipo de Despesa': expense.expenseTypes.map(et => et.expenseType.name).join(', '),
     Motorista: expense.driver?.name || '-',
     Veículo: expense.vehicle?.name || '-',
     'Forma de Pagamento': expense.paymentMethod?.name || '-',

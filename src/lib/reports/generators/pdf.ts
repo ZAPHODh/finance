@@ -162,7 +162,7 @@ function addExpensesTable(doc: jsPDF, expenses: ReportData['expenses'], startY: 
     head: [['Data', 'Tipo', 'Motorista', 'Veículo', 'Valor']],
     body: expenses.map(expense => [
       format(new Date(expense.date), 'dd/MM/yyyy'),
-      expense.expenseType.name,
+      expense.expenseTypes.map(et => et.expenseType.name).join(', '),
       expense.driver?.name || '-',
       expense.vehicle?.name || '-',
       `R$ ${expense.amount.toFixed(2)}`,

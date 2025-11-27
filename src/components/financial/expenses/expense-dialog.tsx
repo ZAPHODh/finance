@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { useRouter, usePathname } from "next/navigation";
 import { useScopedI18n } from "@/locales/client";
@@ -19,7 +20,7 @@ interface ExpenseDialogProps {
     amount: number;
     date: Date;
     receiptUrl: string | null;
-    expenseTypeId: string;
+    expenseTypeIds: string[];
     driverId: string | null;
     vehicleId: string | null;
   };
@@ -48,7 +49,7 @@ export function ExpenseDialog({
     defaultValues: {
       amount: expense?.amount || 0,
       date: expense?.date ? new Date(expense.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-      expenseTypeId: expense?.expenseTypeId || "",
+      expenseTypeIds: expense?.expenseTypeIds || [],
       driverId: expense?.driverId || "",
       vehicleId: expense?.vehicleId || "",
     },
@@ -56,7 +57,7 @@ export function ExpenseDialog({
       const data = {
         amount: Number(value.amount),
         date: new Date(value.date),
-        expenseTypeId: value.expenseTypeId,
+        expenseTypeIds: value.expenseTypeIds,
         driverId: value.driverId && value.driverId !== "none" ? value.driverId : undefined,
         vehicleId: value.vehicleId && value.vehicleId !== "none" ? value.vehicleId : undefined,
       };
@@ -127,25 +128,33 @@ export function ExpenseDialog({
                 )}
               </form.Field>
 
-              <form.Field name="expenseTypeId">
+              <form.Field name="expenseTypeIds">
                 {(field) => (
                   <Field>
-                    <FieldLabel htmlFor="expenseTypeId">{t('expenseType')}</FieldLabel>
-                    <Select
-                      value={field.state.value}
-                      onValueChange={field.handleChange}
-                    >
-                      <SelectTrigger id="expenseTypeId">
-                        <SelectValue placeholder={t('expenseType')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {expenseTypes.map((type) => (
-                          <SelectItem key={type.id} value={type.id}>
+                    <FieldLabel>{t('expenseTypes')}</FieldLabel>
+                    <div className="space-y-2">
+                      {expenseTypes.map((type) => (
+                        <div key={type.id} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`expenseType-${type.id}`}
+                            checked={field.state.value.includes(type.id)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                field.handleChange([...field.state.value, type.id]);
+                              } else {
+                                field.handleChange(field.state.value.filter((id: string) => id !== type.id));
+                              }
+                            }}
+                          />
+                          <label
+                            htmlFor={`expenseType-${type.id}`}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                          >
                             {type.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                          </label>
+                        </div>
+                      ))}
+                    </div>
                   </Field>
                 )}
               </form.Field>

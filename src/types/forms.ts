@@ -27,7 +27,7 @@ export interface ExpenseTypeFormData {
 export interface ExpenseFormData {
   amount: number
   date: Date
-  expenseTypeId: string
+  expenseTypeIds: string[]
   driverId?: string | null
   vehicleId?: string | null
 }
@@ -102,7 +102,7 @@ export interface CompleteDailyEntryFormData {
   } | null
   expense: {
     amount: number
-    expenseTypeId?: string
+    expenseTypeIds?: string[]
     driverId?: string
     vehicleId?: string
     useSameDriver?: boolean

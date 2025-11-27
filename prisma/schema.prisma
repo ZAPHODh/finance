@@ -139,7 +139,7 @@ model ExpenseType {
   userId           String
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  expenses         Expense[]
+  expenses         ExpenseExpenseType[]
   budgets          Budget[]
   reminders        Reminder[]
   expenseTemplates ExpenseTemplate[]
@@ -221,8 +221,7 @@ model Expense {
   date            DateTime
   receiptUrl      String?
 
-  expenseTypeId   String
-  expenseType     ExpenseType    @relation(fields: [expenseTypeId], references: [id], onDelete: Cascade)
+  expenseTypes    ExpenseExpenseType[]
 
   driverId        String?
   driver          Driver?        @relation(fields: [driverId], references: [id], onDelete: SetNull)
@@ -235,15 +234,11 @@ model Expense {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([expenseTypeId])
   @@index([driverId])
   @@index([vehicleId])
   @@index([date])
-  // Composite indexes for complex queries
-  @@index([expenseTypeId, date])
   @@index([driverId, date])
   @@index([vehicleId, date])
-  @@index([date, expenseTypeId, driverId])
 }
 
 model Revenue {
@@ -293,6 +288,22 @@ model RevenuePlatform {
   @@index([revenueId])
   @@index([platformId])
   @@index([platformId, revenueId])
+}
+
+// Junction table for many-to-many relationship between Expense and ExpenseType
+model ExpenseExpenseType {
+  id            String      @id @default(cuid())
+  expenseId     String
+  expense       Expense     @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  expenseTypeId String
+  expenseType   ExpenseType @relation(fields: [expenseTypeId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime    @default(now())
+
+  @@unique([expenseId, expenseTypeId])
+  @@index([expenseId])
+  @@index([expenseTypeId])
+  @@index([expenseTypeId, expenseId])
 }
 
 model WorkLog {

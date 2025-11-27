@@ -108,10 +108,20 @@ async function fetchReportData(
           ...baseWhere,
           ...(filters?.driverId && { driverId: filters.driverId }),
           ...(filters?.vehicleId && { vehicleId: filters.vehicleId }),
-          ...(filters?.expenseTypeId && { expenseTypeId: filters.expenseTypeId }),
+          ...(filters?.expenseTypeId && {
+            expenseTypes: {
+              some: {
+                expenseTypeId: filters.expenseTypeId
+              }
+            }
+          }),
         },
         include: {
-          expenseType: true,
+          expenseTypes: {
+            include: {
+              expenseType: true
+            }
+          },
           driver: true,
           vehicle: true,
         },
@@ -125,7 +135,7 @@ async function fetchReportData(
           id: e.id,
           date: e.date,
           amount: e.amount,
-          expenseType: { name: e.expenseType.name },
+          expenseTypes: e.expenseTypes.map(et => ({ expenseType: { name: et.expenseType.name } })),
           driver: e.driver ? { name: e.driver.name } : undefined,
           vehicle: e.vehicle ? { name: e.vehicle.name } : undefined,
         })),
@@ -185,7 +195,11 @@ async function fetchReportData(
             ...(filters?.vehicleId && { vehicleId: filters.vehicleId }),
           },
           include: {
-            expenseType: true,
+            expenseTypes: {
+              include: {
+                expenseType: true
+              }
+            },
             driver: true,
             vehicle: true,
           },
@@ -218,7 +232,7 @@ async function fetchReportData(
           id: e.id,
           date: e.date,
           amount: e.amount,
-          expenseType: { name: e.expenseType.name },
+          expenseTypes: e.expenseTypes.map(et => ({ expenseType: { name: et.expenseType.name } })),
           driver: e.driver ? { name: e.driver.name } : undefined,
           vehicle: e.vehicle ? { name: e.vehicle.name } : undefined,
         })),

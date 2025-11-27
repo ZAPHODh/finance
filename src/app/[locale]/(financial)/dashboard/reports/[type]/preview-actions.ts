@@ -41,17 +41,29 @@ export async function getReportPreview(params: PreviewParams) {
           ...baseWhere,
           ...(filters?.driverId && { driverId: filters.driverId }),
           ...(filters?.vehicleId && { vehicleId: filters.vehicleId }),
-          ...(filters?.expenseTypeId && { expenseTypeId: filters.expenseTypeId }),
+          ...(filters?.expenseTypeId && {
+            expenseTypes: {
+              some: {
+                expenseTypeId: filters.expenseTypeId
+              }
+            }
+          }),
         },
         include: {
-          expenseType: true,
+          expenseTypes: {
+            include: {
+              expenseType: true
+            }
+          },
         },
       });
 
       // Agrupar por tipo
       const expensesByType = expenses.reduce((acc, expense) => {
-        const typeName = expense.expenseType.name;
-        acc[typeName] = (acc[typeName] || 0) + expense.amount;
+        expense.expenseTypes.forEach(et => {
+          const typeName = et.expenseType.name;
+          acc[typeName] = (acc[typeName] || 0) + expense.amount;
+        });
         return acc;
       }, {} as Record<string, number>);
 

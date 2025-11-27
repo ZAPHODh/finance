@@ -88,7 +88,7 @@ export interface ExpenseData {
   id: string;
   date: Date;
   amount: number;
-  expenseType: { name: string };
+  expenseTypes: { expenseType: { name: string } }[];
   driver?: { name: string };
   vehicle?: { name: string };
   paymentMethod?: { name: string };

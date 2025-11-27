@@ -10,6 +10,7 @@ export default {
         kmDriven: 'KM Rodados',
         receipt: 'Comprovante',
         expenseType: 'Tipo de Despesa',
+        expenseTypes: 'Tipos de Despesa',
         paymentMethod: 'Forma de Pagamento',
         noExpenses: 'Nenhuma despesa encontrada',
     },

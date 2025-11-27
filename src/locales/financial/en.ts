@@ -10,6 +10,7 @@ export default {
         kmDriven: 'KM Driven',
         receipt: 'Receipt',
         expenseType: 'Expense Type',
+        expenseTypes: 'Expense Types',
         paymentMethod: 'Payment Method',
         noExpenses: 'No expenses found',
     },

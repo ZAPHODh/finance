@@ -73,7 +73,7 @@ export function DailyEntryDialog({ mode }: DailyEntryDialogProps) {
   const [hoursWorked, setHoursWorked] = useState<number | undefined>();
 
   function handleClose() {
-    router.push(pathname);
+    router.back();
   }
 
   function handleSubmit() {

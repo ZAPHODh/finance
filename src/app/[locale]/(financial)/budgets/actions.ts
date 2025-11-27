@@ -203,13 +203,17 @@ export async function getBudgetUsage(budgetId: string) {
 
     const expenses = await prisma.expense.findMany({
         where: {
-            expenseTypeId: budget.expenseTypeId,
+            expenseTypes: {
+                some: {
+                    expenseTypeId: budget.expenseTypeId,
+                    expenseType: {
+                        userId: user.id,
+                    }
+                }
+            },
             date: {
                 gte: startDate,
                 lte: endDate,
-            },
-            driver: {
-                userId: user.id,
             },
         },
     })

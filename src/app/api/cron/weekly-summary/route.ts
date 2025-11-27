@@ -50,7 +50,13 @@ export async function GET(request: NextRequest) {
                 }),
                 prisma.expense.findMany({
                     where: {
-                        expenseType: { userId: user.id },
+                        expenseTypes: {
+                            some: {
+                                expenseType: {
+                                    userId: user.id,
+                                }
+                            }
+                        },
                         date: {
                             gte: startDate,
                             lt: endDate,

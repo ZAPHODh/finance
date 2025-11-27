@@ -50,14 +50,24 @@ export async function GET(request: NextRequest) {
                 }),
                 prisma.expense.findMany({
                     where: {
-                        expenseType: { userId: user.id },
+                        expenseTypes: {
+                            some: {
+                                expenseType: {
+                                    userId: user.id,
+                                }
+                            }
+                        },
                         date: {
                             gte: startDate,
                             lte: endDate,
                         },
                     },
                     include: {
-                        expenseType: true,
+                        expenseTypes: {
+                            include: {
+                                expenseType: true
+                            }
+                        },
                     },
                 }),
             ]);
@@ -67,8 +77,10 @@ export async function GET(request: NextRequest) {
             const profit = totalRevenue - totalExpenses;
 
             const expensesByType = expenses.reduce((acc, expense) => {
-                const typeName = expense.expenseType.name;
-                acc[typeName] = (acc[typeName] || 0) + expense.amount;
+                expense.expenseTypes.forEach(et => {
+                    const typeName = et.expenseType.name;
+                    acc[typeName] = (acc[typeName] || 0) + expense.amount;
+                });
                 return acc;
             }, {} as Record<string, number>);
 

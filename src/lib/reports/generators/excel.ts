@@ -187,7 +187,7 @@ function addExpensesSheet(
 
   expenses.forEach((expense) => {
     worksheet.getCell(row, 1).value = format(new Date(expense.date), 'dd/MM/yyyy');
-    worksheet.getCell(row, 2).value = expense.expenseType.name;
+    worksheet.getCell(row, 2).value = expense.expenseTypes.map(et => et.expenseType.name).join(', ');
     worksheet.getCell(row, 3).value = expense.driver?.name || '-';
     worksheet.getCell(row, 4).value = expense.vehicle?.name || '-';
     worksheet.getCell(row, 5).value = expense.amount;
