@@ -122,18 +122,6 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
 
   const smartDefaults = !isFree && "drivers" in defaults ? defaults : null;
 
-  const canSubmit = useMemo(() => {
-    const v = form.state.values;
-    return (
-      (revenueMode !== "none" &&
-        ((revenueMode === "sum" && v.totalRevenue && v.totalRevenue > 0 && v.selectedPlatforms.length > 0) ||
-          (revenueMode === "individual" && v.revenues.length > 0 && v.revenues.every(r => r.amount > 0 && r.platformId)))) ||
-      (expenseMode !== "none" &&
-        ((expenseMode === "sum" && v.totalExpense && v.totalExpense > 0 && v.selectedExpenseTypes.length > 0) ||
-          (expenseMode === "individual" && v.expenses.length > 0 && v.expenses.every(e => e.amount > 0 && e.expenseTypeId))))
-    );
-  }, [form.state.values, revenueMode, expenseMode]);
-
   const isOpen = true;
 
   return (
@@ -174,60 +162,68 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
                 )}
               </form.Field>
 
-              <RevenueSection
-                platforms={isFree && "platforms" in defaults ? defaults.platforms : smartDefaults?.platforms || []}
-                paymentMethods={smartDefaults?.paymentMethods || []}
-                drivers={smartDefaults?.drivers}
-                vehicles={smartDefaults?.vehicles}
-                planType={config.planType}
-                canSelectDriver={config.features.canSelectDriver}
-                canSelectVehicle={config.features.canSelectVehicle}
-                canSelectPaymentMethod={config.features.canSelectPaymentMethod}
-                defaultDriver={freeDriver}
-                defaultVehicle={freeVehicle}
-                defaultDriverId={smartDefaults?.defaultDriverId}
-                defaultVehicleId={smartDefaults?.defaultVehicleId}
-                mostUsedPlatforms={smartDefaults?.mostUsedPlatforms || []}
-                mode={revenueMode}
-                onModeChange={setRevenueMode}
-                totalRevenue={form.state.values.totalRevenue}
-                onTotalRevenueChange={(val) => form.setFieldValue('totalRevenue', val)}
-                selectedPlatforms={form.state.values.selectedPlatforms}
-                onSelectedPlatformsChange={(val) => form.setFieldValue('selectedPlatforms', val)}
-                revenues={form.state.values.revenues}
-                onRevenuesChange={(val) => form.setFieldValue('revenues', val)}
-                paymentMethodId={form.state.values.paymentMethodId}
-                onPaymentMethodChange={(val) => form.setFieldValue('paymentMethodId', val)}
-                driverId={form.state.values.revenueDriverId}
-                onDriverChange={(val) => form.setFieldValue('revenueDriverId', val)}
-                vehicleId={form.state.values.revenueVehicleId}
-                onVehicleChange={(val) => form.setFieldValue('revenueVehicleId', val)}
-              />
+              <form.Subscribe selector={(state) => state.values}>
+                {(formValues) => (
+                  <RevenueSection
+                    platforms={isFree && "platforms" in defaults ? defaults.platforms : smartDefaults?.platforms || []}
+                    paymentMethods={smartDefaults?.paymentMethods || []}
+                    drivers={smartDefaults?.drivers}
+                    vehicles={smartDefaults?.vehicles}
+                    planType={config.planType}
+                    canSelectDriver={config.features.canSelectDriver}
+                    canSelectVehicle={config.features.canSelectVehicle}
+                    canSelectPaymentMethod={config.features.canSelectPaymentMethod}
+                    defaultDriver={freeDriver}
+                    defaultVehicle={freeVehicle}
+                    defaultDriverId={smartDefaults?.defaultDriverId}
+                    defaultVehicleId={smartDefaults?.defaultVehicleId}
+                    mostUsedPlatforms={smartDefaults?.mostUsedPlatforms || []}
+                    mode={revenueMode}
+                    onModeChange={setRevenueMode}
+                    totalRevenue={formValues.totalRevenue}
+                    onTotalRevenueChange={(val) => form.setFieldValue('totalRevenue', val)}
+                    selectedPlatforms={formValues.selectedPlatforms}
+                    onSelectedPlatformsChange={(val) => form.setFieldValue('selectedPlatforms', val)}
+                    revenues={formValues.revenues}
+                    onRevenuesChange={(val) => form.setFieldValue('revenues', val)}
+                    paymentMethodId={formValues.paymentMethodId}
+                    onPaymentMethodChange={(val) => form.setFieldValue('paymentMethodId', val)}
+                    driverId={formValues.revenueDriverId}
+                    onDriverChange={(val) => form.setFieldValue('revenueDriverId', val)}
+                    vehicleId={formValues.revenueVehicleId}
+                    onVehicleChange={(val) => form.setFieldValue('revenueVehicleId', val)}
+                  />
+                )}
+              </form.Subscribe>
 
-              <ExpenseSection
-                expenseTypes={isFree && "expenseTypes" in defaults ? defaults.expenseTypes : smartDefaults?.expenseTypes || []}
-                drivers={smartDefaults?.drivers}
-                vehicles={smartDefaults?.vehicles}
-                planType={config.planType}
-                canSelectDriver={config.features.canSelectDriver}
-                canSelectVehicle={config.features.canSelectVehicle}
-                defaultDriver={freeDriver}
-                defaultVehicle={freeVehicle}
-                defaultDriverId={smartDefaults?.defaultDriverId}
-                defaultVehicleId={smartDefaults?.defaultVehicleId}
-                mode={expenseMode}
-                onModeChange={setExpenseMode}
-                totalExpense={form.state.values.totalExpense}
-                onTotalExpenseChange={(val) => form.setFieldValue('totalExpense', val)}
-                selectedExpenseTypes={form.state.values.selectedExpenseTypes}
-                onSelectedExpenseTypesChange={(val) => form.setFieldValue('selectedExpenseTypes', val)}
-                expenses={form.state.values.expenses}
-                onExpensesChange={(val) => form.setFieldValue('expenses', val)}
-                driverId={form.state.values.expenseDriverId}
-                onDriverChange={(val) => form.setFieldValue('expenseDriverId', val)}
-                vehicleId={form.state.values.expenseVehicleId}
-                onVehicleChange={(val) => form.setFieldValue('expenseVehicleId', val)}
-              />
+              <form.Subscribe selector={(state) => state.values}>
+                {(formValues) => (
+                  <ExpenseSection
+                    expenseTypes={isFree && "expenseTypes" in defaults ? defaults.expenseTypes : smartDefaults?.expenseTypes || []}
+                    drivers={smartDefaults?.drivers}
+                    vehicles={smartDefaults?.vehicles}
+                    planType={config.planType}
+                    canSelectDriver={config.features.canSelectDriver}
+                    canSelectVehicle={config.features.canSelectVehicle}
+                    defaultDriver={freeDriver}
+                    defaultVehicle={freeVehicle}
+                    defaultDriverId={smartDefaults?.defaultDriverId}
+                    defaultVehicleId={smartDefaults?.defaultVehicleId}
+                    mode={expenseMode}
+                    onModeChange={setExpenseMode}
+                    totalExpense={formValues.totalExpense}
+                    onTotalExpenseChange={(val) => form.setFieldValue('totalExpense', val)}
+                    selectedExpenseTypes={formValues.selectedExpenseTypes}
+                    onSelectedExpenseTypesChange={(val) => form.setFieldValue('selectedExpenseTypes', val)}
+                    expenses={formValues.expenses}
+                    onExpensesChange={(val) => form.setFieldValue('expenses', val)}
+                    driverId={formValues.expenseDriverId}
+                    onDriverChange={(val) => form.setFieldValue('expenseDriverId', val)}
+                    vehicleId={formValues.expenseVehicleId}
+                    onVehicleChange={(val) => form.setFieldValue('expenseVehicleId', val)}
+                  />
+                )}
+              </form.Subscribe>
 
               {/* Metrics Section (Inlined) */}
               {(revenueMode !== "none" || expenseMode !== "none") && (
@@ -270,20 +266,37 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
                 </>
               )}
 
-              {!canSubmit && (revenueMode !== "none" || expenseMode !== "none") && (
-                <p className="text-sm text-muted-foreground">
-                  {t("atLeastOneRequired")}
-                </p>
-              )}
+              <form.Subscribe selector={(state) => state.values}>
+                {(formValues) => {
+                  const canSubmit = (
+                    (revenueMode !== "none" &&
+                      ((revenueMode === "sum" && formValues.totalRevenue && formValues.totalRevenue > 0 && formValues.selectedPlatforms.length > 0) ||
+                        (revenueMode === "individual" && formValues.revenues.length > 0 && formValues.revenues.every(r => r.amount > 0 && r.platformId)))) ||
+                    (expenseMode !== "none" &&
+                      ((expenseMode === "sum" && formValues.totalExpense && formValues.totalExpense > 0 && formValues.selectedExpenseTypes.length > 0) ||
+                        (expenseMode === "individual" && formValues.expenses.length > 0 && formValues.expenses.every(e => e.amount > 0 && e.expenseTypeId))))
+                  );
 
-              <Field orientation="horizontal">
-                <Button type="button" variant="outline" onClick={handleClose} disabled={isPending}>
-                  {tCommon("cancel")}
-                </Button>
-                <Button type="submit" disabled={!canSubmit || isPending}>
-                  {isPending ? tCommon("saving") : tCommon("save")}
-                </Button>
-              </Field>
+                  return (
+                    <>
+                      {!canSubmit && (revenueMode !== "none" || expenseMode !== "none") && (
+                        <p className="text-sm text-muted-foreground">
+                          {t("atLeastOneRequired")}
+                        </p>
+                      )}
+
+                      <Field orientation="horizontal">
+                        <Button type="button" variant="outline" onClick={handleClose} disabled={isPending}>
+                          {tCommon("cancel")}
+                        </Button>
+                        <Button type="submit" disabled={!canSubmit || isPending}>
+                          {isPending ? tCommon("saving") : tCommon("save")}
+                        </Button>
+                      </Field>
+                    </>
+                  );
+                }}
+              </form.Subscribe>
             </FieldGroup>
           </FieldSet>
         </form>
