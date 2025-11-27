@@ -151,7 +151,9 @@ export function RevenueSection({
         <ToggleGroup
           type="single"
           value={mode}
-          onValueChange={(value) => onModeChange(value as "sum" | "individual" | "none")}
+          onValueChange={(value) => {
+            if (value) onModeChange(value as "sum" | "individual");
+          }}
           className="border rounded-md"
         >
           <ToggleGroupItem value="sum" className="text-xs">
