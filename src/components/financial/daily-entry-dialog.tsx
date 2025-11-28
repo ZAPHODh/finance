@@ -111,7 +111,6 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
             }
 
             toast.success(message);
-            router.refresh();
             handleClose();
           }
         } catch (error) {

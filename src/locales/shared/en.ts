@@ -9,4 +9,10 @@ export default {
     toggleTheme: 'Toggle Theme',
     light: 'Light',
     dark: 'Dark',
+    notFound: {
+        title: 'Page Not Found',
+        description: 'The page you are looking for does not exist or has been moved.',
+        backHome: 'Back to Home',
+        backDashboard: 'Go to Dashboard',
+    },
 } as const

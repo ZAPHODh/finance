@@ -18,7 +18,6 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
 import { useScopedI18n } from "@/locales/client"
-import { useTransition } from "react"
 
 interface DashboardFiltersProps {
   drivers: Array<{ id: string; name: string }>
@@ -32,7 +31,6 @@ export function DashboardFilters({
   platforms,
 }: DashboardFiltersProps) {
   const t = useScopedI18n("dashboard.filters")
-  const [isPending, startTransition] = useTransition()
 
   const {
     filters,
@@ -139,12 +137,7 @@ export function DashboardFilters({
         <Accordion type="single" collapsible defaultValue="filters">
           <AccordionItem value="filters" className="border-none">
             <AccordionTrigger className="hover:no-underline">
-              <div className="flex items-center gap-2">
-                <h2 className="text-lg font-semibold">{t("filters")}</h2>
-                {isPending && (
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                )}
-              </div>
+              <h2 className="text-lg font-semibold">{t("filters")}</h2>
             </AccordionTrigger>
             <AccordionContent>
               <div className="space-y-4 pt-2">
@@ -169,12 +162,7 @@ export function DashboardFilters({
       {/* Desktop Layout - visible only on md and larger screens */}
       <div className="hidden flex-col gap-4 px-4 md:flex lg:px-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg font-semibold">{t("filters")}</h2>
-            {isPending && (
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-            )}
-          </div>
+          <h2 className="text-lg font-semibold">{t("filters")}</h2>
           {hasActiveFilters && (
             <Button
               variant="ghost"

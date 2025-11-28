@@ -1,5 +1,3 @@
-"use client"
-
 import { TrendingDown, TrendingUp, DollarSign, MapPin, Clock } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import {

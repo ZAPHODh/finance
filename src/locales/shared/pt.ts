@@ -9,4 +9,10 @@ export default {
     toggleTheme: 'Alternar Tema',
     light: 'Claro',
     dark: 'Escuro',
+    notFound: {
+        title: 'Página Não Encontrada',
+        description: 'A página que você está procurando não existe ou foi movida.',
+        backHome: 'Voltar para Início',
+        backDashboard: 'Ir para Dashboard',
+    },
 } as const

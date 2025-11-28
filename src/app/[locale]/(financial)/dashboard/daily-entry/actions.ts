@@ -631,10 +631,12 @@ export async function createDailyEntry(input: DailyEntryInput) {
     return created;
   });
 
-  await invalidateCache(CacheTags.REVENUES);
-  await invalidateCache(CacheTags.EXPENSES);
-  await invalidateCache(CacheTags.DASHBOARD);
-  await revalidatePath("/dashboard");
+  await Promise.all([
+    invalidateCache(CacheTags.REVENUES),
+    invalidateCache(CacheTags.EXPENSES),
+    invalidateCache(CacheTags.DASHBOARD),
+  ]);
+  revalidatePath("/dashboard");
 
   return {
     success: true,
