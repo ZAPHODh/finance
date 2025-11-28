@@ -10,12 +10,12 @@ export interface DashboardFilters {
 export function useDashboardQueryFilters() {
   const [period, setPeriod] = useQueryState(
     'period',
-    parseAsString.withDefault('thisMonth')
+    parseAsString.withDefault('thisMonth').withOptions({ shallow: false })
   )
 
-  const [driverId, setDriverId] = useQueryState('driver', parseAsString)
-  const [vehicleId, setVehicleId] = useQueryState('vehicle', parseAsString)
-  const [platformId, setPlatformId] = useQueryState('platform', parseAsString)
+  const [driverId, setDriverId] = useQueryState('driver', parseAsString.withOptions({ shallow: false }))
+  const [vehicleId, setVehicleId] = useQueryState('vehicle', parseAsString.withOptions({ shallow: false }))
+  const [platformId, setPlatformId] = useQueryState('platform', parseAsString.withOptions({ shallow: false }))
 
   const filters: DashboardFilters = {
     period,
