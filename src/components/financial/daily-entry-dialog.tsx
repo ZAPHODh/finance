@@ -46,6 +46,18 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
   const [revenueMode, setRevenueMode] = useState<"sum" | "individual" | "none">("none");
   const [expenseMode, setExpenseMode] = useState<"sum" | "individual" | "none">("none");
 
+  const defaultDriverId = config.planType === "FREE" && "driver" in config.defaults
+    ? config.defaults.driver?.id
+    : "drivers" in config.defaults
+    ? config.defaults.defaultDriverId
+    : undefined;
+
+  const defaultVehicleId = config.planType === "FREE" && "vehicle" in config.defaults
+    ? config.defaults.vehicle?.id
+    : "drivers" in config.defaults
+    ? config.defaults.defaultVehicleId
+    : undefined;
+
   const form = useForm({
     defaultValues: {
       date: new Date(),
@@ -53,13 +65,13 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
       selectedPlatforms: [] as string[],
       revenues: [] as IndividualRevenue[],
       paymentMethodId: undefined as string | undefined,
-      revenueDriverId: undefined as string | undefined,
-      revenueVehicleId: undefined as string | undefined,
+      revenueDriverId: (defaultDriverId ?? undefined) as string | undefined,
+      revenueVehicleId: (defaultVehicleId ?? undefined) as string | undefined,
       totalExpense: undefined as number | undefined,
       selectedExpenseTypes: [] as string[],
       expenses: [] as IndividualExpense[],
-      expenseDriverId: undefined as string | undefined,
-      expenseVehicleId: undefined as string | undefined,
+      expenseDriverId: (defaultDriverId ?? undefined) as string | undefined,
+      expenseVehicleId: (defaultVehicleId ?? undefined) as string | undefined,
       kmDriven: undefined as number | undefined,
       hoursWorked: undefined as number | undefined,
     },
@@ -77,8 +89,8 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
         expenses: value.expenses,
         kmDriven: value.kmDriven,
         hoursWorked: value.hoursWorked,
-        driverId: value.revenueDriverId || value.expenseDriverId,
-        vehicleId: value.revenueVehicleId || value.expenseVehicleId,
+        driverId: value.revenueDriverId || value.expenseDriverId || undefined,
+        vehicleId: value.revenueVehicleId || value.expenseVehicleId || undefined,
       };
 
       startTransition(async () => {
@@ -99,6 +111,7 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
             }
 
             toast.success(message);
+            router.refresh();
             handleClose();
           }
         } catch (error) {

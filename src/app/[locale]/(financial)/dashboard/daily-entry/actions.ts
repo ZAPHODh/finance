@@ -634,7 +634,7 @@ export async function createDailyEntry(input: DailyEntryInput) {
   await invalidateCache(CacheTags.REVENUES);
   await invalidateCache(CacheTags.EXPENSES);
   await invalidateCache(CacheTags.DASHBOARD);
-  revalidatePath("/dashboard");
+  await revalidatePath("/dashboard");
 
   return {
     success: true,
