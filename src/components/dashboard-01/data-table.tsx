@@ -145,7 +145,6 @@ function DraggableRow({ row }: { row: Row<Transaction> }) {
 
 export function DataTable({ data }: DataTableProps) {
   const t = useScopedI18n("dashboard.table")
-  const [transactions, setTransactions] = React.useState<Transaction[]>(data)
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -345,11 +344,11 @@ export function DataTable({ data }: DataTableProps) {
   ]
 
   const filteredData = React.useMemo(() => {
-    if (activeTab === "all") return transactions
-    if (activeTab === "revenue") return transactions.filter((t) => t.type === "revenue")
-    if (activeTab === "expense") return transactions.filter((t) => t.type === "expense")
-    return transactions
-  }, [transactions, activeTab])
+    if (activeTab === "all") return data
+    if (activeTab === "revenue") return data.filter((t) => t.type === "revenue")
+    if (activeTab === "expense") return data.filter((t) => t.type === "expense")
+    return data
+  }, [data, activeTab])
 
   const table = useReactTable({
     data: filteredData,
@@ -376,11 +375,9 @@ export function DataTable({ data }: DataTableProps) {
     const { active, over } = event
 
     if (over && active.id !== over.id) {
-      setTransactions((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id)
-        const newIndex = items.findIndex((item) => item.id === over.id)
-        return arrayMove(items, oldIndex, newIndex)
-      })
+      // TODO: Implement server-side reordering if needed
+      // Currently disabled to maintain server-driven data flow
+      console.log("Drag reordering requires server-side implementation")
     }
   }
 

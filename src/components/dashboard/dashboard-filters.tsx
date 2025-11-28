@@ -18,8 +18,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
 import { useScopedI18n } from "@/locales/client"
-import { useRouter } from "next/navigation"
-import { useEffect, useTransition } from "react"
+import { useTransition } from "react"
 
 interface DashboardFiltersProps {
   drivers: Array<{ id: string; name: string }>
@@ -33,7 +32,6 @@ export function DashboardFilters({
   platforms,
 }: DashboardFiltersProps) {
   const t = useScopedI18n("dashboard.filters")
-  const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
   const {
@@ -44,12 +42,6 @@ export function DashboardFilters({
     setPlatformId,
     resetFilters,
   } = useDashboardQueryFilters()
-
-  useEffect(() => {
-    startTransition(() => {
-      router.refresh()
-    })
-  }, [filters.period, filters.driverId, filters.vehicleId, filters.platformId, router])
 
   const hasActiveFilters =
     filters.period !== "thisMonth" ||
