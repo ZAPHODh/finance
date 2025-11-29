@@ -287,7 +287,7 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
       vehicle: e.vehicle?.name,
       platform: undefined,
     })),
-  ].sort((a, b) => b.date.getTime() - a.date.getTime())
+  ].sort((a, b) => b.date.getTime() - a.date.getTime()).slice(0, 20)
 
   const chartDataMap = new Map<string, { revenue: number; expenses: number }>()
 

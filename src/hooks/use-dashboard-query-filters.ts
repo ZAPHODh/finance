@@ -1,4 +1,4 @@
-import { useQueryState, parseAsString } from 'nuqs'
+import { useQueryState, parseAsString, throttle } from 'nuqs'
 import { useTransition } from 'react'
 
 export interface DashboardFilters {
@@ -14,7 +14,7 @@ export function useDashboardQueryFilters() {
   const queryOptions = {
     shallow: false,
     startTransition,
-    throttleMs: 300,
+    limitUrlUpdates: throttle(300),
   }
 
   const [period, setPeriod] = useQueryState(
