@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/accordion"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { X } from "lucide-react"
+import { X, Loader2 } from "lucide-react"
 import { useScopedI18n } from "@/locales/client"
 
 interface DashboardFiltersProps {
@@ -39,6 +39,7 @@ export function DashboardFilters({
     setVehicleId,
     setPlatformId,
     resetFilters,
+    isPending,
   } = useDashboardQueryFilters()
 
   const hasActiveFilters =
@@ -50,8 +51,11 @@ export function DashboardFilters({
   const FilterGrid = () => (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <div className="space-y-2">
-        <Label htmlFor="period">{t("period")}</Label>
-        <Select value={filters.period} onValueChange={setPeriod}>
+        <Label htmlFor="period" className="flex items-center gap-2">
+          {t("period")}
+          {isPending && <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />}
+        </Label>
+        <Select value={filters.period} onValueChange={setPeriod} disabled={isPending}>
           <SelectTrigger id="period">
             <SelectValue placeholder={t("period")} />
           </SelectTrigger>
@@ -69,6 +73,7 @@ export function DashboardFilters({
         <Select
           value={filters.driverId || "all"}
           onValueChange={(value) => setDriverId(value === "all" ? null : value)}
+          disabled={isPending}
         >
           <SelectTrigger id="driver">
             <SelectValue placeholder={t("allDrivers")} />
@@ -91,6 +96,7 @@ export function DashboardFilters({
           onValueChange={(value) =>
             setVehicleId(value === "all" ? null : value)
           }
+          disabled={isPending}
         >
           <SelectTrigger id="vehicle">
             <SelectValue placeholder={t("allVehicles")} />
@@ -113,6 +119,7 @@ export function DashboardFilters({
           onValueChange={(value) =>
             setPlatformId(value === "all" ? null : value)
           }
+          disabled={isPending}
         >
           <SelectTrigger id="platform">
             <SelectValue placeholder={t("allPlatforms")} />

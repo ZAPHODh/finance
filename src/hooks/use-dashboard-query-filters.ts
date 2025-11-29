@@ -1,4 +1,5 @@
 import { useQueryState, parseAsString } from 'nuqs'
+import { useTransition } from 'react'
 
 export interface DashboardFilters {
   period: string
@@ -8,14 +9,22 @@ export interface DashboardFilters {
 }
 
 export function useDashboardQueryFilters() {
+  const [isPending, startTransition] = useTransition()
+
+  const queryOptions = {
+    shallow: false,
+    startTransition,
+    throttleMs: 300,
+  }
+
   const [period, setPeriod] = useQueryState(
     'period',
-    parseAsString.withDefault('thisMonth').withOptions({ shallow: false })
+    parseAsString.withDefault('thisMonth').withOptions(queryOptions)
   )
 
-  const [driverId, setDriverId] = useQueryState('driver', parseAsString.withOptions({ shallow: false }))
-  const [vehicleId, setVehicleId] = useQueryState('vehicle', parseAsString.withOptions({ shallow: false }))
-  const [platformId, setPlatformId] = useQueryState('platform', parseAsString.withOptions({ shallow: false }))
+  const [driverId, setDriverId] = useQueryState('driver', parseAsString.withOptions(queryOptions))
+  const [vehicleId, setVehicleId] = useQueryState('vehicle', parseAsString.withOptions(queryOptions))
+  const [platformId, setPlatformId] = useQueryState('platform', parseAsString.withOptions(queryOptions))
 
   const filters: DashboardFilters = {
     period,
@@ -54,5 +63,6 @@ export function useDashboardQueryFilters() {
     setDriverId,
     setVehicleId,
     setPlatformId,
+    isPending,
   }
 }
