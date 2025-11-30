@@ -259,8 +259,8 @@ export function ExpenseSection({
         </div>
       )}
 
-      {/* SHARED FIELDS (shown only when mode is not "none") */}
-      {mode !== "none" && (
+      {/* SHARED FIELDS (shown only when mode is "sum") */}
+      {mode === "sum" && (
         <div className="space-y-4 border-t pt-4">
           {/* Expense Types */}
           {expenseTypes.length > 0 && (
