@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { type NextRequest } from "next/server";
 import { z } from "zod";
-import { siteConfig } from "@/config/site";
+import { siteConfig } from "@/config/site-server";
 import { proPlan, simplePlan } from "@/config/subscription";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { getUserSubscriptionPlan, stripe } from "@/lib/server/payment";
@@ -13,7 +13,8 @@ export async function GET(req: NextRequest) {
   const planParam = searchParams.get("plan") || "pro";
   const intervalParam = searchParams.get("interval") || "monthly";
 
-  const billingUrl = siteConfig(locale).url + "/dashboard/billing/";
+  const config = await siteConfig(locale);
+  const billingUrl = config.url + "/dashboard/billing/";
   try {
     const { user, session } = await getCurrentSession();
 

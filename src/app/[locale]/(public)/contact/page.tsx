@@ -3,12 +3,13 @@
 import Nav from "@/components/shared/nav";
 import FooterSection from "@/components/footer";
 import { Mail } from "lucide-react";
-import { useScopedI18n } from "@/locales/client";
-import { siteConfig } from "@/config/site";
+import { useScopedI18n, useCurrentLocale } from "@/locales/client";
+import { useSiteConfig } from "@/config/site-client";
 
 export default function ContactPage() {
   const t = useScopedI18n('marketing.contact');
-  const config = siteConfig();
+  const locale = useCurrentLocale();
+  const config = useSiteConfig(locale);
 
   return (
     <>

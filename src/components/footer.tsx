@@ -1,14 +1,15 @@
 'use client'
 import { Logo } from '@/components/logo'
 import Link from 'next/link'
-import { useScopedI18n } from '@/locales/client'
+import { useScopedI18n, useCurrentLocale } from '@/locales/client'
 import { usePathname } from 'next/navigation'
-import { siteConfig } from '@/config/site'
+import { useSiteConfig } from '@/config/site-client'
 
 export default function FooterSection() {
     const t = useScopedI18n('marketing.footer')
     const pathname = usePathname()
-    const name = siteConfig().name
+    const locale = useCurrentLocale()
+    const name = useSiteConfig(locale).name
     if (pathname.includes('/dashboard')) {
         return null
     }

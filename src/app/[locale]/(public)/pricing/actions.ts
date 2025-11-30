@@ -1,7 +1,7 @@
 "use server"
 
 import { cookies } from "next/headers"
-import { siteConfig } from "@/config/site"
+import { siteConfig } from "@/config/site-server"
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { getUserSubscriptionPlan, stripe } from "@/lib/server/payment"
 import { getStripePriceId, getCurrencyFromLocale } from "@/lib/server/pricing"
@@ -42,7 +42,8 @@ export async function createCheckoutSession(
 
   const cookieStore = await cookies()
   const locale = cookieStore.get("Next-Locale")?.value || "en"
-  const billingUrl = siteConfig(locale).url + "/dashboard/billing/"
+  const config = await siteConfig(locale)
+  const billingUrl = config.url + "/dashboard/billing/"
 
   try {
     const subscriptionPlan = await getUserSubscriptionPlan(user.id)
@@ -102,7 +103,8 @@ export async function openBillingPortal() {
 
   const cookieStore = await cookies()
   const locale = cookieStore.get("Next-Locale")?.value || "en"
-  const billingUrl = siteConfig(locale).url + "/dashboard/billing/"
+  const config = await siteConfig(locale)
+  const billingUrl = config.url + "/dashboard/billing/"
 
   try {
     const subscriptionPlan = await getUserSubscriptionPlan(user.id)

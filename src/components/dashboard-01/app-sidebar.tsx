@@ -37,7 +37,7 @@ import {
 } from "@/components/ui/sidebar"
 import type { User } from "@prisma/client"
 import { useCurrentLocale, useScopedI18n } from "@/locales/client"
-import { siteConfig } from "@/config/site"
+import { useSiteConfig } from "@/config/site-client"
 import { Logo } from "../logo"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
@@ -48,7 +48,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 export function AppSidebar({ user, searchComponent, ...props }: AppSidebarProps) {
   const t = useScopedI18n('navigation.sidebar')
   const locale = useCurrentLocale()
-  const logoName = siteConfig(locale).name
+  const logoName = useSiteConfig(locale).name
   const navMain = [
     {
       title: t('navigation.dashboard'),

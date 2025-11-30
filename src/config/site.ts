@@ -42,22 +42,6 @@ export const siteContact: SiteContact = {
   },
 };
 
-export const siteConfig = (locale: string = "en") => ({
-  name: siteCompany.displayName,
-  url: siteUrl + "/" + locale,
-  ogImage: `${siteUrl}/${locale}/opengraph-image`,
-  description: "A financial management tool for drivers to track income and expenses.",
-  links: {
-    twitter: "",
-    github: "",
-  },
-  company: siteCompany,
-  emails: siteEmails,
-  contact: siteContact,
-});
-
-export type SiteConfig = ReturnType<typeof siteConfig>;
-
 export const META_THEME_COLORS = {
   light: "#ffffff",
   dark: "#09090b",

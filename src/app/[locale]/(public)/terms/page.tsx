@@ -3,12 +3,12 @@
 import Nav from "@/components/shared/nav";
 import FooterSection from "@/components/footer";
 import { useScopedI18n, useCurrentLocale } from "@/locales/client";
-import { siteConfig } from "@/config/site";
+import { useSiteConfig } from "@/config/site-client";
 
 export default function TermsPage() {
   const t = useScopedI18n('marketing.terms');
   const locale = useCurrentLocale();
-  const config = siteConfig(locale);
+  const config = useSiteConfig(locale);
   const currentDate = new Date().toLocaleDateString(locale === 'pt' ? 'pt-BR' : 'en-US');
 
   return (

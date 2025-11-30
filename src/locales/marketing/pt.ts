@@ -549,4 +549,9 @@ export default {
             "controle de ganhos",
         ],
     },
+    siteMetadata: {
+        description: "Uma ferramenta de gestão financeira para motoristas rastrearem receitas e despesas.",
+        supportResponseTime: "24 horas úteis",
+        privacyOfficerTitle: "Privacidade e Dados (DPO)",
+    },
 } as const

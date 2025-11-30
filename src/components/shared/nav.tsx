@@ -9,12 +9,13 @@ import {
 import { ModeSwitcher } from "./nav-components/theme-toggle"
 
 import Link from "next/link"
-import { useScopedI18n } from "@/locales/client";
-import { siteConfig } from "@/config/site";
+import { useScopedI18n, useCurrentLocale } from "@/locales/client";
+import { useSiteConfig } from "@/config/site-client";
 import { Menu } from "lucide-react";
 
 export default function Nav() {
-  const name = siteConfig().name
+  const locale = useCurrentLocale()
+  const name = useSiteConfig(locale).name
   const t = useScopedI18n("navigation.nav")
 
   const navigationLinks = [

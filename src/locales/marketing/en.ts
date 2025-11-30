@@ -547,4 +547,9 @@ export default {
             "earnings tracking",
         ],
     },
+    siteMetadata: {
+        description: "A financial management tool for drivers to track income and expenses.",
+        supportResponseTime: "24 business hours",
+        privacyOfficerTitle: "Privacy and Data (DPO)",
+    },
 } as const

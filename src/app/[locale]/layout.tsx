@@ -1,4 +1,5 @@
-import { siteConfig, siteUrl } from "@/config/site";
+import { siteUrl } from "@/config/site";
+import { siteConfig } from "@/config/site-server";
 import { Inter } from "next/font/google";
 import { Metadata } from "next";
 import { headers } from "next/headers";
@@ -22,7 +23,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = await params;
   const locale = p.locale;
-  const site = siteConfig(locale);
+  const site = await siteConfig(locale);
 
   const siteOgImage = `${siteUrl}/api/og?locale=${locale}`;
 
