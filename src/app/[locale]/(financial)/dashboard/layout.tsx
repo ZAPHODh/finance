@@ -3,7 +3,6 @@ import { redirect } from "next/navigation"
 import { AppSidebar } from "@/components/dashboard-01/app-sidebar"
 import { SearchButton } from "@/components/dashboard-01/search-button"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { KeyboardShortcuts } from "@/components/dashboard-01/keyboard-shortcuts";
 import { getScopedI18n } from "@/locales/server";
 import { getUserSubscriptionPlan } from "@/lib/server/payment";
 import { UpgradeBanner } from "@/components/dashboard/upgrade-banner";
@@ -50,7 +49,6 @@ export default async function FinancialLayout({
         } as React.CSSProperties
       }
     >
-      <KeyboardShortcuts />
       <AppSidebar user={user} searchComponent={<SearchButton />} variant="inset" />
       <SidebarInset>
         <DashboardLayoutClient
