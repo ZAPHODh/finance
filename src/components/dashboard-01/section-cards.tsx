@@ -101,8 +101,8 @@ export async function SectionCards({ kpis, trends }: SectionCardsProps) {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            {trends && trends.profit >= 0 ? t('profit.trendingUp') : t('profit.trendingDown')}{" "}
-            {trends && trends.profit >= 0 ? <TrendingUp className="size-4" /> : <TrendingDown className="size-4" />}
+            {kpis.netProfit >= 0 ? t('profit.trendingUp') : t('profit.trendingDown')}{" "}
+            {kpis.netProfit >= 0 ? <TrendingUp className="size-4" /> : <TrendingDown className="size-4" />}
           </div>
           <div className="text-muted-foreground">{t('profit.description')}</div>
         </CardFooter>
