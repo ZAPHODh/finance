@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { formatCurrency, formatNumber } from "@/lib/utils"
+import { getScopedI18n } from "@/locales/server"
 
 interface SectionCardsProps {
   kpis: {
@@ -27,13 +28,14 @@ interface SectionCardsProps {
   }
 }
 
-export function SectionCards({ kpis, trends }: SectionCardsProps) {
+export async function SectionCards({ kpis, trends }: SectionCardsProps) {
+  const t = await getScopedI18n('shared.dashboard.kpis')
 
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-5">
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Receita Total</CardDescription>
+          <CardDescription>{t('revenue.title')}</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {formatCurrency(kpis.totalRevenue)}
           </CardTitle>
@@ -49,16 +51,16 @@ export function SectionCards({ kpis, trends }: SectionCardsProps) {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            {trends && trends.revenue >= 0 ? "Crescendo este período" : "Em queda este período"}{" "}
+            {trends && trends.revenue >= 0 ? t('revenue.trendingUp') : t('revenue.trendingDown')}{" "}
             {trends && trends.revenue >= 0 ? <TrendingUp className="size-4" /> : <TrendingDown className="size-4" />}
           </div>
-          <div className="text-muted-foreground">Total de receitas do período</div>
+          <div className="text-muted-foreground">{t('revenue.description')}</div>
         </CardFooter>
       </Card>
 
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Despesas Totais</CardDescription>
+          <CardDescription>{t('expenses.title')}</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {formatCurrency(kpis.totalExpenses)}
           </CardTitle>
@@ -74,16 +76,16 @@ export function SectionCards({ kpis, trends }: SectionCardsProps) {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            {trends && trends.expenses >= 0 ? "Aumento nas despesas" : "Redução nas despesas"}{" "}
+            {trends && trends.expenses >= 0 ? t('expenses.trendingUp') : t('expenses.trendingDown')}{" "}
             {trends && trends.expenses >= 0 ? <TrendingUp className="size-4" /> : <TrendingDown className="size-4" />}
           </div>
-          <div className="text-muted-foreground">Total de despesas do período</div>
+          <div className="text-muted-foreground">{t('expenses.description')}</div>
         </CardFooter>
       </Card>
 
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Lucro Líquido</CardDescription>
+          <CardDescription>{t('profit.title')}</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {formatCurrency(kpis.netProfit)}
           </CardTitle>
@@ -99,16 +101,16 @@ export function SectionCards({ kpis, trends }: SectionCardsProps) {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            {trends && trends.profit >= 0 ? "Performance positiva" : "Performance negativa"}{" "}
+            {trends && trends.profit >= 0 ? t('profit.trendingUp') : t('profit.trendingDown')}{" "}
             {trends && trends.profit >= 0 ? <TrendingUp className="size-4" /> : <TrendingDown className="size-4" />}
           </div>
-          <div className="text-muted-foreground">Receitas menos despesas</div>
+          <div className="text-muted-foreground">{t('profit.description')}</div>
         </CardFooter>
       </Card>
 
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Quilometragem Total</CardDescription>
+          <CardDescription>{t('kilometers.title')}</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {formatNumber(kpis.totalKm, 0)} km
           </CardTitle>
@@ -124,15 +126,15 @@ export function SectionCards({ kpis, trends }: SectionCardsProps) {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Distância percorrida <MapPin className="size-4" />
+            {t('kilometers.footer')} <MapPin className="size-4" />
           </div>
-          <div className="text-muted-foreground">Total de km rodados</div>
+          <div className="text-muted-foreground">{t('kilometers.description')}</div>
         </CardFooter>
       </Card>
 
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Horas Trabalhadas</CardDescription>
+          <CardDescription>{t('hours.title')}</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {formatNumber(kpis.totalHours, 0)} h
           </CardTitle>
@@ -148,9 +150,9 @@ export function SectionCards({ kpis, trends }: SectionCardsProps) {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Tempo de trabalho <Clock className="size-4" />
+            {t('hours.footer')} <Clock className="size-4" />
           </div>
-          <div className="text-muted-foreground">Total de horas no período</div>
+          <div className="text-muted-foreground">{t('hours.description')}</div>
         </CardFooter>
       </Card>
     </div>

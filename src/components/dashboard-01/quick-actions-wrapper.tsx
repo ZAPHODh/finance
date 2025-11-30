@@ -1,10 +1,23 @@
 'use client';
 
 import { QuickActionsMenu } from "./quick-actions-menu";
-import { useRouter } from "next/navigation";
 import { getLastDailyEntry } from "@/app/[locale]/(financial)/dashboard/daily-entry/actions";
 import { useTransition } from "react";
 import { toast } from "sonner";
+
+interface PrefillData {
+  revenueAmount?: number;
+  platformIds?: string[];
+  revenueDriverId?: string;
+  revenueVehicleId?: string;
+  paymentMethodId?: string;
+  kmDriven?: number;
+  hoursWorked?: number;
+  expenseAmount?: number;
+  expenseTypeIds?: string[];
+  expenseDriverId?: string;
+  expenseVehicleId?: string;
+}
 
 interface QuickActionsWrapperProps {
   labels: {
@@ -13,10 +26,11 @@ interface QuickActionsWrapperProps {
     noLastEntry: string;
     loadingLastEntry: string;
   };
+  onOpenDialog: () => void;
+  onOpenDialogWithPrefill: (data: PrefillData) => void;
 }
 
-export function QuickActionsWrapper({ labels }: QuickActionsWrapperProps) {
-  const router = useRouter();
+export function QuickActionsWrapper({ labels, onOpenDialog, onOpenDialogWithPrefill }: QuickActionsWrapperProps) {
   const [isPending, startTransition] = useTransition();
 
   function handleRepeatLast() {
@@ -29,29 +43,28 @@ export function QuickActionsWrapper({ labels }: QuickActionsWrapperProps) {
           return;
         }
 
-        const params = new URLSearchParams();
-        params.set('repeat', 'true');
+        const prefillData: PrefillData = {};
 
         if (lastEntry.revenue) {
-          params.set('revenueAmount', lastEntry.revenue.amount.toString());
-          params.set('platformIds', lastEntry.revenue.platformIds.join(','));
-          if (lastEntry.revenue.driverId) params.set('revenueDriverId', lastEntry.revenue.driverId);
-          if (lastEntry.revenue.vehicleId) params.set('revenueVehicleId', lastEntry.revenue.vehicleId);
-          if (lastEntry.revenue.paymentMethodId) params.set('paymentMethodId', lastEntry.revenue.paymentMethodId);
-          if (lastEntry.revenue.kmDriven) params.set('kmDriven', lastEntry.revenue.kmDriven.toString());
-          if (lastEntry.revenue.hoursWorked) params.set('hoursWorked', lastEntry.revenue.hoursWorked.toString());
+          prefillData.revenueAmount = lastEntry.revenue.amount;
+          prefillData.platformIds = lastEntry.revenue.platformIds;
+          if (lastEntry.revenue.driverId) prefillData.revenueDriverId = lastEntry.revenue.driverId;
+          if (lastEntry.revenue.vehicleId) prefillData.revenueVehicleId = lastEntry.revenue.vehicleId;
+          if (lastEntry.revenue.paymentMethodId) prefillData.paymentMethodId = lastEntry.revenue.paymentMethodId;
+          if (lastEntry.revenue.kmDriven) prefillData.kmDriven = lastEntry.revenue.kmDriven;
+          if (lastEntry.revenue.hoursWorked) prefillData.hoursWorked = lastEntry.revenue.hoursWorked;
         }
 
         if (lastEntry.expense) {
-          params.set('expenseAmount', lastEntry.expense.amount.toString());
+          prefillData.expenseAmount = lastEntry.expense.amount;
           if (lastEntry.expense.expenseTypeIds && lastEntry.expense.expenseTypeIds.length > 0) {
-            lastEntry.expense.expenseTypeIds.forEach(id => params.append('expenseTypeId', id));
+            prefillData.expenseTypeIds = lastEntry.expense.expenseTypeIds;
           }
-          if (lastEntry.expense.driverId) params.set('expenseDriverId', lastEntry.expense.driverId);
-          if (lastEntry.expense.vehicleId) params.set('expenseVehicleId', lastEntry.expense.vehicleId);
+          if (lastEntry.expense.driverId) prefillData.expenseDriverId = lastEntry.expense.driverId;
+          if (lastEntry.expense.vehicleId) prefillData.expenseVehicleId = lastEntry.expense.vehicleId;
         }
 
-        router.push(`/dashboard/daily-entry/new?${params.toString()}`);
+        onOpenDialogWithPrefill(prefillData);
       } catch (error) {
         toast.error(labels.noLastEntry);
       }
@@ -61,6 +74,7 @@ export function QuickActionsWrapper({ labels }: QuickActionsWrapperProps) {
   return (
     <QuickActionsMenu
       labels={labels}
+      onNewDailyEntry={onOpenDialog}
       onRepeatLast={handleRepeatLast}
     />
   );

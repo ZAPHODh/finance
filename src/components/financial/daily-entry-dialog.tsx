@@ -20,9 +20,26 @@ import { RevenueSection } from "./revenue-section";
 import { ExpenseSection } from "./expense-section";
 import type { DailyEntryInput } from "@/types/daily-entry";
 
+interface PrefillData {
+  revenueAmount?: number;
+  platformIds?: string[];
+  revenueDriverId?: string;
+  revenueVehicleId?: string;
+  paymentMethodId?: string;
+  kmDriven?: number;
+  hoursWorked?: number;
+  expenseAmount?: number;
+  expenseTypeIds?: string[];
+  expenseDriverId?: string;
+  expenseVehicleId?: string;
+}
+
 interface DailyEntryDialogProps {
   mode: "create";
   config: DailyEntryConfig;
+  open?: boolean;
+  onClose?: () => void;
+  prefillData?: PrefillData;
 }
 
 interface IndividualRevenue {
@@ -37,14 +54,21 @@ interface IndividualExpense {
   expenseTypeId: string;
 }
 
-export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
+export function DailyEntryDialog({ mode, config, open = true, onClose, prefillData }: DailyEntryDialogProps) {
   const router = useRouter();
   const t = useScopedI18n("financial.dailyEntry");
   const tCommon = useScopedI18n("common");
   const [isPending, startTransition] = useTransition();
 
-  const [revenueMode, setRevenueMode] = useState<"sum" | "individual" | "none">("none");
-  const [expenseMode, setExpenseMode] = useState<"sum" | "individual" | "none">("none");
+  const hasRevenueData = prefillData?.revenueAmount || (prefillData?.platformIds && prefillData.platformIds.length > 0);
+  const hasExpenseData = prefillData?.expenseAmount || (prefillData?.expenseTypeIds && prefillData.expenseTypeIds.length > 0);
+
+  const [revenueMode, setRevenueMode] = useState<"sum" | "individual" | "none">(
+    hasRevenueData ? "sum" : "none"
+  );
+  const [expenseMode, setExpenseMode] = useState<"sum" | "individual" | "none">(
+    hasExpenseData ? "sum" : "none"
+  );
 
   const defaultDriverId = config.planType === "FREE" && "driver" in config.defaults
     ? config.defaults.driver?.id
@@ -61,19 +85,19 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
   const form = useForm({
     defaultValues: {
       date: new Date(),
-      totalRevenue: undefined as number | undefined,
-      selectedPlatforms: [] as string[],
+      totalRevenue: prefillData?.revenueAmount,
+      selectedPlatforms: prefillData?.platformIds ?? [],
       revenues: [] as IndividualRevenue[],
-      paymentMethodId: undefined as string | undefined,
-      revenueDriverId: (defaultDriverId ?? undefined) as string | undefined,
-      revenueVehicleId: (defaultVehicleId ?? undefined) as string | undefined,
-      totalExpense: undefined as number | undefined,
-      selectedExpenseTypes: [] as string[],
+      paymentMethodId: prefillData?.paymentMethodId,
+      revenueDriverId: (prefillData?.revenueDriverId ?? defaultDriverId ?? undefined) as string | undefined,
+      revenueVehicleId: (prefillData?.revenueVehicleId ?? defaultVehicleId ?? undefined) as string | undefined,
+      totalExpense: prefillData?.expenseAmount,
+      selectedExpenseTypes: prefillData?.expenseTypeIds ?? [],
       expenses: [] as IndividualExpense[],
-      expenseDriverId: (defaultDriverId ?? undefined) as string | undefined,
-      expenseVehicleId: (defaultVehicleId ?? undefined) as string | undefined,
-      kmDriven: undefined as number | undefined,
-      hoursWorked: undefined as number | undefined,
+      expenseDriverId: (prefillData?.expenseDriverId ?? defaultDriverId ?? undefined) as string | undefined,
+      expenseVehicleId: (prefillData?.expenseVehicleId ?? defaultVehicleId ?? undefined) as string | undefined,
+      kmDriven: prefillData?.kmDriven,
+      hoursWorked: prefillData?.hoursWorked,
     },
     onSubmit: async ({ value }) => {
       const input: DailyEntryInput = {
@@ -123,7 +147,11 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
   });
 
   function handleClose() {
-    router.back();
+    if (onClose) {
+      onClose();
+    } else {
+      router.back();
+    }
   }
 
   const defaults = config.defaults;
@@ -134,10 +162,8 @@ export function DailyEntryDialog({ mode, config }: DailyEntryDialogProps) {
 
   const smartDefaults = !isFree && "drivers" in defaults ? defaults : null;
 
-  const isOpen = true;
-
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{t("new")}</DialogTitle>
