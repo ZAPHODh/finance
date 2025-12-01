@@ -445,10 +445,30 @@ export default {
                 size: 'Tamanho da Fonte',
                 family: 'Família da Fonte',
                 spacing: 'Espaçamento de Linha',
+                sizeOptions: {
+                    small: 'Pequeno',
+                    medium: 'Médio',
+                    large: 'Grande',
+                    xLarge: 'Extra Grande',
+                },
+                familyOptions: {
+                    default: 'Padrão',
+                    dyslexic: 'Amigável para Disléxicos',
+                    mono: 'Monoespaçado',
+                },
+                spacingOptions: {
+                    normal: 'Normal',
+                    relaxed: 'Relaxado',
+                    loose: 'Solto',
+                },
             },
             shortcuts: {
                 title: 'Atalhos de Teclado',
                 conflict: 'Este atalho já está em uso',
+                change: 'Alterar',
+                set: 'Definir',
+                clickToSet: 'Clique para definir',
+                pressAnyKey: 'Pressione qualquer combinação de teclas...',
                 newDailyEntry: {
                     label: 'Nova Entrada Diária',
                     description: 'Crie rapidamente uma nova entrada diária',

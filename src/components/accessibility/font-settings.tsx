@@ -22,6 +22,22 @@ interface FontSettingsProps {
     fontSize: string;
     fontFamily: string;
     lineSpacing: string;
+    sizeOptions: {
+      small: string;
+      medium: string;
+      large: string;
+      xLarge: string;
+    };
+    familyOptions: {
+      default: string;
+      dyslexic: string;
+      mono: string;
+    };
+    spacingOptions: {
+      normal: string;
+      relaxed: string;
+      loose: string;
+    };
   };
 }
 
@@ -45,11 +61,18 @@ export function FontSettings({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {FONT_SIZE_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                <span style={{ fontSize: option.size }}>{option.label}</span>
-              </SelectItem>
-            ))}
+            {FONT_SIZE_OPTIONS.map((option) => {
+              const translatedLabel =
+                option.value === 'small' ? labels.sizeOptions.small :
+                option.value === 'medium' ? labels.sizeOptions.medium :
+                option.value === 'large' ? labels.sizeOptions.large :
+                labels.sizeOptions.xLarge;
+              return (
+                <SelectItem key={option.value} value={option.value}>
+                  <span style={{ fontSize: option.size }}>{translatedLabel}</span>
+                </SelectItem>
+              );
+            })}
           </SelectContent>
         </Select>
       </div>
@@ -63,11 +86,17 @@ export function FontSettings({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {FONT_FAMILY_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                <span style={{ fontFamily: option.fontFamily }}>{option.label}</span>
-              </SelectItem>
-            ))}
+            {FONT_FAMILY_OPTIONS.map((option) => {
+              const translatedLabel =
+                option.value === 'default' ? labels.familyOptions.default :
+                option.value === 'dyslexic' ? labels.familyOptions.dyslexic :
+                labels.familyOptions.mono;
+              return (
+                <SelectItem key={option.value} value={option.value}>
+                  <span style={{ fontFamily: option.fontFamily }}>{translatedLabel}</span>
+                </SelectItem>
+              );
+            })}
           </SelectContent>
         </Select>
       </div>
@@ -81,11 +110,17 @@ export function FontSettings({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {LINE_SPACING_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
+            {LINE_SPACING_OPTIONS.map((option) => {
+              const translatedLabel =
+                option.value === 'normal' ? labels.spacingOptions.normal :
+                option.value === 'relaxed' ? labels.spacingOptions.relaxed :
+                labels.spacingOptions.loose;
+              return (
+                <SelectItem key={option.value} value={option.value}>
+                  {translatedLabel}
+                </SelectItem>
+              );
+            })}
           </SelectContent>
         </Select>
       </div>

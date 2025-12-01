@@ -24,10 +24,30 @@ interface AccessibilityStepProps {
       fontSize: string;
       fontFamily: string;
       lineSpacing: string;
+      sizeOptions: {
+        small: string;
+        medium: string;
+        large: string;
+        xLarge: string;
+      };
+      familyOptions: {
+        default: string;
+        dyslexic: string;
+        mono: string;
+      };
+      spacingOptions: {
+        normal: string;
+        relaxed: string;
+        loose: string;
+      };
     };
     shortcuts: {
       title: string;
       conflictWarning: string;
+      change: string;
+      set: string;
+      clickToSet: string;
+      pressAnyKey: string;
       actions: Record<string, { label: string; description: string }>;
     };
     reducedMotion: string;

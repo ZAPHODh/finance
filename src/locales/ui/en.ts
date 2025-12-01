@@ -445,10 +445,30 @@ export default {
                 size: 'Font Size',
                 family: 'Font Family',
                 spacing: 'Line Spacing',
+                sizeOptions: {
+                    small: 'Small',
+                    medium: 'Medium',
+                    large: 'Large',
+                    xLarge: 'Extra Large',
+                },
+                familyOptions: {
+                    default: 'Default',
+                    dyslexic: 'Dyslexic Friendly',
+                    mono: 'Monospace',
+                },
+                spacingOptions: {
+                    normal: 'Normal',
+                    relaxed: 'Relaxed',
+                    loose: 'Loose',
+                },
             },
             shortcuts: {
                 title: 'Keyboard Shortcuts',
                 conflict: 'This shortcut is already in use',
+                change: 'Change',
+                set: 'Set',
+                clickToSet: 'Click to set',
+                pressAnyKey: 'Press any key combination...',
                 newDailyEntry: {
                     label: 'New Daily Entry',
                     description: 'Quickly create a new daily entry',

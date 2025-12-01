@@ -393,10 +393,30 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                     fontSize: t('accessibility.font.size'),
                     fontFamily: t('accessibility.font.family'),
                     lineSpacing: t('accessibility.font.spacing'),
+                    sizeOptions: {
+                      small: t('accessibility.font.sizeOptions.small'),
+                      medium: t('accessibility.font.sizeOptions.medium'),
+                      large: t('accessibility.font.sizeOptions.large'),
+                      xLarge: t('accessibility.font.sizeOptions.xLarge'),
+                    },
+                    familyOptions: {
+                      default: t('accessibility.font.familyOptions.default'),
+                      dyslexic: t('accessibility.font.familyOptions.dyslexic'),
+                      mono: t('accessibility.font.familyOptions.mono'),
+                    },
+                    spacingOptions: {
+                      normal: t('accessibility.font.spacingOptions.normal'),
+                      relaxed: t('accessibility.font.spacingOptions.relaxed'),
+                      loose: t('accessibility.font.spacingOptions.loose'),
+                    },
                   },
                   shortcuts: {
                     title: t('accessibility.shortcuts.title'),
                     conflictWarning: t('accessibility.shortcuts.conflict'),
+                    change: t('accessibility.shortcuts.change'),
+                    set: t('accessibility.shortcuts.set'),
+                    clickToSet: t('accessibility.shortcuts.clickToSet'),
+                    pressAnyKey: t('accessibility.shortcuts.pressAnyKey'),
                     actions: {
                       newDailyEntry: {
                         label: t('accessibility.shortcuts.newDailyEntry.label'),

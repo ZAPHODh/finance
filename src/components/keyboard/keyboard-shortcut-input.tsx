@@ -12,6 +12,10 @@ interface KeyboardShortcutInputProps {
   label: string;
   description?: string;
   error?: string;
+  changeLabel?: string;
+  setLabel?: string;
+  clickToSetLabel?: string;
+  pressAnyKeyLabel?: string;
 }
 
 export function KeyboardShortcutInput({
@@ -20,6 +24,10 @@ export function KeyboardShortcutInput({
   label,
   description,
   error,
+  changeLabel = "Change",
+  setLabel = "Set",
+  clickToSetLabel = "Click to set",
+  pressAnyKeyLabel = "Press any key combination...",
 }: KeyboardShortcutInputProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [tempShortcut, setTempShortcut] = useState<KeyboardShortcut | null>(null);
@@ -111,12 +119,12 @@ export function KeyboardShortcutInput({
       >
         {isRecording ? (
           <span className="text-sm text-muted-foreground animate-pulse">
-            Press any key combination...
+            {pressAnyKeyLabel}
           </span>
         ) : value.key ? (
           <KeyboardShortcutDisplay shortcut={value} />
         ) : (
-          <span className="text-sm text-muted-foreground">Click to set</span>
+          <span className="text-sm text-muted-foreground">{clickToSetLabel}</span>
         )}
 
         <Button
@@ -128,7 +136,7 @@ export function KeyboardShortcutInput({
             handleStartRecording();
           }}
         >
-          {value.key ? "Change" : "Set"}
+          {value.key ? changeLabel : setLabel}
         </Button>
       </div>
 

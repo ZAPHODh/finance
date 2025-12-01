@@ -14,6 +14,10 @@ interface KeyboardShortcutsConfigProps {
   labels: {
     title: string;
     conflictWarning: string;
+    change: string;
+    set: string;
+    clickToSet: string;
+    pressAnyKey: string;
     actions: Record<string, { label: string; description: string }>;
   };
 }
@@ -78,6 +82,10 @@ export function KeyboardShortcutsConfig({
             label={labels.actions[action.id]?.label || action.label}
             description={labels.actions[action.id]?.description || action.description}
             error={conflicts.includes(action.id) ? labels.conflictWarning : undefined}
+            changeLabel={labels.change}
+            setLabel={labels.set}
+            clickToSetLabel={labels.clickToSet}
+            pressAnyKeyLabel={labels.pressAnyKey}
           />
         ))}
       </div>
