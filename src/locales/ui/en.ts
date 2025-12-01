@@ -432,6 +432,43 @@ export default {
         suggestions: 'Suggestions:',
         completing: 'Setting up your account...',
         success: 'Setup complete! Redirecting to dashboard...',
+        accessibility: {
+            title: 'Accessibility Settings',
+            description: 'Customize your accessibility preferences',
+            theme: {
+                title: 'Theme',
+                light: 'Light',
+                dark: 'Dark',
+                system: 'System',
+            },
+            font: {
+                size: 'Font Size',
+                family: 'Font Family',
+                spacing: 'Line Spacing',
+            },
+            shortcuts: {
+                title: 'Keyboard Shortcuts',
+                conflict: 'This shortcut is already in use',
+                newDailyEntry: {
+                    label: 'New Daily Entry',
+                    description: 'Quickly create a new daily entry',
+                },
+                newRevenue: {
+                    label: 'New Revenue',
+                    description: 'Record a new revenue entry',
+                },
+                newExpense: {
+                    label: 'New Expense',
+                    description: 'Record a new expense entry',
+                },
+                repeatLast: {
+                    label: 'Repeat Last Entry',
+                    description: 'Quickly repeat your last transaction',
+                },
+            },
+            reducedMotion: 'Reduce Motion',
+            highContrast: 'High Contrast',
+        },
     },
     accountCommon: {
         login: 'Log in',

@@ -376,49 +376,48 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
           control={form.control}
           defaultValue={DEFAULT_ACCESSIBILITY_SETTINGS}
           render={({ field }) => {
-            const tAny = t as (key: string) => string;
             return (
               <AccessibilityStep
                 value={field.value || DEFAULT_ACCESSIBILITY_SETTINGS}
                 onChange={field.onChange}
                 labels={{
-                  title: tAny('accessibility.title'),
-                  description: tAny('accessibility.description'),
+                  title: t('accessibility.title'),
+                  description: t('accessibility.description'),
                   theme: {
-                    title: tAny('accessibility.theme.title'),
-                    light: tAny('accessibility.theme.light'),
-                    dark: tAny('accessibility.theme.dark'),
-                    system: tAny('accessibility.theme.system'),
+                    title: t('accessibility.theme.title'),
+                    light: t('accessibility.theme.light'),
+                    dark: t('accessibility.theme.dark'),
+                    system: t('accessibility.theme.system'),
                   },
                   font: {
-                    fontSize: tAny('accessibility.font.size'),
-                    fontFamily: tAny('accessibility.font.family'),
-                    lineSpacing: tAny('accessibility.font.spacing'),
+                    fontSize: t('accessibility.font.size'),
+                    fontFamily: t('accessibility.font.family'),
+                    lineSpacing: t('accessibility.font.spacing'),
                   },
                   shortcuts: {
-                    title: tAny('accessibility.shortcuts.title'),
-                    conflictWarning: tAny('accessibility.shortcuts.conflict'),
+                    title: t('accessibility.shortcuts.title'),
+                    conflictWarning: t('accessibility.shortcuts.conflict'),
                     actions: {
                       newDailyEntry: {
-                        label: tAny('accessibility.shortcuts.newDailyEntry.label'),
-                        description: tAny('accessibility.shortcuts.newDailyEntry.description'),
+                        label: t('accessibility.shortcuts.newDailyEntry.label'),
+                        description: t('accessibility.shortcuts.newDailyEntry.description'),
                       },
                       newRevenue: {
-                        label: tAny('accessibility.shortcuts.newRevenue.label'),
-                        description: tAny('accessibility.shortcuts.newRevenue.description'),
+                        label: t('accessibility.shortcuts.newRevenue.label'),
+                        description: t('accessibility.shortcuts.newRevenue.description'),
                       },
                       newExpense: {
-                        label: tAny('accessibility.shortcuts.newExpense.label'),
-                        description: tAny('accessibility.shortcuts.newExpense.description'),
+                        label: t('accessibility.shortcuts.newExpense.label'),
+                        description: t('accessibility.shortcuts.newExpense.description'),
                       },
                       repeatLast: {
-                        label: tAny('accessibility.shortcuts.repeatLast.label'),
-                        description: tAny('accessibility.shortcuts.repeatLast.description'),
+                        label: t('accessibility.shortcuts.repeatLast.label'),
+                        description: t('accessibility.shortcuts.repeatLast.description'),
                       },
                     },
                   },
-                  reducedMotion: tAny('accessibility.reducedMotion'),
-                  highContrast: tAny('accessibility.highContrast'),
+                  reducedMotion: t('accessibility.reducedMotion'),
+                  highContrast: t('accessibility.highContrast'),
                 }}
               />
             );

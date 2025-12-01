@@ -432,6 +432,43 @@ export default {
         suggestions: 'Sugestões:',
         completing: 'Configurando sua conta...',
         success: 'Configuração completa! Redirecionando para o painel...',
+        accessibility: {
+            title: 'Configurações de Acessibilidade',
+            description: 'Personalize suas preferências de acessibilidade',
+            theme: {
+                title: 'Tema',
+                light: 'Claro',
+                dark: 'Escuro',
+                system: 'Sistema',
+            },
+            font: {
+                size: 'Tamanho da Fonte',
+                family: 'Família da Fonte',
+                spacing: 'Espaçamento de Linha',
+            },
+            shortcuts: {
+                title: 'Atalhos de Teclado',
+                conflict: 'Este atalho já está em uso',
+                newDailyEntry: {
+                    label: 'Nova Entrada Diária',
+                    description: 'Crie rapidamente uma nova entrada diária',
+                },
+                newRevenue: {
+                    label: 'Nova Receita',
+                    description: 'Registre uma nova entrada de receita',
+                },
+                newExpense: {
+                    label: 'Nova Despesa',
+                    description: 'Registre uma nova entrada de despesa',
+                },
+                repeatLast: {
+                    label: 'Repetir Última Entrada',
+                    description: 'Repita rapidamente sua última transação',
+                },
+            },
+            reducedMotion: 'Reduzir Movimento',
+            highContrast: 'Alto Contraste',
+        },
     },
     accountCommon: {
         login: 'Entrar',
