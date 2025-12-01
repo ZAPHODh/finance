@@ -14,6 +14,10 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
+
+interface ColumnMeta {
+  className?: string;
+}
 import {
   Table,
   TableBody,
@@ -121,7 +125,7 @@ export function DataTable<TData, TValue>({
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id} className="bg-muted/50">
                   {headerGroup.headers.map((header) => {
-                    const meta = header.column.columnDef.meta as any;
+                    const meta = header.column.columnDef.meta as ColumnMeta | undefined;
                     return (
                       <TableHead
                         key={header.id}
@@ -141,7 +145,7 @@ export function DataTable<TData, TValue>({
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                     {row.getVisibleCells().map((cell) => {
-                      const meta = cell.column.columnDef.meta as any;
+                      const meta = cell.column.columnDef.meta as ColumnMeta | undefined;
                       return (
                         <TableCell key={cell.id} className={`p-3 ${meta?.className || ''}`}>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}

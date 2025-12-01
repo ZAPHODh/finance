@@ -5,7 +5,7 @@ import type React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 
 export interface BannerProps {
@@ -37,17 +37,19 @@ export function Banner({
 }: BannerProps) {
   const [isVisible, setIsVisible] = useState(true);
 
+  const handleDismiss = useCallback(() => {
+    setIsVisible(false);
+    onDismiss?.();
+  }, [onDismiss]);
+
   useEffect(() => {
     if (isVisible && autoDismiss) {
       const timer = setTimeout(() => handleDismiss(), autoDismiss);
       return () => clearTimeout(timer);
     }
-  }, [isVisible, autoDismiss]);
+  }, [isVisible, autoDismiss, handleDismiss]);
 
-  const handleDismiss = () => {
-    setIsVisible(false);
-    onDismiss?.();
-  };
+
 
   const getVariantStyles = () => {
     const hasGradient = gradientColors && gradientColors.length > 0;

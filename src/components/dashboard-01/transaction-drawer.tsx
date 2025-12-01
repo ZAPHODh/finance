@@ -22,8 +22,6 @@ import {
   Car,
   Building2,
   FileText,
-  Copy,
-  Check,
   Edit,
   Save
 } from "lucide-react"
@@ -82,7 +80,6 @@ export function TransactionDrawer({
   formData,
 }: TransactionDrawerProps) {
   const t = useScopedI18n("dashboard.table")
-  const [copied, setCopied] = React.useState(false)
   const [isEditing, setIsEditing] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
 
@@ -147,7 +144,7 @@ export function TransactionDrawer({
       form.setFieldValue("hoursWorked", transaction.hoursWorked || undefined)
       setIsEditing(false)
     }
-  }, [transaction, open])
+  }, [transaction, open, form])
 
   if (!transaction) return null
 
@@ -170,11 +167,6 @@ export function TransactionDrawer({
     return new Date(date).toISOString().slice(0, 16)
   }
 
-  const handleCopyId = () => {
-    navigator.clipboard.writeText(transaction.id)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -224,8 +216,8 @@ export function TransactionDrawer({
                     </div>
                     <span
                       className={`text-3xl font-bold tabular-nums ${transaction.type === "revenue"
-                          ? "text-green-600 dark:text-green-500"
-                          : "text-red-600 dark:text-red-500"
+                        ? "text-green-600 dark:text-green-500"
+                        : "text-red-600 dark:text-red-500"
                         }`}
                     >
                       {formatCurrency(transaction.amount)}

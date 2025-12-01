@@ -73,7 +73,7 @@ export function PreferencesForm({ initialData, translations }: PreferencesFormPr
           if (result.success) {
             toast.success("Preferences saved successfully")
           }
-        } catch (error) {
+        } catch {
           toast.error("Failed to save preferences")
         }
       })

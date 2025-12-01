@@ -43,7 +43,7 @@ export function GoalsTable({ goals }: GoalsTableProps) {
         })
     }
 
-    const columns = createGoalsColumns(t, tCommon, handleToggleActive, handleDelete, isPending)
+    const columns = createGoalsColumns(t as (key: string) => string, tCommon as (key: string) => string, handleToggleActive, handleDelete, isPending)
 
     if (goals.length === 0) {
         return (

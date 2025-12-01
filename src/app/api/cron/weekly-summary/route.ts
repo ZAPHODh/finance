@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/server/db";
 import { sendWeeklySummary } from "@/lib/server/mail";
-import { formatDateInUserTimezone, getWeekRange } from "@/lib/utils/email-helpers";
+import { getWeekRange } from "@/lib/utils/email-helpers";
 
 export async function GET(request: NextRequest) {
     const authHeader = request.headers.get("authorization");

@@ -3,12 +3,13 @@
 import { useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, FileSpreadsheet, FileDown, Download } from 'lucide-react';
+import { FileText, FileSpreadsheet, FileDown } from 'lucide-react';
 import { useScopedI18n } from '@/locales/client';
 import { toast } from 'sonner';
 import { exportReport } from '@/app/[locale]/(financial)/dashboard/reports/[type]/actions';
 import type { ReportType } from '@prisma/client';
 import type { ExportFormat } from '@/lib/reports/types';
+import type { LucideIcon } from 'lucide-react';
 
 interface ExportButtonsProps {
   reportType: ReportType;
@@ -72,7 +73,7 @@ export function ExportButtons({
     });
   }
 
-  const formats: Array<{ format: ExportFormat; icon: any; label: string; available: boolean }> = [
+  const formats: Array<{ format: ExportFormat; icon: LucideIcon; label: string; available: boolean }> = [
     { format: 'pdf', icon: FileText, label: 'PDF', available: true },
     { format: 'excel', icon: FileSpreadsheet, label: 'Excel', available: true },
     { format: 'csv', icon: FileDown, label: 'CSV', available: true },

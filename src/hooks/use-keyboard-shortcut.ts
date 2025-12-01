@@ -19,12 +19,11 @@ export function useKeyboardShortcut(
     if (!enabled) return;
 
     function handleKeyDown(event: KeyboardEvent) {
-      const { key, ctrl = false, alt = false, shift = false, meta = false } = options;
+      const { key, ctrl = false, alt = false, shift = false, } = options;
 
       const ctrlMatch = ctrl ? (event.ctrlKey || event.metaKey) : !event.ctrlKey && !event.metaKey;
       const altMatch = alt ? event.altKey : !event.altKey;
       const shiftMatch = shift ? event.shiftKey : !event.shiftKey;
-      const metaMatch = meta ? event.metaKey : !event.metaKey;
 
       if (
         event.key.toLowerCase() === key.toLowerCase() &&

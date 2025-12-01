@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useState, useTransition, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -23,16 +23,18 @@ interface ReportPreviewProps {
 
 const COLORS = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
+interface ReportData {
+  summary?: Record<string, unknown>;
+  breakdown?: Array<Record<string, unknown>>;
+  [key: string]: unknown;
+}
+
 export function ReportPreview({ reportType, startDate, endDate, filters }: ReportPreviewProps) {
   const t = useScopedI18n('reports.preview');
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<ReportData | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    loadPreview();
-  }, [reportType, startDate, endDate, filters]);
-
-  function loadPreview() {
+  const loadPreview = useCallback(() => {
     startTransition(async () => {
       try {
         const result = await getReportPreview({
@@ -46,7 +48,11 @@ export function ReportPreview({ reportType, startDate, endDate, filters }: Repor
         console.error('Error loading preview:', error);
       }
     });
-  }
+  }, [reportType, startDate, endDate, filters]);
+
+  useEffect(() => {
+    loadPreview();
+  }, [loadPreview]);
 
   if (isPending && !data) {
     return (
@@ -84,13 +90,13 @@ export function ReportPreview({ reportType, startDate, endDate, filters }: Repor
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        {renderPreview(reportType, data, t)}
+        {renderPreview(reportType, data, t as (key: string) => string)}
       </CardContent>
     </Card>
   );
 }
 
-function renderPreview(reportType: ReportType, data: any, t: any) {
+function renderPreview(reportType: ReportType, data: ReportData, t: (key: string) => string) {
   switch (reportType) {
     case 'EXPENSE_BREAKDOWN':
       return (
@@ -98,15 +104,17 @@ function renderPreview(reportType: ReportType, data: any, t: any) {
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 bg-muted rounded-lg">
               <p className="text-sm text-muted-foreground">{t('totalExpenses')}</p>
-              <p className="text-2xl font-bold">R$ {data.summary.totalExpenses.toFixed(2)}</p>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <p className="text-2xl font-bold">R$ {(data.summary as any)?.totalExpenses?.toFixed(2) || '0.00'}</p>
             </div>
             <div className="p-4 bg-muted rounded-lg">
               <p className="text-sm text-muted-foreground">{t('quantity')}</p>
-              <p className="text-2xl font-bold">{data.summary.count}</p>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <p className="text-2xl font-bold">{(data.summary as any)?.count || 0}</p>
             </div>
           </div>
 
-          {data.byType && data.byType.length > 0 && (
+          {data.byType && Array.isArray(data.byType) && data.byType.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold mb-4">{t('expensesByType')}</h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -120,7 +128,7 @@ function renderPreview(reportType: ReportType, data: any, t: any) {
                     outerRadius={100}
                     label={(entry) => `${entry.name}: R$ ${entry.value.toFixed(2)}`}
                   >
-                    {data.byType.map((entry: any, index: number) => (
+                    {(data.byType as Array<Record<string, unknown>>).map((entry, index: number) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -138,15 +146,17 @@ function renderPreview(reportType: ReportType, data: any, t: any) {
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 bg-muted rounded-lg">
               <p className="text-sm text-muted-foreground">{t('totalRevenue')}</p>
-              <p className="text-2xl font-bold text-green-600">R$ {data.summary.totalRevenue.toFixed(2)}</p>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <p className="text-2xl font-bold text-green-600">R$ {(data.summary as any)?.totalRevenue?.toFixed(2) || '0.00'}</p>
             </div>
             <div className="p-4 bg-muted rounded-lg">
               <p className="text-sm text-muted-foreground">{t('quantity')}</p>
-              <p className="text-2xl font-bold">{data.summary.count}</p>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <p className="text-2xl font-bold">{(data.summary as any)?.count || 0}</p>
             </div>
           </div>
 
-          {data.byPlatform && data.byPlatform.length > 0 && (
+          {data.byPlatform && Array.isArray(data.byPlatform) && data.byPlatform.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold mb-4">{t('revenueByPlatform')}</h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -170,15 +180,17 @@ function renderPreview(reportType: ReportType, data: any, t: any) {
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 bg-muted rounded-lg">
               <p className="text-sm text-muted-foreground">{t('totalExpenses')}</p>
-              <p className="text-2xl font-bold text-red-600">R$ {data.summary.totalExpenses.toFixed(2)}</p>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <p className="text-2xl font-bold text-red-600">R$ {(data.summary as any)?.totalExpenses?.toFixed(2) || '0.00'}</p>
             </div>
             <div className="p-4 bg-muted rounded-lg">
               <p className="text-sm text-muted-foreground">{t('quantity')}</p>
-              <p className="text-2xl font-bold">{data.summary.count}</p>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <p className="text-2xl font-bold">{(data.summary as any)?.count || 0}</p>
             </div>
           </div>
 
-          {data.byType && data.byType.length > 0 && (
+          {data.byType && Array.isArray(data.byType) && data.byType.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold mb-4">{t('expensesDistribution')}</h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -198,7 +210,7 @@ function renderPreview(reportType: ReportType, data: any, t: any) {
     case 'DRIVER_PERFORMANCE':
       return (
         <>
-          {data.drivers && data.drivers.length > 0 && (
+          {data.drivers && Array.isArray(data.drivers) && data.drivers.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold mb-4">{t('performanceByDriver')}</h3>
               <ResponsiveContainer width="100%" height={350}>
@@ -221,7 +233,7 @@ function renderPreview(reportType: ReportType, data: any, t: any) {
     case 'VEHICLE_PERFORMANCE':
       return (
         <>
-          {data.vehicles && data.vehicles.length > 0 && (
+          {data.vehicles && Array.isArray(data.vehicles) && data.vehicles.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold mb-4">{t('performanceByVehicle')}</h3>
               <ResponsiveContainer width="100%" height={350}>

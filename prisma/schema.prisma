@@ -380,6 +380,14 @@ model UserPreferences {
   defaultVehicleId String?
   defaultVehicle   Vehicle? @relation(fields: [defaultVehicleId], references: [id], onDelete: SetNull)
 
+  // Accessibility
+  keyboardShortcuts Json?    // Custom keyboard shortcuts configuration
+  fontSize          String   @default("medium") // small, medium, large, x-large
+  fontFamily        String   @default("default") // default, dyslexic, mono
+  lineSpacing       String   @default("normal") // normal, relaxed, loose
+  reducedMotion     Boolean  @default(false)
+  highContrast      Boolean  @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

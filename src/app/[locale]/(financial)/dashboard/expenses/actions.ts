@@ -265,7 +265,11 @@ const getCachedExpenseFormData = cacheWithTag(
   600
 )
 
-export async function getExpenseFormData() {
+export async function getExpenseFormData(): Promise<{
+  expenseTypes: { id: string; name: string }[];
+  drivers: { id: string; name: string }[];
+  vehicles: { id: string; name: string }[];
+}> {
   const { user } = await getCurrentSession();
   if (!user) redirect("/login");
 

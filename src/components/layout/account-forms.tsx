@@ -43,7 +43,7 @@ export function ProfileForm({ defaultName, defaultEmail, translations }: Profile
           if (result.success) {
             toast.success(translations.profileUpdated)
           }
-        } catch (error) {
+        } catch {
           toast.error(translations.profileUpdateError)
         }
       })

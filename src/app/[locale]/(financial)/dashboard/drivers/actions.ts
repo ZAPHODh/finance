@@ -55,7 +55,7 @@ export async function updateDriver(id: string, input: DriverFormData) {
     throw new Error("Driver not found or unauthorized");
   }
 
-  const updatedDriver = await prisma.driver.update({
+  await prisma.driver.update({
     where: { id },
     data: {
       name: data.name,

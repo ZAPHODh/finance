@@ -24,13 +24,13 @@ export async function createVehicle(input: VehicleFormData) {
     throw new Error("Unauthorized");
   }
 
-  // Verificar limite do plano
+
   const limitReached = await checkIfVehicleLimitReached();
   if (limitReached) {
     throw new Error("Você atingiu o limite de veículos do seu plano. Faça upgrade para adicionar mais.");
   }
 
-  const vehicle = await prisma.vehicle.create({
+  await prisma.vehicle.create({
     data: {
       name: data.name,
       plate: data.plate,
@@ -60,7 +60,7 @@ export async function updateVehicle(id: string, input: VehicleFormData) {
     throw new Error("Vehicle not found or unauthorized");
   }
 
-  const updatedVehicle = await prisma.vehicle.update({
+  await prisma.vehicle.update({
     where: { id },
     data: {
       name: data.name,

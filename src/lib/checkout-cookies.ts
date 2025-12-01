@@ -3,6 +3,18 @@ interface CheckoutCookies {
   interval?: string
 }
 
+interface CookieStore {
+  get(name: string): { value?: string } | undefined
+  set(name: string, value: string, options?: {
+    path?: string
+    httpOnly?: boolean
+    secure?: boolean
+    maxAge?: number
+    sameSite?: 'lax' | 'strict' | 'none'
+  }): void
+  delete(name: string): void
+}
+
 const COOKIE_MAX_AGE = 600
 const COOKIE_OPTIONS = {
   path: '/',
@@ -43,7 +55,7 @@ export function clearCheckoutCookies() {
   document.cookie = 'checkout_interval=; Path=/; Max-Age=0'
 }
 
-export async function getCheckoutCookiesServer(cookieStore: any): Promise<CheckoutCookies> {
+export async function getCheckoutCookiesServer(cookieStore: CookieStore): Promise<CheckoutCookies> {
   const plan = cookieStore.get('checkout_plan')?.value
   const interval = cookieStore.get('checkout_interval')?.value
 
@@ -64,7 +76,7 @@ export async function getCheckoutCookiesServer(cookieStore: any): Promise<Checko
   return { plan: sanitizedPlan, interval: sanitizedInterval }
 }
 
-export async function setPostOnboardingCookies(cookieStore: any, plan: string, interval: string) {
+export async function setPostOnboardingCookies(cookieStore: CookieStore, plan: string, interval: string) {
   const validPlans = ['simple', 'pro']
   const validIntervals = ['monthly', 'yearly']
 
@@ -95,7 +107,7 @@ export async function setPostOnboardingCookies(cookieStore: any, plan: string, i
   })
 }
 
-export async function getPostOnboardingCookies(cookieStore: any): Promise<CheckoutCookies> {
+export async function getPostOnboardingCookies(cookieStore: CookieStore): Promise<CheckoutCookies> {
   const plan = cookieStore.get('post_onboarding_plan')?.value
   const interval = cookieStore.get('post_onboarding_interval')?.value
 
@@ -116,12 +128,12 @@ export async function getPostOnboardingCookies(cookieStore: any): Promise<Checko
   return { plan: sanitizedPlan, interval: sanitizedInterval }
 }
 
-export async function clearCheckoutCookiesServer(cookieStore: any) {
+export async function clearCheckoutCookiesServer(cookieStore: CookieStore) {
   cookieStore.delete('checkout_plan')
   cookieStore.delete('checkout_interval')
 }
 
-export async function clearPostOnboardingCookies(cookieStore: any) {
+export async function clearPostOnboardingCookies(cookieStore: CookieStore) {
   cookieStore.delete('post_onboarding_plan')
   cookieStore.delete('post_onboarding_interval')
 }

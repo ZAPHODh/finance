@@ -13,8 +13,8 @@ type GoalWithRelations = Goal & {
 }
 
 export function createGoalsColumns(
-  t: any,
-  tCommon: any,
+  t: (key: string) => string,
+  tCommon: (key: string) => string,
   onToggleActive: (id: string) => void,
   onDelete: (id: string) => void,
   isPending: boolean

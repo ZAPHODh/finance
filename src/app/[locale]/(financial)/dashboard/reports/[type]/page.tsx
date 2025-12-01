@@ -1,6 +1,5 @@
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect, notFound } from "next/navigation";
-import { getScopedI18n } from "@/locales/server";
 import { AVAILABLE_REPORTS } from "@/lib/reports/types";
 import { ReportViewer } from "@/components/reports/report-viewer";
 import { getFilterOptions } from "./filters-actions";
@@ -14,7 +13,6 @@ interface ReportPageProps {
 
 export default async function ReportPage({ params }: ReportPageProps) {
   const { type } = await params;
-  const t = await getScopedI18n('reports');
   const { user } = await getCurrentSession();
 
   if (!user) {

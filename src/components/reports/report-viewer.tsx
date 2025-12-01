@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -13,6 +13,7 @@ import { PartnerCallout } from './partner-callout';
 import { ReportPreview } from './report-preview';
 import { getRandomPartnerByCategory } from '@/lib/reports/marketing/partners';
 import type { PartnerRecommendation } from '@/lib/reports/types';
+import type { LucideIcon } from 'lucide-react';
 
 interface FilterOptions {
   drivers: { id: string; name: string }[];
@@ -27,7 +28,7 @@ interface ReportViewerProps {
     type: ReportType;
     name: string;
     description: string;
-    icon: any;
+    icon: LucideIcon | string;
     filters: readonly string[];
     partnerCategory: string | null;
   };
@@ -38,9 +39,7 @@ interface ReportViewerProps {
 
 export function ReportViewer({ reportConfig, filterOptions, userPlanType }: ReportViewerProps) {
   const t = useScopedI18n('reports');
-  const tCommon = useScopedI18n('common');
   const tEntities = useScopedI18n('entities');
-  const [isPending, startTransition] = useTransition();
 
   const [filters, setFilters] = useState({
     startDate: format(new Date(new Date().getFullYear(), new Date().getMonth(), 1), 'yyyy-MM-dd'),
@@ -54,7 +53,7 @@ export function ReportViewer({ reportConfig, filterOptions, userPlanType }: Repo
   const [partnerRecommendation, setPartnerRecommendation] = useState<PartnerRecommendation | null>(null);
 
   useEffect(() => {
-    // Only show recommendations for FREE users with a partner category
+
     if (userPlanType === 'FREE' && reportConfig.partnerCategory) {
       const partnerData = getRandomPartnerByCategory(reportConfig.partnerCategory as PartnerCategory, userPlanType);
       if (partnerData) {
@@ -233,7 +232,6 @@ export function ReportViewer({ reportConfig, filterOptions, userPlanType }: Repo
           expenseTypeId: filters.expenseTypeId && filters.expenseTypeId !== 'all' ? filters.expenseTypeId : undefined,
           platformId: filters.platformId && filters.platformId !== 'all' ? filters.platformId : undefined,
         }}
-        disabled={isPending}
       />
     </div>
   );

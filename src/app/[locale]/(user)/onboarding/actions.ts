@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { getPostOnboardingCookies, clearPostOnboardingCookies } from "@/lib/checkout-cookies";
 import { createCheckoutSession } from "@/app/[locale]/(public)/pricing/actions";
+import type { AccessibilitySettings } from "@/types/accessibility";
 
 export interface OnboardingData {
   platforms: Array<{ name: string; }>;
@@ -18,6 +19,7 @@ export interface OnboardingData {
     currency?: string;
     timezone?: string;
   };
+  accessibility?: AccessibilitySettings;
 }
 
 export async function completeOnboarding(data: OnboardingData) {
@@ -111,23 +113,39 @@ export async function completeOnboarding(data: OnboardingData) {
           : null
         : null;
 
-    if (data.preferences) {
+    if (data.preferences || data.accessibility) {
       await tx.userPreferences.upsert({
         where: { userId: user.id },
         create: {
           userId: user.id,
-          language: data.preferences.language || 'pt',
-          currency: data.preferences.currency || 'brl',
-          timezone: data.preferences.timezone || 'America/Sao_Paulo',
+          language: data.preferences?.language || 'pt',
+          currency: data.preferences?.currency || 'brl',
+          timezone: data.preferences?.timezone || 'America/Sao_Paulo',
           defaultDriverId,
           defaultVehicleId,
+          theme: data.accessibility?.theme || 'system',
+          fontSize: data.accessibility?.fontSize || 'medium',
+          fontFamily: data.accessibility?.fontFamily || 'default',
+          lineSpacing: data.accessibility?.lineSpacing || 'normal',
+          reducedMotion: data.accessibility?.reducedMotion || false,
+          highContrast: data.accessibility?.highContrast || false,
+          keyboardShortcuts: data.accessibility?.keyboardShortcuts ? JSON.parse(JSON.stringify(data.accessibility.keyboardShortcuts)) : undefined,
         },
         update: {
-          language: data.preferences.language,
-          currency: data.preferences.currency,
-          timezone: data.preferences.timezone,
+          language: data.preferences?.language,
+          currency: data.preferences?.currency,
+          timezone: data.preferences?.timezone,
           defaultDriverId,
           defaultVehicleId,
+          ...(data.accessibility && {
+            theme: data.accessibility.theme,
+            fontSize: data.accessibility.fontSize,
+            fontFamily: data.accessibility.fontFamily,
+            lineSpacing: data.accessibility.lineSpacing,
+            reducedMotion: data.accessibility.reducedMotion,
+            highContrast: data.accessibility.highContrast,
+            keyboardShortcuts: data.accessibility.keyboardShortcuts ? JSON.parse(JSON.stringify(data.accessibility.keyboardShortcuts)) : undefined,
+          }),
         },
       });
     }

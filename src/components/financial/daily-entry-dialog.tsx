@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition, useMemo, useState } from "react";
+import { useTransition, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,7 +54,7 @@ interface IndividualExpense {
   expenseTypeId: string;
 }
 
-export function DailyEntryDialog({ mode, config, open = true, onClose, prefillData }: DailyEntryDialogProps) {
+export function DailyEntryDialog({ config, open = true, onClose, prefillData }: DailyEntryDialogProps) {
   const router = useRouter();
   const t = useScopedI18n("financial.dailyEntry");
   const tCommon = useScopedI18n("common");
@@ -73,14 +73,14 @@ export function DailyEntryDialog({ mode, config, open = true, onClose, prefillDa
   const defaultDriverId = config.planType === "FREE" && "driver" in config.defaults
     ? config.defaults.driver?.id
     : "drivers" in config.defaults
-    ? config.defaults.defaultDriverId
-    : undefined;
+      ? config.defaults.defaultDriverId
+      : undefined;
 
   const defaultVehicleId = config.planType === "FREE" && "vehicle" in config.defaults
     ? config.defaults.vehicle?.id
     : "drivers" in config.defaults
-    ? config.defaults.defaultVehicleId
-    : undefined;
+      ? config.defaults.defaultVehicleId
+      : undefined;
 
   const form = useForm({
     defaultValues: {

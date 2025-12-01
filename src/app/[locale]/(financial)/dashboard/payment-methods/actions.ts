@@ -8,6 +8,7 @@ import { CacheTags, invalidateCache } from "@/lib/server/cache";
 import { checkIfPaymentMethodLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
 import type { PaymentMethodFormData } from "@/types/forms";
+import { FeeType } from "@prisma/client";
 
 const paymentMethodFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -32,7 +33,7 @@ export async function createPaymentMethod(input: PaymentMethodFormData) {
   await prisma.paymentMethod.create({
     data: {
       name: data.name,
-      feeType: data.feeType as any,
+      feeType: data.feeType as FeeType,
       feePercentage: data.feePercentage,
       feeFixed: data.feeFixed,
       userId: user.id,
@@ -63,7 +64,7 @@ export async function updatePaymentMethod(id: string, input: PaymentMethodFormDa
     where: { id },
     data: {
       name: data.name,
-      feeType: data.feeType as any,
+      feeType: data.feeType as FeeType,
       feePercentage: data.feePercentage,
       feeFixed: data.feeFixed,
     },

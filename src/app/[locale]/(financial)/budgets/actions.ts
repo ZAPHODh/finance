@@ -76,7 +76,7 @@ export async function createBudget(input: BudgetFormData) {
         throw new Error("Você atingiu o limite de orçamentos do seu plano. Faça upgrade para adicionar mais.")
     }
 
-    const budget = await prisma.budget.create({
+    await prisma.budget.create({
         data: {
             userId: user.id,
             name: data.name,
@@ -109,7 +109,7 @@ export async function updateBudget(id: string, input: UpdateBudgetData) {
         throw new Error("Budget not found")
     }
 
-    const budget = await prisma.budget.update({
+    await prisma.budget.update({
         where: { id },
         data: {
             name: data.name,

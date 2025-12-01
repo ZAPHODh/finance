@@ -4,20 +4,6 @@ import { prisma } from "@/lib/server/db"
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { redirect } from "next/navigation"
 import { cacheWithTag, CacheTags } from "@/lib/server/cache"
-import {
-  startOfToday,
-  endOfToday,
-  startOfDay,
-  endOfDay,
-  startOfWeek,
-  endOfWeek,
-  startOfMonth,
-  endOfMonth,
-  subDays,
-  subMonths,
-  subWeeks,
-  differenceInDays
-} from "date-fns"
 import type { DashboardFilters } from "@/hooks/use-dashboard-query-filters"
 import { calculateGrowth, calculateEfficiencyMetrics, calculatePaymentFees } from "@/lib/analytics/metrics"
 import { getDateRange, getPreviousDateRange } from "@/lib/utils"

@@ -11,18 +11,14 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@/components/ui/empty';
-import { getI18n } from '@/locales/server';
+import { getScopedI18n } from '@/locales/server';
 
 export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getI18n();
+  const t = await getScopedI18n('shared.notFound');
 
   return {
-    title: `404 - ${t('shared.notFound.title')}`,
+    title: `404 - ${t('title')}`,
   };
 }
 
@@ -32,7 +28,7 @@ export default async function NotFoundPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const t = await getI18n();
+  const t = await getScopedI18n('shared.notFound');
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
@@ -41,9 +37,9 @@ export default async function NotFoundPage({
           <EmptyMedia variant="icon">
             <FileQuestionIcon />
           </EmptyMedia>
-          <EmptyTitle>{t('shared.notFound.title')}</EmptyTitle>
+          <EmptyTitle>{t('title')}</EmptyTitle>
           <EmptyDescription>
-            {t('shared.notFound.description')}
+            {t('description')}
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
@@ -51,13 +47,13 @@ export default async function NotFoundPage({
             <Button asChild>
               <Link href={`/${locale}`}>
                 <HomeIcon />
-                {t('shared.notFound.backHome')}
+                {t('backHome')}
               </Link>
             </Button>
             <Button variant="outline" asChild>
               <Link href={`/${locale}/dashboard`}>
                 <LayoutDashboardIcon />
-                {t('shared.notFound.backDashboard')}
+                {t('backDashboard')}
               </Link>
             </Button>
           </div>

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import {
   LayoutDashboard,
   Receipt,
@@ -38,7 +39,6 @@ import {
 import type { User } from "@prisma/client"
 import { useCurrentLocale, useScopedI18n } from "@/locales/client"
 import { useSiteConfig } from "@/config/site-client"
-import { Logo } from "../logo"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user: User | null
@@ -156,9 +156,9 @@ export function AppSidebar({ user, searchComponent, ...props }: AppSidebarProps)
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="/dashboard">
+              <Link href="/dashboard">
                 <span className="text-base font-semibold">{logoName}</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

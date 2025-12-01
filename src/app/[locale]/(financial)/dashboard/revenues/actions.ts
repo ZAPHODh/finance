@@ -8,7 +8,6 @@ import { cacheWithTag, CacheTags, invalidateCache } from "@/lib/server/cache";
 import { z } from "zod";
 import { checkGoalAchievements } from "@/lib/server/email-triggers";
 import type { RevenueFormData } from "@/types/forms";
-import type { RevenueWithRelations } from "@/types/prisma";
 
 const revenueFormSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
@@ -29,7 +28,7 @@ export async function createRevenue(input: RevenueFormData) {
     throw new Error("Unauthorized");
   }
 
-  const revenue = await prisma.revenue.create({
+  await prisma.revenue.create({
     data: {
       amount: data.amount,
       date: data.date,
@@ -84,7 +83,7 @@ export async function updateRevenue(id: string, input: RevenueFormData) {
     throw new Error("Revenue not found or unauthorized");
   }
 
-  const updatedRevenue = await prisma.revenue.update({
+  await prisma.revenue.update({
     where: { id },
     data: {
       amount: data.amount,
@@ -278,7 +277,12 @@ const getCachedRevenueFormData = cacheWithTag(
   600
 )
 
-export async function getRevenueFormData() {
+export async function getRevenueFormData(): Promise<{
+  platforms: { id: string; name: string }[];
+  paymentMethods: { id: string; name: string }[];
+  drivers: { id: string; name: string }[];
+  vehicles: { id: string; name: string }[];
+}> {
   const { user } = await getCurrentSession();
   if (!user) redirect("/login");
 

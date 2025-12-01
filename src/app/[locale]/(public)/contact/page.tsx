@@ -5,6 +5,7 @@ import FooterSection from "@/components/footer";
 import { Mail } from "lucide-react";
 import { useScopedI18n, useCurrentLocale } from "@/locales/client";
 import { useSiteConfig } from "@/config/site-client";
+import Link from "next/link";
 
 export default function ContactPage() {
   const t = useScopedI18n('marketing.contact');
@@ -54,9 +55,9 @@ export default function ContactPage() {
             <h2 className="text-2xl font-semibold mb-4">{t('faqSection.title')}</h2>
             <p className="text-muted-foreground">
               {t('faqSection.description')}{" "}
-              <a href="/faq" className="text-primary hover:underline">
+              <Link href="/faq" className="text-primary hover:underline">
                 {t('faqSection.link')}
-              </a>
+              </Link>
               {t('faqSection.suffix')}
             </p>
           </section>

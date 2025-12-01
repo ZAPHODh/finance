@@ -27,13 +27,7 @@ const updateGoalSchema = z.object({
     isActive: z.boolean().optional(),
 });
 
-// ============================================
-// Server Actions
-// ============================================
 
-/**
- * Get all user goals
- */
 export async function getGoals() {
     const { user } = await getCurrentSession()
     if (!user) redirect("/login")
@@ -79,9 +73,6 @@ export async function getGoalById(id: string) {
     return goal
 }
 
-/**
- * Create a new goal
- */
 export async function createGoal(input: GoalFormData) {
     const data = goalFormSchema.parse(input);
     const { user } = await getCurrentSession()
@@ -89,13 +80,13 @@ export async function createGoal(input: GoalFormData) {
         throw new Error("Unauthorized")
     }
 
-    // Verificar limite do plano
+
     const limitReached = await checkIfGoalLimitReached()
     if (limitReached) {
         throw new Error("Você atingiu o limite de metas do seu plano. Faça upgrade para adicionar mais.")
     }
 
-    const goal = await prisma.goal.create({
+    await prisma.goal.create({
         data: {
             userId: user.id,
             name: data.name,
@@ -110,9 +101,7 @@ export async function createGoal(input: GoalFormData) {
     revalidatePath("/goals")
 }
 
-/**
- * Update a goal
- */
+
 export async function updateGoal(id: string, input: UpdateGoalData) {
     const data = updateGoalSchema.parse(input);
     const { user } = await getCurrentSession()
@@ -120,7 +109,7 @@ export async function updateGoal(id: string, input: UpdateGoalData) {
         throw new Error("Unauthorized")
     }
 
-    // Verify ownership
+
     const existing = await prisma.goal.findFirst({
         where: {
             id,
@@ -132,7 +121,7 @@ export async function updateGoal(id: string, input: UpdateGoalData) {
         throw new Error("Goal not found")
     }
 
-    const goal = await prisma.goal.update({
+    await prisma.goal.update({
         where: { id },
         data: {
             name: data.name,
@@ -147,9 +136,7 @@ export async function updateGoal(id: string, input: UpdateGoalData) {
     revalidatePath("/goals")
 }
 
-/**
- * Delete a goal
- */
+
 export async function deleteGoal(id: string) {
     const idSchema = z.string().min(1);
     idSchema.parse(id);
@@ -158,7 +145,6 @@ export async function deleteGoal(id: string) {
         throw new Error("Unauthorized")
     }
 
-    // Verify ownership
     const existing = await prisma.goal.findFirst({
         where: {
             id,
@@ -223,22 +209,22 @@ export async function getGoalProgress(goalId: string) {
         throw new Error("Goal not found")
     }
 
-    // Calculate progress based on goal type
+
     let currentValue = 0
 
-    // Parse period to get date range
+
     const period = goal.period
     let startDate: Date
     let endDate: Date
 
     if (period.length === 10) {
-        // Daily format: YYYY-MM-DD
+
         startDate = new Date(period)
         startDate.setHours(0, 0, 0, 0)
         endDate = new Date(period)
         endDate.setHours(23, 59, 59, 999)
     } else if (period.length === 7) {
-        // Monthly format: YYYY-MM
+
         const [year, month] = period.split("-").map(Number)
         startDate = new Date(year, month - 1, 1)
         endDate = new Date(year, month, 0, 23, 59, 59, 999)
@@ -246,7 +232,11 @@ export async function getGoalProgress(goalId: string) {
         throw new Error("Invalid period format")
     }
 
-    const whereClause: any = {
+    const whereClause: {
+        date: { gte: Date; lte: Date };
+        driverId?: string;
+        vehicleId?: string;
+    } = {
         date: {
             gte: startDate,
             lte: endDate,
@@ -299,14 +289,8 @@ export async function getGoalProgress(goalId: string) {
         }
 
         case "MONTHLY_KM": {
-            const [revenues, expenses, workLogs] = await Promise.all([
+            const [revenues, workLogs] = await Promise.all([
                 prisma.revenue.findMany({
-                    where: {
-                        ...whereClause,
-                        driver: { userId: user.id },
-                    },
-                }),
-                prisma.expense.findMany({
                     where: {
                         ...whereClause,
                         driver: { userId: user.id },

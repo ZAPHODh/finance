@@ -6,12 +6,14 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { ArrowUpDown, Edit, Trash2, AlertTriangle } from "lucide-react"
 import Link from "next/link"
-import type { Budget, ExpenseType } from "@prisma/client"
+import type { Budget } from "@prisma/client"
 
-type BudgetWithUsage = {
-  budget: Budget & {
-    expenseType: ExpenseType
+type BudgetWithUsage = (Budget & {
+  expenseType: {
+    id: string
+    name: string
   }
+}) & {
   usage: {
     spent: number
     remaining: number
@@ -22,8 +24,8 @@ type BudgetWithUsage = {
 }
 
 export function createBudgetsColumns(
-  t: any,
-  tCommon: any,
+  t: (key: string) => string,
+  tCommon: (key: string) => string,
   onDelete: (id: string) => void,
   formatCurrency: (value: number) => string
 ): ColumnDef<BudgetWithUsage>[] {
@@ -42,29 +44,28 @@ export function createBudgetsColumns(
         )
       },
       cell: ({ row }) => {
-        const { budget } = row.original
         return (
           <div className="font-medium">
-            {budget.name || budget.expenseType.name}
+            {row.original.name || row.original.expenseType.name}
           </div>
         )
       },
     },
     {
-      accessorKey: "budget.expenseType.name",
+      accessorKey: "expenseType.name",
       header: t("expenseType"),
-      cell: ({ row }) => row.original.budget.expenseType.name,
+      cell: ({ row }) => row.original.expenseType.name,
     },
     {
-      accessorKey: "budget.period",
+      accessorKey: "period",
       header: t("period"),
-      cell: ({ row }) => row.original.budget.period,
+      cell: ({ row }) => row.original.period,
     },
     {
-      accessorKey: "budget.monthlyLimit",
+      accessorKey: "monthlyLimit",
       header: () => <div className="text-right">{t("monthlyLimit")}</div>,
       cell: ({ row }) => {
-        const formatted = formatCurrency(row.original.budget.monthlyLimit)
+        const formatted = formatCurrency(row.original.monthlyLimit)
         return <div className="text-right font-medium">{formatted}</div>
       },
     },
@@ -116,17 +117,17 @@ export function createBudgetsColumns(
       },
     },
     {
-      accessorKey: "budget.isActive",
+      accessorKey: "isActive",
       header: "Status",
       cell: ({ row }) => {
-        const { budget, usage } = row.original
+        const { usage } = row.original
         const isWarning = usage.shouldAlert && !usage.exceeded
         const isDanger = usage.exceeded
 
         return (
           <div className="flex flex-col gap-1">
-            <Badge variant={budget.isActive ? "default" : "secondary"}>
-              {budget.isActive ? t("active") : t("inactive")}
+            <Badge variant={row.original.isActive ? "default" : "secondary"}>
+              {row.original.isActive ? t("active") : t("inactive")}
             </Badge>
             {isDanger && (
               <Badge variant="destructive" className="flex items-center gap-1">
@@ -148,18 +149,17 @@ export function createBudgetsColumns(
       id: "actions",
       header: () => <div className="text-right">{tCommon("actions")}</div>,
       cell: ({ row }) => {
-        const { budget } = row.original
         return (
           <div className="flex items-center justify-end gap-2">
             <Button variant="ghost" size="icon" asChild>
-              <Link href={`/budgets/${budget.id}/edit`}>
+              <Link href={`/budgets/${row.original.id}/edit`}>
                 <Edit className="h-4 w-4" />
               </Link>
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => onDelete(budget.id)}
+              onClick={() => onDelete(row.original.id)}
             >
               <Trash2 className="h-4 w-4" />
             </Button>

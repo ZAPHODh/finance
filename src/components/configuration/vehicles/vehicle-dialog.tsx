@@ -7,7 +7,6 @@ import { Field, FieldLabel, FieldError, FieldGroup, FieldSet } from "@/component
 import { useRouter, usePathname } from "next/navigation";
 import { useScopedI18n } from "@/locales/client";
 import { createVehicle, updateVehicle } from "@/app/[locale]/(financial)/dashboard/vehicles/actions";
-import type { VehicleFormData } from "@/types/forms";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";

@@ -78,7 +78,7 @@ export function SettingsForm({ initialData, translations }: SettingsFormProps) {
           }
 
           toast.success("Settings saved successfully")
-        } catch (error) {
+        } catch {
           toast.error("Failed to save settings")
         }
       })

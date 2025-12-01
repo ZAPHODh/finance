@@ -2,7 +2,6 @@ import { siteUrl } from "@/config/site";
 import { siteConfig } from "@/config/site-server";
 import { Inter } from "next/font/google";
 import { Metadata } from "next";
-import { headers } from "next/headers";
 import { I18nProviderClient } from "@/locales/client";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";

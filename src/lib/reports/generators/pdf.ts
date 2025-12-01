@@ -5,6 +5,12 @@ import type { ReportType } from '@prisma/client';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
+interface JsPDFWithAutoTable extends jsPDF {
+  lastAutoTable: {
+    finalY: number;
+  };
+}
+
 
 export async function generatePDF(
   reportType: ReportType,
@@ -63,7 +69,7 @@ export async function generatePDF(
 
     case 'VEHICLE_PERFORMANCE':
       if (reportData.vehicles) {
-        currentY = addVehiclesTable(doc, reportData.vehicles, currentY);
+        addVehiclesTable(doc, reportData.vehicles, currentY);
       }
       break;
   }
@@ -177,7 +183,7 @@ function addExpensesTable(doc: jsPDF, expenses: ReportData['expenses'], startY: 
     styles: { fontSize: 9 },
   });
 
-  return (doc as any).lastAutoTable.finalY + 10;
+  return (doc as JsPDFWithAutoTable).lastAutoTable.finalY + 10;
 }
 
 function addRevenuesTable(doc: jsPDF, revenues: ReportData['revenues'], startY: number): number {
@@ -205,7 +211,7 @@ function addRevenuesTable(doc: jsPDF, revenues: ReportData['revenues'], startY: 
     styles: { fontSize: 9 },
   });
 
-  return (doc as any).lastAutoTable.finalY + 10;
+  return (doc as JsPDFWithAutoTable).lastAutoTable.finalY + 10;
 }
 
 function addDriversTable(doc: jsPDF, drivers: ReportData['drivers'], startY: number): number {
@@ -229,7 +235,7 @@ function addDriversTable(doc: jsPDF, drivers: ReportData['drivers'], startY: num
     styles: { fontSize: 9 },
   });
 
-  return (doc as any).lastAutoTable.finalY + 10;
+  return (doc as JsPDFWithAutoTable).lastAutoTable.finalY + 10;
 }
 
 function addVehiclesTable(doc: jsPDF, vehicles: ReportData['vehicles'], startY: number): number {
@@ -253,5 +259,5 @@ function addVehiclesTable(doc: jsPDF, vehicles: ReportData['vehicles'], startY: 
     styles: { fontSize: 9 },
   });
 
-  return (doc as any).lastAutoTable.finalY + 10;
+  return (doc as JsPDFWithAutoTable).lastAutoTable.finalY + 10;
 }

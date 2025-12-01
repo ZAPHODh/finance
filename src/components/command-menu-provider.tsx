@@ -7,6 +7,10 @@ interface CommandMenuProviderProps {
   children: React.ReactNode;
 }
 
+interface WindowWithCommandMenu extends Window {
+  openCommandMenu?: () => void;
+}
+
 export function CommandMenuProvider({ children }: CommandMenuProviderProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -24,7 +28,7 @@ export function CommandMenuProvider({ children }: CommandMenuProviderProps) {
 
   // Expose open function globally so sidebar can trigger it
   React.useEffect(() => {
-    (window as any).openCommandMenu = () => setOpen(true);
+    (window as WindowWithCommandMenu).openCommandMenu = () => setOpen(true);
   }, []);
 
   return (

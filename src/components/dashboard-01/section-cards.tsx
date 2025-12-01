@@ -1,4 +1,4 @@
-import { TrendingDown, TrendingUp, DollarSign, MapPin, Clock } from "lucide-react"
+import { TrendingDown, TrendingUp, MapPin, Clock } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import {
   Card,

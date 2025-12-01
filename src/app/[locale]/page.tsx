@@ -2,7 +2,6 @@
 
 import HeroSection from "@/components/hero-section";
 import Features from "@/components/features-3";
-import Pricing from "@/components/pricing";
 import FAQs from "@/components/faqs";
 import Nav from "@/components/shared/nav";
 import FooterSection from "@/components/footer";

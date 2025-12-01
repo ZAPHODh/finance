@@ -21,8 +21,8 @@ export interface UseMultiFormStepsReturn {
   setSteps: (newSteps: Stepfields[]) => void;
 }
 
-// Context type
-interface MultiStepFormContextType extends UseMultiFormStepsReturn {}
+// Context type - using the return type directly
+type MultiStepFormContextType = UseMultiFormStepsReturn;
 
 // Create context
 const MultiStepFormContext = createContext<MultiStepFormContextType | null>(

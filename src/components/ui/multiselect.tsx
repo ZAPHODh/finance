@@ -295,7 +295,7 @@ const MultipleSelector = ({
     }
 
     void exec()
-  }, [debouncedSearchTerm, groupBy, open, triggerSearchOnFocus])
+  }, [debouncedSearchTerm, groupBy, open, triggerSearchOnFocus, onSearchSync])
 
   useEffect(() => {
     const doSearch = async () => {
@@ -318,7 +318,7 @@ const MultipleSelector = ({
     }
 
     void exec()
-  }, [debouncedSearchTerm, groupBy, open, triggerSearchOnFocus])
+  }, [debouncedSearchTerm, groupBy, open, triggerSearchOnFocus, onSearch])
 
   const CreatableItem = () => {
     if (!creatable) return undefined
@@ -510,7 +510,7 @@ const MultipleSelector = ({
                 disabled ||
                 selected.length < 1 ||
                 selected.filter((s) => s.fixed).length === selected.length) &&
-                "hidden"
+              "hidden"
             )}
             aria-label="Clear all"
           >
@@ -579,7 +579,7 @@ const MultipleSelector = ({
                               className={cn(
                                 "cursor-pointer",
                                 option.disable &&
-                                  "pointer-events-none cursor-not-allowed opacity-50"
+                                "pointer-events-none cursor-not-allowed opacity-50"
                               )}
                             >
                               {option.label}

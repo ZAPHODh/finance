@@ -8,6 +8,7 @@ import { cacheWithTag, CacheTags, invalidateCache } from "@/lib/server/cache";
 import { z } from "zod";
 import { dailyEntrySchema, type DailyEntryInput } from "@/types/daily-entry";
 import { getUserSubscriptionPlan } from "@/lib/server/payment";
+import { type Revenue, type Expense } from "@prisma/client";
 
 const quickDailyEntrySchema = z.object({
   date: z.date(),
@@ -89,7 +90,7 @@ export async function createQuickDailyEntry(input: z.infer<typeof quickDailyEntr
   }
 
   const results = await prisma.$transaction(async (tx) => {
-    const created = { revenue: null as any, expense: null as any };
+    const created = { revenue: null as Revenue | null, expense: null as Expense | null };
 
     if (data.revenue && data.revenue.amount > 0) {
       created.revenue = await tx.revenue.create({
@@ -171,7 +172,7 @@ export async function createCompleteDailyEntry(input: z.infer<typeof completeDai
   }
 
   const results = await prisma.$transaction(async (tx) => {
-    const created = { revenue: null as any, expense: null as any };
+    const created = { revenue: null as Revenue | null, expense: null as Expense | null };
 
     if (data.revenue && data.revenue.amount > 0) {
       created.revenue = await tx.revenue.create({
@@ -539,8 +540,8 @@ export async function createDailyEntry(input: DailyEntryInput) {
 
   const results = await prisma.$transaction(async (tx) => {
     const created = {
-      revenues: [] as any[],
-      expenses: [] as any[],
+      revenues: [] as Revenue[],
+      expenses: [] as Expense[],
     };
 
     // Handle Revenue - Sum Mode

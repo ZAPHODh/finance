@@ -2,6 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Button } from './button'
+import Link from 'next/link'
 
 describe('Button Component', () => {
   it('renders with children text', () => {
@@ -78,7 +79,7 @@ describe('Button Component', () => {
   it('renders as child element when asChild is true', () => {
     render(
       <Button asChild>
-        <a href="/test">Link Button</a>
+        <Link href="/test">Link Button</Link>
       </Button>
     )
     const link = screen.getByRole('link', { name: /link button/i })

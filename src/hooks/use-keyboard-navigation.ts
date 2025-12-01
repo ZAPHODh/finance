@@ -7,8 +7,13 @@ interface UseKeyboardNavigationReturn {
   activateSelection: () => boolean;
 }
 
+interface Hit {
+  url?: string;
+  [key: string]: unknown;
+}
+
 export function useKeyboardNavigation(
-  hits: any[],
+  hits: Hit[],
   query: string,
 ): UseKeyboardNavigationReturn {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);

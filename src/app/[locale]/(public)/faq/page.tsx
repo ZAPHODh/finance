@@ -9,6 +9,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useScopedI18n } from "@/locales/client";
+import Link from "next/link";
 
 export default function FAQPage() {
   const t = useScopedI18n('marketing.faqs');
@@ -53,12 +54,12 @@ export default function FAQPage() {
           <p className="text-muted-foreground mb-4">
             {tContact('stillHaveQuestions')}
           </p>
-          <a
+          <Link
             href="/contact"
             className="text-primary hover:underline font-semibold"
           >
             {tContact('contactSupport')}
-          </a>
+          </Link>
         </div>
       </main>
       <FooterSection />

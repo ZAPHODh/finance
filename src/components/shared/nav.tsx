@@ -6,7 +6,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { ModeSwitcher } from "./nav-components/theme-toggle"
 
 import Link from "next/link"
 import { useScopedI18n, useCurrentLocale } from "@/locales/client";

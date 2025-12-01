@@ -1,4 +1,3 @@
-import { unstable_cache } from 'next/cache'
 import { getCached, setCached, invalidateCacheByTag } from './redis'
 
 /**
@@ -11,6 +10,7 @@ import { getCached, setCached, invalidateCacheByTag } from './redis'
  *   300 // 5 minutes
  * )
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function cacheWithTag<T extends (...args: any[]) => Promise<any>>(
   fn: T,
   keyParts: string[],

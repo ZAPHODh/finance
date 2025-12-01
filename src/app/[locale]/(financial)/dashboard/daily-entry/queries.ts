@@ -90,7 +90,6 @@ async function getSmartPlanDefaultsUncached(userId: string): Promise<SmartPlanDe
     paymentMethodStats,
     driverStats,
     vehicleStats,
-    expenseTypeStats,
   ] = await Promise.all([
     prisma.userPreferences.findUnique({
       where: { userId },
@@ -225,7 +224,6 @@ async function getSmartPlanDefaultsUncached(userId: string): Promise<SmartPlanDe
     }),
   ]);
 
-  // Apply hierarchy for defaults
   const selfDriver = drivers.find((d) => d.isSelf);
   const primaryVehicle = vehicles.find((v) => v.isPrimary);
 

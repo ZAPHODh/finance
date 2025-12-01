@@ -3,7 +3,6 @@ import { buffer } from "node:stream/consumers";
 import Stripe from "stripe";
 import { prisma } from "@/lib/server/db";
 import { stripe } from "@/lib/server/payment";
-import { simplePlan, proPlan } from "@/config/subscription";
 import { type PlanType } from "@prisma/client";
 import { getPlanTypeFromPriceId as getPlanTypeFromPrice } from "@/lib/server/pricing";
 
@@ -73,10 +72,12 @@ export async function POST(req: NextRequest) {
         return new Response("No subscription in session", { status: 400 });
       }
 
-      const subscription = await stripe.subscriptions.retrieve(
+      const subscriptionResponse = await stripe.subscriptions.retrieve(
         session.subscription as string,
         { expand: ['items.data.price'] }
       );
+
+      const subscription = subscriptionResponse as Stripe.Subscription;
 
       const priceId = typeof subscription.items.data[0]?.price === 'string'
         ? subscription.items.data[0].price
@@ -95,7 +96,8 @@ export async function POST(req: NextRequest) {
             stripeSubscriptionId: subscription.id,
             stripeCustomerId: typeof subscription.customer === 'string' ? subscription.customer : subscription.customer?.id,
             stripePriceId: priceId,
-            stripeCurrentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            stripeCurrentPeriodEnd: (subscription as any).current_period_end ? new Date((subscription as any).current_period_end * 1000) : null,
             planType,
           },
         });
@@ -108,21 +110,26 @@ export async function POST(req: NextRequest) {
     }
 
     case "invoice.payment_succeeded": {
-      const invoice = event.data.object as any;
+      const invoice = event.data.object as Stripe.Invoice;
 
-      const subscriptionId = typeof invoice.subscription === "string"
-        ? invoice.subscription
-        : invoice.subscription?.id;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const subscriptionId = typeof (invoice as any).subscription === "string"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ? (invoice as any).subscription
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        : (invoice as any).subscription?.id;
 
       if (!subscriptionId) {
         console.error("No subscription in invoice");
         return new Response("No subscription in invoice", { status: 400 });
       }
 
-      const subscription = await stripe.subscriptions.retrieve(
+      const subscriptionResponse = await stripe.subscriptions.retrieve(
         subscriptionId,
         { expand: ['items.data.price'] }
       );
+
+      const subscription = subscriptionResponse as Stripe.Subscription;
 
       const priceId = typeof subscription.items.data[0]?.price === 'string'
         ? subscription.items.data[0].price
@@ -139,7 +146,8 @@ export async function POST(req: NextRequest) {
           where: { stripeSubscriptionId: subscription.id },
           data: {
             stripePriceId: priceId,
-            stripeCurrentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            stripeCurrentPeriodEnd: (subscription as any).current_period_end ? new Date((subscription as any).current_period_end * 1000) : null,
             planType,
           },
         });
@@ -171,7 +179,8 @@ export async function POST(req: NextRequest) {
           where: { stripeSubscriptionId: subscription.id },
           data: {
             stripePriceId: priceId,
-            stripeCurrentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            stripeCurrentPeriodEnd: (subscription as any).current_period_end ? new Date((subscription as any).current_period_end * 1000) : null,
             planType,
           },
         });

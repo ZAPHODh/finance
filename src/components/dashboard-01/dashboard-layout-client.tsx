@@ -12,6 +12,9 @@ import { useRouter } from "next/navigation";
 import { getLastDailyEntry } from "@/app/[locale]/(financial)/dashboard/daily-entry/actions";
 import { toast } from "sonner";
 import { useScopedI18n } from "@/locales/client";
+import { useAccessibilitySettings } from "@/hooks/use-accessibility-settings";
+import { useFontSettings } from "@/hooks/use-font-settings";
+import { DEFAULT_KEYBOARD_SHORTCUTS } from "@/config/accessibility";
 
 export interface PrefillData {
   revenueAmount?: number;
@@ -53,6 +56,15 @@ export function DashboardLayoutClient({
   const [isPending, startTransition] = useTransition();
   const [isDailyEntryOpen, setIsDailyEntryOpen] = useState(false);
   const [prefillData, setPrefillData] = useState<PrefillData | undefined>(undefined);
+
+  const { settings, isLoading } = useAccessibilitySettings();
+  const shortcuts = settings?.keyboardShortcuts || DEFAULT_KEYBOARD_SHORTCUTS;
+
+  useFontSettings({
+    fontSize: settings?.fontSize || "medium",
+    fontFamily: settings?.fontFamily || "default",
+    lineSpacing: settings?.lineSpacing || "normal",
+  });
 
   useEffect(() => {
     setMounted(true);
@@ -105,34 +117,34 @@ export function DashboardLayoutClient({
         }
 
         handleOpenDialogWithPrefill(data);
-      } catch (error) {
+      } catch {
         toast.error(t('noLastEntry'));
       }
     });
   }
 
   useKeyboardShortcut(
-    { key: "d", ctrl: true },
+    shortcuts.newDailyEntry,
     handleOpenDialog,
-    mounted
+    mounted && !isLoading
   );
 
   useKeyboardShortcut(
-    { key: "r", ctrl: true },
+    shortcuts.newRevenue,
     () => router.push("/dashboard/revenues/new"),
-    mounted
+    mounted && !isLoading
   );
 
   useKeyboardShortcut(
-    { key: "e", ctrl: true },
+    shortcuts.newExpense,
     () => router.push("/dashboard/expenses/new"),
-    mounted
+    mounted && !isLoading
   );
 
   useKeyboardShortcut(
-    { key: "d", ctrl: true, shift: true },
+    shortcuts.repeatLast,
     handleRepeatLast,
-    mounted && !isPending
+    mounted && !isPending && !isLoading
   );
 
   return (

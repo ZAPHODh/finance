@@ -3,10 +3,17 @@
 import { Search } from "lucide-react";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 
+interface WindowWithCommandMenu extends Window {
+  openCommandMenu?: () => void;
+}
+
 export function SearchButton() {
   const handleClick = () => {
-    if (typeof window !== 'undefined' && (window as any).openCommandMenu) {
-      (window as any).openCommandMenu();
+    if (typeof window !== 'undefined') {
+      const openFn = (window as WindowWithCommandMenu).openCommandMenu;
+      if (openFn) {
+        openFn();
+      }
     }
   };
 

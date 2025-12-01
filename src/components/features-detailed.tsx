@@ -104,7 +104,7 @@ export function FeaturesDetailed() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {features.map((feature, idx) => {
-          const featureKey = `features.${feature.key}` as any
+          const featureKey = `features.${feature.key}` as const
 
           return (
             <Card key={idx} className="hover:shadow-lg transition-shadow">
@@ -114,7 +114,9 @@ export function FeaturesDetailed() {
                     <feature.icon className="h-6 w-6 text-primary" />
                   </div>
                   <div className="flex-1">
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     <CardTitle className="text-xl">{t(`${featureKey}.title` as any)}</CardTitle>
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     <CardDescription className="mt-2">{t(`${featureKey}.description` as any)}</CardDescription>
                   </div>
                 </div>
@@ -124,6 +126,7 @@ export function FeaturesDetailed() {
                   {[1, 2, 3, 4].map((benefitIdx) => (
                     <li key={benefitIdx} className="flex items-start gap-2 text-sm text-muted-foreground">
                       <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                       <span>{t(`${featureKey}.benefit${benefitIdx}` as any)}</span>
                     </li>
                   ))}

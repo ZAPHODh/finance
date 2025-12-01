@@ -1,5 +1,5 @@
 'use client'
-import { Logo } from '@/components/logo'
+
 import Link from 'next/link'
 import { useScopedI18n, useCurrentLocale } from '@/locales/client'
 import { usePathname } from 'next/navigation'

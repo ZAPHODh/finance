@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { SubscriptionManagement, type SubscriptionManagementProps } from "./subscription-management";
 import { useScopedI18n } from "@/locales/client";
 import { toast } from "sonner";
@@ -16,15 +15,12 @@ export function SubscriptionManagementWrapper({
   allPlans,
 }: SubscriptionManagementWrapperProps) {
   const t = useScopedI18n("ui.userPages.billing");
-  const [isLoading, setIsLoading] = useState(false);
 
   async function handleManageBilling() {
-    setIsLoading(true);
     const result = await openBillingPortal();
 
     if (result.error) {
       toast.error(result.error);
-      setIsLoading(false);
       return;
     }
 

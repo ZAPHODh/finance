@@ -26,6 +26,8 @@ import {
   SubmitButton,
   MultiStepFormContent,
 } from '@/components/multi-step-viewer';
+import { AccessibilityStep } from '@/components/accessibility/accessibility-step';
+import { DEFAULT_ACCESSIBILITY_SETTINGS } from '@/config/accessibility';
 
 interface OnboardingWizardProps {
   locale: string;
@@ -37,6 +39,7 @@ const DEFAULT_VALUES: OnboardingFormData = {
   vehicles: [],
   expenseTypes: [],
   paymentMethods: [],
+  accessibility: DEFAULT_ACCESSIBILITY_SETTINGS,
 };
 
 export function OnboardingWizard({ locale }: OnboardingWizardProps) {
@@ -46,7 +49,7 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<OnboardingFormData>({
-    resolver: zodResolver(onboardingSchema as any),
+    resolver: zodResolver(onboardingSchema),
     defaultValues: DEFAULT_VALUES,
   });
 
@@ -64,6 +67,7 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
             currency: locale === 'pt' ? 'brl' : 'usd',
             timezone: locale === 'pt' ? 'America/Sao_Paulo' : 'America/New_York',
           },
+          accessibility: value.accessibility,
         };
 
         const result = await completeOnboarding(data);
@@ -364,6 +368,64 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
         </div>
       ),
     },
+    {
+      fields: ['accessibility'],
+      component: (
+        <Controller
+          name="accessibility"
+          control={form.control}
+          defaultValue={DEFAULT_ACCESSIBILITY_SETTINGS}
+          render={({ field }) => {
+            const tAny = t as (key: string) => string;
+            return (
+              <AccessibilityStep
+                value={field.value || DEFAULT_ACCESSIBILITY_SETTINGS}
+                onChange={field.onChange}
+                labels={{
+                  title: tAny('accessibility.title'),
+                  description: tAny('accessibility.description'),
+                  theme: {
+                    title: tAny('accessibility.theme.title'),
+                    light: tAny('accessibility.theme.light'),
+                    dark: tAny('accessibility.theme.dark'),
+                    system: tAny('accessibility.theme.system'),
+                  },
+                  font: {
+                    fontSize: tAny('accessibility.font.size'),
+                    fontFamily: tAny('accessibility.font.family'),
+                    lineSpacing: tAny('accessibility.font.spacing'),
+                  },
+                  shortcuts: {
+                    title: tAny('accessibility.shortcuts.title'),
+                    conflictWarning: tAny('accessibility.shortcuts.conflict'),
+                    actions: {
+                      newDailyEntry: {
+                        label: tAny('accessibility.shortcuts.newDailyEntry.label'),
+                        description: tAny('accessibility.shortcuts.newDailyEntry.description'),
+                      },
+                      newRevenue: {
+                        label: tAny('accessibility.shortcuts.newRevenue.label'),
+                        description: tAny('accessibility.shortcuts.newRevenue.description'),
+                      },
+                      newExpense: {
+                        label: tAny('accessibility.shortcuts.newExpense.label'),
+                        description: tAny('accessibility.shortcuts.newExpense.description'),
+                      },
+                      repeatLast: {
+                        label: tAny('accessibility.shortcuts.repeatLast.label'),
+                        description: tAny('accessibility.shortcuts.repeatLast.description'),
+                      },
+                    },
+                  },
+                  reducedMotion: tAny('accessibility.reducedMotion'),
+                  highContrast: tAny('accessibility.highContrast'),
+                }}
+              />
+            );
+          }}
+        />
+      ),
+    },
   ];
 
   return (
@@ -379,7 +441,7 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
               stepsFields={stepsFields}
               onStepValidation={async (step) => {
                 if (step.fields.length === 0) return true;
-                const isValid = await form.trigger(step.fields as any);
+                const isValid = await form.trigger(step.fields as (keyof OnboardingFormData)[]);
                 return isValid;
               }}
             >

@@ -16,12 +16,10 @@ interface BillingPageContentProps {
 
 export function BillingPageContent({
   currentPlan,
-  allPlans,
 }: BillingPageContentProps) {
   const t = useScopedI18n("ui.userPages.billing");
   const [isLoading, setIsLoading] = useState(false);
 
-  const isFreePlan = currentPlan.plan.id === "free";
 
   async function handleUpgrade(plan: "simple" | "pro", interval: "monthly" | "yearly" = "monthly") {
     setIsLoading(true);

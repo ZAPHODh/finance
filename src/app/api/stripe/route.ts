@@ -2,7 +2,6 @@ import { revalidatePath } from "next/cache";
 import { type NextRequest } from "next/server";
 import { z } from "zod";
 import { siteConfig } from "@/config/site-server";
-import { proPlan, simplePlan } from "@/config/subscription";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { getUserSubscriptionPlan, stripe } from "@/lib/server/payment";
 import { getStripePriceId, getCurrencyFromLocale } from "@/lib/pricing";

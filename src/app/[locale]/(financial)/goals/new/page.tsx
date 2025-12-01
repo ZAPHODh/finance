@@ -3,8 +3,6 @@ import { redirect } from "next/navigation"
 import { getScopedI18n } from "@/locales/server"
 import { GoalForm } from "@/components/goals/goal-form"
 import { prisma } from "@/lib/server/db"
-import { getDriversData } from "../../dashboard/drivers/actions"
-import { getVehiclesData } from "../../dashboard/vehicles/actions"
 
 export default async function NewGoalPage() {
     const { user } = await getCurrentSession()
