@@ -1,20 +1,25 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
-import { Plus } from 'lucide-react';
+import { Plus, Sparkles } from 'lucide-react';
 import type { Driver } from './driver-card';
 
 interface AddDriverCardProps {
   onAdd: (driver: Driver) => void;
   hasDrivers: boolean;
+  driverCount: number;
+  maxDrivers?: number;
+  locale: string;
   labels: {
     addDriver: string;
     addAnother: string;
+    upgradeToAddMore: string;
     name: string;
     isSelf: string;
     isSelfDescription: string;
@@ -23,12 +28,15 @@ interface AddDriverCardProps {
   };
 }
 
-export function AddDriverCard({ onAdd, hasDrivers, labels }: AddDriverCardProps) {
+export function AddDriverCard({ onAdd, hasDrivers, driverCount, maxDrivers = 1, locale, labels }: AddDriverCardProps) {
+  const router = useRouter();
   const [isAdding, setIsAdding] = useState(false);
   const [newDriver, setNewDriver] = useState<Driver>({
     name: '',
     isSelf: false,
   });
+
+  const isAtLimit = driverCount >= maxDrivers;
 
   function handleAdd() {
     if (newDriver.name.trim()) {
@@ -81,6 +89,20 @@ export function AddDriverCard({ onAdd, hasDrivers, labels }: AddDriverCardProps)
             </Button>
           </div>
         </FieldGroup>
+      </Card>
+    );
+  }
+
+  if (isAtLimit) {
+    return (
+      <Card
+        className="p-4 border border-primary/50 cursor-pointer transition-colors hover:bg-primary/10"
+        onClick={() => router.push(`/${locale}/pricing?from=onboarding`)}
+      >
+        <div className="flex items-center justify-center gap-2 text-primary">
+          <Sparkles className="h-5 w-5" />
+          <span className="font-medium">{labels.upgradeToAddMore}</span>
+        </div>
       </Card>
     );
   }

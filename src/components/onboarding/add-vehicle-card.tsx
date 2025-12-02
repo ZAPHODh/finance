@@ -1,18 +1,23 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
-import { Plus, Check, X } from 'lucide-react';
+import { Plus, Check, X, Sparkles } from 'lucide-react';
 import { Vehicle } from './vehicle-card';
 
 interface AddVehicleCardProps {
   onAdd: (vehicle: Vehicle) => void;
+  vehicleCount: number;
+  maxVehicles?: number;
+  locale: string;
   labels: {
     addVehicle: string;
+    upgradeToAddMore: string;
     name: string;
     plate: string;
     model: string;
@@ -24,7 +29,8 @@ interface AddVehicleCardProps {
   };
 }
 
-export function AddVehicleCard({ onAdd, labels }: AddVehicleCardProps) {
+export function AddVehicleCard({ onAdd, vehicleCount, maxVehicles = 1, locale, labels }: AddVehicleCardProps) {
+  const router = useRouter();
   const [isAdding, setIsAdding] = useState(false);
   const [newVehicle, setNewVehicle] = useState<Vehicle>({
     name: '',
@@ -32,6 +38,8 @@ export function AddVehicleCard({ onAdd, labels }: AddVehicleCardProps) {
     model: '',
     year: undefined,
   });
+
+  const isAtLimit = vehicleCount >= maxVehicles;
 
   function handleAdd() {
     if (newVehicle.name.trim()) {
@@ -53,6 +61,20 @@ export function AddVehicleCard({ onAdd, labels }: AddVehicleCardProps) {
   }
 
   if (!isAdding) {
+    if (isAtLimit) {
+      return (
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full border-primary/50 text-primary hover:bg-primary/10"
+          onClick={() => router.push(`/${locale}/pricing?from=onboarding`)}
+        >
+          <Sparkles className="h-4 w-4 mr-2" />
+          {labels.upgradeToAddMore}
+        </Button>
+      );
+    }
+
     return (
       <Button type="button" variant="outline" className="w-full" onClick={() => setIsAdding(true)}>
         <Plus className="h-4 w-4 mr-2" />

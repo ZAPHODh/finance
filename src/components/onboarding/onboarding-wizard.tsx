@@ -212,9 +212,13 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                     field.onChange([...updatedDrivers, driver]);
                   }}
                   hasDrivers={field.value.length > 0}
+                  driverCount={field.value.length}
+                  maxDrivers={1}
+                  locale={locale}
                   labels={{
                     addDriver: t('drivers.addFirst'),
                     addAnother: t('drivers.addAnother'),
+                    upgradeToAddMore: t('drivers.upgradeToAddMore'),
                     name: t('drivers.placeholder'),
                     isSelf: t('drivers.justMe'),
                     isSelfDescription: t('drivers.justMeDescription'),
@@ -279,8 +283,12 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                 )}
                 <AddVehicleCard
                   onAdd={(vehicle) => field.onChange([...field.value, vehicle])}
+                  vehicleCount={field.value.length}
+                  maxVehicles={1}
+                  locale={locale}
                   labels={{
                     addVehicle: t('vehicles.addAnother'),
+                    upgradeToAddMore: t('vehicles.upgradeToAddMore'),
                     name: t('vehicles.namePlaceholder'),
                     plate: t('vehicles.platePlaceholder'),
                     model: t('vehicles.modelPlaceholder'),
