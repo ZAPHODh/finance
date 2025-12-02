@@ -11,6 +11,10 @@ import { CommandMenuProvider } from "@/components/command-menu-provider";
 import { QueryProvider } from "@/components/query-provider";
 import { cn } from "@/lib/utils";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { AccessibilityProvider } from "@/components/providers/accessibility-provider";
+import { ThemeSyncScript } from "@/components/theme-sync-script";
+import { getCurrentSession } from "@/lib/server/auth/session";
+import { prisma } from "@/lib/server/db";
 
 import "../globals.css";
 
@@ -109,6 +113,11 @@ const fontSans = Inter({
   variable: "--font-sans",
 });
 
+const fontDyslexic = Inter({
+  subsets: ["latin"],
+  variable: "--font-dyslexic",
+});
+
 
 export default async function RootLayout({
   children,
@@ -121,32 +130,52 @@ export default async function RootLayout({
 }) {
   const { locale } = await params;
 
+  const { user } = await getCurrentSession();
+  let userTheme = "dark";
+
+  if (user) {
+    const preferences = await prisma.userPreferences.findUnique({
+      where: { userId: user.id },
+      select: { theme: true },
+    });
+    userTheme = preferences?.theme || "dark";
+  }
 
   return (
     <html lang={locale} suppressHydrationWarning>
+      <head>
+        <ThemeSyncScript theme={userTheme} />
+      </head>
       <body
         className={cn(
           "font-sans antialiased",
           fontSans.variable,
+          fontDyslexic.variable,
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <PosthogProvider>
-            <QueryProvider>
-              <I18nProviderClient locale={locale}>
-                <CommandMenuProvider>
-                  <NuqsAdapter>
-                    <main>
-                      {children}
-                      {loginDialog}
-                    </main>
-                  </NuqsAdapter>
-                </CommandMenuProvider>
-              </I18nProviderClient>
-              <Toaster />
-              <CookieConsent />
-            </QueryProvider>
-          </PosthogProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme={userTheme}
+          enableSystem={userTheme === "system"}
+        >
+          <AccessibilityProvider initialTheme={userTheme}>
+            <PosthogProvider>
+              <QueryProvider>
+                <I18nProviderClient locale={locale}>
+                  <CommandMenuProvider>
+                    <NuqsAdapter>
+                      <main>
+                        {children}
+                        {loginDialog}
+                      </main>
+                    </NuqsAdapter>
+                  </CommandMenuProvider>
+                </I18nProviderClient>
+                <Toaster />
+                <CookieConsent />
+              </QueryProvider>
+            </PosthogProvider>
+          </AccessibilityProvider>
         </ThemeProvider>
       </body>
     </html>

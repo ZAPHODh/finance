@@ -172,6 +172,75 @@
 
 body {
   letter-spacing: var(--tracking-normal);
+  font-size: var(--font-size-base, 16px);
+  font-family: var(--font-family-base, var(--font-sans));
+  line-height: var(--line-height-base, 1.5);
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+[data-reduce-motion="true"] *,
+[data-reduce-motion="true"] *::before,
+[data-reduce-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Accessibility: High Contrast Mode */
+[data-high-contrast="true"] {
+  --background: oklch(0 0 0);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0.05 0 0);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.05 0 0);
+  --popover-foreground: oklch(1 0 0);
+  --primary: oklch(1 0 0);
+  --primary-foreground: oklch(0 0 0);
+  --secondary: oklch(0.9 0 0);
+  --secondary-foreground: oklch(0 0 0);
+  --muted: oklch(0.2 0 0);
+  --muted-foreground: oklch(0.9 0 0);
+  --accent: oklch(0.95 0 0);
+  --accent-foreground: oklch(0 0 0);
+  --destructive: oklch(0.8 0.3 30);
+  --destructive-foreground: oklch(0 0 0);
+  --border: oklch(1 0 0);
+  --input: oklch(1 0 0);
+  --ring: oklch(1 0 0);
+}
+
+[data-high-contrast="true"].dark {
+  --background: oklch(0 0 0);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0.05 0 0);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.05 0 0);
+  --popover-foreground: oklch(1 0 0);
+  --primary: oklch(1 0 0);
+  --primary-foreground: oklch(0 0 0);
+  --secondary: oklch(0.9 0 0);
+  --secondary-foreground: oklch(0 0 0);
+  --muted: oklch(0.2 0 0);
+  --muted-foreground: oklch(0.9 0 0);
+  --accent: oklch(0.95 0 0);
+  --accent-foreground: oklch(0 0 0);
+  --destructive: oklch(0.8 0.3 30);
+  --destructive-foreground: oklch(0 0 0);
+  --border: oklch(1 0 0);
+  --input: oklch(1 0 0);
+  --ring: oklch(1 0 0);
 }
 
 /* @theme inline {

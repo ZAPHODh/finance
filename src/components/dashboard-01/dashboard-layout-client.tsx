@@ -12,8 +12,7 @@ import { useRouter } from "next/navigation";
 import { getLastDailyEntry } from "@/app/[locale]/(financial)/dashboard/daily-entry/actions";
 import { toast } from "sonner";
 import { useScopedI18n } from "@/locales/client";
-import { useAccessibilitySettings } from "@/hooks/use-accessibility-settings";
-import { useFontSettings } from "@/hooks/use-font-settings";
+import { useAccessibilityContext } from "@/hooks/use-accessibility-context";
 import { DEFAULT_KEYBOARD_SHORTCUTS } from "@/config/accessibility";
 
 export interface PrefillData {
@@ -57,14 +56,8 @@ export function DashboardLayoutClient({
   const [isDailyEntryOpen, setIsDailyEntryOpen] = useState(false);
   const [prefillData, setPrefillData] = useState<PrefillData | undefined>(undefined);
 
-  const { settings, isLoading } = useAccessibilitySettings();
+  const { settings, isLoading } = useAccessibilityContext();
   const shortcuts = settings?.keyboardShortcuts || DEFAULT_KEYBOARD_SHORTCUTS;
-
-  useFontSettings({
-    fontSize: settings?.fontSize || "medium",
-    fontFamily: settings?.fontFamily || "default",
-    lineSpacing: settings?.lineSpacing || "normal",
-  });
 
   useEffect(() => {
     setMounted(true);
