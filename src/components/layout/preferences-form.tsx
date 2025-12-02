@@ -104,7 +104,7 @@ export function PreferencesForm({ initialData, translations }: PreferencesFormPr
                     onValueChange={field.handleChange}
                   >
                     <SelectTrigger id={field.name}>
-                      <SelectValue />
+                      <SelectValue placeholder={translations.theme} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="light">{translations.light}</SelectItem>
@@ -124,7 +124,7 @@ export function PreferencesForm({ initialData, translations }: PreferencesFormPr
                     onValueChange={field.handleChange}
                   >
                     <SelectTrigger id={field.name}>
-                      <SelectValue />
+                      <SelectValue placeholder={translations.language} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="en">{translations.english}</SelectItem>
@@ -152,7 +152,7 @@ export function PreferencesForm({ initialData, translations }: PreferencesFormPr
                     onValueChange={field.handleChange}
                   >
                     <SelectTrigger id={field.name}>
-                      <SelectValue />
+                      <SelectValue placeholder={translations.currency} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="usd">USD - {translations.usDollar}</SelectItem>
@@ -172,7 +172,7 @@ export function PreferencesForm({ initialData, translations }: PreferencesFormPr
                     onValueChange={field.handleChange}
                   >
                     <SelectTrigger id={field.name}>
-                      <SelectValue />
+                      <SelectValue placeholder={translations.timezone} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="america-saopaulo">{translations.saoPaulo}</SelectItem>

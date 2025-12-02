@@ -47,15 +47,15 @@ export function DefaultsForm({ initialData, translations }: DefaultsFormProps) {
 
   const form = useForm({
     defaultValues: {
-      defaultDriverId: initialData.defaultDriverId || "",
-      defaultVehicleId: initialData.defaultVehicleId || "",
+      defaultDriverId: initialData.defaultDriverId || "none",
+      defaultVehicleId: initialData.defaultVehicleId || "none",
     },
     onSubmit: async ({ value }) => {
       startTransition(async () => {
         try {
           await updateDefaults({
-            defaultDriverId: value.defaultDriverId || null,
-            defaultVehicleId: value.defaultVehicleId || null,
+            defaultDriverId: value.defaultDriverId === "none" ? null : value.defaultDriverId,
+            defaultVehicleId: value.defaultVehicleId === "none" ? null : value.defaultVehicleId,
           })
           toast.success(translations.successMessage)
         } catch (error) {
@@ -91,7 +91,7 @@ export function DefaultsForm({ initialData, translations }: DefaultsFormProps) {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">{translations.none}</SelectItem>
+                    <SelectItem value="none">{translations.none}</SelectItem>
                     {drivers.map((driver) => (
                       <SelectItem key={driver.id} value={driver.id}>
                         {driver.name} {driver.isSelf && "(Just Me)"}
@@ -116,7 +116,7 @@ export function DefaultsForm({ initialData, translations }: DefaultsFormProps) {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">{translations.none}</SelectItem>
+                    <SelectItem value="none">{translations.none}</SelectItem>
                     {vehicles.map((vehicle) => (
                       <SelectItem key={vehicle.id} value={vehicle.id}>
                         {vehicle.name} {vehicle.isPrimary && "(Primary)"}
