@@ -36,7 +36,7 @@ export default function HeroSection() {
                             <div className="bg-radial-[at_65%_25%] to-background z-1 -inset-17 absolute from-transparent to-40%"></div>
                             <Image
                                 className="hidden dark:block"
-                                src={Car.src}
+                                src={Car}
                                 alt="app illustration"
                                 fill
                                 priority
@@ -45,7 +45,7 @@ export default function HeroSection() {
                             />
                             <Image
                                 className="dark:hidden"
-                                src={Car.src}
+                                src={Car}
                                 alt="app illustration"
                                 fill
                                 priority

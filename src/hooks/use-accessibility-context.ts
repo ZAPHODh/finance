@@ -1,1 +1,1 @@
-export { useAccessibilityContext } from "@/components/providers/accessibility-provider";
+export { useAccessibilityContext } from "@/components/accessibility-provider";

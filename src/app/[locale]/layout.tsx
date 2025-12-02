@@ -11,7 +11,7 @@ import { CommandMenuProvider } from "@/components/command-menu-provider";
 import { QueryProvider } from "@/components/query-provider";
 import { cn } from "@/lib/utils";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { AccessibilityProvider } from "@/components/providers/accessibility-provider";
+import { AccessibilityProvider } from "@/components/accessibility-provider";
 import { ThemeSyncScript } from "@/components/theme-sync-script";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { prisma } from "@/lib/server/db";
