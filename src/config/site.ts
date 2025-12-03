@@ -27,8 +27,8 @@ export const siteCompany: SiteCompany = {
 
 export const siteEmails: SiteEmails = {
   noReply: "no-reply@diveintodrive.com",
-  support: "notyet@diveintodrive.com",
-  privacy: "notyet@diveintodrive.com",
+  support: "support@diveintodrive.com",
+  privacy: "privacy@diveintodrive.com",
 };
 
 export const siteContact: SiteContact = {

@@ -23,7 +23,7 @@ export const sendWelcomeEmail = async ({
     const temp = ThanksTemp({ userName }) as ReactNode
 
     await resend.emails.send({
-        from: `Loqano <no-reply@loqano.com>`,
+        from: `Dive into Drive <no-reply@diveintodrive.com>`,
         to: toMail,
         subject: scopedT('subject'),
         headers: {
@@ -38,7 +38,7 @@ export const sendOTP = async ({ toMail, code, userName }: SendOTPProps) => {
     const scopedT = await getScopedI18n('emails.verification')
     const temp = VerificationTemp({ userName, code }) as ReactNode
     await resend.emails.send({
-        from: `Loqano <no-reply@loqano.com>`,
+        from: `Dive into Drive <no-reply@diveintodrive.com>`,
         to: toMail,
         subject: scopedT('subject'),
         headers: {
@@ -64,7 +64,7 @@ export const sendSupportConfirmation = async ({
     const temp = SupportConfirmationTemp({ userName, subject }) as ReactNode;
 
     await resend.emails.send({
-        from: `Loqano Support <no-reply@loqano.com>`,
+        from: `Dive into Drive Support <support@diveintodrive.com>`,
         to: toMail,
         subject: `We received your support request: ${subject}`,
         headers: {
@@ -105,7 +105,7 @@ export const sendBudgetAlert = async ({
     }) as ReactNode;
 
     await resend.emails.send({
-        from: `Dive into Drive <no-reply@loqano.com>`,
+        from: `Dive into Drive <no-reply@diveintodrive.com>`,
         to: toMail,
         subject: t('preview', { budgetName, percentage: percentage.toFixed(0) }),
         headers: {
@@ -143,7 +143,7 @@ export const sendGoalAchievement = async ({
     }) as ReactNode;
 
     await resend.emails.send({
-        from: `Dive into Drive <no-reply@loqano.com>`,
+        from: `Dive into Drive <no-reply@diveintodrive.com>`,
         to: toMail,
         subject: t('preview', { goalName }),
         headers: {
@@ -187,7 +187,7 @@ export const sendWeeklySummary = async ({
     }) as ReactNode;
 
     await resend.emails.send({
-        from: `Dive into Drive <no-reply@loqano.com>`,
+        from: `Dive into Drive <no-reply@diveintodrive.com>`,
         to: toMail,
         subject: t('preview', { weekStart, weekEnd }),
         headers: {
@@ -240,7 +240,7 @@ export const sendMonthlyReport = async ({
     }) as ReactNode;
 
     await resend.emails.send({
-        from: `Dive into Drive <no-reply@loqano.com>`,
+        from: `Dive into Drive <no-reply@diveintodrive.com>`,
         to: toMail,
         subject: t('preview', { month, year }),
         headers: {
@@ -264,7 +264,7 @@ export const sendNewFeatures = async ({
     const temp = NewFeaturesTemp({ userName }) as ReactNode;
 
     await resend.emails.send({
-        from: `Dive into Drive <no-reply@loqano.com>`,
+        from: `Dive into Drive <no-reply@diveintodrive.com>`,
         to: toMail,
         subject: t('preview'),
         headers: {
@@ -288,7 +288,7 @@ export const sendTipsAndTricks = async ({
     const temp = TipsAndTricksTemp({ userName }) as ReactNode;
 
     await resend.emails.send({
-        from: `Dive into Drive <no-reply@loqano.com>`,
+        from: `Dive into Drive <no-reply@diveintodrive.com>`,
         to: toMail,
         subject: t('preview'),
         headers: {

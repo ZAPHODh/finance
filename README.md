@@ -172,8 +172,8 @@ pnpm start
 ## Support
 
 For questions or issues:
-- Email: notyet@diveintodrive.com
-- Privacy/LGPD: notyet@diveintodrive.com
+- Email: support@diveintodrive.com
+- Privacy/LGPD: privacy@diveintodrive.com
 
 ## License
 
