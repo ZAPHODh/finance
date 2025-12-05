@@ -1,22 +1,19 @@
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
 
-declare global {
-    // biome-ignore lint/style/noVar: This is required for global Prisma instance
-    var prisma: PrismaClient | undefined;
+import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient } from '@prisma/client'
+
+const globalForPrisma = global as unknown as {
+    prisma: PrismaClient
 }
 
-const connectionString = process.env.DB_PRISMA_URL;
+const adapter = new PrismaPg({
+    connectionString: process.env.DB_PRISMA_URL,
+})
 
-function createPrismaClient() {
-    const pool = new Pool({ connectionString });
-    const adapter = new PrismaPg(pool);
-    return new PrismaClient({ adapter });
-}
+const prisma = globalForPrisma.prisma || new PrismaClient({
+    adapter,
+})
 
-const prisma = global.prisma || createPrismaClient();
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
-if (process.env.NODE_ENV !== "production") global.prisma = prisma;
-
-export { prisma };
+export default prisma
