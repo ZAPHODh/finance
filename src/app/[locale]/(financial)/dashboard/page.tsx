@@ -8,6 +8,7 @@ import { DashboardFilters } from "@/components/dashboard/dashboard-filters"
 import { getUserSubscriptionPlan, getPlanLimits } from "@/lib/server/payment"
 import { shouldShowAds } from "@/lib/ads/should-show-ads"
 import { PartnerAdBanner } from "@/components/ads/partner-ad-banner"
+import { redirect } from "next/navigation"
 
 interface DashboardPageProps {
   searchParams: Promise<{
@@ -20,7 +21,7 @@ interface DashboardPageProps {
 
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
   const { user } = await getCurrentSession()
-
+  if (!user) redirect('/login')
   const params = await searchParams
   const period = params.period || "thisMonth"
   const driverId = params.driver || null
