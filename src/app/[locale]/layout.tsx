@@ -1,5 +1,6 @@
 import { siteUrl } from "@/config/site";
 import { siteConfig } from "@/config/site-server";
+import { GoogleTagManager, GoogleAnalytics } from '@next/third-parties/google'
 import { Inter } from "next/font/google";
 import { Metadata } from "next";
 import { I18nProviderClient } from "@/locales/client";
@@ -177,6 +178,12 @@ export default async function RootLayout({
             </PosthogProvider>
           </AccessibilityProvider>
         </ThemeProvider>
+        {process.env.NEXT_PUBLIC_GTM_ID && (
+          <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID} />
+        )}
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        )}
       </body>
     </html>
   );

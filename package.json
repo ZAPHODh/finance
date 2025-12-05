@@ -21,6 +21,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^5.2.2",
     "@next/bundle-analyzer": "^16.0.7",
+    "@next/third-parties": "^16.0.7",
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
     "@prisma/adapter-pg": "^7.1.0",

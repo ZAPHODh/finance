@@ -8,6 +8,8 @@ import { getUserSubscriptionPlan } from "@/lib/server/payment";
 import { UpgradeBanner } from "@/components/dashboard/upgrade-banner";
 import { DashboardLayoutClient } from "@/components/dashboard-01/dashboard-layout-client";
 import { getDailyEntryConfig } from "./daily-entry/queries";
+import { shouldShowAds } from "@/lib/ads/should-show-ads";
+import { PartnerAdBanner } from "@/components/ads/partner-ad-banner";
 
 export default async function FinancialLayout({
   children,
@@ -37,6 +39,7 @@ export default async function FinancialLayout({
 
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
   const config = await getDailyEntryConfig()
+  const showAds = await shouldShowAds()
 
   const tDashboard = await getScopedI18n("dashboard")
   const tDaily = await getScopedI18n("financial.dailyEntry")
@@ -75,6 +78,11 @@ export default async function FinancialLayout({
           }
         >
           {!subscriptionPlan.isPro && <UpgradeBanner />}
+          {showAds && (
+            <div className="px-4 lg:px-6 pb-4">
+              <PartnerAdBanner category="PAYMENT" location="dashboard_layout_after_upgrade" />
+            </div>
+          )}
           {children}
         </DashboardLayoutClient>
       </SidebarInset>

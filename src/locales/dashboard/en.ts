@@ -86,4 +86,13 @@ export default {
         transactionDetails: 'Transaction Details',
         close: 'Close',
     },
+    ads: {
+        sponsored: 'Sponsored',
+        partnerOffer: 'Partner Offer',
+        learnMore: 'Learn More',
+        exclusiveDiscount: 'Exclusive Discount',
+        getDiscount: 'Get Discount',
+        savingsUpTo: 'Save up to {discount}%',
+        poweredByPartners: 'Powered by our partners',
+    },
 } as const

@@ -2,9 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useI18n } from '@/locales/client';
+import { Button } from '@/components/ui/button';
+
+interface CookieConsentData {
+  essential: boolean;
+  analytics: boolean;
+  marketing: boolean;
+}
 
 export function CookieConsent() {
   const [show, setShow] = useState(false);
+  const t = useI18n();
 
   useEffect(() => {
     const consent = localStorage.getItem('cookie-consent');
@@ -13,13 +22,23 @@ export function CookieConsent() {
     }
   }, []);
 
-  function handleAccept() {
-    localStorage.setItem('cookie-consent', 'accepted');
+  function handleAcceptAll() {
+    const consentData: CookieConsentData = {
+      essential: true,
+      analytics: true,
+      marketing: true,
+    };
+    localStorage.setItem('cookie-consent', JSON.stringify(consentData));
     setShow(false);
   }
 
-  function handleDecline() {
-    localStorage.setItem('cookie-consent', 'declined');
+  function handleEssentialOnly() {
+    const consentData: CookieConsentData = {
+      essential: true,
+      analytics: false,
+      marketing: false,
+    };
+    localStorage.setItem('cookie-consent', JSON.stringify(consentData));
     setShow(false);
   }
 
@@ -31,26 +50,27 @@ export function CookieConsent() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex-1">
             <p className="text-sm text-muted-foreground">
-              Usamos cookies essenciais para o funcionamento do site e cookies analíticos para melhorar sua experiência.
+              {t('shared.cookieConsent.description')}
               {' '}
               <Link href="/privacy" className="underline underline-offset-4 hover:text-foreground">
-                Saiba mais
+                {t('shared.cookieConsent.privacyPolicy')}
               </Link>
             </p>
           </div>
           <div className="flex gap-2">
-            <button
-              onClick={handleDecline}
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input hover:bg-accent hover:text-accent-foreground h-10 py-2 px-4"
+            <Button
+              onClick={handleEssentialOnly}
+              variant="outline"
+              size="sm"
             >
-              Apenas essenciais
-            </button>
-            <button
-              onClick={handleAccept}
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4"
+              {t('shared.cookieConsent.rejectAll')}
+            </Button>
+            <Button
+              onClick={handleAcceptAll}
+              size="sm"
             >
-              Aceitar todos
-            </button>
+              {t('shared.cookieConsent.acceptAll')}
+            </Button>
           </div>
         </div>
       </div>

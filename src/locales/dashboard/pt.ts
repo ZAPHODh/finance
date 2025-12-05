@@ -86,4 +86,13 @@ export default {
         transactionDetails: 'Detalhes da Transação',
         close: 'Fechar',
     },
+    ads: {
+        sponsored: 'Patrocinado',
+        partnerOffer: 'Oferta de Parceiro',
+        learnMore: 'Saiba Mais',
+        exclusiveDiscount: 'Desconto Exclusivo',
+        getDiscount: 'Obter Desconto',
+        savingsUpTo: 'Economize até {discount}%',
+        poweredByPartners: 'Oferecido por nossos parceiros',
+    },
 } as const

@@ -7,6 +7,8 @@ import { DataTable } from "@/components/dashboard-01/data-table"
 import { EfficiencyCards } from "@/components/dashboard/efficiency-cards"
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters"
 import { getUserSubscriptionPlan, getPlanLimits } from "@/lib/server/payment"
+import { shouldShowAds } from "@/lib/ads/should-show-ads"
+import { PartnerAdBanner } from "@/components/ads/partner-ad-banner"
 
 interface DashboardPageProps {
   searchParams: Promise<{
@@ -42,6 +44,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const planLimits = getPlanLimits(subscriptionPlan.name)
   const hasPeriodComparisons = planLimits.hasPeriodComparisons
   const hasEfficiencyMetrics = planLimits.hasEfficiencyMetrics
+  const showAds = await shouldShowAds()
 
   return (
     <div className="flex flex-1 flex-col">
@@ -56,6 +59,11 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
             kpis={dashboardData.kpis}
             trends={hasPeriodComparisons ? dashboardData.growth : undefined}
           />
+          {showAds && (
+            <div className="px-4 lg:px-6">
+              <PartnerAdBanner category="FUEL" location="dashboard_after_kpis" />
+            </div>
+          )}
           {hasEfficiencyMetrics && (
             <EfficiencyCards
               metrics={dashboardData.efficiencyMetrics}
@@ -65,6 +73,11 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           {dashboardData.chartData && dashboardData.chartData.length > 0 && (
             <div className="px-4 lg:px-6">
               <ChartAreaInteractive data={dashboardData.chartData} />
+            </div>
+          )}
+          {showAds && (
+            <div className="px-4 lg:px-6">
+              <PartnerAdBanner category="MAINTENANCE" location="dashboard_before_table" />
             </div>
           )}
           <DataTable data={dashboardData.transactions} />
