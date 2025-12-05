@@ -38,16 +38,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     description: site.description,
     keywords: [
-      "Next.js",
-      "Shadcn/ui",
-      "LuciaAuth",
-      "Prisma",
-      "Vercel",
-      "Tailwind",
-      "Radix UI",
-      "Stripe",
-      "Internationalization",
-      "Postgres",
+
+
     ],
     authors: [
       {
@@ -171,9 +163,9 @@ export default async function RootLayout({
                       </main>
                     </NuqsAdapter>
                   </CommandMenuProvider>
+                  <CookieConsent />
                 </I18nProviderClient>
                 <Toaster />
-                <CookieConsent />
               </QueryProvider>
             </PosthogProvider>
           </AccessibilityProvider>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useI18n } from '@/locales/client';
+import { useScopedI18n } from '@/locales/client';
 import { Button } from '@/components/ui/button';
 
 interface CookieConsentData {
@@ -13,7 +13,7 @@ interface CookieConsentData {
 
 export function CookieConsent() {
   const [show, setShow] = useState(false);
-  const t = useI18n();
+  const t = useScopedI18n('shared.cookieConsent');
 
   useEffect(() => {
     const consent = localStorage.getItem('cookie-consent');
@@ -50,10 +50,10 @@ export function CookieConsent() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex-1">
             <p className="text-sm text-muted-foreground">
-              {t('shared.cookieConsent.description')}
+              {t('description')}
               {' '}
               <Link href="/privacy" className="underline underline-offset-4 hover:text-foreground">
-                {t('shared.cookieConsent.privacyPolicy')}
+                {t('privacyPolicy')}
               </Link>
             </p>
           </div>
@@ -63,13 +63,13 @@ export function CookieConsent() {
               variant="outline"
               size="sm"
             >
-              {t('shared.cookieConsent.rejectAll')}
+              {t('rejectAll')}
             </Button>
             <Button
               onClick={handleAcceptAll}
               size="sm"
             >
-              {t('shared.cookieConsent.acceptAll')}
+              {t('acceptAll')}
             </Button>
           </div>
         </div>
