@@ -1,3 +1,5 @@
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -6,483 +8,146 @@ datasource db {
   provider = "postgresql"
 }
 
-model Alert {
-  id        String    @id
+model Session {
+  id        String   @id @default(cuid())
   userId    String
-  type      AlertType
-  title     String
-  message   String
-  metadata  Json?
-  isRead    Boolean   @default(false)
-  isSent    Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([isRead])
-  @@index([isSent])
-  @@index([userId])
+  expiresAt DateTime
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
-model Attachment {
-  id            String       @id
-  userId        String
-  fileName      String
-  fileUrl       String
-  fileSize      BigInt
-  mimeType      String
-  expenseId     String?
-  revenueId     String?
-  maintenanceId String?
-  metadata      Json?
-  createdAt     DateTime     @default(now())
-  Expense       Expense?     @relation(fields: [expenseId], references: [id], onDelete: Cascade)
-  Maintenance   Maintenance? @relation(fields: [maintenanceId], references: [id], onDelete: Cascade)
-  Revenue       Revenue?     @relation(fields: [revenueId], references: [id], onDelete: Cascade)
-  User          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([expenseId])
-  @@index([maintenanceId])
-  @@index([revenueId])
-  @@index([userId])
+model EmailVerificationCode {
+  id        String   @id @default(cuid())
+  code      String
+  userId    String
+  email     String
+  expiresAt DateTime
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
-model Budget {
-  id             String      @id
-  userId         String
-  name           String?
-  expenseTypeId  String
-  monthlyLimit   Float
-  alertThreshold Float       @default(0.8)
-  period         String
-  isActive       Boolean     @default(true)
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime
-  ExpenseType    ExpenseType @relation(fields: [expenseTypeId], references: [id], onDelete: Cascade)
-  User           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+model User {
+  id                     String                  @id @unique @default(cuid())
+  name                   String?
+  email                  String?                 @unique
+  emailVerified          Boolean?                @default(false)
+  picture                String?
+  sessions               Session[]
+  emailVerificationCodes EmailVerificationCode[]
 
-  @@index([expenseTypeId])
-  @@index([period])
-  @@index([userId])
-  @@index([userId, isActive, period, expenseTypeId])
+  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
+  stripePriceId          String?   @map(name: "stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+
+  // Subscription limits
+  planType          PlanType @default(FREE)
+  storageUsed       BigInt   @default(0) // in bytes
+  monthlyExportCount Int     @default(0)
+  exportCountResetAt DateTime?
+
+  drivers      Driver[]
+  vehicles     Vehicle[]
+  platforms    Platform[]
+  expenseTypes ExpenseType[]
+  paymentMethods PaymentMethod[]
+  preferences      UserPreferences?
+  goals            Goal[]
+  budgets          Budget[]
+  insights         Insight[]
+  alerts           Alert[]
+  attachments      Attachment[]
+  reports          Report[]
+  reminders        Reminder[]
+  expenseTemplates ExpenseTemplate[]
+
+  hasCompletedOnboarding Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PlanType {
+  FREE
+  SIMPLE
+  PRO
 }
 
 model Driver {
-  id              String            @id
-  name            String
-  userId          String
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime
-  isSelf          Boolean           @default(false)
-  User            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Expense         Expense[]
-  ExpenseTemplate ExpenseTemplate[]
-  Goal            Goal[]
-  Revenue         Revenue[]
-  UserPreferences UserPreferences[]
-  WorkLog         WorkLog[]
+  id               String            @id @default(cuid())
+  name             String
+  isSelf           Boolean           @default(false)
+  userId           String
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expenses         Expense[]
+  revenues         Revenue[]
+  workLogs         WorkLog[]
+  goals            Goal[]
+  expenseTemplates ExpenseTemplate[]
+  defaultForUsers  UserPreferences[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
   @@index([userId, isSelf])
 }
 
-model EmailVerificationCode {
-  id        String   @id
-  code      String
-  userId    String
-  email     String
-  expiresAt DateTime
-  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Expense {
-  id                 String               @id
-  amount             Float
-  date               DateTime
-  receiptUrl         String?
-  driverId           String?
-  vehicleId          String?
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime
-  Attachment         Attachment[]
-  Driver             Driver?              @relation(fields: [driverId], references: [id])
-  Vehicle            Vehicle?             @relation(fields: [vehicleId], references: [id])
-  ExpenseExpenseType ExpenseExpenseType[]
-
-  @@index([date, driverId, vehicleId])
-  @@index([date])
-  @@index([driverId, date])
-  @@index([driverId])
-  @@index([vehicleId, date])
-  @@index([vehicleId])
-}
-
-model ExpenseExpenseType {
-  id            String      @id
-  expenseId     String
-  expenseTypeId String
-  createdAt     DateTime    @default(now())
-  Expense       Expense     @relation(fields: [expenseId], references: [id], onDelete: Cascade)
-  ExpenseType   ExpenseType @relation(fields: [expenseTypeId], references: [id], onDelete: Cascade)
-
-  @@unique([expenseId, expenseTypeId])
-  @@index([expenseId])
-  @@index([expenseTypeId, expenseId])
-  @@index([expenseTypeId])
-}
-
-model ExpenseTemplate {
-  id            String               @id
-  userId        String
-  name          String
-  amount        Float?
-  expenseTypeId String
-  driverId      String?
-  vehicleId     String?
-  isRecurring   Boolean              @default(false)
-  frequency     RecurrenceFrequency?
-  nextDueDate   DateTime?
-  isActive      Boolean              @default(true)
-  createdAt     DateTime             @default(now())
-  updatedAt     DateTime
-  Driver        Driver?              @relation(fields: [driverId], references: [id])
-  ExpenseType   ExpenseType          @relation(fields: [expenseTypeId], references: [id], onDelete: Cascade)
-  User          User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Vehicle       Vehicle?             @relation(fields: [vehicleId], references: [id])
-
-  @@index([userId, isActive])
-  @@index([userId, isRecurring, nextDueDate])
-}
-
-model ExpenseType {
-  id                 String               @id
-  name               String
-  userId             String
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime
-  Budget             Budget[]
-  ExpenseExpenseType ExpenseExpenseType[]
-  ExpenseTemplate    ExpenseTemplate[]
-  User               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Reminder           Reminder[]
-
-  @@index([userId])
-}
-
-model Goal {
-  id          String   @id
-  userId      String
-  name        String?
-  type        GoalType
-  targetValue Float
-  period      String
-  driverId    String?
-  vehicleId   String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime
-  Driver      Driver?  @relation(fields: [driverId], references: [id])
-  User        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Vehicle     Vehicle? @relation(fields: [vehicleId], references: [id])
-
-  @@index([driverId])
-  @@index([period])
-  @@index([userId])
-  @@index([userId, isActive, period])
-  @@index([vehicleId])
-}
-
-model Insight {
-  id          String      @id
-  userId      String
-  type        InsightType
-  title       String
-  description String
-  metadata    Json?
-  isRead      Boolean     @default(false)
-  priority    Int         @default(0)
-  createdAt   DateTime    @default(now())
-  User        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([createdAt])
-  @@index([isRead])
-  @@index([userId])
-}
-
-model Maintenance {
-  id            String       @id
-  description   String
-  cost          Float
-  date          DateTime
-  kmAtService   Float?
-  nextServiceKm Float?
-  receiptUrl    String?
-  vehicleId     String
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime
-  Attachment    Attachment[]
-  Vehicle       Vehicle      @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-
-  @@index([date])
-  @@index([vehicleId])
-}
-
-model Partner {
-  id           String          @id
-  name         String
-  category     PartnerCategory
-  logoUrl      String?
-  discountRate Float?
-  tagline      String
-  benefit      String
-  ctaText      String
-  ctaUrl       String
-  showForPlans PlanType[]
-  active       Boolean         @default(true)
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime
-
-  @@index([active])
-  @@index([category])
-}
-
-model PaymentMethod {
-  id            String    @id
-  name          String
-  userId        String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime
-  feeFixed      Float?
-  feePercentage Float?
-  feeType       FeeType   @default(NONE)
-  User          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Revenue       Revenue[]
-
-  @@index([userId])
-}
-
-model Platform {
-  id              String            @id
-  name            String
-  userId          String
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime
-  User            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  RevenuePlatform RevenuePlatform[]
-
-  @@index([userId])
-}
-
-model Reminder {
-  id            String            @id
-  userId        String
-  title         String
-  description   String?
-  frequency     ReminderFrequency
-  nextDate      DateTime
-  expenseTypeId String?
-  isActive      Boolean           @default(true)
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime
-  ExpenseType   ExpenseType?      @relation(fields: [expenseTypeId], references: [id])
-  User          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([isActive])
-  @@index([nextDate])
-  @@index([userId])
-}
-
-model Report {
-  id        String     @id
-  userId    String
-  name      String
-  type      ReportType
-  format    String
-  startDate DateTime
-  endDate   DateTime
-  fileUrl   String?
-  metadata  Json?
-  createdAt DateTime   @default(now())
-  User      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([createdAt])
-  @@index([userId])
-}
-
-model Revenue {
-  id              String            @id
-  amount          Float
-  date            DateTime
-  kmDriven        Float?
-  hoursWorked     Float?
-  receiptUrl      String?
-  paymentMethodId String?
-  driverId        String?
-  vehicleId       String?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime
-  Attachment      Attachment[]
-  Driver          Driver?           @relation(fields: [driverId], references: [id])
-  PaymentMethod   PaymentMethod?    @relation(fields: [paymentMethodId], references: [id])
-  Vehicle         Vehicle?          @relation(fields: [vehicleId], references: [id])
-  RevenuePlatform RevenuePlatform[]
-
-  @@index([date, driverId])
-  @@index([date, driverId, vehicleId])
-  @@index([date])
-  @@index([driverId, date])
-  @@index([driverId])
-  @@index([paymentMethodId, date])
-  @@index([vehicleId, date])
-  @@index([vehicleId])
-}
-
-model RevenuePlatform {
-  id         String   @id
-  revenueId  String
-  platformId String
-  createdAt  DateTime @default(now())
-  Platform   Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
-  Revenue    Revenue  @relation(fields: [revenueId], references: [id], onDelete: Cascade)
-
-  @@unique([revenueId, platformId])
-  @@index([platformId])
-  @@index([platformId, revenueId])
-  @@index([revenueId])
-}
-
-model Session {
-  id        String   @id
-  userId    String
-  expiresAt DateTime
-  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model StripeWebhookEvent {
-  id            String   @id
-  stripeEventId String   @unique
-  type          String
-  processed     Boolean  @default(false)
-  createdAt     DateTime @default(now())
-
-  @@index([processed])
-  @@index([stripeEventId])
-}
-
-model User {
-  id                        String                  @id @unique
-  name                      String?
-  email                     String?                 @unique
-  emailVerified             Boolean?                @default(false)
-  picture                   String?
-  stripe_customer_id        String?                 @unique
-  stripe_subscription_id    String?                 @unique
-  stripe_price_id           String?
-  stripe_current_period_end DateTime?
-  createdAt                 DateTime                @default(now())
-  updatedAt                 DateTime
-  exportCountResetAt        DateTime?
-  monthlyExportCount        Int                     @default(0)
-  planType                  PlanType                @default(FREE)
-  storageUsed               BigInt                  @default(0)
-  hasCompletedOnboarding    Boolean                 @default(false)
-  Alert                     Alert[]
-  Attachment                Attachment[]
-  Budget                    Budget[]
-  Driver                    Driver[]
-  EmailVerificationCode     EmailVerificationCode[]
-  ExpenseTemplate           ExpenseTemplate[]
-  ExpenseType               ExpenseType[]
-  Goal                      Goal[]
-  Insight                   Insight[]
-  PaymentMethod             PaymentMethod[]
-  Platform                  Platform[]
-  Reminder                  Reminder[]
-  Report                    Report[]
-  Session                   Session[]
-  UserPreferences           UserPreferences?
-  Vehicle                   Vehicle[]
-}
-
-model UserPreferences {
-  id                 String   @id
-  userId             String   @unique
-  theme              String   @default("system")
-  language           String   @default("en")
-  currency           String   @default("brl")
-  timezone           String   @default("America/Sao_Paulo")
-  use24HourFormat    Boolean  @default(false)
-  emailNotifications Boolean  @default(true)
-  pushNotifications  Boolean  @default(false)
-  marketingEmails    Boolean  @default(false)
-  analytics          Boolean  @default(true)
-  profileVisibility  Boolean  @default(false)
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime
-  defaultDriverId    String?
-  defaultVehicleId   String?
-  fontFamily         String   @default("default")
-  fontSize           String   @default("medium")
-  highContrast       Boolean  @default(false)
-  keyboardShortcuts  Json?
-  lineSpacing        String   @default("normal")
-  reducedMotion      Boolean  @default(false)
-  Driver             Driver?  @relation(fields: [defaultDriverId], references: [id])
-  Vehicle            Vehicle? @relation(fields: [defaultVehicleId], references: [id])
-  User               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
 model Vehicle {
-  id              String            @id
-  name            String
-  plate           String?
-  model           String?
-  year            Int?
-  userId          String
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime
-  isPrimary       Boolean           @default(false)
-  Expense         Expense[]
-  ExpenseTemplate ExpenseTemplate[]
-  Goal            Goal[]
-  Maintenance     Maintenance[]
-  Revenue         Revenue[]
-  UserPreferences UserPreferences[]
-  User            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  WorkLog         WorkLog[]
+  id               String            @id @default(cuid())
+  name             String
+  plate            String?
+  model            String?
+  year             Int?
+  isPrimary        Boolean           @default(false)
+  userId           String
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expenses         Expense[]
+  revenues         Revenue[]
+  workLogs         WorkLog[]
+  maintenances     Maintenance[]
+  goals            Goal[]
+  expenseTemplates ExpenseTemplate[]
+  defaultForUsers  UserPreferences[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
   @@index([userId, isPrimary])
 }
 
-model WorkLog {
-  id          String   @id
-  date        DateTime
-  kmDriven    Float
-  hoursWorked Float
-  driverId    String?
-  vehicleId   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime
-  Driver      Driver?  @relation(fields: [driverId], references: [id])
-  Vehicle     Vehicle? @relation(fields: [vehicleId], references: [id])
+model Platform {
+  id       String    @id @default(cuid())
+  name     String
+  userId   String
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([date, driverId, vehicleId])
-  @@index([date])
-  @@index([driverId])
-  @@index([vehicleId])
+  revenues RevenuePlatform[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
-enum AlertType {
-  BUDGET_WARNING
-  BUDGET_EXCEEDED
-  GOAL_PROGRESS
-  MAINTENANCE_REMINDER
-  EXPENSE_REMINDER
-  REVENUE_REMINDER
-  DAILY_LOG_REMINDER
+model ExpenseType {
+  id               String            @id @default(cuid())
+  name             String
+  userId           String
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expenses         ExpenseExpenseType[]
+  budgets          Budget[]
+  reminders        Reminder[]
+  expenseTemplates ExpenseTemplate[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
+
 
 enum FeeType {
   NONE
@@ -490,6 +155,244 @@ enum FeeType {
   FIXED
   BOTH
 }
+
+model PaymentMethod {
+  id               String            @id @default(cuid())
+  name             String
+  userId           String
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Fee configuration
+  feeType          FeeType           @default(NONE)
+  feePercentage    Float?            // Ex: 2.5 for 2.5%
+  feeFixed         Float?            // Ex: 0.50 for R$ 0.50
+
+  revenues         Revenue[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+enum RecurrenceFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+model ExpenseTemplate {
+  id              String                @id @default(cuid())
+  userId          String
+  user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name            String
+  amount          Float?
+
+  expenseTypeId   String
+  expenseType     ExpenseType           @relation(fields: [expenseTypeId], references: [id], onDelete: Cascade)
+
+  driverId        String?
+  driver          Driver?               @relation(fields: [driverId], references: [id], onDelete: SetNull)
+
+  vehicleId       String?
+  vehicle         Vehicle?              @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+
+  // Recurrence
+  isRecurring     Boolean               @default(false)
+  frequency       RecurrenceFrequency?
+  nextDueDate     DateTime?
+
+  isActive        Boolean               @default(true)
+
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+
+  @@index([userId, isActive])
+  @@index([userId, isRecurring, nextDueDate])
+}
+
+model Expense {
+  id              String         @id @default(cuid())
+  amount          Float
+  date            DateTime
+  receiptUrl      String?
+
+  expenseTypes    ExpenseExpenseType[]
+
+  driverId        String?
+  driver          Driver?        @relation(fields: [driverId], references: [id], onDelete: SetNull)
+
+  vehicleId       String?
+  vehicle         Vehicle?       @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+
+  attachments     Attachment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([driverId])
+  @@index([vehicleId])
+  @@index([date])
+  @@index([driverId, date])
+  @@index([vehicleId, date])
+  @@index([date, driverId, vehicleId])
+}
+
+model Revenue {
+  id              String         @id @default(cuid())
+  amount          Float
+  date            DateTime
+  kmDriven        Float?
+  hoursWorked     Float?
+  receiptUrl      String?
+
+  platforms       RevenuePlatform[]
+
+  paymentMethodId String?
+  paymentMethod   PaymentMethod? @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
+
+  driverId        String?
+  driver          Driver?        @relation(fields: [driverId], references: [id], onDelete: SetNull)
+
+  vehicleId       String?
+  vehicle         Vehicle?       @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+
+  attachments     Attachment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([driverId])
+  @@index([vehicleId])
+  @@index([date])
+  @@index([driverId, date])
+  @@index([vehicleId, date])
+  @@index([date, driverId])
+  @@index([paymentMethodId, date])
+  @@index([date, driverId, vehicleId])
+}
+
+// Junction table for many-to-many relationship between Revenue and Platform
+model RevenuePlatform {
+  id         String   @id @default(cuid())
+  revenueId  String
+  revenue    Revenue  @relation(fields: [revenueId], references: [id], onDelete: Cascade)
+  platformId String
+  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+
+  @@unique([revenueId, platformId])
+  @@index([revenueId])
+  @@index([platformId])
+  @@index([platformId, revenueId])
+}
+
+// Junction table for many-to-many relationship between Expense and ExpenseType
+model ExpenseExpenseType {
+  id            String      @id @default(cuid())
+  expenseId     String
+  expense       Expense     @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  expenseTypeId String
+  expenseType   ExpenseType @relation(fields: [expenseTypeId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime    @default(now())
+
+  @@unique([expenseId, expenseTypeId])
+  @@index([expenseId])
+  @@index([expenseTypeId])
+  @@index([expenseTypeId, expenseId])
+}
+
+model WorkLog {
+  id           String   @id @default(cuid())
+  date         DateTime
+  kmDriven     Float
+  hoursWorked  Float
+
+  driverId     String?
+  driver       Driver?  @relation(fields: [driverId], references: [id], onDelete: SetNull)
+
+  vehicleId    String?
+  vehicle      Vehicle? @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([driverId])
+  @@index([vehicleId])
+  @@index([date])
+  @@index([date, driverId, vehicleId])
+}
+
+model Maintenance {
+  id          String   @id @default(cuid())
+  description String
+  cost        Float
+  date        DateTime
+  kmAtService Float?
+  nextServiceKm Float?
+  receiptUrl  String?
+
+  vehicleId   String
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  attachments Attachment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([vehicleId])
+  @@index([date])
+}
+
+model UserPreferences {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Appearance
+  theme     String   @default("system") // light, dark, system
+  language  String   @default("en") // en, pt
+
+  // Regional
+  currency  String   @default("brl") // usd, brl, eur
+  timezone  String   @default("America/Sao_Paulo")
+  use24HourFormat Boolean @default(false)
+
+  // Notifications
+  emailNotifications Boolean @default(true)
+  pushNotifications  Boolean @default(false)
+  marketingEmails    Boolean @default(false)
+
+  // Privacy
+  analytics          Boolean @default(true)
+  profileVisibility  Boolean @default(false)
+
+  // Defaults
+  defaultDriverId  String?
+  defaultDriver    Driver?  @relation(fields: [defaultDriverId], references: [id], onDelete: SetNull)
+
+  defaultVehicleId String?
+  defaultVehicle   Vehicle? @relation(fields: [defaultVehicleId], references: [id], onDelete: SetNull)
+
+  // Accessibility
+  keyboardShortcuts Json?    // Custom keyboard shortcuts configuration
+  fontSize          String   @default("medium") // small, medium, large, x-large
+  fontFamily        String   @default("default") // default, dyslexic, mono
+  lineSpacing       String   @default("normal") // normal, relaxed, loose
+  reducedMotion     Boolean  @default(false)
+  highContrast      Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+
 
 enum GoalType {
   DAILY_REVENUE
@@ -499,6 +402,60 @@ enum GoalType {
   MONTHLY_KM
   MONTHLY_HOURS
   CUSTOM
+}
+
+model Goal {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name        String?
+  type        GoalType
+  targetValue Float
+  period      String   // "2025-01" for monthly, "2025-01-15" for daily
+
+  driverId    String?
+  driver      Driver?  @relation(fields: [driverId], references: [id], onDelete: SetNull)
+
+  vehicleId   String?
+  vehicle     Vehicle? @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+
+  isActive    Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([period])
+  @@index([driverId])
+  @@index([vehicleId])
+  // Composite index for goal tracking queries
+  @@index([userId, isActive, period])
+}
+
+model Budget {
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name            String?
+  expenseTypeId   String
+  expenseType     ExpenseType @relation(fields: [expenseTypeId], references: [id], onDelete: Cascade)
+
+  monthlyLimit    Float
+  alertThreshold  Float       @default(0.8) // Alert at 80%
+  period          String      // "2025-01"
+
+  isActive        Boolean     @default(true)
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([period])
+  @@index([expenseTypeId])
+  // Composite index for budget alerts
+  @@index([userId, isActive, period, expenseTypeId])
 }
 
 enum InsightType {
@@ -514,36 +471,83 @@ enum InsightType {
   PATTERN_DETECTED
 }
 
-enum PartnerCategory {
-  FUEL
-  MAINTENANCE
-  INSURANCE
-  PAYMENT
-  PARKING
-  TOLLS
-  CAR_WASH
-  TIRES
+model Insight {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type        InsightType
+  title       String
+  description String
+  metadata    Json?       // Additional data
+
+  isRead      Boolean     @default(false)
+  priority    Int         @default(0) // 0=low, 1=medium, 2=high
+
+  createdAt   DateTime    @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
 }
 
-enum PlanType {
-  FREE
-  SIMPLE
-  PRO
+enum AlertType {
+  BUDGET_WARNING
+  BUDGET_EXCEEDED
+  GOAL_PROGRESS
+  MAINTENANCE_REMINDER
+  EXPENSE_REMINDER
+  REVENUE_REMINDER
+  DAILY_LOG_REMINDER
 }
 
-enum RecurrenceFrequency {
-  DAILY
-  WEEKLY
-  MONTHLY
-  YEARLY
+model Alert {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type        AlertType
+  title       String
+  message     String
+  metadata    Json?
+
+  isRead      Boolean   @default(false)
+  isSent      Boolean   @default(false)
+
+  createdAt   DateTime  @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([isSent])
 }
 
-enum ReminderFrequency {
-  ONCE
-  DAILY
-  WEEKLY
-  MONTHLY
-  YEARLY
+model Attachment {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  fileName    String
+  fileUrl     String
+  fileSize    BigInt   // in bytes
+  mimeType    String
+
+  expenseId   String?
+  expense     Expense? @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+
+  revenueId   String?
+  revenue     Revenue? @relation(fields: [revenueId], references: [id], onDelete: Cascade)
+
+  maintenanceId String?
+  maintenance   Maintenance? @relation(fields: [maintenanceId], references: [id], onDelete: Cascade)
+
+  metadata    Json?    // OCR data, tags, etc.
+
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([expenseId])
+  @@index([revenueId])
+  @@index([maintenanceId])
 }
 
 enum ReportType {
@@ -556,3 +560,104 @@ enum ReportType {
   VEHICLE_PERFORMANCE
   CUSTOM
 }
+
+enum PartnerCategory {
+  FUEL
+  MAINTENANCE
+  INSURANCE
+  PAYMENT
+  PARKING
+  TOLLS
+  CAR_WASH
+  TIRES
+}
+
+model Partner {
+  id           String          @id @default(cuid())
+  name         String
+  category     PartnerCategory
+  logoUrl      String?
+
+  // Marketing benefits
+  discountRate Float?          // Ex: 15 para 15% de desconto
+  tagline      String          // Ex: "Economize até 15% em combustível"
+  benefit      String          // Descrição detalhada do benefício
+  ctaText      String          // Ex: "Cadastre-se grátis"
+  ctaUrl       String          // Link de afiliado/parceiro
+
+  // Targeting
+  showForPlans PlanType[]      // [FREE] = só mostra para free tier
+  active       Boolean         @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([active])
+}
+
+model Report {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name        String
+  type        ReportType
+  format      String     // pdf, excel, csv
+
+  startDate   DateTime
+  endDate     DateTime
+
+  fileUrl     String?
+  metadata    Json?
+
+  createdAt   DateTime   @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+enum ReminderFrequency {
+  ONCE
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+model Reminder {
+  id          String            @id @default(cuid())
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+
+  frequency   ReminderFrequency
+  nextDate    DateTime
+
+  expenseTypeId String?
+  expenseType   ExpenseType? @relation(fields: [expenseTypeId], references: [id], onDelete: SetNull)
+
+  isActive    Boolean   @default(true)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([nextDate])
+  @@index([isActive])
+}
+
+model StripeWebhookEvent {
+  id            String   @id @default(cuid())
+  stripeEventId String   @unique
+  type          String
+  processed     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  @@index([stripeEventId])
+  @@index([processed])
+}
+
+
