@@ -55,7 +55,7 @@ export async function revalidateCacheTag(tag: string): Promise<void> {
 export async function invalidateCache(tag: string): Promise<void> {
   const { revalidateTag } = await import('next/cache')
 
-  revalidateTag(tag)
+  revalidateTag(tag, 'max')
 
   await revalidateCacheTag(tag)
 }

@@ -39,14 +39,12 @@ function ChartContainer({
   className,
   children,
   config,
-  nonce,
   ...props
 }: React.ComponentProps<"div"> & {
   config: ChartConfig
   children: React.ComponentProps<
     typeof RechartsPrimitive.ResponsiveContainer
   >["children"]
-  nonce?: string
 }) {
   const uniqueId = React.useId()
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
@@ -62,7 +60,7 @@ function ChartContainer({
         )}
         {...props}
       >
-        <ChartStyle id={chartId} config={config} nonce={nonce} />
+        <ChartStyle id={chartId} config={config} />
         <RechartsPrimitive.ResponsiveContainer>
           {children}
         </RechartsPrimitive.ResponsiveContainer>
@@ -71,7 +69,7 @@ function ChartContainer({
   )
 }
 
-const ChartStyle = ({ id, config, nonce }: { id: string; config: ChartConfig; nonce?: string }) => {
+const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(
     ([, config]) => config.theme || config.color
   )
@@ -82,7 +80,6 @@ const ChartStyle = ({ id, config, nonce }: { id: string; config: ChartConfig; no
 
   return (
     <style
-      nonce={nonce}
       dangerouslySetInnerHTML={{
         __html: Object.entries(THEMES)
           .map(
