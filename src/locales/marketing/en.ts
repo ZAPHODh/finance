@@ -91,11 +91,11 @@ export default {
         subtitle: 'Everything you need to know about managing your finances as a driver',
         q1: {
             question: 'How does the pricing work?',
-            answer: 'Our pricing is simple and transparent. Start with the free plan for up to 2 drivers, or upgrade to Pro for unlimited drivers and vehicles with advanced features. You only pay for what you use.',
+            answer: 'Our pricing is simple and transparent. Start with the free plan for 1 driver and 1 vehicle, upgrade to Simple for 3 drivers and 3 vehicles, or choose Pro for unlimited drivers and vehicles with advanced features. You only pay for what you use.',
         },
         q2: {
             question: 'Can I track multiple drivers and vehicles?',
-            answer: 'Yes! The free plan supports up to 2 drivers, while the Pro plan allows unlimited drivers and vehicles. You can easily manage all your fleet members in one place.',
+            answer: 'Yes! The free plan supports 1 driver and 1 vehicle, the Simple plan supports 3 drivers and 3 vehicles, while the Pro plan allows unlimited drivers and vehicles. You can easily manage all your fleet members in one place.',
         },
         q3: {
             question: 'What types of expenses can I track?',
@@ -103,11 +103,11 @@ export default {
         },
         q4: {
             question: 'Can I export my financial data?',
-            answer: 'Pro plan users can export their data to PDF or Excel format for easy reporting and analysis. This includes all expenses, revenues, and performance metrics.',
+            answer: 'Yes! Simple plan users get 10 exports per month, while Pro plan users get unlimited exports to PDF or Excel format for easy reporting and analysis. This includes all expenses, revenues, and performance metrics.',
         },
         q5: {
             question: 'Is my data secure?',
-            answer: 'Absolutely. We use industry-standard encryption to protect your data. Pro plan includes automatic backup and recovery features to ensure your financial records are always safe.',
+            answer: 'Absolutely. We use industry-standard encryption to protect your data both in transit and at rest. All plans include automatic backups to ensure your financial records are always safe and recoverable.',
         },
         q6: {
             question: 'How do I cancel my subscription?',

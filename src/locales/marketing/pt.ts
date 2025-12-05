@@ -91,11 +91,11 @@ export default {
         subtitle: 'Tudo que você precisa saber sobre gestão das suas finanças como motorista',
         q1: {
             question: 'Como funciona o preço?',
-            answer: 'Nosso preço é simples e transparente. Comece com o plano grátis para até 2 motoristas, ou faça upgrade para o Pro para motoristas e veículos ilimitados com recursos avançados. Você paga apenas pelo que usa.',
+            answer: 'Nosso preço é simples e transparente. Comece com o plano grátis para 1 motorista e 1 veículo, faça upgrade para Simple com 3 motoristas e 3 veículos, ou escolha o Pro para motoristas e veículos ilimitados com recursos avançados. Você paga apenas pelo que usa.',
         },
         q2: {
             question: 'Posso rastrear múltiplos motoristas e veículos?',
-            answer: 'Sim! O plano grátis suporta até 2 motoristas, enquanto o plano Pro permite motoristas e veículos ilimitados. Você pode gerenciar facilmente todos os membros da sua frota em um só lugar.',
+            answer: 'Sim! O plano grátis suporta 1 motorista e 1 veículo, o plano Simple suporta 3 motoristas e 3 veículos, enquanto o plano Pro permite motoristas e veículos ilimitados. Você pode gerenciar facilmente todos os membros da sua frota em um só lugar.',
         },
         q3: {
             question: 'Que tipos de despesas posso rastrear?',
@@ -103,11 +103,11 @@ export default {
         },
         q4: {
             question: 'Posso exportar meus dados financeiros?',
-            answer: 'Usuários do plano Pro podem exportar seus dados para formato PDF ou Excel para facilitar relatórios e análises. Isso inclui todas as despesas, receitas e métricas de desempenho.',
+            answer: 'Sim! Usuários do plano Simple têm 10 exportações por mês, enquanto usuários do plano Pro têm exportações ilimitadas para formato PDF ou Excel para facilitar relatórios e análises. Isso inclui todas as despesas, receitas e métricas de desempenho.',
         },
         q5: {
             question: 'Meus dados estão seguros?',
-            answer: 'Absolutamente. Usamos criptografia padrão da indústria para proteger seus dados. O plano Pro inclui recursos de backup automático e recuperação para garantir que seus registros financeiros estejam sempre seguros.',
+            answer: 'Absolutamente. Usamos criptografia padrão da indústria para proteger seus dados tanto em trânsito quanto em repouso. Todos os planos incluem backups automáticos para garantir que seus registros financeiros estejam sempre seguros e recuperáveis.',
         },
         q6: {
             question: 'Como cancelo minha assinatura?',
