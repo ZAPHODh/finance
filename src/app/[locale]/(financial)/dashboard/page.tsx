@@ -7,6 +7,7 @@ import { DashboardFilters } from "@/components/dashboard/dashboard-filters"
 import { getUserSubscriptionPlan, getPlanLimits } from "@/lib/server/payment"
 import { shouldShowAds } from "@/lib/ads/should-show-ads"
 import { PartnerAdBanner } from "@/components/ads/partner-ad-banner"
+import { AdSenseBanner } from "@/components/ads/adsense-banner"
 import { redirect } from "next/navigation"
 import dynamic from "next/dynamic"
 
@@ -67,6 +68,11 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           {showAds && (
             <div className="px-4 lg:px-6">
               <PartnerAdBanner category="FUEL" location="dashboard_after_kpis" />
+            </div>
+          )}
+          {showAds && (
+            <div className="px-4 lg:px-6">
+              <AdSenseBanner slot="4721006886" />
             </div>
           )}
           {hasEfficiencyMetrics && (
