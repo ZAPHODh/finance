@@ -8,7 +8,13 @@ import { CurrentPlan } from "@/types"
 import { cn } from "@/lib/utils"
 import { useScopedI18n } from "@/locales/client"
 import { CancelSubscriptionDialog, type CancelSubscriptionDialogProps } from "@/components/billing/cancel-subscription-dialog"
-import { UpdatePlanDialog, type UpdatePlanDialogProps } from "@/components/billing/update-plan-dialog"
+import dynamic from "next/dynamic"
+import type { UpdatePlanDialogProps } from "@/components/billing/update-plan-dialog"
+
+const UpdatePlanDialog = dynamic(
+  () => import("@/components/billing/update-plan-dialog").then(m => ({ default: m.UpdatePlanDialog })),
+  { ssr: false }
+)
 
 export interface SubscriptionManagementProps {
     className?: string

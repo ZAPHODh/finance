@@ -1,7 +1,12 @@
 "use client";
 
-import { Banner } from "@/components/billingsdk/banner";
 import { useScopedI18n } from "@/locales/client";
+import dynamic from "next/dynamic";
+
+const Banner = dynamic(
+  () => import("@/components/billingsdk/banner").then(m => ({ default: m.Banner })),
+  { ssr: false }
+);
 
 export const gradientColors = [
   "oklch(0.6716 0.1368 48.5130)",

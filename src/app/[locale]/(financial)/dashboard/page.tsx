@@ -13,7 +13,6 @@ import dynamic from "next/dynamic"
 const ChartAreaInteractive = dynamic(
   () => import('@/components/dashboard-01/chart-area-interactive').then(m => ({ default: m.ChartAreaInteractive })),
   {
-    ssr: false,
     loading: () => <div className="h-[350px] w-full animate-pulse bg-muted rounded-lg" />
   }
 )

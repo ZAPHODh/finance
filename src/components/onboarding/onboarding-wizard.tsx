@@ -17,15 +17,42 @@ import { AddDriverCard } from './add-driver-card';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import { onboardingSchema, type OnboardingFormData } from '@/lib/schemas/onboarding';
 import { MultiStepFormProvider } from '@/hooks/use-multi-step-viewer';
-import {
-  FormHeader,
-  FormFooter,
-  StepFields,
-  PreviousButton,
-  NextButton,
-  SubmitButton,
-  MultiStepFormContent,
-} from '@/components/multi-step-viewer';
+import dynamic from 'next/dynamic';
+
+const StepFields = dynamic(
+  () => import('@/components/multi-step-viewer').then(m => ({ default: m.StepFields })),
+  { ssr: false }
+);
+
+const FormHeader = dynamic(
+  () => import('@/components/multi-step-viewer').then(m => ({ default: m.FormHeader })),
+  { ssr: false }
+);
+
+const FormFooter = dynamic(
+  () => import('@/components/multi-step-viewer').then(m => ({ default: m.FormFooter })),
+  { ssr: false }
+);
+
+const PreviousButton = dynamic(
+  () => import('@/components/multi-step-viewer').then(m => ({ default: m.PreviousButton })),
+  { ssr: false }
+);
+
+const NextButton = dynamic(
+  () => import('@/components/multi-step-viewer').then(m => ({ default: m.NextButton })),
+  { ssr: false }
+);
+
+const SubmitButton = dynamic(
+  () => import('@/components/multi-step-viewer').then(m => ({ default: m.SubmitButton })),
+  { ssr: false }
+);
+
+const MultiStepFormContent = dynamic(
+  () => import('@/components/multi-step-viewer').then(m => ({ default: m.MultiStepFormContent })),
+  { ssr: false }
+);
 import { AccessibilityStep } from '@/components/accessibility/accessibility-step';
 import { DEFAULT_ACCESSIBILITY_SETTINGS } from '@/config/accessibility';
 
