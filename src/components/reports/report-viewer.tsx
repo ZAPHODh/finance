@@ -10,10 +10,18 @@ import { format } from 'date-fns';
 import type { ReportType, PlanType, PartnerCategory } from '@prisma/client';
 import { ExportButtons } from './export-buttons';
 import { PartnerCallout } from './partner-callout';
-import { ReportPreview } from './report-preview';
 import { getRandomPartnerByCategory } from '@/lib/reports/marketing/partners';
 import type { PartnerRecommendation } from '@/lib/reports/types';
 import type { LucideIcon } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+const ReportPreview = dynamic(
+  () => import('./report-preview').then(m => ({ default: m.ReportPreview })),
+  {
+    ssr: false,
+    loading: () => <div className="h-[400px] w-full animate-pulse bg-muted rounded-lg" />
+  }
+);
 
 interface FilterOptions {
   drivers: { id: string; name: string }[];

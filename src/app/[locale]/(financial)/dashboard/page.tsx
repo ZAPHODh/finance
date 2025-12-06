@@ -1,7 +1,6 @@
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { getDashboardData, getDashboardFilterOptions } from "./actions"
 import { SectionCards } from "@/components/dashboard-01/section-cards"
-import { ChartAreaInteractive } from "@/components/dashboard-01/chart-area-interactive"
 import { DataTable } from "@/components/dashboard-01/data-table"
 import { EfficiencyCards } from "@/components/dashboard/efficiency-cards"
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters"
@@ -9,6 +8,15 @@ import { getUserSubscriptionPlan, getPlanLimits } from "@/lib/server/payment"
 import { shouldShowAds } from "@/lib/ads/should-show-ads"
 import { PartnerAdBanner } from "@/components/ads/partner-ad-banner"
 import { redirect } from "next/navigation"
+import dynamic from "next/dynamic"
+
+const ChartAreaInteractive = dynamic(
+  () => import('@/components/dashboard-01/chart-area-interactive').then(m => ({ default: m.ChartAreaInteractive })),
+  {
+    ssr: false,
+    loading: () => <div className="h-[350px] w-full animate-pulse bg-muted rounded-lg" />
+  }
+)
 
 interface DashboardPageProps {
   searchParams: Promise<{
