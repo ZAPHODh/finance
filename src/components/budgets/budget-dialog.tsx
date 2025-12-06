@@ -8,7 +8,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useScopedI18n } from "@/locales/client";
 import { toast } from "sonner";
 import { useForm } from "@tanstack/react-form";
-import { createBudget, updateBudget } from "@/app/[locale]/(financial)/budgets/actions";
+import { createBudget, updateBudget } from "@/app/[locale]/(financial)/dashboard/budgets/actions";
 import { useTransition } from "react";
 import type { Budget } from "@prisma/client";
 

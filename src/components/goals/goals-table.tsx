@@ -3,7 +3,7 @@
 import { useScopedI18n } from "@/locales/client"
 import { DataTable } from "@/components/ui/data-table/data-table"
 import { createGoalsColumns } from "./goals-columns"
-import { toggleGoalActive, deleteGoal } from "@/app/[locale]/(financial)/goals/actions"
+import { toggleGoalActive, deleteGoal } from "@/app/[locale]/(financial)/dashboard/goals/actions"
 import { toast } from "sonner"
 import { useTransition } from "react"
 import type { Goal } from "@prisma/client"

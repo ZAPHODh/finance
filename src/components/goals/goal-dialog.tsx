@@ -8,7 +8,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useScopedI18n } from "@/locales/client";
 import { toast } from "sonner";
 import { useForm } from "@tanstack/react-form";
-import { createGoal, updateGoal } from "@/app/[locale]/(financial)/goals/actions";
+import { createGoal, updateGoal } from "@/app/[locale]/(financial)/dashboard/goals/actions";
 import { useTransition } from "react";
 import { GoalType } from "@prisma/client";
 import type { Goal } from "@prisma/client";

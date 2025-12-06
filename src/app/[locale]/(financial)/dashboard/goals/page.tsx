@@ -26,7 +26,7 @@ export default async function GoalsPage() {
                     </p>
                 </div>
                 <Button asChild>
-                    <Link href="/goals/new">
+                    <Link href="/dashboard/goals/new">
                         <Plus className="mr-2 h-4 w-4" />
                         {tGoals("new")}
                     </Link>

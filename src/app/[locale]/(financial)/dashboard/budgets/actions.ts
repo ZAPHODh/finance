@@ -88,7 +88,7 @@ export async function createBudget(input: BudgetFormData) {
         },
     })
 
-    revalidatePath("/budgets")
+    revalidatePath("/dashboard/budgets")
 }
 
 
@@ -122,7 +122,7 @@ export async function updateBudget(id: string, input: UpdateBudgetData) {
         },
     })
 
-    revalidatePath("/budgets")
+    revalidatePath("/dashboard/budgets")
 }
 
 
@@ -149,7 +149,7 @@ export async function deleteBudget(id: string) {
         where: { id },
     })
 
-    revalidatePath("/budgets")
+    revalidatePath("/dashboard/budgets")
 }
 
 
@@ -175,7 +175,7 @@ export async function toggleBudgetActive(id: string) {
         },
     })
 
-    revalidatePath("/budgets")
+    revalidatePath("/dashboard/budgets")
 }
 
 

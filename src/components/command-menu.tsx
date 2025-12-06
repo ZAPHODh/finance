@@ -65,12 +65,12 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
     {
       icon: PiggyBank,
       label: t('budgets'),
-      action: () => router.push('/budgets'),
+      action: () => router.push('/dashboard/budgets'),
     },
     {
       icon: Target,
       label: t('goals'),
-      action: () => router.push('/goals'),
+      action: () => router.push('/dashboard/goals'),
     },
     {
       icon: FileText,
@@ -143,12 +143,12 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
     {
       icon: Plus,
       label: t('newBudget'),
-      action: () => router.push('/budgets/new'),
+      action: () => router.push('/dashboard/budgets/new'),
     },
     {
       icon: Plus,
       label: t('newGoal'),
-      action: () => router.push('/goals/new'),
+      action: () => router.push('/dashboard/goals/new'),
     },
     {
       icon: Plus,

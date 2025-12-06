@@ -99,7 +99,7 @@ export async function createGoal(input: GoalFormData) {
         },
     })
 
-    revalidatePath("/goals")
+    revalidatePath("/dashboard/goals")
 }
 
 
@@ -134,7 +134,7 @@ export async function updateGoal(id: string, input: UpdateGoalData) {
         },
     })
 
-    revalidatePath("/goals")
+    revalidatePath("/dashboard/goals")
 }
 
 
@@ -161,7 +161,7 @@ export async function deleteGoal(id: string) {
         where: { id },
     })
 
-    revalidatePath("/goals")
+    revalidatePath("/dashboard/goals")
 }
 
 /**
@@ -189,7 +189,7 @@ export async function toggleGoalActive(id: string) {
         },
     })
 
-    revalidatePath("/goals")
+    revalidatePath("/dashboard/goals")
 }
 
 /**

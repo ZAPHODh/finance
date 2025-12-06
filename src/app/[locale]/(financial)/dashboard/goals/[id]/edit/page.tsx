@@ -12,7 +12,7 @@ export default async function EditGoalPage({ params }: { params: { id: string } 
     const tGoals = await getScopedI18n("ui.goals")
 
     const goal = await getGoalById(params.id)
-    if (!goal) redirect("/goals")
+    if (!goal) redirect("/dashboard/goals")
 
     const [drivers, vehicles] = await Promise.all([
         prisma.driver.findMany({

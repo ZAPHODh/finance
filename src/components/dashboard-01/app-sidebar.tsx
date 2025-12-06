@@ -98,12 +98,12 @@ export function AppSidebar({ user, searchComponent, ...props }: AppSidebarProps)
   const navPlanning = [
     {
       title: t('planning.goals'),
-      url: "/goals",
+      url: "/dashboard/goals",
       icon: Target,
     },
     {
       title: t('planning.budgets'),
-      url: "/budgets",
+      url: "/dashboard/budgets",
       icon: Wallet,
     },
   ]

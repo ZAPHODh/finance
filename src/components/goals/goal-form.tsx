@@ -5,7 +5,7 @@ import { useScopedI18n } from "@/locales/client"
 import { Button } from "@/components/ui/button"
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { createGoal, updateGoal } from "@/app/[locale]/(financial)/goals/actions"
+import { createGoal, updateGoal } from "@/app/[locale]/(financial)/dashboard/goals/actions"
 import { toast } from "sonner"
 import { useTransition } from "react"
 import { useRouter } from "next/navigation"
@@ -44,7 +44,7 @@ export function GoalForm({ drivers, vehicles, goal }: GoalFormProps) {
                             vehicleId: value.vehicleId || undefined,
                         })
                         toast.success(tCommon("updateSuccess"))
-                        router.push('/goals')
+                        router.push('/dashboard/goals')
                     } else {
                         await createGoal({
                             ...value,
@@ -52,7 +52,7 @@ export function GoalForm({ drivers, vehicles, goal }: GoalFormProps) {
                             vehicleId: value.vehicleId || undefined,
                         })
                         toast.success(tCommon("createSuccess"))
-                        router.push('/goals')
+                        router.push('/dashboard/goals')
                     }
                 } catch (error) {
                     toast.error(error instanceof Error ? error.message : tCommon("error"))

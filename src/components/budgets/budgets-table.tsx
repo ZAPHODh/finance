@@ -3,7 +3,7 @@
 import { useScopedI18n } from "@/locales/client"
 import { DataTable } from "@/components/ui/data-table/data-table"
 import { createBudgetsColumns } from "./budgets-columns"
-import { deleteBudget } from "@/app/[locale]/(financial)/budgets/actions"
+import { deleteBudget } from "@/app/[locale]/(financial)/dashboard/budgets/actions"
 import { toast } from "sonner"
 import { formatCurrency } from "@/lib/utils"
 import type { Budget } from "@prisma/client"
