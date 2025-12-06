@@ -15,7 +15,7 @@ export async function getPartnersForUser(): Promise<Partner[]> {
     where: {
       active: true,
       showForPlans: {
-        has: subscriptionPlan.name as PlanType,
+        has: subscriptionPlan.name.toUpperCase() as PlanType,
       },
     },
     orderBy: {
@@ -37,7 +37,7 @@ export async function getPartnersByCategory(
       active: true,
       category,
       showForPlans: {
-        has: subscriptionPlan.name as PlanType,
+        has: subscriptionPlan.name.toUpperCase() as PlanType,
       },
     },
     orderBy: {
