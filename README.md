@@ -23,7 +23,7 @@ A comprehensive financial management platform for transportation and fleet opera
 - **Authentication**: Lucia Auth (OAuth + Magic Link)
 - **Payments**: Stripe
 - **Search**: Algolia
-- **Monitoring**: Sentry + Posthog
+- **Monitoring**: Sentry
 - **Styling**: Tailwind CSS + Shadcn UI
 - **Forms**: TanStack Form
 - **i18n**: next-international
@@ -83,7 +83,7 @@ The application requires several environment variables to function properly. See
 
 ### Optional Variables
 
-- **Monitoring**: Sentry DSN, Posthog key
+- **Monitoring**: Sentry DSN
 - **Support**: Crisp chat widget ID
 - **Feature Flags**: Enable/disable specific features
 
@@ -159,7 +159,6 @@ pnpm start
 ## Monitoring & Error Tracking
 
 - **Sentry**: Error tracking and performance monitoring
-- **Posthog**: Analytics and user behavior tracking
 - **Health Check**: `/api/health` endpoint for uptime monitoring
 
 ## Legal & Compliance

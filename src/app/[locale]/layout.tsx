@@ -7,7 +7,6 @@ import { I18nProviderClient } from "@/locales/client";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { CookieConsent } from "@/components/legal/cookie-consent";
-import { PosthogProvider } from "@/components/analytics/posthog-provider";
 import { CommandMenuProvider } from "@/components/command-menu-provider";
 import { QueryProvider } from "@/components/query-provider";
 import { cn } from "@/lib/utils";
@@ -152,22 +151,20 @@ export default async function RootLayout({
           enableSystem={userTheme === "system"}
         >
           <AccessibilityProvider initialTheme={userTheme}>
-            <PosthogProvider>
-              <QueryProvider>
-                <I18nProviderClient locale={locale}>
-                  <CommandMenuProvider>
-                    <NuqsAdapter>
-                      <main>
-                        {children}
-                        {loginDialog}
-                      </main>
-                    </NuqsAdapter>
-                  </CommandMenuProvider>
-                  <CookieConsent />
-                </I18nProviderClient>
-                <Toaster />
-              </QueryProvider>
-            </PosthogProvider>
+            <QueryProvider>
+              <I18nProviderClient locale={locale}>
+                <CommandMenuProvider>
+                  <NuqsAdapter>
+                    <main>
+                      {children}
+                      {loginDialog}
+                    </main>
+                  </NuqsAdapter>
+                </CommandMenuProvider>
+                <CookieConsent />
+              </I18nProviderClient>
+              <Toaster />
+            </QueryProvider>
           </AccessibilityProvider>
         </ThemeProvider>
         {process.env.NEXT_PUBLIC_GTM_ID && (
