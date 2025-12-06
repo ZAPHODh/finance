@@ -3,10 +3,15 @@
 import { z } from "zod"
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { prisma } from "@/lib/server/db"
+import { createNameSchema } from "@/lib/validations/common"
+import { createCPFOrCNPJSchema, createBrazilianPhoneSchema, createCEPSchema } from "@/lib/validations/brazilian"
 
 const updateProfileSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: createNameSchema({ errorMessage: "Name is required" }),
   email: z.string().email("Invalid email address"),
+  cpfCnpj: createCPFOrCNPJSchema().optional(),
+  phone: createBrazilianPhoneSchema().optional(),
+  cep: createCEPSchema().optional(),
 })
 
 export async function updateProfileAction(input: z.infer<typeof updateProfileSchema>) {
@@ -30,11 +35,17 @@ export async function updateProfileAction(input: z.infer<typeof updateProfileSch
     data: {
       name: validatedInput.name,
       email: validatedInput.email,
+      cpfCnpj: validatedInput.cpfCnpj || null,
+      phone: validatedInput.phone || null,
+      cep: validatedInput.cep || null,
     },
     select: {
       id: true,
       name: true,
       email: true,
+      cpfCnpj: true,
+      phone: true,
+      cep: true,
     },
   })
 

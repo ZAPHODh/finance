@@ -8,20 +8,21 @@ import { GoalType } from "@prisma/client"
 import { checkIfGoalLimitReached } from "@/lib/plans/plan-checker"
 import { z } from "zod"
 import type { GoalFormData, UpdateGoalData } from "@/types/forms"
+import { createMonetaryAmountSchema, createPeriodSchema } from "@/lib/validations/common"
 
 const goalFormSchema = z.object({
     name: z.string().optional(),
     type: z.nativeEnum(GoalType),
-    targetValue: z.number().positive("Target value must be positive"),
-    period: z.string().min(1, "Period is required"),
+    targetValue: createMonetaryAmountSchema({ max: 10000000, errorMessage: "Target value must be positive" }),
+    period: createPeriodSchema("Period must be in YYYY-MM format"),
     driverId: z.string().optional(),
     vehicleId: z.string().optional(),
 });
 
 const updateGoalSchema = z.object({
     name: z.string().optional(),
-    targetValue: z.number().positive().optional(),
-    period: z.string().optional(),
+    targetValue: createMonetaryAmountSchema({ max: 10000000 }).optional(),
+    period: createPeriodSchema().optional(),
     driverId: z.string().optional(),
     vehicleId: z.string().optional(),
     isActive: z.boolean().optional(),

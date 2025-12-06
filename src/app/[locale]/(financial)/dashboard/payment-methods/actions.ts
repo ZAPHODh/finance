@@ -9,12 +9,13 @@ import { checkIfPaymentMethodLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
 import type { PaymentMethodFormData } from "@/types/forms";
 import { FeeType } from "@prisma/client";
+import { createPercentageSchema } from "@/lib/validations/common";
 
 const paymentMethodFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   feeType: z.string(),
-  feePercentage: z.number().nullable(),
-  feeFixed: z.number().nullable(),
+  feePercentage: z.union([createPercentageSchema(), z.null()]),
+  feeFixed: z.union([z.number().min(0, "Fee must be non-negative"), z.null()]),
 });
 
 export async function createPaymentMethod(input: PaymentMethodFormData) {

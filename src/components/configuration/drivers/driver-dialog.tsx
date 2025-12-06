@@ -10,12 +10,16 @@ import { Field, FieldLabel, FieldError, FieldGroup, FieldSet } from "@/component
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
+import { isValidCPF, isValidPhone } from "@brazilian-utils/brazilian-utils";
 
 interface DriverDialogProps {
   mode: "create" | "edit";
   driver?: {
     id: string;
     name: string;
+    cpf: string | null;
+    cnh: string | null;
+    phone: string | null;
   };
 }
 
@@ -24,10 +28,14 @@ export function DriverDialog({ mode, driver }: DriverDialogProps) {
   const pathname = usePathname();
   const t = useScopedI18n('configuration.drivers');
   const tCommon = useScopedI18n('common');
+  const tValidation = useScopedI18n('shared.validation');
 
   const form = useForm({
     defaultValues: {
       name: driver?.name || "",
+      cpf: driver?.cpf || "",
+      cnh: driver?.cnh || "",
+      phone: driver?.phone || "",
     },
     onSubmit: async ({ value }) => {
       try {
@@ -86,6 +94,105 @@ export function DriverDialog({ mode, driver }: DriverDialogProps) {
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       disabled={form.state.isSubmitting}
+                    />
+                    <FieldError>
+                      {field.state.meta.errors?.[0] && (
+                        <p className="mt-2 text-xs text-destructive">
+                          {field.state.meta.errors[0]}
+                        </p>
+                      )}
+                    </FieldError>
+                  </Field>
+                )}
+              </form.Field>
+
+              <form.Field
+                name="cpf"
+                validators={{
+                  onChange: ({ value }) => {
+                    if (value && !isValidCPF(value.replace(/\D/g, ''))) {
+                      return tValidation('brazilian.cpf.invalid');
+                    }
+                    return undefined;
+                  },
+                }}
+              >
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>CPF (optional)</FieldLabel>
+                    <Input
+                      id={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      disabled={form.state.isSubmitting}
+                      placeholder="000.000.000-00"
+                    />
+                    <FieldError>
+                      {field.state.meta.errors?.[0] && (
+                        <p className="mt-2 text-xs text-destructive">
+                          {field.state.meta.errors[0]}
+                        </p>
+                      )}
+                    </FieldError>
+                  </Field>
+                )}
+              </form.Field>
+
+              <form.Field
+                name="cnh"
+                validators={{
+                  onChange: ({ value }) => {
+                    if (value && !/^\d{11}$/.test(value.replace(/\D/g, ''))) {
+                      return tValidation('brazilian.cnh.invalid');
+                    }
+                    return undefined;
+                  },
+                }}
+              >
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>CNH (optional)</FieldLabel>
+                    <Input
+                      id={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      disabled={form.state.isSubmitting}
+                      placeholder="00000000000"
+                    />
+                    <FieldError>
+                      {field.state.meta.errors?.[0] && (
+                        <p className="mt-2 text-xs text-destructive">
+                          {field.state.meta.errors[0]}
+                        </p>
+                      )}
+                    </FieldError>
+                  </Field>
+                )}
+              </form.Field>
+
+              <form.Field
+                name="phone"
+                validators={{
+                  onChange: ({ value }) => {
+                    if (value && !isValidPhone(value.replace(/\D/g, ''))) {
+                      return tValidation('brazilian.phone.invalid');
+                    }
+                    return undefined;
+                  },
+                }}
+              >
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>Phone (optional)</FieldLabel>
+                    <Input
+                      id={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      disabled={form.state.isSubmitting}
+                      placeholder="(00) 00000-0000"
                     />
                     <FieldError>
                       {field.state.meta.errors?.[0] && (

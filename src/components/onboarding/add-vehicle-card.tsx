@@ -9,6 +9,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import { Plus, Check, X, Sparkles } from 'lucide-react';
 import { Vehicle } from './vehicle-card';
+import { brazilianPlateRegex } from '@/lib/validations/brazilian';
+import { useScopedI18n } from '@/locales/client';
 
 interface AddVehicleCardProps {
   onAdd: (vehicle: Vehicle) => void;
@@ -31,6 +33,7 @@ interface AddVehicleCardProps {
 
 export function AddVehicleCard({ onAdd, vehicleCount, maxVehicles = 1, locale, labels }: AddVehicleCardProps) {
   const router = useRouter();
+  const t = useScopedI18n('shared.validation');
   const [isAdding, setIsAdding] = useState(false);
   const [newVehicle, setNewVehicle] = useState<Vehicle>({
     name: '',
@@ -38,10 +41,29 @@ export function AddVehicleCard({ onAdd, vehicleCount, maxVehicles = 1, locale, l
     model: '',
     year: undefined,
   });
+  const [errors, setErrors] = useState<{ plate?: string; year?: string }>({});
 
   const isAtLimit = vehicleCount >= maxVehicles;
+  const currentYear = new Date().getFullYear();
 
   function handleAdd() {
+    const validationErrors: { plate?: string; year?: string } = {};
+
+    if (newVehicle.plate && !brazilianPlateRegex.test(newVehicle.plate.trim().toUpperCase())) {
+      validationErrors.plate = t('brazilian.plate.invalid');
+    }
+
+    if (newVehicle.year && newVehicle.year < 1900) {
+      validationErrors.year = t('common.vehicleYear.tooOld');
+    } else if (newVehicle.year && newVehicle.year > currentYear + 1) {
+      validationErrors.year = t('common.vehicleYear.tooNew');
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     if (newVehicle.name.trim()) {
       onAdd({
         name: newVehicle.name.trim(),
@@ -51,6 +73,7 @@ export function AddVehicleCard({ onAdd, vehicleCount, maxVehicles = 1, locale, l
         isPrimary: newVehicle.isPrimary,
       });
       setNewVehicle({ name: '', plate: '', model: '', year: undefined, isPrimary: false });
+      setErrors({});
       setIsAdding(false);
     }
   }
@@ -102,9 +125,14 @@ export function AddVehicleCard({ onAdd, vehicleCount, maxVehicles = 1, locale, l
             <Input
               id="new-vehicle-plate"
               value={newVehicle.plate}
-              onChange={(e) => setNewVehicle({ ...newVehicle, plate: e.target.value })}
+              onChange={(e) => {
+                setNewVehicle({ ...newVehicle, plate: e.target.value });
+                setErrors({ ...errors, plate: undefined });
+              }}
               placeholder={labels.plate}
+              className={errors.plate ? 'border-destructive' : ''}
             />
+            {errors.plate && <p className="text-xs text-destructive mt-1">{errors.plate}</p>}
           </Field>
           <Field>
             <FieldLabel htmlFor="new-vehicle-model">{labels.model}</FieldLabel>
@@ -122,9 +150,14 @@ export function AddVehicleCard({ onAdd, vehicleCount, maxVehicles = 1, locale, l
             id="new-vehicle-year"
             type="number"
             value={newVehicle.year || ''}
-            onChange={(e) => setNewVehicle({ ...newVehicle, year: e.target.value ? parseInt(e.target.value) : undefined })}
+            onChange={(e) => {
+              setNewVehicle({ ...newVehicle, year: e.target.value ? parseInt(e.target.value) : undefined });
+              setErrors({ ...errors, year: undefined });
+            }}
             placeholder={labels.year}
+            className={errors.year ? 'border-destructive' : ''}
           />
+          {errors.year && <p className="text-xs text-destructive mt-1">{errors.year}</p>}
         </Field>
         <div className="flex items-center space-x-2">
           <Checkbox

@@ -8,12 +8,14 @@ import { CacheTags, invalidateCache } from "@/lib/server/cache";
 import { checkIfVehicleLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
 import type { VehicleFormData } from "@/types/forms";
+import { createBrazilianPlateSchema } from "@/lib/validations/brazilian";
+import { createVehicleYearSchema } from "@/lib/validations/common";
 
 const vehicleFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  plate: z.string().optional(),
+  plate: createBrazilianPlateSchema().optional(),
   model: z.string().optional(),
-  year: z.number().optional(),
+  year: createVehicleYearSchema().optional(),
 });
 
 export async function createVehicle(input: VehicleFormData) {

@@ -10,6 +10,7 @@ import { createVehicle, updateVehicle } from "@/app/[locale]/(financial)/dashboa
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
+import { brazilianPlateRegex } from "@/lib/validations/brazilian";
 
 interface VehicleDialogProps {
   mode: "create" | "edit";
@@ -27,6 +28,7 @@ export function VehicleDialog({ mode, vehicle }: VehicleDialogProps) {
   const pathname = usePathname();
   const t = useScopedI18n('configuration.vehicles');
   const tCommon = useScopedI18n('common');
+  const tValidation = useScopedI18n('shared.validation');
 
   const isOpen = pathname.includes("/dashboard/vehicles");
 
@@ -103,7 +105,17 @@ export function VehicleDialog({ mode, vehicle }: VehicleDialogProps) {
                 )}
               </form.Field>
 
-              <form.Field name="plate">
+              <form.Field
+                name="plate"
+                validators={{
+                  onChange: ({ value }) => {
+                    if (value && !brazilianPlateRegex.test(value.trim().toUpperCase())) {
+                      return tValidation('brazilian.plate.invalid');
+                    }
+                    return undefined;
+                  },
+                }}
+              >
                 {(field) => (
                   <Field>
                     <FieldLabel htmlFor={field.name}>{t('plate')}</FieldLabel>
@@ -114,6 +126,13 @@ export function VehicleDialog({ mode, vehicle }: VehicleDialogProps) {
                       onChange={(e) => field.handleChange(e.target.value)}
                       disabled={form.state.isSubmitting}
                     />
+                    <FieldError>
+                      {field.state.meta.errors?.[0] && (
+                        <p className="mt-2 text-xs text-destructive">
+                          {field.state.meta.errors[0]}
+                        </p>
+                      )}
+                    </FieldError>
                   </Field>
                 )}
               </form.Field>
@@ -133,7 +152,21 @@ export function VehicleDialog({ mode, vehicle }: VehicleDialogProps) {
                 )}
               </form.Field>
 
-              <form.Field name="year">
+              <form.Field
+                name="year"
+                validators={{
+                  onChange: ({ value }) => {
+                    const currentYear = new Date().getFullYear();
+                    if (value && value < 1900) {
+                      return tValidation('common.vehicleYear.tooOld');
+                    }
+                    if (value && value > currentYear + 1) {
+                      return tValidation('common.vehicleYear.tooNew');
+                    }
+                    return undefined;
+                  },
+                }}
+              >
                 {(field) => (
                   <Field>
                     <FieldLabel htmlFor={field.name}>{t('year')}</FieldLabel>
@@ -145,6 +178,13 @@ export function VehicleDialog({ mode, vehicle }: VehicleDialogProps) {
                       onChange={(e) => field.handleChange(e.target.value ? parseInt(e.target.value) : undefined)}
                       disabled={form.state.isSubmitting}
                     />
+                    <FieldError>
+                      {field.state.meta.errors?.[0] && (
+                        <p className="mt-2 text-xs text-destructive">
+                          {field.state.meta.errors[0]}
+                        </p>
+                      )}
+                    </FieldError>
                   </Field>
                 )}
               </form.Field>

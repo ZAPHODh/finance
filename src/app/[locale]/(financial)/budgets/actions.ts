@@ -7,21 +7,22 @@ import { revalidatePath } from "next/cache"
 import { checkIfBudgetLimitReached } from "@/lib/plans/plan-checker"
 import { z } from "zod"
 import type { BudgetFormData, UpdateBudgetData } from "@/types/forms"
+import { createMonetaryAmountSchema, createPeriodSchema } from "@/lib/validations/common"
 
 const budgetFormSchema = z.object({
     name: z.string().optional(),
     expenseTypeId: z.string().min(1, "Expense type is required"),
-    monthlyLimit: z.number().positive("Monthly limit must be positive"),
+    monthlyLimit: createMonetaryAmountSchema({ max: 10000000, errorMessage: "Monthly limit must be positive" }),
     alertThreshold: z.number().min(0).max(1),
-    period: z.string().min(1, "Period is required"),
+    period: createPeriodSchema("Period must be in YYYY-MM format"),
 });
 
 const updateBudgetSchema = z.object({
     name: z.string().optional(),
     expenseTypeId: z.string().optional(),
-    monthlyLimit: z.number().positive().optional(),
+    monthlyLimit: createMonetaryAmountSchema({ max: 10000000 }).optional(),
     alertThreshold: z.number().min(0).max(1).optional(),
-    period: z.string().optional(),
+    period: createPeriodSchema().optional(),
     isActive: z.boolean().optional(),
 });
 

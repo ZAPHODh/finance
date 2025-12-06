@@ -8,12 +8,13 @@ import { cacheWithTag, CacheTags, invalidateCache } from "@/lib/server/cache";
 import { z } from "zod";
 import { checkGoalAchievements } from "@/lib/server/email-triggers";
 import type { RevenueFormData } from "@/types/forms";
+import { createMonetaryAmountSchema, createFutureDateSchema, createKmDrivenSchema, createHoursWorkedSchema } from "@/lib/validations/common";
 
 const revenueFormSchema = z.object({
-  amount: z.number().positive("Amount must be positive"),
-  date: z.date(),
-  kmDriven: z.number().optional(),
-  hoursWorked: z.number().optional(),
+  amount: createMonetaryAmountSchema({ max: 1000000, errorMessage: "Amount must be positive" }),
+  date: createFutureDateSchema(365, "Date cannot be more than 1 year in the future"),
+  kmDriven: createKmDrivenSchema().optional(),
+  hoursWorked: createHoursWorkedSchema().optional(),
   platformIds: z.array(z.string()).min(1, "At least one platform is required"),
   paymentMethodId: z.string().optional(),
   driverId: z.string().optional(),

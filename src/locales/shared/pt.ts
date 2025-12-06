@@ -62,4 +62,74 @@ export default {
         privacyPolicy: 'Política de Privacidade',
         cookiePolicy: 'Política de Cookies',
     },
+    validation: {
+        brazilian: {
+            plate: {
+                invalid: 'Formato de placa inválido. Use ABC-1234 ou ABC1D23',
+                required: 'Placa é obrigatória',
+            },
+            cpf: {
+                invalid: 'CPF inválido',
+                required: 'CPF é obrigatório',
+            },
+            cnpj: {
+                invalid: 'CNPJ inválido',
+                required: 'CNPJ é obrigatório',
+            },
+            cpfOrCnpj: {
+                invalid: 'CPF ou CNPJ inválido',
+                required: 'CPF ou CNPJ é obrigatório',
+            },
+            cep: {
+                invalid: 'CEP inválido',
+                required: 'CEP é obrigatório',
+            },
+            phone: {
+                invalid: 'Telefone inválido. Use (00) 00000-0000',
+                required: 'Telefone é obrigatório',
+            },
+            cnh: {
+                invalid: 'CNH inválida. Deve ter 11 dígitos',
+                required: 'CNH é obrigatória',
+            },
+        },
+        common: {
+            name: {
+                tooShort: 'Nome deve ter pelo menos 2 caracteres',
+                tooLong: 'Nome deve ter no máximo 100 caracteres',
+                invalidCharacters: 'Nome pode conter apenas letras, espaços, hífens e apóstrofos',
+                required: 'Nome é obrigatório',
+            },
+            vehicleYear: {
+                tooOld: 'Ano deve ser pelo menos 1900',
+                tooNew: 'Ano não pode ser no futuro',
+                required: 'Ano é obrigatório',
+            },
+            amount: {
+                tooSmall: 'Valor deve ser maior que zero',
+                tooLarge: 'Valor excede o máximo permitido',
+                required: 'Valor é obrigatório',
+            },
+            date: {
+                tooFarInFuture: 'Data não pode ser mais de 1 ano no futuro',
+                required: 'Data é obrigatória',
+            },
+            kmDriven: {
+                negative: 'Quilômetros rodados não podem ser negativos',
+                tooLarge: 'Quilômetros rodados não podem exceder 5000 por dia',
+            },
+            hoursWorked: {
+                negative: 'Horas trabalhadas não podem ser negativas',
+                tooLarge: 'Horas trabalhadas não podem exceder 24 por dia',
+            },
+            percentage: {
+                tooSmall: 'Porcentagem deve ser pelo menos 0',
+                tooLarge: 'Porcentagem não pode exceder 100',
+            },
+            period: {
+                invalid: 'Período deve estar no formato AAAA-MM',
+                required: 'Período é obrigatório',
+            },
+        },
+    },
 } as const

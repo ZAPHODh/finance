@@ -1,15 +1,20 @@
 import { z } from "zod";
+import { createNameSchema, createVehicleYearSchema } from "@/lib/validations/common";
+import { createBrazilianPlateSchema, createCPFSchema, createCNHSchema, createBrazilianPhoneSchema } from "@/lib/validations/brazilian";
 
 export const driverSchema = z.object({
-  name: z.string().min(1, "Driver name is required"),
+  name: createNameSchema({ errorMessage: "Driver name is required" }),
   isSelf: z.boolean().optional(),
+  cpf: createCPFSchema().optional(),
+  cnh: createCNHSchema().optional(),
+  phone: createBrazilianPhoneSchema().optional(),
 });
 
 export const vehicleSchema = z.object({
   name: z.string().min(1, "Vehicle name is required"),
-  plate: z.string().optional(),
+  plate: createBrazilianPlateSchema().optional(),
   model: z.string().optional(),
-  year: z.number().int().positive().optional(),
+  year: createVehicleYearSchema().optional(),
   isPrimary: z.boolean().optional(),
 });
 

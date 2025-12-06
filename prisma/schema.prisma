@@ -44,6 +44,11 @@ model User {
   monthlyExportCount Int     @default(0)
   exportCountResetAt DateTime?
 
+  // Brazilian fields
+  cpfCnpj String? // CPF or CNPJ for tax reporting
+  phone   String? // Brazilian phone number
+  cep     String? // Postal code
+
   drivers      Driver[]
   vehicles     Vehicle[]
   platforms    Platform[]
@@ -77,6 +82,11 @@ model Driver {
   isSelf           Boolean           @default(false)
   userId           String
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Brazilian fields
+  cpf              String? // CPF for tax reporting
+  cnh              String? // Driver's license number
+  phone            String? // Phone number
 
   expenses         Expense[]
   revenues         Revenue[]

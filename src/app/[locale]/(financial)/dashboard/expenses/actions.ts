@@ -8,10 +8,11 @@ import { cacheWithTag, CacheTags, invalidateCache } from "@/lib/server/cache";
 import { z } from "zod";
 import { checkBudgetAlerts } from "@/lib/server/email-triggers";
 import type { ExpenseFormData } from "@/types/forms";
+import { createMonetaryAmountSchema, createFutureDateSchema } from "@/lib/validations/common";
 
 const expenseFormSchema = z.object({
-  amount: z.number().positive("Amount must be positive"),
-  date: z.date(),
+  amount: createMonetaryAmountSchema({ max: 1000000, errorMessage: "Amount must be positive" }),
+  date: createFutureDateSchema(365, "Date cannot be more than 1 year in the future"),
   expenseTypeIds: z.array(z.string()).min(1, "At least one expense type is required"),
   driverId: z.string().optional(),
   vehicleId: z.string().optional(),

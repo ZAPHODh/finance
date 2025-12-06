@@ -8,9 +8,14 @@ import { CacheTags, invalidateCache } from "@/lib/server/cache";
 import { checkIfDriverLimitReached } from "@/lib/plans/plan-checker";
 import { z } from "zod";
 import type { DriverFormData } from "@/types/forms";
+import { createNameSchema } from "@/lib/validations/common";
+import { createCPFSchema, createCNHSchema, createBrazilianPhoneSchema } from "@/lib/validations/brazilian";
 
 const driverFormSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: createNameSchema({ errorMessage: "Name is required" }),
+  cpf: createCPFSchema().optional(),
+  cnh: createCNHSchema().optional(),
+  phone: createBrazilianPhoneSchema().optional(),
 });
 
 export async function createDriver(input: DriverFormData) {
@@ -30,6 +35,9 @@ export async function createDriver(input: DriverFormData) {
   await prisma.driver.create({
     data: {
       name: data.name,
+      cpf: data.cpf || null,
+      cnh: data.cnh || null,
+      phone: data.phone || null,
       userId: user.id,
     },
   });
@@ -59,6 +67,9 @@ export async function updateDriver(id: string, input: DriverFormData) {
     where: { id },
     data: {
       name: data.name,
+      cpf: data.cpf || null,
+      cnh: data.cnh || null,
+      phone: data.phone || null,
     },
   });
 
