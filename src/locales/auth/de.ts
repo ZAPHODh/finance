@@ -1,0 +1,21 @@
+export default {
+    emailPlaceholder: "name@beispiel.de",
+    emailError: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+    emailRequired: "E-Mail ist erforderlich",
+    emailInvalid: "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    sendOtp: "OTP senden",
+    otpSent: "OTP gesendet!",
+    otpSentDesc: "Bitte überprüfen Sie Ihr E-Mail-Postfach",
+    otpFailed: "OTP konnte nicht gesendet werden",
+    enterOtp: 'OTP eingeben',
+    verifyOtp: "OTP verifizieren",
+    verifiedSuccess: "Erfolgreich verifiziert!",
+    verifyFailed: "OTP konnte nicht verifiziert werden",
+    verifyDesc: "Bitte geben Sie ihn unten zur Verifizierung ein.",
+    otpSentTo: "Wir haben einen 6-stelligen Code an {email} gesendet.",
+    continueWith: "Fortfahren mit",
+    didNotReceive: "Code nicht erhalten/abgelaufen?",
+    resendIn: "Erneut senden in {countdown}s",
+    resend: "Erneut senden",
+    resending: "Wird erneut gesendet..."
+} as const

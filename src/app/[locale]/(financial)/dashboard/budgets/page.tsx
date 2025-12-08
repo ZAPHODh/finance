@@ -6,6 +6,8 @@ import { BudgetsTable } from "@/components/budgets/budgets-table"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import Link from "next/link"
+import { shouldShowAds } from "@/lib/ads/should-show-ads"
+import { BudgetAlertAd } from "@/components/ads/budget-alert-ad"
 
 export default async function BudgetsPage() {
     const { user } = await getCurrentSession()
@@ -13,6 +15,9 @@ export default async function BudgetsPage() {
 
     const tBudgets = await getScopedI18n("ui.budgets")
     const budgets = await getBudgetsWithUsage()
+    const showAds = await shouldShowAds()
+
+    const budgetsNearLimit = budgets.filter(b => b.usage.shouldAlert)
 
     return (
         <div className="space-y-6">
@@ -32,6 +37,18 @@ export default async function BudgetsPage() {
                     </Link>
                 </Button>
             </div>
+
+            {showAds && budgetsNearLimit.length > 0 && (
+                <div className="space-y-4">
+                    {budgetsNearLimit.map(budget => (
+                        <BudgetAlertAd
+                            key={budget.id}
+                            budget={budget}
+                            currentAmount={budget.usage.spent}
+                        />
+                    ))}
+                </div>
+            )}
 
             <BudgetsTable budgets={budgets} />
         </div>

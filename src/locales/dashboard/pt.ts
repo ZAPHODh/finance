@@ -94,5 +94,10 @@ export default {
         getDiscount: 'Obter Desconto',
         savingsUpTo: 'Economize até {discount}%',
         poweredByPartners: 'Oferecido por nossos parceiros',
+        budgetAlert: {
+            nearLimit: 'Você está próximo do limite do orçamento de {category}',
+            saveWith: 'Economize com nosso parceiro',
+            helpReduce: 'Isso pode ajudar a reduzir suas despesas de {category}',
+        },
     },
 } as const

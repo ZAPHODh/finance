@@ -3,6 +3,7 @@ import { siteConfig } from "@/config/site-server";
 import { GoogleTagManager, GoogleAnalytics } from '@next/third-parties/google'
 import { Inter } from "next/font/google";
 import { Metadata } from "next";
+import Script from "next/script";
 import { I18nProviderClient } from "@/locales/client";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -15,8 +16,11 @@ import { AccessibilityProvider } from "@/components/accessibility-provider";
 import { ThemeSyncScript } from "@/components/theme-sync-script";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { prisma } from "@/lib/server/db";
+import { getStaticParams } from "@/locales/server";
 
 import "../globals.css";
+
+export { getStaticParams as generateStaticParams };
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -82,6 +86,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       languages: {
         en: "/en",
         pt: "/pt",
+        es: "/es",
+        fr: "/fr",
+        de: "/de",
       },
     },
     appleWebApp: {
@@ -137,11 +144,6 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <head>
         <ThemeSyncScript theme={userTheme} />
-        <script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_GOOGLE_ADSENSE}`}
-          crossOrigin="anonymous"
-        />
       </head>
       <body
         className={cn(
@@ -150,6 +152,14 @@ export default async function RootLayout({
           fontDyslexic.variable,
         )}
       >
+        {process.env.NEXT_PUBLIC_GOOGLE_ADSENSE && (
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_GOOGLE_ADSENSE}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
         <ThemeProvider
           attribute="class"
           defaultTheme={userTheme}

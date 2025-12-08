@@ -6,6 +6,8 @@ import { ExpensesTable } from "@/components/financial/expenses/expenses-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { shouldShowAds } from "@/lib/ads/should-show-ads";
+import { ContextualPartnerAd } from "@/components/ads/contextual-partner-ad";
 
 export default async function ExpensesPage() {
   const t = await getI18n();
@@ -16,6 +18,7 @@ export default async function ExpensesPage() {
   }
 
   const { expenses, expenseTypes, drivers, vehicles } = await getExpensesData();
+  const showAds = await shouldShowAds();
 
   return (
     <div className="container mx-auto px-4 md:px-0 py-6 space-y-6">
@@ -30,6 +33,15 @@ export default async function ExpensesPage() {
           </Button>
         </Link>
       </div>
+
+      {showAds && (
+        <ContextualPartnerAd
+          context="top-expense"
+          fallbackCategory="FUEL"
+          location="expenses_top"
+        />
+      )}
+
       <ExpensesTable
         expenses={expenses}
         expenseTypes={expenseTypes}

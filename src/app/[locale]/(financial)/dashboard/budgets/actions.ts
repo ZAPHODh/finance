@@ -33,9 +33,7 @@ export async function getBudgets() {
     const budgets = await prisma.budget.findMany({
         where: { userId: user.id },
         include: {
-            expenseType: {
-                select: { id: true, name: true },
-            },
+            expenseType: true,
         },
         orderBy: { createdAt: "desc" },
     })
@@ -54,9 +52,7 @@ export async function getBudgetById(id: string) {
             userId: user.id,
         },
         include: {
-            expenseType: {
-                select: { id: true, name: true, },
-            },
+            expenseType: true,
         },
     })
 

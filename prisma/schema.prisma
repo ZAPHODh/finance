@@ -365,9 +365,10 @@ model UserPreferences {
 
   // Appearance
   theme     String   @default("system") // light, dark, system
-  language  String   @default("en") // en, pt
+  language  String   @default("en") // en, pt, es, fr, de, it
 
   // Regional
+  country   String   @default("BR") // BR, US, ES, MX, PT, FR, DE, IT, GB, AR
   currency  String   @default("brl") // usd, brl, eur
   timezone  String   @default("America/Sao_Paulo")
   use24HourFormat Boolean @default(false)
@@ -597,13 +598,16 @@ model Partner {
 
   // Targeting
   showForPlans PlanType[]      // [FREE] = só mostra para free tier
+  locales      String[]        // ["pt", "en"] = language codes (not full locales)
   active       Boolean         @default(true)
+  priority     Int             @default(0) // Maior = mais relevante
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([category])
   @@index([active])
+  @@index([priority])
 }
 
 model Report {

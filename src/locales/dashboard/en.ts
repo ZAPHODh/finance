@@ -94,5 +94,10 @@ export default {
         getDiscount: 'Get Discount',
         savingsUpTo: 'Save up to {discount}%',
         poweredByPartners: 'Powered by our partners',
+        budgetAlert: {
+            nearLimit: 'You\'re approaching your {category} budget limit',
+            saveWith: 'Save with our partner',
+            helpReduce: 'This can help reduce your {category} expenses',
+        },
     },
 } as const

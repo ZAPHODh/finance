@@ -1,0 +1,21 @@
+export default {
+    emailPlaceholder: "nom@exemple.com",
+    emailError: "Veuillez saisir une adresse e-mail valide.",
+    emailRequired: "L'e-mail est requis",
+    emailInvalid: "Veuillez saisir une adresse e-mail valide",
+    sendOtp: "Envoyer le code",
+    otpSent: "Code envoyé !",
+    otpSentDesc: "Veuillez vérifier votre boîte de réception",
+    otpFailed: "Échec de l'envoi du code",
+    enterOtp: 'Saisir le code',
+    verifyOtp: "Vérifier le code",
+    verifiedSuccess: "Vérifié avec succès !",
+    verifyFailed: "Échec de la vérification du code",
+    verifyDesc: "Veuillez le saisir ci-dessous pour vérification.",
+    otpSentTo: "Nous avons envoyé un code à 6 chiffres à {email}.",
+    continueWith: "Continuer avec",
+    didNotReceive: "Vous n'avez pas reçu le code/expiré ?",
+    resendIn: "Renvoyer dans {countdown}s",
+    resend: "Renvoyer",
+    resending: "Renvoi..."
+} as const

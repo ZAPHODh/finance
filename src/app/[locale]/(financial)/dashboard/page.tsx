@@ -6,10 +6,11 @@ import { EfficiencyCards } from "@/components/dashboard/efficiency-cards"
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters"
 import { getUserSubscriptionPlan, getPlanLimits } from "@/lib/server/payment"
 import { shouldShowAds } from "@/lib/ads/should-show-ads"
-import { PartnerAdBanner } from "@/components/ads/partner-ad-banner"
+import { ContextualPartnerAd } from "@/components/ads/contextual-partner-ad"
 import { AdSenseBanner } from "@/components/ads/adsense-banner"
 import { redirect } from "next/navigation"
 import dynamic from "next/dynamic"
+import { PartnerAdBanner } from "@/components/ads/partner-ad-banner"
 
 const ChartAreaInteractive = dynamic(
   () => import('@/components/dashboard-01/chart-area-interactive').then(m => ({ default: m.ChartAreaInteractive })),
@@ -67,7 +68,11 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           />
           {showAds && (
             <div className="px-4 lg:px-6">
-              <PartnerAdBanner category="FUEL" location="dashboard_after_kpis" />
+              <ContextualPartnerAd
+                context="top-expense"
+                fallbackCategory="FUEL"
+                location="dashboard_after_kpis"
+              />
             </div>
           )}
           {showAds && (

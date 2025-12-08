@@ -13,6 +13,8 @@ const partners = [
     ctaText: 'Cadastre-se grátis',
     ctaUrl: 'https://shellbox.com.br?ref=financial',
     showForPlans: ['FREE'],
+    locales: ['pt'],
+    priority: 10,
     active: true,
   },
   {
@@ -25,6 +27,8 @@ const partners = [
     ctaText: 'Saiba mais',
     ctaUrl: 'https://kmdevantagens.com.br?ref=financial',
     showForPlans: ['FREE'],
+    locales: ['pt'],
+    priority: 9,
     active: true,
   },
   {
@@ -37,6 +41,8 @@ const partners = [
     ctaText: 'Encontre uma oficina',
     ctaUrl: 'https://automec.com.br?ref=financial',
     showForPlans: ['FREE'],
+    locales: ['pt'],
+    priority: 8,
     active: true,
   },
   {
@@ -49,6 +55,8 @@ const partners = [
     ctaText: 'Fazer cotação',
     ctaUrl: 'https://portoseguro.com.br?ref=financial',
     showForPlans: ['FREE'],
+    locales: ['pt'],
+    priority: 9,
     active: true,
   },
   {
@@ -61,6 +69,8 @@ const partners = [
     ctaText: 'Pedir minha maquininha',
     ctaUrl: 'https://pagseguro.uol.com.br?ref=financial',
     showForPlans: ['FREE'],
+    locales: ['pt'],
+    priority: 7,
     active: true,
   },
   {
@@ -73,6 +83,8 @@ const partners = [
     ctaText: 'Pedir meu adesivo',
     ctaUrl: 'https://veloe.com.br?ref=financial',
     showForPlans: ['FREE'],
+    locales: ['pt'],
+    priority: 8,
     active: true,
   },
   {
@@ -85,6 +97,8 @@ const partners = [
     ctaText: 'Baixar app',
     ctaUrl: 'https://estacionafacil.com.br?ref=financial',
     showForPlans: ['FREE'],
+    locales: ['pt'],
+    priority: 7,
     active: true,
   },
   {
@@ -97,6 +111,8 @@ const partners = [
     ctaText: 'Ver unidades',
     ctaUrl: 'https://washcar.com.br?ref=financial',
     showForPlans: ['FREE'],
+    locales: ['pt'],
+    priority: 6,
     active: true,
   },
   {
@@ -109,6 +125,8 @@ const partners = [
     ctaText: 'Ver modelos',
     ctaUrl: 'https://pirelli.com.br?ref=financial',
     showForPlans: ['FREE'],
+    locales: ['pt'],
+    priority: 7,
     active: true,
   },
 ];
