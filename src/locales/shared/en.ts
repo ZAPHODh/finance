@@ -63,6 +63,19 @@ export default {
         cookiePolicy: 'Cookie Policy',
     },
     validation: {
+        onboarding: {
+            platforms: {
+                required: 'You need to save at least one platform',
+            },
+            drivers: {
+                nameRequired: 'Driver name is required',
+                required: 'You need to save at least one driver',
+            },
+            vehicles: {
+                nameRequired: 'Vehicle name is required',
+                required: 'You need to save at least one vehicle',
+            },
+        },
         brazilian: {
             plate: {
                 invalid: 'Invalid license plate format. Use ABC-1234 or ABC1D23',

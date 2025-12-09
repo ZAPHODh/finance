@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { AnimatePresence, motion, type MotionProps } from "motion/react";
 import * as React from "react";
 import type { VariantProps } from "class-variance-authority";
+import { useScopedI18n } from "@/locales/client";
 
 const NextButton = (
   props: React.ComponentProps<"button"> &
@@ -60,13 +61,14 @@ const ResetButton = (
 
 const FormHeader = (props: React.ComponentProps<"div">) => {
   const { currentStepIndex, steps } = useMultiStepForm();
+  const t = useScopedI18n('ui.common');
   return (
     <div
       className="flex flex-col items-start justify-center gap-1 pb-4"
       {...props}
     >
       <span>
-        Step {currentStepIndex} of {steps.length}
+        {t('stepCounter', { current: String(currentStepIndex), total: String(steps.length) })}
       </span>
       <Progress value={(currentStepIndex / steps.length) * 100} />
     </div>

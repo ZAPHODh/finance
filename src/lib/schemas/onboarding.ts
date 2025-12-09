@@ -2,21 +2,28 @@ import { z } from "zod";
 import { createNameSchema, createVehicleYearSchema } from "@/lib/validations/common";
 import { createBrazilianPlateSchema, createCPFSchema, createCNHSchema, createBrazilianPhoneSchema } from "@/lib/validations/brazilian";
 
-export const driverSchema = z.object({
-  name: createNameSchema({ errorMessage: "Driver name is required" }),
-  isSelf: z.boolean().optional(),
-  cpf: createCPFSchema().optional(),
-  cnh: createCNHSchema().optional(),
-  phone: createBrazilianPhoneSchema().optional(),
-});
+export function createDriverSchema(errorMessages: { nameRequired: string }) {
+  return z.object({
+    name: createNameSchema({ errorMessage: errorMessages.nameRequired }),
+    isSelf: z.boolean().optional(),
+    cpf: createCPFSchema().optional(),
+    cnh: createCNHSchema().optional(),
+    phone: createBrazilianPhoneSchema().optional(),
+  });
+}
 
-export const vehicleSchema = z.object({
-  name: z.string().min(1, "Vehicle name is required"),
-  plate: createBrazilianPlateSchema().optional(),
-  model: z.string().optional(),
-  year: createVehicleYearSchema().optional(),
-  isPrimary: z.boolean().optional(),
-});
+export function createVehicleSchema(errorMessages: { nameRequired: string }) {
+  return z.object({
+    name: z.string().min(1, errorMessages.nameRequired),
+    plate: createBrazilianPlateSchema().optional(),
+    model: z.string().optional(),
+    year: createVehicleYearSchema().optional(),
+    isPrimary: z.boolean().optional(),
+  });
+}
+
+export const driverSchema = createDriverSchema({ nameRequired: "Driver name is required" });
+export const vehicleSchema = createVehicleSchema({ nameRequired: "Vehicle name is required" });
 
 export const keyboardShortcutSchema = z.object({
   key: z.string(),
@@ -41,13 +48,29 @@ export const accessibilitySchema = z.object({
   highContrast: z.boolean(),
 });
 
-export const onboardingSchema = z.object({
-  platforms: z.array(z.string()).min(1, "At least one platform is required"),
-  drivers: z.array(driverSchema).min(1, "At least one driver is required"),
-  vehicles: z.array(vehicleSchema).min(1, "At least one vehicle is required"),
-  expenseTypes: z.array(z.string()),
-  paymentMethods: z.array(z.string()),
-  accessibility: accessibilitySchema.optional(),
+export function createOnboardingSchema(errorMessages: {
+  platformsRequired: string;
+  driversRequired: string;
+  vehiclesRequired: string;
+  driverNameRequired: string;
+  vehicleNameRequired: string;
+}) {
+  return z.object({
+    platforms: z.array(z.string()).min(1, errorMessages.platformsRequired),
+    drivers: z.array(createDriverSchema({ nameRequired: errorMessages.driverNameRequired })).min(1, errorMessages.driversRequired),
+    vehicles: z.array(createVehicleSchema({ nameRequired: errorMessages.vehicleNameRequired })).min(1, errorMessages.vehiclesRequired),
+    expenseTypes: z.array(z.string()),
+    paymentMethods: z.array(z.string()),
+    accessibility: accessibilitySchema.optional(),
+  });
+}
+
+export const onboardingSchema = createOnboardingSchema({
+  platformsRequired: "At least one platform is required",
+  driversRequired: "At least one driver is required",
+  vehiclesRequired: "At least one vehicle is required",
+  driverNameRequired: "Driver name is required",
+  vehicleNameRequired: "Vehicle name is required",
 });
 
 export type OnboardingFormData = z.infer<typeof onboardingSchema>;

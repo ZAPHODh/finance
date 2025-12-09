@@ -1,4 +1,7 @@
 export default {
+    common: {
+        stepCounter: 'Passo {current} de {total}',
+    },
     filters: {
         filters: 'Filtros',
         clearAll: 'Limpar tudo',

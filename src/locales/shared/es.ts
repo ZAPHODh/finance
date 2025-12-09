@@ -66,6 +66,19 @@ export default {
         cookiePolicy: 'Política de cookies',
     },
     validation: {
+        onboarding: {
+            platforms: {
+                required: 'Necesitas guardar al menos una plataforma',
+            },
+            drivers: {
+                nameRequired: 'El nombre del conductor es obligatorio',
+                required: 'Necesitas guardar al menos un conductor',
+            },
+            vehicles: {
+                nameRequired: 'El nombre del vehículo es obligatorio',
+                required: 'Necesitas guardar al menos un vehículo',
+            },
+        },
         brazilian: {
             plate: {
                 invalid: 'Formato de placa inválido. Use ABC-1234 o ABC1D23',

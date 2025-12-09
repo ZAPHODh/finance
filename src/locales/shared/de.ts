@@ -64,6 +64,19 @@ export default {
         cookiePolicy: 'Cookie-Richtlinie',
     },
     validation: {
+        onboarding: {
+            platforms: {
+                required: 'Sie müssen mindestens eine Plattform speichern',
+            },
+            drivers: {
+                nameRequired: 'Name des Fahrers ist erforderlich',
+                required: 'Sie müssen mindestens einen Fahrer speichern',
+            },
+            vehicles: {
+                nameRequired: 'Name des Fahrzeugs ist erforderlich',
+                required: 'Sie müssen mindestens ein Fahrzeug speichern',
+            },
+        },
         brazilian: {
             plate: {
                 invalid: 'Ungültiges Kennzeichenformat. Verwenden Sie ABC-1234 oder ABC1D23',

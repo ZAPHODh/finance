@@ -15,7 +15,7 @@ import { AddVehicleCard } from './add-vehicle-card';
 import { DriverCard } from './driver-card';
 import { AddDriverCard } from './add-driver-card';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
-import { onboardingSchema, type OnboardingFormData } from '@/lib/schemas/onboarding';
+import { createOnboardingSchema, type OnboardingFormData } from '@/lib/schemas/onboarding';
 import { MultiStepFormProvider } from '@/hooks/use-multi-step-viewer';
 import dynamic from 'next/dynamic';
 
@@ -73,7 +73,16 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
   const router = useRouter();
   const t = useScopedI18n('ui.onboarding');
   const tCommon = useScopedI18n('common');
+  const tValidation = useScopedI18n('shared.validation.onboarding');
   const [isPending, startTransition] = useTransition();
+
+  const onboardingSchema = createOnboardingSchema({
+    platformsRequired: tValidation('platforms.required'),
+    driversRequired: tValidation('drivers.required'),
+    vehiclesRequired: tValidation('vehicles.required'),
+    driverNameRequired: tValidation('drivers.nameRequired'),
+    vehicleNameRequired: tValidation('vehicles.nameRequired'),
+  });
 
   const form = useForm<OnboardingFormData>({
     resolver: zodResolver(onboardingSchema),
