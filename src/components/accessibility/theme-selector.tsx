@@ -4,6 +4,7 @@ import type { Theme } from "@/types/accessibility";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Sun, Moon, Monitor } from "lucide-react";
+import { useTheme } from "next-themes";
 
 interface ThemeSelectorProps {
   value: Theme;
@@ -17,16 +18,22 @@ interface ThemeSelectorProps {
 }
 
 export function ThemeSelector({ value, onChange, labels }: ThemeSelectorProps) {
+  const { setTheme } = useTheme();
   const themes: { value: Theme; label: string; icon: React.ReactNode }[] = [
     { value: "light", label: labels.light, icon: <Sun className="h-5 w-5" /> },
     { value: "dark", label: labels.dark, icon: <Moon className="h-5 w-5" /> },
     { value: "system", label: labels.system, icon: <Monitor className="h-5 w-5" /> },
   ];
 
+  function handleThemeChange(val: Theme) {
+    setTheme(val);
+    onChange(val);
+  }
+
   return (
     <div className="space-y-3">
       <Label className="text-base font-semibold">{labels.title}</Label>
-      <RadioGroup value={value} onValueChange={(val) => onChange(val as Theme)}>
+      <RadioGroup value={value} onValueChange={(val) => handleThemeChange(val as Theme)}>
         <div className="grid grid-cols-3 gap-3">
           {themes.map((theme) => (
             <label

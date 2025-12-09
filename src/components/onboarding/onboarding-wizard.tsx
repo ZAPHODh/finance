@@ -159,6 +159,83 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
       ),
     },
     {
+      fields: ['accessibility'],
+      component: (
+        <Controller
+          name="accessibility"
+          control={form.control}
+          defaultValue={DEFAULT_ACCESSIBILITY_SETTINGS}
+          render={({ field }) => {
+            return (
+              <AccessibilityStep
+                value={field.value || DEFAULT_ACCESSIBILITY_SETTINGS}
+                onChange={field.onChange}
+                labels={{
+                  title: t('accessibility.title'),
+                  description: t('accessibility.description'),
+                  theme: {
+                    title: t('accessibility.theme.title'),
+                    light: t('accessibility.theme.light'),
+                    dark: t('accessibility.theme.dark'),
+                    system: t('accessibility.theme.system'),
+                  },
+                  font: {
+                    fontSize: t('accessibility.font.size'),
+                    fontFamily: t('accessibility.font.family'),
+                    lineSpacing: t('accessibility.font.spacing'),
+                    sizeOptions: {
+                      small: t('accessibility.font.sizeOptions.small'),
+                      medium: t('accessibility.font.sizeOptions.medium'),
+                      large: t('accessibility.font.sizeOptions.large'),
+                      xLarge: t('accessibility.font.sizeOptions.xLarge'),
+                    },
+                    familyOptions: {
+                      default: t('accessibility.font.familyOptions.default'),
+                      dyslexic: t('accessibility.font.familyOptions.dyslexic'),
+                      mono: t('accessibility.font.familyOptions.mono'),
+                    },
+                    spacingOptions: {
+                      normal: t('accessibility.font.spacingOptions.normal'),
+                      relaxed: t('accessibility.font.spacingOptions.relaxed'),
+                      loose: t('accessibility.font.spacingOptions.loose'),
+                    },
+                  },
+                  shortcuts: {
+                    title: t('accessibility.shortcuts.title'),
+                    conflictWarning: t('accessibility.shortcuts.conflict'),
+                    change: t('accessibility.shortcuts.change'),
+                    set: t('accessibility.shortcuts.set'),
+                    clickToSet: t('accessibility.shortcuts.clickToSet'),
+                    pressAnyKey: t('accessibility.shortcuts.pressAnyKey'),
+                    actions: {
+                      newDailyEntry: {
+                        label: t('accessibility.shortcuts.newDailyEntry.label'),
+                        description: t('accessibility.shortcuts.newDailyEntry.description'),
+                      },
+                      newRevenue: {
+                        label: t('accessibility.shortcuts.newRevenue.label'),
+                        description: t('accessibility.shortcuts.newRevenue.description'),
+                      },
+                      newExpense: {
+                        label: t('accessibility.shortcuts.newExpense.label'),
+                        description: t('accessibility.shortcuts.newExpense.description'),
+                      },
+                      repeatLast: {
+                        label: t('accessibility.shortcuts.repeatLast.label'),
+                        description: t('accessibility.shortcuts.repeatLast.description'),
+                      },
+                    },
+                  },
+                  reducedMotion: t('accessibility.reducedMotion'),
+                  highContrast: t('accessibility.highContrast'),
+                }}
+              />
+            );
+          }}
+        />
+      ),
+    },
+    {
       fields: ['platforms'],
       component: (
         <div className="space-y-4">
@@ -410,83 +487,6 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
             )}
           />
         </div>
-      ),
-    },
-    {
-      fields: ['accessibility'],
-      component: (
-        <Controller
-          name="accessibility"
-          control={form.control}
-          defaultValue={DEFAULT_ACCESSIBILITY_SETTINGS}
-          render={({ field }) => {
-            return (
-              <AccessibilityStep
-                value={field.value || DEFAULT_ACCESSIBILITY_SETTINGS}
-                onChange={field.onChange}
-                labels={{
-                  title: t('accessibility.title'),
-                  description: t('accessibility.description'),
-                  theme: {
-                    title: t('accessibility.theme.title'),
-                    light: t('accessibility.theme.light'),
-                    dark: t('accessibility.theme.dark'),
-                    system: t('accessibility.theme.system'),
-                  },
-                  font: {
-                    fontSize: t('accessibility.font.size'),
-                    fontFamily: t('accessibility.font.family'),
-                    lineSpacing: t('accessibility.font.spacing'),
-                    sizeOptions: {
-                      small: t('accessibility.font.sizeOptions.small'),
-                      medium: t('accessibility.font.sizeOptions.medium'),
-                      large: t('accessibility.font.sizeOptions.large'),
-                      xLarge: t('accessibility.font.sizeOptions.xLarge'),
-                    },
-                    familyOptions: {
-                      default: t('accessibility.font.familyOptions.default'),
-                      dyslexic: t('accessibility.font.familyOptions.dyslexic'),
-                      mono: t('accessibility.font.familyOptions.mono'),
-                    },
-                    spacingOptions: {
-                      normal: t('accessibility.font.spacingOptions.normal'),
-                      relaxed: t('accessibility.font.spacingOptions.relaxed'),
-                      loose: t('accessibility.font.spacingOptions.loose'),
-                    },
-                  },
-                  shortcuts: {
-                    title: t('accessibility.shortcuts.title'),
-                    conflictWarning: t('accessibility.shortcuts.conflict'),
-                    change: t('accessibility.shortcuts.change'),
-                    set: t('accessibility.shortcuts.set'),
-                    clickToSet: t('accessibility.shortcuts.clickToSet'),
-                    pressAnyKey: t('accessibility.shortcuts.pressAnyKey'),
-                    actions: {
-                      newDailyEntry: {
-                        label: t('accessibility.shortcuts.newDailyEntry.label'),
-                        description: t('accessibility.shortcuts.newDailyEntry.description'),
-                      },
-                      newRevenue: {
-                        label: t('accessibility.shortcuts.newRevenue.label'),
-                        description: t('accessibility.shortcuts.newRevenue.description'),
-                      },
-                      newExpense: {
-                        label: t('accessibility.shortcuts.newExpense.label'),
-                        description: t('accessibility.shortcuts.newExpense.description'),
-                      },
-                      repeatLast: {
-                        label: t('accessibility.shortcuts.repeatLast.label'),
-                        description: t('accessibility.shortcuts.repeatLast.description'),
-                      },
-                    },
-                  },
-                  reducedMotion: t('accessibility.reducedMotion'),
-                  highContrast: t('accessibility.highContrast'),
-                }}
-              />
-            );
-          }}
-        />
       ),
     },
   ];
