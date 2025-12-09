@@ -29,20 +29,7 @@ import {
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
 import { formatCurrency } from "@/lib/utils"
-
-const chartConfig = {
-  visitors: {
-    label: "Valores",
-  },
-  revenue: {
-    label: "Receitas",
-    color: "var(--chart-1)",
-  },
-  expenses: {
-    label: "Despesas",
-    color: "var(--chart-2)",
-  },
-} satisfies ChartConfig
+import { useScopedI18n } from "@/locales/client"
 
 interface ChartData {
   date: string
@@ -55,7 +42,35 @@ interface ChartAreaInteractiveProps {
 }
 
 export function ChartAreaInteractive({ data }: ChartAreaInteractiveProps) {
+  const t = useScopedI18n('shared.dashboard.chart')
   const [timeRange, setTimeRange] = React.useState("30d")
+
+  const chartConfig = {
+    visitors: {
+      label: t('values'),
+    },
+    revenue: {
+      label: t('revenue'),
+      color: "var(--chart-1)",
+    },
+    expenses: {
+      label: t('expenses'),
+      color: "var(--chart-2)",
+    },
+  } satisfies ChartConfig
+
+  const getTimeRangeLabel = (range: string) => {
+    switch (range) {
+      case "90d":
+        return t('threeMonths')
+      case "30d":
+        return t('thirtyDays')
+      case "7d":
+        return t('sevenDays')
+      default:
+        return t('thirtyDays')
+    }
+  }
 
   const filteredData = React.useMemo(() => {
     if (!data || data.length === 0) return []
@@ -81,13 +96,13 @@ export function ChartAreaInteractive({ data }: ChartAreaInteractiveProps) {
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Receitas vs Despesas</CardTitle>
+        <CardTitle>{t('title')}</CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">
-            Comparativo dos últimos {timeRange === "90d" ? "3 meses" : timeRange === "30d" ? "30 dias" : "7 dias"}
+            {t('descriptionLong')} {getTimeRangeLabel(timeRange)}
           </span>
           <span className="@[540px]/card:hidden">
-            Últimos {timeRange === "90d" ? "3 meses" : timeRange === "30d" ? "30 dias" : "7 dias"}
+            {t('descriptionShort')} {getTimeRangeLabel(timeRange)}
           </span>
         </CardDescription>
         <CardAction>
@@ -98,26 +113,26 @@ export function ChartAreaInteractive({ data }: ChartAreaInteractiveProps) {
             variant="outline"
             className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
           >
-            <ToggleGroupItem value="90d">Últimos 3 meses</ToggleGroupItem>
-            <ToggleGroupItem value="30d">Últimos 30 dias</ToggleGroupItem>
-            <ToggleGroupItem value="7d">Últimos 7 dias</ToggleGroupItem>
+            <ToggleGroupItem value="90d">{t('lastThreeMonths')}</ToggleGroupItem>
+            <ToggleGroupItem value="30d">{t('lastThirtyDays')}</ToggleGroupItem>
+            <ToggleGroupItem value="7d">{t('lastSevenDays')}</ToggleGroupItem>
           </ToggleGroup>
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger
               className="flex w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
-              aria-label="Selecione um período"
+              aria-label={t('selectPeriod')}
             >
-              <SelectValue placeholder="Últimos 30 dias" />
+              <SelectValue placeholder={t('lastThirtyDays')} />
             </SelectTrigger>
             <SelectContent className="rounded-xl">
               <SelectItem value="90d" className="rounded-lg">
-                Últimos 3 meses
+                {t('lastThreeMonths')}
               </SelectItem>
               <SelectItem value="30d" className="rounded-lg">
-                Últimos 30 dias
+                {t('lastThirtyDays')}
               </SelectItem>
               <SelectItem value="7d" className="rounded-lg">
-                Últimos 7 dias
+                {t('lastSevenDays')}
               </SelectItem>
             </SelectContent>
           </Select>

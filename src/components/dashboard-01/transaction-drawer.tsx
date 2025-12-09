@@ -64,6 +64,7 @@ interface TransactionDrawerProps {
   transaction: Transaction | null
   open: boolean
   onOpenChange: (open: boolean) => void
+  initialMode?: 'view' | 'edit'
   formData?: {
     drivers: Array<{ id: string; name: string }>
     vehicles: Array<{ id: string; name: string }>
@@ -77,10 +78,11 @@ export function TransactionDrawer({
   transaction,
   open,
   onOpenChange,
+  initialMode = 'view',
   formData,
 }: TransactionDrawerProps) {
   const t = useScopedI18n("dashboard.table")
-  const [isEditing, setIsEditing] = React.useState(false)
+  const [isEditing, setIsEditing] = React.useState(initialMode === 'edit')
   const [isPending, startTransition] = React.useTransition()
 
   const form = useForm({
@@ -142,9 +144,9 @@ export function TransactionDrawer({
       form.setFieldValue("platformIds", transaction.platformIds || [])
       form.setFieldValue("kmDriven", transaction.kmDriven || undefined)
       form.setFieldValue("hoursWorked", transaction.hoursWorked || undefined)
-      setIsEditing(false)
+      setIsEditing(initialMode === 'edit')
     }
-  }, [transaction, open, form])
+  }, [transaction, open, form, initialMode])
 
   if (!transaction) return null
 
@@ -170,7 +172,7 @@ export function TransactionDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="max-h-[90vh]">
+      <DrawerContent className="max-h-[90vh] sm:max-w-2xl">
         <DrawerHeader className="border-b">
           <div className="flex items-start justify-between">
             <div className="space-y-1">

@@ -157,6 +157,7 @@ export function DataTable({ data, initialColumnVisibility = {}, onColumnVisibili
   const [activeTab, setActiveTab] = React.useState("all")
   const [selectedTransaction, setSelectedTransaction] = React.useState<Transaction | null>(null)
   const [drawerOpen, setDrawerOpen] = React.useState(false)
+  const [drawerMode, setDrawerMode] = React.useState<'view' | 'edit'>('view')
 
   const handleColumnVisibilityChange = React.useCallback((updater: VisibilityState | ((old: VisibilityState) => VisibilityState)) => {
     setColumnVisibility(prev => {
@@ -332,6 +333,7 @@ export function DataTable({ data, initialColumnVisibility = {}, onColumnVisibili
               <DropdownMenuItem
                 onClick={() => {
                   setSelectedTransaction(transaction)
+                  setDrawerMode('view')
                   setDrawerOpen(true)
                 }}
               >
@@ -340,6 +342,7 @@ export function DataTable({ data, initialColumnVisibility = {}, onColumnVisibili
               <DropdownMenuItem
                 onClick={() => {
                   setSelectedTransaction(transaction)
+                  setDrawerMode('edit')
                   setDrawerOpen(true)
                 }}
               >
@@ -582,6 +585,7 @@ export function DataTable({ data, initialColumnVisibility = {}, onColumnVisibili
         transaction={selectedTransaction}
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
+        initialMode={drawerMode}
       />
     </div>
   )
