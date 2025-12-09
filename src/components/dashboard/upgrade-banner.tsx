@@ -8,12 +8,7 @@ const Banner = dynamic(
   { ssr: false }
 );
 
-export const gradientColors = [
-  "oklch(0.6716 0.1368 48.5130)",
-  "oklch(0.5360 0.0398 196.0280)",
-  "oklch(0.6716 0.1368 48.5130)",
-  "oklch(0.5360 0.0398 196.0280)",
-];
+
 
 export function UpgradeBanner() {
   const t = useScopedI18n("dashboard.upgradeBanner");
@@ -25,7 +20,7 @@ export function UpgradeBanner() {
       buttonText={t("buttonText")}
       buttonLink="/dashboard/billing"
       variant="minimal"
-      gradientColors={gradientColors}
+      dismissable={false}
     />
   );
 }
