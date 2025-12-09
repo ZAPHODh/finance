@@ -87,6 +87,8 @@ interface Transaction {
 
 interface DataTableProps {
   data: Transaction[]
+  initialColumnVisibility?: VisibilityState
+  onColumnVisibilityChange?: (visibility: VisibilityState) => Promise<void>
 }
 
 function DraggableRow({ row }: { row: Row<Transaction> }) {
@@ -142,11 +144,11 @@ function DraggableRow({ row }: { row: Row<Transaction> }) {
   )
 }
 
-export function DataTable({ data }: DataTableProps) {
+export function DataTable({ data, initialColumnVisibility = {}, onColumnVisibilityChange }: DataTableProps) {
   const t = useScopedI18n("dashboard.table")
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(initialColumnVisibility)
   const [rowSelection, setRowSelection] = React.useState({})
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
@@ -155,6 +157,18 @@ export function DataTable({ data }: DataTableProps) {
   const [activeTab, setActiveTab] = React.useState("all")
   const [selectedTransaction, setSelectedTransaction] = React.useState<Transaction | null>(null)
   const [drawerOpen, setDrawerOpen] = React.useState(false)
+
+  const handleColumnVisibilityChange = React.useCallback((updater: VisibilityState | ((old: VisibilityState) => VisibilityState)) => {
+    setColumnVisibility(prev => {
+      const newVisibility = typeof updater === 'function' ? updater(prev) : updater
+      if (onColumnVisibilityChange) {
+        React.startTransition(async () => {
+          await onColumnVisibilityChange(newVisibility)
+        })
+      }
+      return newVisibility
+    })
+  }, [onColumnVisibilityChange])
 
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -358,7 +372,7 @@ export function DataTable({ data }: DataTableProps) {
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
+    onColumnVisibilityChange: handleColumnVisibilityChange,
     onRowSelectionChange: setRowSelection,
     onPaginationChange: setPagination,
     state: {
@@ -401,6 +415,10 @@ export function DataTable({ data }: DataTableProps) {
               .getAllColumns()
               .filter((column) => column.getCanHide())
               .map((column) => {
+                const columnLabelKey = `columnLabels.${column.id}` as "columnLabels.date" | "columnLabels.type" | "columnLabels.description" | "columnLabels.category" | "columnLabels.amount" | "columnLabels.driver" | "columnLabels.vehicle" | "columnLabels.platform"
+                const columnLabel = column.id === "date" || column.id === "type" || column.id === "description" || column.id === "category" || column.id === "amount" || column.id === "driver" || column.id === "vehicle" || column.id === "platform"
+                  ? t(columnLabelKey)
+                  : column.id
                 return (
                   <DropdownMenuCheckboxItem
                     key={column.id}
@@ -410,7 +428,7 @@ export function DataTable({ data }: DataTableProps) {
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {columnLabel}
                   </DropdownMenuCheckboxItem>
                 )
               })}

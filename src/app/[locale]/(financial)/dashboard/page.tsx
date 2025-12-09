@@ -1,5 +1,5 @@
 import { getCurrentSession } from "@/lib/server/auth/session"
-import { getDashboardData, getDashboardFilterOptions } from "./actions"
+import { getDashboardData, getDashboardFilterOptions, getColumnVisibility, setColumnVisibility } from "./actions"
 import { SectionCards } from "@/components/dashboard-01/section-cards"
 import { DataTable } from "@/components/dashboard-01/data-table"
 import { EfficiencyCards } from "@/components/dashboard/efficiency-cards"
@@ -37,7 +37,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const vehicleId = params.vehicle || null
   const platformId = params.platform || null
 
-  const [dashboardData, subscriptionPlan, filterOptions] = await Promise.all([
+  const [dashboardData, subscriptionPlan, filterOptions, columnVisibility] = await Promise.all([
     getDashboardData({
       period,
       driverId,
@@ -46,6 +46,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     }),
     getUserSubscriptionPlan(user.id),
     getDashboardFilterOptions(),
+    getColumnVisibility(),
   ])
 
   const planLimits = getPlanLimits(subscriptionPlan.name)
@@ -96,7 +97,11 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
               <PartnerAdBanner category="MAINTENANCE" location="dashboard_before_table" />
             </div>
           )}
-          <DataTable data={dashboardData.transactions} />
+          <DataTable
+            data={dashboardData.transactions}
+            initialColumnVisibility={columnVisibility}
+            onColumnVisibilityChange={setColumnVisibility}
+          />
         </div>
       </div>
     </div>

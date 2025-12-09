@@ -7,6 +7,8 @@ import { cacheWithTag, CacheTags } from "@/lib/server/cache"
 import type { DashboardFilters } from "@/hooks/use-dashboard-query-filters"
 import { calculateGrowth, calculateEfficiencyMetrics, calculatePaymentFees } from "@/lib/analytics/metrics"
 import { getDateRange, getPreviousDateRange } from "@/lib/utils"
+import { cookies } from "next/headers"
+import type { VisibilityState } from "@tanstack/react-table"
 
 
 
@@ -386,4 +388,30 @@ export async function getDashboardFilterOptions() {
   if (!user) redirect("/login")
 
   return getCachedDashboardFilterOptions(user.id)
+}
+
+export async function setColumnVisibility(visibility: VisibilityState) {
+  const cookieStore = await cookies()
+  cookieStore.set("dashboard-column-visibility", JSON.stringify(visibility), {
+    httpOnly: false,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60 * 24 * 365,
+    path: "/",
+  })
+}
+
+export async function getColumnVisibility(): Promise<VisibilityState> {
+  const cookieStore = await cookies()
+  const cookie = cookieStore.get("dashboard-column-visibility")
+
+  if (!cookie?.value) {
+    return {}
+  }
+
+  try {
+    return JSON.parse(cookie.value) as VisibilityState
+  } catch {
+    return {}
+  }
 }

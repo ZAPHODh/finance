@@ -36,11 +36,11 @@ const chartConfig = {
   },
   revenue: {
     label: "Receitas",
-    color: "hsl(var(--chart-1))",
+    color: "var(--chart-1)",
   },
   expenses: {
     label: "Despesas",
-    color: "hsl(var(--chart-2))",
+    color: "var(--chart-2)",
   },
 } satisfies ChartConfig
 
