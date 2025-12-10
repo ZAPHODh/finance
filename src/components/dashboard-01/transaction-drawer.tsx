@@ -172,9 +172,10 @@ export function TransactionDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="max-h-[90vh] sm:max-w-2xl">
-        <DrawerHeader className="border-b">
-          <div className="flex items-start justify-between">
+      <DrawerContent className="max-h-[90vh]">
+        <div className="mx-auto w-full max-w-2xl">
+          <DrawerHeader className="border-b">
+            <div className="flex items-start justify-between">
             <div className="space-y-1">
               <DrawerTitle className="flex items-center gap-2">
                 {isEditing ? "Edit Transaction" : t("transactionDetails")}
@@ -527,6 +528,7 @@ export function TransactionDrawer({
             </div>
           </DrawerFooter>
         </form>
+        </div>
       </DrawerContent>
     </Drawer>
   )
