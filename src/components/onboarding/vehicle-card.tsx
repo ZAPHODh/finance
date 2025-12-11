@@ -35,7 +35,10 @@ export function VehicleCard({ vehicle, onUpdate, onRemove, labels }: VehicleCard
 
   function handleSave() {
     if (editedVehicle.name.trim()) {
-      onUpdate(editedVehicle);
+      onUpdate({
+        ...editedVehicle,
+        plate: editedVehicle.plate?.toUpperCase(),
+      });
       setIsEditing(false);
     }
   }
@@ -65,6 +68,7 @@ export function VehicleCard({ vehicle, onUpdate, onRemove, labels }: VehicleCard
                 id={`vehicle-plate-${vehicle.name}`}
                 value={editedVehicle.plate || ''}
                 onChange={(e) => setEditedVehicle({ ...editedVehicle, plate: e.target.value })}
+                onBlur={(e) => setEditedVehicle({ ...editedVehicle, plate: e.target.value.toUpperCase() })}
                 placeholder={labels.plate}
               />
             </Field>

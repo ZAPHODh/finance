@@ -67,7 +67,7 @@ export async function completeOnboarding(data: OnboardingData) {
           tx.vehicle.create({
             data: {
               name: vehicle.name,
-              plate: vehicle.plate || null,
+              plate: vehicle.plate?.toUpperCase() || null,
               model: vehicle.model || null,
               year: vehicle.year || null,
               isPrimary: vehicle.isPrimary || false,

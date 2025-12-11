@@ -67,7 +67,7 @@ export function AddVehicleCard({ onAdd, vehicleCount, maxVehicles = 1, locale, l
     if (newVehicle.name.trim()) {
       onAdd({
         name: newVehicle.name.trim(),
-        plate: newVehicle.plate?.trim() || undefined,
+        plate: newVehicle.plate?.trim().toUpperCase() || undefined,
         model: newVehicle.model?.trim() || undefined,
         year: newVehicle.year,
         isPrimary: newVehicle.isPrimary,
@@ -128,6 +128,9 @@ export function AddVehicleCard({ onAdd, vehicleCount, maxVehicles = 1, locale, l
               onChange={(e) => {
                 setNewVehicle({ ...newVehicle, plate: e.target.value });
                 setErrors({ ...errors, plate: undefined });
+              }}
+              onBlur={(e) => {
+                setNewVehicle({ ...newVehicle, plate: e.target.value.toUpperCase() });
               }}
               placeholder={labels.plate}
               className={errors.plate ? 'border-destructive' : ''}
