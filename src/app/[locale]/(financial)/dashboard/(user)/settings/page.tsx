@@ -3,7 +3,7 @@ import { getScopedI18n } from "@/locales/server"
 import { redirect } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
 import { getUserSettings } from "./actions"
-import { SettingsForm } from "@/components/layout/settings-form"
+import { SettingsForm } from "./_components/settings-form"
 
 export default async function SettingsPage() {
   const { user } = await getCurrentSession()

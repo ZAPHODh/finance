@@ -7,12 +7,12 @@ import { Calendar, CreditCard } from "lucide-react"
 import { CurrentPlan } from "@/types"
 import { cn } from "@/lib/utils"
 import { useScopedI18n } from "@/locales/client"
-import { CancelSubscriptionDialog, type CancelSubscriptionDialogProps } from "@/components/billing/cancel-subscription-dialog"
+import { CancelSubscriptionDialog, type CancelSubscriptionDialogProps } from "./cancel-subscription-dialog"
 import dynamic from "next/dynamic"
-import type { UpdatePlanDialogProps } from "@/components/billing/update-plan-dialog"
+import type { UpdatePlanDialogProps } from "./update-plan-dialog"
 
 const UpdatePlanDialog = dynamic(
-  () => import("@/components/billing/update-plan-dialog").then(m => ({ default: m.UpdatePlanDialog })),
+  () => import("./update-plan-dialog").then(m => ({ default: m.UpdatePlanDialog })),
   { ssr: false }
 )
 

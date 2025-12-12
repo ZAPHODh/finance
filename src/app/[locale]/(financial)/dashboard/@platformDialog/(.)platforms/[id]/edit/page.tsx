@@ -1,4 +1,4 @@
-import { PlatformDialog } from "@/components/configuration/platforms/platform-dialog";
+import { PlatformDialog } from "../../../../platforms/_components/platform-dialog";
 import { prisma } from "@/lib/server/db";
 import { notFound } from "next/navigation";
 

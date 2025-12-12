@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
-import { DailyEntryDialog } from "@/components/financial/daily-entry-dialog";
+import { DailyEntryDialog } from "@/app/[locale]/(financial)/dashboard/_components/daily-entry-dialog";
 import type { DailyEntryConfig } from "@/app/[locale]/(financial)/dashboard/daily-entry/queries";
 import { QuickActionsWrapper } from "./quick-actions-wrapper";
 import { Button } from "@/components/ui/button";

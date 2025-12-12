@@ -2,7 +2,7 @@ import { getI18n } from "@/locales/server";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 import { getExpensesData } from "./actions";
-import { ExpensesTable } from "@/components/financial/expenses/expenses-table";
+import { ExpensesTable } from "./_components/expenses-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";

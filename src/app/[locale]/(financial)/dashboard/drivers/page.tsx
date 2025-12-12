@@ -1,5 +1,5 @@
 import { getI18n } from "@/locales/server";
-import { DriversTable } from "@/components/configuration/drivers/drivers-table";
+import { DriversTable } from "./_components/drivers-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";

@@ -1,7 +1,7 @@
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect, notFound } from "next/navigation";
 import { AVAILABLE_REPORTS } from "@/lib/reports/types";
-import { ReportViewer } from "@/components/reports/report-viewer";
+import { ReportViewer } from "../_components/report-viewer";
 import { getFilterOptions } from "./filters-actions";
 import { prisma } from "@/lib/server/db";
 

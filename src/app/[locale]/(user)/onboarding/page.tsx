@@ -1,6 +1,6 @@
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
-import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
+import { OnboardingWizard } from "./_components/onboarding-wizard";
 import { getCurrentLocale } from "@/locales/server";
 
 export default async function OnboardingPage() {

@@ -1,7 +1,7 @@
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { redirect } from "next/navigation"
 import { getScopedI18n } from "@/locales/server"
-import { BudgetForm } from "@/components/budgets/budget-form"
+import { BudgetForm } from "../_components/budget-form"
 import { prisma } from "@/lib/server/db"
 
 export default async function NewBudgetPage() {

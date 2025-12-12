@@ -1,5 +1,5 @@
 import { getI18n } from "@/locales/server";
-import { PaymentMethodsTable } from "@/components/configuration/payment-methods/payment-methods-table";
+import { PaymentMethodsTable } from "./_components/payment-methods-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";

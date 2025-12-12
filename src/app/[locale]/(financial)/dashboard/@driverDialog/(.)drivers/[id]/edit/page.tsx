@@ -1,4 +1,4 @@
-import { DriverDialog } from "@/components/configuration/drivers/driver-dialog";
+import { DriverDialog } from "../../../../drivers/_components/driver-dialog";
 import { prisma } from "@/lib/server/db";
 import { notFound } from "next/navigation";
 

@@ -1,7 +1,7 @@
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { getScopedI18n } from "@/locales/server"
 import { redirect } from "next/navigation"
-import { ProfileForm } from "@/components/layout/account-forms"
+import { ProfileForm } from "./_components/account-forms"
 
 export default async function AccountPage() {
   const { user } = await getCurrentSession()

@@ -1,9 +1,9 @@
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { getDashboardData, getDashboardFilterOptions, getColumnVisibility, setColumnVisibility } from "./actions"
-import { SectionCards } from "@/components/dashboard-01/section-cards"
-import { DataTable } from "@/components/dashboard-01/data-table"
-import { EfficiencyCards } from "@/components/dashboard/efficiency-cards"
-import { DashboardFilters } from "@/components/dashboard/dashboard-filters"
+import { SectionCards } from "./_components/section-cards"
+import { DataTable } from "./_components/data-table"
+import { EfficiencyCards } from "./_components/efficiency-cards"
+import { DashboardFilters } from "./_components/dashboard-filters"
 import { getUserSubscriptionPlan, getPlanLimits } from "@/lib/server/payment"
 import { shouldShowAds } from "@/lib/ads/should-show-ads"
 import { ContextualPartnerAd } from "@/components/ads/contextual-partner-ad"
@@ -13,7 +13,7 @@ import dynamic from "next/dynamic"
 import { PartnerAdBanner } from "@/components/ads/partner-ad-banner"
 
 const ChartAreaInteractive = dynamic(
-  () => import('@/components/dashboard-01/chart-area-interactive').then(m => ({ default: m.ChartAreaInteractive })),
+  () => import('./_components/chart-area-interactive').then(m => ({ default: m.ChartAreaInteractive })),
   {
     loading: () => <div className="h-[350px] w-full animate-pulse bg-muted rounded-lg" />
   }

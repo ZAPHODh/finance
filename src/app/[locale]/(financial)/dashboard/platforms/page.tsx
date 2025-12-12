@@ -1,5 +1,5 @@
 import { getI18n } from "@/locales/server";
-import { PlatformsTable } from "@/components/configuration/platforms/platforms-table";
+import { PlatformsTable } from "./_components/platforms-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";

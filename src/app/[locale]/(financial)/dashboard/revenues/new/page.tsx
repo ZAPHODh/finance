@@ -1,4 +1,4 @@
-import { RevenueDialog } from "@/components/financial/revenues/revenue-dialog";
+import { RevenueDialog } from "../_components/revenue-dialog";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 import { getRevenueFormData } from "../actions";

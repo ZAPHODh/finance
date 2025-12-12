@@ -1,6 +1,6 @@
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
-import { ReportsList } from "@/components/reports/reports-list";
+import { ReportsList } from "./_components/reports-list";
 import { getScopedI18n } from "@/locales/server";
 
 export default async function ReportsPage() {

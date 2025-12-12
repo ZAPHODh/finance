@@ -1,4 +1,4 @@
-import { PaymentMethodDialog } from "@/components/configuration/payment-methods/payment-method-dialog";
+import { PaymentMethodDialog } from "../../../../payment-methods/_components/payment-method-dialog";
 import { prisma } from "@/lib/server/db";
 import { notFound } from "next/navigation";
 

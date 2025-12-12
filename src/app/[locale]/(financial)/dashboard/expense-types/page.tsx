@@ -1,5 +1,5 @@
 import { getI18n } from "@/locales/server";
-import { ExpenseTypesTable } from "@/components/configuration/expense-types/expense-types-table";
+import { ExpenseTypesTable } from "./_components/expense-types-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";

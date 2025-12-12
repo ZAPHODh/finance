@@ -1,4 +1,4 @@
-import { ExpenseDialog } from "@/components/financial/expenses/expense-dialog";
+import { ExpenseDialog } from "../_components/expense-dialog";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 import { getExpenseFormData } from "../actions";

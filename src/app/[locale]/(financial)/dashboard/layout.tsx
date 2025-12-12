@@ -5,7 +5,7 @@ import { SearchButton } from "@/components/dashboard-01/search-button"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { getScopedI18n } from "@/locales/server";
 import { getUserSubscriptionPlan } from "@/lib/server/payment";
-import { UpgradeBanner } from "@/components/dashboard/upgrade-banner";
+import { UpgradeBanner } from "./_components/upgrade-banner";
 import { DashboardLayoutClient } from "@/components/dashboard-01/dashboard-layout-client";
 import { getDailyEntryConfig } from "./daily-entry/queries";
 import { shouldShowAds } from "@/lib/ads/should-show-ads";

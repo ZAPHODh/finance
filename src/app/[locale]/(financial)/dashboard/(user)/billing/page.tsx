@@ -1,7 +1,7 @@
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { redirect } from "next/navigation"
 import { getUserSubscriptionPlan } from "@/lib/server/payment"
-import { BillingPageContent } from "@/components/billing/billing-page-content"
+import { BillingPageContent } from "./_components/billing-page-content"
 import { getPlanConfigs } from "@/config/subscription"
 import { type CurrentPlan } from "@/types"
 import { getCurrentLocale } from "@/locales/server"

@@ -1,5 +1,5 @@
 import { getI18n } from "@/locales/server";
-import { VehiclesTable } from "@/components/configuration/vehicles/vehicles-table";
+import { VehiclesTable } from "./_components/vehicles-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";

@@ -1,4 +1,4 @@
-import { ExpenseTypeDialog } from "@/components/configuration/expense-types/expense-type-dialog";
+import { ExpenseTypeDialog } from "../../../../expense-types/_components/expense-type-dialog";
 import { prisma } from "@/lib/server/db";
 import { notFound } from "next/navigation";
 

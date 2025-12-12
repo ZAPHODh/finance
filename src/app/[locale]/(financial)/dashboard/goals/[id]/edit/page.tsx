@@ -1,7 +1,7 @@
 import { getCurrentSession } from "@/lib/server/auth/session"
 import { redirect } from "next/navigation"
 import { getScopedI18n } from "@/locales/server"
-import { GoalForm } from "@/components/goals/goal-form"
+import { GoalForm } from "../../_components/goal-form"
 import { prisma } from "@/lib/server/db"
 import { getGoalById } from "../../actions"
 

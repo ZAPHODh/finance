@@ -1,4 +1,4 @@
-import { GoalDialog } from "@/components/goals/goal-dialog";
+import { GoalDialog } from "../../../goals/_components/goal-dialog";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/server/db";
