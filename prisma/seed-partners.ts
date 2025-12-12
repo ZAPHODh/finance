@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from "@/lib/server/db";
 
-const prisma = new PrismaClient();
+
 
 const partners = [
   {
