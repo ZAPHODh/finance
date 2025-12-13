@@ -110,4 +110,22 @@ export default {
             helpReduce: 'Isso pode ajudar a reduzir suas despesas de {category}',
         },
     },
+    expenseBreakdown: {
+        title: 'Distribuição de Despesas',
+        total: 'Total',
+        budgetLimit: 'Limite de Orçamento',
+        profitGoal: 'Meta de Lucro',
+    },
+    monthlyTrends: {
+        title: 'Tendências Mensais',
+        description: 'Visão geral dos últimos 12 meses',
+        revenue: 'Receita',
+        expenses: 'Despesas',
+        totalRevenue: 'Receita Total',
+        totalExpenses: 'Despesas Totais',
+        netProfit: 'Lucro Líquido',
+        goal: 'Meta',
+        revenueGoal: 'Meta de Receita',
+        profitGoal: 'Meta de Lucro',
+    },
 } as const

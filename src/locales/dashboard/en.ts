@@ -110,4 +110,22 @@ export default {
             helpReduce: 'This can help reduce your {category} expenses',
         },
     },
+    expenseBreakdown: {
+        title: 'Expense Distribution',
+        total: 'Total',
+        budgetLimit: 'Budget Limit',
+        profitGoal: 'Profit Goal',
+    },
+    monthlyTrends: {
+        title: 'Monthly Trends',
+        description: 'Last 12 months overview',
+        revenue: 'Revenue',
+        expenses: 'Expenses',
+        totalRevenue: 'Total Revenue',
+        totalExpenses: 'Total Expenses',
+        netProfit: 'Net Profit',
+        goal: 'Goal',
+        revenueGoal: 'Revenue Goal',
+        profitGoal: 'Profit Goal',
+    },
 } as const

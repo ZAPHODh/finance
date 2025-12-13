@@ -1,5 +1,5 @@
 import { getCurrentSession } from "@/lib/server/auth/session"
-import { getDashboardData, getDashboardFilterOptions, getColumnVisibility, setColumnVisibility } from "./actions"
+import { getDashboardData, getDashboardFilterOptions, getColumnVisibility, setColumnVisibility, getMonthlyTrendsData, getActiveGoalsForDashboard } from "./actions"
 import { SectionCards } from "./_components/section-cards"
 import { DataTable } from "./_components/data-table"
 import { EfficiencyCards } from "./_components/efficiency-cards"
@@ -21,6 +21,20 @@ const ChartAreaInteractive = dynamic(
   }
 )
 
+const ChartExpenseRadial = dynamic(
+  () => import('./_components/chart-expense-radial').then(m => ({ default: m.ChartExpenseRadial })),
+  {
+    loading: () => <div className="h-[400px] w-full animate-pulse bg-muted rounded-lg" />
+  }
+)
+
+const ChartMonthlyTrends = dynamic(
+  () => import('./_components/chart-monthly-trends').then(m => ({ default: m.ChartMonthlyTrends })),
+  {
+    loading: () => <div className="h-[400px] w-full animate-pulse bg-muted rounded-lg" />
+  }
+)
+
 interface DashboardPageProps {
   searchParams: Promise<SearchParams>
 }
@@ -36,7 +50,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     platform: platformId
   } = await dashboardSearchParamsCache.parse(searchParams)
 
-  const [dashboardData, subscriptionPlan, filterOptions, columnVisibility] = await Promise.all([
+  const [dashboardData, subscriptionPlan, filterOptions, columnVisibility, monthlyTrends, goals] = await Promise.all([
     getDashboardData({
       period,
       driverId,
@@ -46,6 +60,8 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     getUserSubscriptionPlan(user.id),
     getDashboardFilterOptions(),
     getColumnVisibility(),
+    getMonthlyTrendsData({ driverId, vehicleId, platformId }),
+    getActiveGoalsForDashboard(period, { driverId, vehicleId, platformId }),
   ])
 
   const planLimits = getPlanLimits(subscriptionPlan.name)
@@ -66,6 +82,19 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
             kpis={dashboardData.kpis}
             trends={hasPeriodComparisons ? dashboardData.growth : undefined}
           />
+          <div className="grid grid-cols-1 gap-4 px-4 md:gap-6 lg:grid-cols-2 lg:px-6">
+            <ChartExpenseRadial
+              expensesByType={dashboardData.breakdowns.expensesByType}
+              totalExpenses={dashboardData.kpis.totalExpenses}
+              budgetTotal={goals.budgetTotal}
+              profitGoal={goals.profitGoal}
+            />
+            <ChartMonthlyTrends
+              monthlyData={monthlyTrends}
+              revenueGoal={goals.revenueGoal}
+              profitGoal={goals.profitGoal}
+            />
+          </div>
           {showAds && (
             <div className="px-4 lg:px-6">
               <ContextualPartnerAd

@@ -9,6 +9,8 @@ import { calculateGrowth, calculateEfficiencyMetrics, calculatePaymentFees } fro
 import { getDateRange, getPreviousDateRange } from "@/lib/utils"
 import { cookies } from "next/headers"
 import type { VisibilityState } from "@tanstack/react-table"
+import { startOfMonth, endOfMonth, subMonths, format } from "date-fns"
+import { GoalType } from "@prisma/client"
 
 
 
@@ -414,4 +416,170 @@ export async function getColumnVisibility(): Promise<VisibilityState> {
   } catch {
     return {}
   }
+}
+
+async function getMonthlyTrendsDataUncached(
+  userId: string,
+  filters: Omit<DashboardFilters, 'period'>
+) {
+  const endDate = new Date()
+  const startDate = subMonths(startOfMonth(endDate), 11)
+
+  const revenues = await prisma.revenue.findMany({
+    where: {
+      date: {
+        gte: startDate,
+        lte: endOfMonth(endDate),
+      },
+      ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
+      ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
+      ...(filters.platformId && filters.platformId !== "all" && {
+        platforms: { some: { platformId: filters.platformId } }
+      }),
+      OR: [
+        { driver: { userId: userId } },
+        { platforms: { some: { platform: { userId: userId } } } }
+      ],
+    },
+    select: {
+      amount: true,
+      date: true,
+    },
+  })
+
+  const expenses = await prisma.expense.findMany({
+    where: {
+      date: {
+        gte: startDate,
+        lte: endOfMonth(endDate),
+      },
+      ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
+      ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
+      expenseTypes: {
+        some: {
+          expenseType: {
+            userId: userId,
+          }
+        }
+      },
+    },
+    select: {
+      amount: true,
+      date: true,
+    },
+  })
+
+  const monthlyDataMap = new Map<string, { revenue: number; expenses: number }>()
+
+  for (let i = 0; i < 12; i++) {
+    const monthDate = subMonths(endDate, 11 - i)
+    const monthKey = format(startOfMonth(monthDate), 'yyyy-MM')
+    monthlyDataMap.set(monthKey, { revenue: 0, expenses: 0 })
+  }
+
+  revenues.forEach(r => {
+    const monthKey = format(startOfMonth(r.date), 'yyyy-MM')
+    const existing = monthlyDataMap.get(monthKey)
+    if (existing) {
+      existing.revenue += r.amount
+    }
+  })
+
+  expenses.forEach(e => {
+    const monthKey = format(startOfMonth(e.date), 'yyyy-MM')
+    const existing = monthlyDataMap.get(monthKey)
+    if (existing) {
+      existing.expenses += e.amount
+    }
+  })
+
+  return Array.from(monthlyDataMap.entries())
+    .map(([month, data]) => ({
+      month,
+      revenue: data.revenue,
+      expenses: data.expenses,
+    }))
+    .sort((a, b) => a.month.localeCompare(b.month))
+}
+
+const getCachedMonthlyTrendsData = cacheWithTag(
+  getMonthlyTrendsDataUncached,
+  ['monthly-trends-data'],
+  [CacheTags.REVENUES, CacheTags.EXPENSES],
+  300
+)
+
+export async function getMonthlyTrendsData(
+  filters: Omit<DashboardFilters, 'period'>
+) {
+  const { user } = await getCurrentSession()
+  if (!user) redirect("/login")
+
+  return getCachedMonthlyTrendsData(user.id, filters)
+}
+
+async function getActiveGoalsForDashboardUncached(
+  userId: string,
+  period: string,
+  filters: Omit<DashboardFilters, 'period'>
+) {
+  const currentDate = new Date()
+  const currentMonthPeriod = format(currentDate, 'yyyy-MM')
+
+  const goals = await prisma.goal.findMany({
+    where: {
+      userId,
+      isActive: true,
+      ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
+      ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
+    },
+  })
+
+  let revenueGoal: number | undefined
+  let profitGoal: number | undefined
+
+  if (period === 'thisMonth') {
+    const monthlyRevenueGoal = goals.find(
+      g => g.type === GoalType.MONTHLY_REVENUE && g.period === currentMonthPeriod
+    )
+    const monthlyProfitGoal = goals.find(
+      g => g.type === GoalType.MONTHLY_PROFIT && g.period === currentMonthPeriod
+    )
+
+    revenueGoal = monthlyRevenueGoal?.targetValue
+    profitGoal = monthlyProfitGoal?.targetValue
+  }
+
+  const budgets = await prisma.budget.findMany({
+    where: {
+      userId,
+      period: currentMonthPeriod,
+      isActive: true,
+    },
+  })
+
+  const budgetTotal = budgets.reduce((sum, b) => sum + b.monthlyLimit, 0)
+
+  return {
+    revenueGoal,
+    profitGoal,
+    budgetTotal: budgetTotal > 0 ? budgetTotal : undefined,
+  }
+}
+
+const getCachedActiveGoalsForDashboard = cacheWithTag(
+  getActiveGoalsForDashboardUncached,
+  ['active-goals-dashboard'],
+  [CacheTags.DASHBOARD],
+  300
+)
+
+export async function getActiveGoalsForDashboard(
+  period: string,
+  filters: Omit<DashboardFilters, 'period'>
+) {
+  const { user } = await getCurrentSession()
+  if (!user) redirect("/login")
+
+  return getCachedActiveGoalsForDashboard(user.id, period, filters)
 }
