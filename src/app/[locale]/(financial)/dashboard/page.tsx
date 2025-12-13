@@ -11,6 +11,8 @@ import { AdSenseBanner } from "@/components/ads/adsense-banner"
 import { redirect } from "next/navigation"
 import dynamic from "next/dynamic"
 import { PartnerAdBanner } from "@/components/ads/partner-ad-banner"
+import { dashboardSearchParamsCache } from "./searchParams"
+import type { SearchParams } from "nuqs/server"
 
 const ChartAreaInteractive = dynamic(
   () => import('./_components/chart-area-interactive').then(m => ({ default: m.ChartAreaInteractive })),
@@ -20,22 +22,19 @@ const ChartAreaInteractive = dynamic(
 )
 
 interface DashboardPageProps {
-  searchParams: Promise<{
-    period?: string
-    driver?: string
-    vehicle?: string
-    platform?: string
-  }>
+  searchParams: Promise<SearchParams>
 }
 
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
   const { user } = await getCurrentSession()
   if (!user) redirect('/login')
-  const params = await searchParams
-  const period = params.period || "thisMonth"
-  const driverId = params.driver || null
-  const vehicleId = params.vehicle || null
-  const platformId = params.platform || null
+
+  const {
+    period,
+    driver: driverId,
+    vehicle: vehicleId,
+    platform: platformId
+  } = await dashboardSearchParamsCache.parse(searchParams)
 
   const [dashboardData, subscriptionPlan, filterOptions, columnVisibility] = await Promise.all([
     getDashboardData({
