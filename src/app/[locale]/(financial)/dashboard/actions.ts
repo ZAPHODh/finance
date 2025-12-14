@@ -215,7 +215,7 @@ async function getDashboardDataUncached(userId: string, filters: DashboardFilter
       if (!acc[typeName]) {
         acc[typeName] = 0
       }
-      acc[typeName] += e.amount
+      acc[typeName] += e.amount / e.expenseTypes.length
     })
     return acc
   }, {} as Record<string, number>)
