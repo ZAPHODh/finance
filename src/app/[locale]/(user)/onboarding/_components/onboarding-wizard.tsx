@@ -58,6 +58,8 @@ import { DEFAULT_ACCESSIBILITY_SETTINGS } from '@/config/accessibility';
 
 interface OnboardingWizardProps {
   locale: string;
+  maxDrivers: number;
+  maxVehicles: number;
 }
 
 const DEFAULT_VALUES: OnboardingFormData = {
@@ -69,7 +71,7 @@ const DEFAULT_VALUES: OnboardingFormData = {
   accessibility: DEFAULT_ACCESSIBILITY_SETTINGS,
 };
 
-export function OnboardingWizard({ locale }: OnboardingWizardProps) {
+export function OnboardingWizard({ locale, maxDrivers, maxVehicles }: OnboardingWizardProps) {
   const router = useRouter();
   const t = useScopedI18n('ui.onboarding');
   const tCommon = useScopedI18n('common');
@@ -326,7 +328,7 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                   }}
                   hasDrivers={field.value.length > 0}
                   driverCount={field.value.length}
-                  maxDrivers={1}
+                  maxDrivers={maxDrivers}
                   locale={locale}
                   labels={{
                     addDriver: t('drivers.addFirst'),
@@ -397,7 +399,7 @@ export function OnboardingWizard({ locale }: OnboardingWizardProps) {
                 <AddVehicleCard
                   onAdd={(vehicle) => field.onChange([...field.value, vehicle])}
                   vehicleCount={field.value.length}
-                  maxVehicles={1}
+                  maxVehicles={maxVehicles}
                   locale={locale}
                   labels={{
                     addVehicle: t('vehicles.addAnother'),

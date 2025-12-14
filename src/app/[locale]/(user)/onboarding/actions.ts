@@ -7,6 +7,8 @@ import { cookies } from "next/headers";
 import { getPostOnboardingCookies, clearPostOnboardingCookies } from "@/lib/checkout-cookies";
 import { createCheckoutSession } from "@/app/[locale]/(public)/pricing/actions";
 import type { AccessibilitySettings } from "@/types/accessibility";
+import { getUserSubscriptionPlan } from "@/lib/server/payment";
+import { PLAN_LIMITS } from "@/config/subscription";
 
 export interface OnboardingData {
   platforms: Array<{ name: string; }>;
@@ -46,6 +48,16 @@ export async function completeOnboarding(data: OnboardingData) {
 
     let createdDriverIds: string[] = [];
     if (data.drivers && data.drivers.length > 0) {
+      const subscriptionPlan = await getUserSubscriptionPlan(user.id);
+      const currentDriverCount = await tx.driver.count({ where: { userId: user.id } });
+
+      const planLimits = PLAN_LIMITS[subscriptionPlan.isPro ? "PRO" : subscriptionPlan.name === "Simple" ? "SIMPLE" : "FREE"];
+      const maxDrivers = planLimits.maxDrivers;
+
+      if (maxDrivers !== -1 && currentDriverCount + data.drivers.length > maxDrivers) {
+        throw new Error(`Você atingiu o limite de ${maxDrivers} motorista(s) do seu plano. Faça upgrade para adicionar mais.`);
+      }
+
       const drivers = await Promise.all(
         data.drivers.map((driver) =>
           tx.driver.create({
@@ -62,6 +74,16 @@ export async function completeOnboarding(data: OnboardingData) {
 
     let createdVehicleIds: string[] = [];
     if (data.vehicles && data.vehicles.length > 0) {
+      const subscriptionPlan = await getUserSubscriptionPlan(user.id);
+      const currentVehicleCount = await tx.vehicle.count({ where: { userId: user.id } });
+
+      const planLimits = PLAN_LIMITS[subscriptionPlan.isPro ? "PRO" : subscriptionPlan.name === "Simple" ? "SIMPLE" : "FREE"];
+      const maxVehicles = planLimits.maxVehicles;
+
+      if (maxVehicles !== -1 && currentVehicleCount + data.vehicles.length > maxVehicles) {
+        throw new Error(`Você atingiu o limite de ${maxVehicles} veículo(s) do seu plano. Faça upgrade para adicionar mais.`);
+      }
+
       const vehicles = await Promise.all(
         data.vehicles.map((vehicle) =>
           tx.vehicle.create({

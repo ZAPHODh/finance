@@ -36,7 +36,7 @@ export function AddDriverCard({ onAdd, hasDrivers, driverCount, maxDrivers = 1, 
     isSelf: false,
   });
 
-  const isAtLimit = driverCount >= maxDrivers;
+  const isAtLimit = maxDrivers !== -1 && driverCount >= maxDrivers;
 
   function handleAdd() {
     if (newDriver.name.trim()) {

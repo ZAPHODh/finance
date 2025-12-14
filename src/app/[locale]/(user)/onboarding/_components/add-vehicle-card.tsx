@@ -43,7 +43,7 @@ export function AddVehicleCard({ onAdd, vehicleCount, maxVehicles = 1, locale, l
   });
   const [errors, setErrors] = useState<{ plate?: string; year?: string }>({});
 
-  const isAtLimit = vehicleCount >= maxVehicles;
+  const isAtLimit = maxVehicles !== -1 && vehicleCount >= maxVehicles;
   const currentYear = new Date().getFullYear();
 
   function handleAdd() {
