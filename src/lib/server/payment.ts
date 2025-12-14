@@ -20,6 +20,7 @@ export async function getUserSubscriptionPlan(
             stripeCurrentPeriodEnd: true,
             stripeCustomerId: true,
             stripePriceId: true,
+            isGifted: true,
         },
     });
 
@@ -44,7 +45,7 @@ export async function getUserSubscriptionPlan(
         }
     }
 
-    const isPro = plan.name === "PRO";
+    const isPro = plan.name === "PRO" || user.isGifted;
 
     return {
         ...plan,
