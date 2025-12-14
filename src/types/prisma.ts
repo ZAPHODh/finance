@@ -91,7 +91,7 @@ export type PlatformWithRelations = Prisma.PlatformGetPayload<{
 
 export type UserPreferencesWithDefaults = Prisma.UserPreferencesGetPayload<{
   include: {
-    defaultDriver: true
-    defaultVehicle: true
+    driver: true
+    vehicle: true
   }
 }>

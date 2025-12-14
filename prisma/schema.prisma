@@ -98,18 +98,18 @@ model EmailVerificationCode {
 }
 
 model Expense {
-  id                 String               @id @default(cuid())
-  amount             Float
-  date               DateTime
-  receiptUrl         String?
-  driverId           String?
-  vehicleId          String?
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  attachments        Attachment[]
-  driver             Driver?              @relation(fields: [driverId], references: [id])
-  vehicle            Vehicle?             @relation(fields: [vehicleId], references: [id])
-  expenseExpenseTypes ExpenseExpenseType[]
+  id           String               @id @default(cuid())
+  amount       Float
+  date         DateTime
+  receiptUrl   String?
+  driverId     String?
+  vehicleId    String?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  attachments  Attachment[]
+  driver       Driver?              @relation(fields: [driverId], references: [id])
+  vehicle      Vehicle?             @relation(fields: [vehicleId], references: [id])
+  expenseTypes ExpenseExpenseType[]
 
   @@index([date, driverId, vehicleId])
   @@index([date])
@@ -157,16 +157,16 @@ model ExpenseTemplate {
 }
 
 model ExpenseType {
-  id                 String               @id @default(cuid())
-  name               String
-  userId             String
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  budgets            Budget[]
-  expenseExpenseTypes ExpenseExpenseType[]
-  expenseTemplates    ExpenseTemplate[]
-  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  reminders          Reminder[]
+  id               String               @id @default(cuid())
+  name             String
+  userId           String
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  budgets          Budget[]
+  expenses         ExpenseExpenseType[]
+  expenseTemplates ExpenseTemplate[]
+  user             User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reminders        Reminder[]
 
   @@index([userId])
 }
@@ -267,13 +267,13 @@ model PaymentMethod {
 }
 
 model Platform {
-  id              String            @id @default(cuid())
-  name            String
-  userId          String
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  revenuePlatforms RevenuePlatform[]
+  id        String            @id @default(cuid())
+  name      String
+  userId    String
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  revenues  RevenuePlatform[]
 
   @@index([userId])
 }
@@ -330,7 +330,7 @@ model Revenue {
   driver          Driver?           @relation(fields: [driverId], references: [id])
   paymentMethod   PaymentMethod?    @relation(fields: [paymentMethodId], references: [id])
   vehicle         Vehicle?          @relation(fields: [vehicleId], references: [id])
-  revenuePlatforms RevenuePlatform[]
+  platforms       RevenuePlatform[]
 
   @@index([date, driverId])
   @@index([date, driverId, vehicleId])
