@@ -9,7 +9,7 @@ import { calculateGrowth, calculateEfficiencyMetrics, calculatePaymentFees } fro
 import { getDateRange, getPreviousDateRange } from "@/lib/utils"
 import { cookies } from "next/headers"
 import type { VisibilityState } from "@tanstack/react-table"
-import { startOfMonth, endOfMonth, subMonths, format } from "date-fns"
+import { startOfMonth, format } from "date-fns"
 import { GoalType } from "@prisma/client"
 
 
@@ -422,14 +422,15 @@ async function getMonthlyTrendsDataUncached(
   userId: string,
   filters: Omit<DashboardFilters, 'period'>
 ) {
-  const endDate = new Date()
-  const startDate = subMonths(startOfMonth(endDate), 11)
+  const currentYear = new Date().getFullYear()
+  const startDate = new Date(currentYear, 0, 1)
+  const endDate = new Date(currentYear, 11, 31, 23, 59, 59, 999)
 
   const revenues = await prisma.revenue.findMany({
     where: {
       date: {
         gte: startDate,
-        lte: endOfMonth(endDate),
+        lte: endDate,
       },
       ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
       ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
@@ -451,7 +452,7 @@ async function getMonthlyTrendsDataUncached(
     where: {
       date: {
         gte: startDate,
-        lte: endOfMonth(endDate),
+        lte: endDate,
       },
       ...(filters.driverId && filters.driverId !== "all" && { driverId: filters.driverId }),
       ...(filters.vehicleId && filters.vehicleId !== "all" && { vehicleId: filters.vehicleId }),
@@ -472,8 +473,7 @@ async function getMonthlyTrendsDataUncached(
   const monthlyDataMap = new Map<string, { revenue: number; expenses: number }>()
 
   for (let i = 0; i < 12; i++) {
-    const monthDate = subMonths(endDate, 11 - i)
-    const monthKey = format(startOfMonth(monthDate), 'yyyy-MM')
+    const monthKey = format(new Date(currentYear, i, 1), 'yyyy-MM')
     monthlyDataMap.set(monthKey, { revenue: 0, expenses: 0 })
   }
 
