@@ -21,9 +21,6 @@ export function formatNumber(value: number, decimals: number = 2): string {
   }).format(value);
 }
 
-export function formatPercentage(value: number, decimals: number = 1): string {
-  return `${value >= 0 ? "+" : ""}${value.toFixed(decimals)}%`;
-}
 
 export function getDateRange(period: string = "thisMonth") {
   const now = new Date()
@@ -93,21 +90,6 @@ export function getPreviousDateRange(period: string = "thisMonth") {
   }
 }
 
-export class FreePlanLimitError extends Error {
-  constructor(message = "Upgrade your plan!") {
-    super(message);
-  }
-}
-
-export function isRedirectError(error: unknown): boolean {
-  return (
-    error !== null &&
-    typeof error === "object" &&
-    "digest" in error &&
-    typeof error.digest === "string" &&
-    error.digest.includes("NEXT_REDIRECT")
-  );
-}
 
 const alphanumeric =
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

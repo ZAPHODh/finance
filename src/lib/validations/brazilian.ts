@@ -71,11 +71,3 @@ export function createCNHSchema(errorMessage?: string) {
     .string()
     .regex(cnhRegex, errorMessage || 'Invalid CNH (must be 11 digits)');
 }
-
-export const brazilianPlateSchema = createBrazilianPlateSchema();
-export const cpfSchema = createCPFSchema();
-export const cnpjSchema = createCNPJSchema();
-export const cpfOrCnpjSchema = createCPFOrCNPJSchema();
-export const cepSchema = createCEPSchema();
-export const brazilianPhoneSchema = createBrazilianPhoneSchema();
-export const cnhSchema = createCNHSchema();

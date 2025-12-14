@@ -65,19 +65,6 @@ export function getPricingForLocale(locale: string): PlanPricing {
     return PRICING_CONFIG[currency];
 }
 
-export function getPricingForPlan(
-    locale: string,
-    planType: "simple" | "pro"
-): PricingInfo {
-    const pricing = getPricingForLocale(locale);
-    return pricing[planType];
-}
-
-export function formatPrice(amount: number, currency: Currency): string {
-    const symbol = PRICING_CONFIG[currency].simple.currencySymbol;
-    return `${symbol}${amount}`;
-}
-
 export function getStripePriceId(
     planType: "simple" | "pro",
     currency: Currency,

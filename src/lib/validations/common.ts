@@ -83,12 +83,3 @@ export function createPeriodSchema(errorMessage?: string) {
       errorMessage || 'Period must be in YYYY-MM format'
     );
 }
-
-export const nameSchema = createNameSchema();
-export const vehicleYearSchema = createVehicleYearSchema();
-export const monetaryAmountSchema = createMonetaryAmountSchema();
-export const futureDateSchema = createFutureDateSchema();
-export const kmDrivenSchema = createKmDrivenSchema();
-export const hoursWorkedSchema = createHoursWorkedSchema();
-export const percentageSchema = createPercentageSchema();
-export const periodSchema = createPeriodSchema();

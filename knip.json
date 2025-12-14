@@ -2,15 +2,9 @@
   "$schema": "https://unpkg.com/knip@latest/schema.json",
   "ignoreExportsUsedInFile": true,
   "ignoreDependencies": [
-    "@types/node",
-    "@types/react",
-    "@types/react-dom",
-    "typescript",
-    "prisma",
     "eslint-config-next",
     "prettier",
-    "shadcn",
-    "tailwindcss"
+    "shadcn"
   ],
   "ignore": [
     "**/*.test.ts",
@@ -21,9 +15,17 @@
     "**/dashboard/vehicles/new/page.tsx",
     "**/dashboard/expense-types/new/page.tsx",
     "**/dashboard/payment-methods/new/page.tsx",
-    "**/dashboard/platforms/new/page.tsx"
+    "**/dashboard/platforms/new/page.tsx",
+    "src/app/sw.ts",
+    "src/components/ui/breadcrumb.tsx",
+    "src/components/ui/textarea.tsx",
+    "src/components/shared/nav-components/**",
+    "src/components/shared/dynamic-breadcrumb.tsx",
+    "src/app/**/billing/_components/**",
+    "src/app/**/_components/metrics-section.tsx",
+    "src/components/ads/**",
+    "prisma/seed-partners.ts"
   ],
-  "ignoreBinaries": ["pnpm"],
   "next": {
     "entry": [
       "src/app/**/page.tsx!",
@@ -34,7 +36,8 @@
       "src/app/**/not-found.tsx!",
       "src/middleware.ts!",
       "next.config.ts!",
-      "postcss.config.mjs!"
+      "postcss.config.mjs!",
+      "src/app/sw.ts!"
     ]
   }
 }

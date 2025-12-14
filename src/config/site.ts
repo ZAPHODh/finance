@@ -10,17 +10,6 @@ export interface SiteEmails {
   privacy: string;
 }
 
-export interface SiteContact {
-  support: {
-    email: string;
-    responseTime: string;
-  };
-  privacy: {
-    email: string;
-    title: string;
-  };
-}
-
 export const siteCompany: SiteCompany = {
   displayName: "Dive into Drive",
 };
@@ -29,17 +18,6 @@ export const siteEmails: SiteEmails = {
   noReply: "no-reply@diveintodrive.com",
   support: "support@diveintodrive.com",
   privacy: "privacy@diveintodrive.com",
-};
-
-export const siteContact: SiteContact = {
-  support: {
-    email: siteEmails.support,
-    responseTime: "24 business hours",
-  },
-  privacy: {
-    email: siteEmails.privacy,
-    title: "Privacy and Data (DPO)",
-  },
 };
 
 export const META_THEME_COLORS = {
