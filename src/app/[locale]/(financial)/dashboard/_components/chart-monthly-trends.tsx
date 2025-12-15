@@ -25,11 +25,14 @@ export function ChartMonthlyTrends({
   const locale = useCurrentLocale()
   const dateLocale = locale === "pt" ? pt : enUS
 
-  const chartData = monthlyData.map(item => ({
-    month: format(new Date(item.month + "-01"), "MMM", { locale: dateLocale }),
-    revenue: item.revenue,
-    expenses: item.expenses,
-  }))
+  const chartData = monthlyData.map(item => {
+    const [year, month] = item.month.split("-")
+    return {
+      month: format(new Date(parseInt(year), parseInt(month) - 1, 1), "MMM", { locale: dateLocale }),
+      revenue: item.revenue,
+      expenses: item.expenses,
+    }
+  })
 
   const chartConfig = {
     revenue: {
