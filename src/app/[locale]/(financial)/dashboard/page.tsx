@@ -82,18 +82,22 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
             kpis={dashboardData.kpis}
             trends={hasPeriodComparisons ? dashboardData.growth : undefined}
           />
-          <div className="grid grid-cols-1 gap-4 px-4 md:gap-6 lg:grid-cols-2 lg:px-6">
-            <ChartExpenseRadial
-              expensesByType={dashboardData.breakdowns.expensesByType}
-              totalExpenses={dashboardData.kpis.totalExpenses}
-              budgetTotal={goals.budgetTotal}
+          <div className="grid grid-cols-1 gap-4 px-4 md:gap-6 lg:grid-cols-12 lg:px-6">
+            <div className="lg:col-span-4">
+              <ChartExpenseRadial
+                expensesByType={dashboardData.breakdowns.expensesByType}
+                totalExpenses={dashboardData.kpis.totalExpenses}
+                budgetTotal={goals.budgetTotal}
+                profitGoal={goals.profitGoal}
+              />
+            </div>
+            <div className="lg:col-span-8">
+              <ChartMonthlyTrends
+                monthlyData={monthlyTrends}
+                revenueGoal={goals.revenueGoal}
               profitGoal={goals.profitGoal}
             />
-            <ChartMonthlyTrends
-              monthlyData={monthlyTrends}
-              revenueGoal={goals.revenueGoal}
-              profitGoal={goals.profitGoal}
-            />
+            </div>
           </div>
           {showAds && (
             <div className="px-4 lg:px-6">
