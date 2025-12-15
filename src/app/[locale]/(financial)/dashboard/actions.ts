@@ -499,7 +499,6 @@ async function getMonthlyTrendsDataUncached(
       revenue: data.revenue,
       expenses: data.expenses,
     }))
-    .sort((a, b) => a.month.localeCompare(b.month))
 }
 
 const getCachedMonthlyTrendsData = cacheWithTag(
