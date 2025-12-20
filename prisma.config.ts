@@ -7,6 +7,6 @@ export default defineConfig({
     path: 'prisma/migrations'
   },
   datasource: {
-    url: process.env.DB_URL_NON_POOLING || env('DB_URL_NON_POOLING'),
+    url: process.env.DB_PRISMA_URL || env('DB_PRISMA_URL'),
   },
 });
