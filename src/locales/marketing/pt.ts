@@ -49,6 +49,63 @@ export default {
         loading: 'Carregando...',
         footerText: 'Descontos pré-negociados estão disponíveis para startups em estágio inicial e organizações sem fins lucrativos.',
         footerButtonText: 'Solicitar agora',
+        whichPlan: {
+            badge: 'Encontre Seu Plano',
+            title: 'Qual Plano é Ideal para Você?',
+            subtitle: 'Escolha baseado nas suas necessidades e escale conforme cresce',
+            card1: {
+                title: 'Comece com Grátis',
+                description: 'Perfeito se você é um motorista solo começando com rastreamento financeiro',
+                ideal: 'Ideal para: Motoristas individuais testando a plataforma',
+            },
+            card2: {
+                title: 'Faça Upgrade para Simple',
+                description: 'Melhor para pequenas operações gerenciando alguns motoristas e veículos',
+                ideal: 'Ideal para: Proprietários de pequenas frotas com 2-3 veículos',
+            },
+            card3: {
+                title: 'Escale com PRO',
+                description: 'Solução completa para gestores de frota sérios e negócios em crescimento',
+                ideal: 'Ideal para: Gestores de frota, empresas de transporte',
+            },
+        },
+        faq: {
+            title: 'Perguntas sobre Preços',
+            subtitle: 'Dúvidas comuns sobre planos e faturamento',
+            q1: {
+                question: 'Posso trocar de plano a qualquer momento?',
+                answer: 'Sim! Você pode fazer upgrade ou downgrade do seu plano a qualquer momento. No upgrade, você será cobrado a diferença proporcional imediatamente. No downgrade, a mudança entra em vigor no final do seu período de faturamento atual.',
+            },
+            q2: {
+                question: 'Quais métodos de pagamento vocês aceitam?',
+                answer: 'Aceitamos todos os principais cartões de crédito (Visa, Mastercard, American Express) e cartões de débito através do nosso processador de pagamentos seguro Stripe. Todos os pagamentos são criptografados e compatíveis com PCI.',
+            },
+            q3: {
+                question: 'Vocês oferecem reembolso?',
+                answer: 'Oferecemos garantia de devolução do dinheiro de 14 dias em todos os planos pagos. Se você não estiver satisfeito nos primeiros 14 dias, entre em contato com o suporte para um reembolso total. Sem perguntas.',
+            },
+            q4: {
+                question: 'O que acontece quando atingo os limites do plano?',
+                answer: 'Você receberá notificações ao se aproximar dos limites do seu plano (motoristas, veículos, exportações). Você pode fazer upgrade para um plano superior ou gerenciar dentro dos seus limites atuais arquivando itens inativos.',
+            },
+            q5: {
+                question: 'Há desconto para faturamento anual?',
+                answer: 'Sim! Planos anuais economizam 20% comparado ao faturamento mensal. Você paga antecipado pelo ano e pode cancelar a qualquer momento com reembolso proporcional pelos meses não utilizados.',
+            },
+            q6: {
+                question: 'Vocês oferecem planos empresariais personalizados?',
+                answer: 'Sim! Para frotas com mais de 20 veículos ou necessidades de integração personalizadas, entre em contato com nossa equipe de vendas para preços empresariais e opções de suporte dedicado.',
+            },
+        },
+        comparison: {
+            badge: 'Compare Planos',
+            title: 'Comparação Detalhada de Recursos',
+            subtitle: 'Veja exatamente o que está incluído em cada plano',
+            category1: 'Recursos Principais',
+            category2: 'Análises e Relatórios',
+            category3: 'Integrações',
+            category4: 'Suporte e Segurança',
+        },
         free: {
             name: 'Grátis',
             feature1: 'Até 2 motoristas',
@@ -553,5 +610,175 @@ export default {
         description: "Uma ferramenta de gestão financeira para motoristas rastrearem receitas e despesas.",
         supportResponseTime: "24 horas úteis",
         privacyOfficerTitle: "Privacidade e Dados (DPO)",
+    },
+    howItWorks: {
+        badge: 'Processo Simples',
+        title: 'Como Funciona',
+        subtitle: 'Comece em minutos e assuma o controle das suas finanças',
+        step1: {
+            title: 'Cadastre-se e Conecte',
+            description: 'Crie sua conta gratuita e conecte suas plataformas de transporte para importar automaticamente seus dados de ganhos.',
+        },
+        step2: {
+            title: 'Registre Despesas',
+            description: 'Registre todas as despesas do veículo como combustível, manutenção e pedágios. Anexe recibos e categorize tudo facilmente.',
+        },
+        step3: {
+            title: 'Monitore o Desempenho',
+            description: 'Visualize painéis em tempo real mostrando suas margens de lucro, detalhamento de despesas e tendências de receita em todas as plataformas.',
+        },
+        step4: {
+            title: 'Gere Relatórios',
+            description: 'Exporte relatórios financeiros detalhados para declaração de impostos, análise ou compartilhamento com seu contador em apenas um clique.',
+        },
+    },
+    whyChoose: {
+        badge: 'Por Que Escolher',
+        title: 'Construído Especificamente para Motoristas',
+        subtitle: 'Diferente de ferramentas genéricas de contabilidade, nós entendemos os desafios únicos de motoristas de aplicativo e entregadores',
+        benefit1: {
+            title: 'Suporte Multi-Plataforma',
+            description: 'Rastreie ganhos do Uber, 99, Cabify, iFood e outras plataformas tudo em um só lugar. Sem mais planilhas ou cálculos manuais.',
+        },
+        benefit2: {
+            title: 'Relatórios Prontos para Impostos',
+            description: 'Gere relatórios compatíveis com a Receita Federal com rastreamento automático de quilometragem, categorização de despesas e cálculos de lucro para declaração sem stress.',
+        },
+        benefit3: {
+            title: 'Insights em Tempo Real',
+            description: 'Veja seu lucro real por viagem, por dia e por plataforma. Identifique quais horários e áreas são mais lucrativos instantaneamente.',
+        },
+        benefit4: {
+            title: 'Gestão de Frota',
+            description: 'Gerencie múltiplos motoristas e veículos sem esforço. Acompanhe desempenho individual, atribua veículos e monitore a lucratividade da frota.',
+        },
+        benefit5: {
+            title: 'Orçamento Inteligente',
+            description: 'Defina metas de receita e orçamentos de despesas. Receba alertas ao se aproximar dos limites e insights sobre como melhorar suas margens.',
+        },
+        benefit6: {
+            title: 'Seguro e Privado',
+            description: 'Criptografia nível bancário, backups automáticos e conformidade com LGPD. Seus dados financeiros são seguros e pertencem apenas a você.',
+        },
+    },
+    useCases: {
+        badge: 'Histórias de Sucesso',
+        title: 'Quem se Beneficia do Dive Into Drive?',
+        subtitle: 'Cenários reais de motoristas que transformaram sua gestão financeira',
+        challengeLabel: 'Desafio',
+        solutionLabel: 'Solução',
+        resultLabel: 'Resultado',
+        resultsLabel: 'Resultados Alcançados',
+        cta: {
+            title: 'Pronto para Transformar sua Gestão Financeira?',
+            subtitle: 'Junte-se a milhares de motoristas que assumiram o controle de suas finanças',
+        },
+        solo: {
+            title: 'Motorista de Aplicativo Solo',
+            description: 'João é motorista de Uber em São Paulo',
+            challenge: 'João tinha dificuldade para rastrear despesas entre Uber e 99. A época de impostos era um pesadelo com recibos perdidos e cálculos manuais.',
+            solution: 'Com Dive Into Drive, João agora rastreia todas as despesas em tempo real, anexa recibos digitais e exporta relatórios prontos para impostos em segundos.',
+            result: 'Economizou mais de 10 horas mensais em contabilidade e identificou R$ 400/mês em deduções que passavam despercebidas.',
+            badge: 'Plano Grátis',
+        },
+        smallFleet: {
+            title: 'Proprietário de Pequena Frota',
+            description: 'Maria gerencia 3 motoristas e veículos',
+            challenge: 'Maria não conseguia rastrear quais motoristas eram lucrativos. Gastava horas consolidando relatórios de diferentes motoristas manualmente.',
+            solution: 'Agora cada motorista registra seus próprios dados. Maria obtém painéis consolidados mostrando desempenho por motorista e veículo instantaneamente.',
+            result: 'Aumentou a lucratividade da frota em 23% identificando veículos com baixo desempenho e otimizando atribuições de motoristas.',
+            badge: 'Plano Simple',
+        },
+        largeFleet: {
+            title: 'Gestor de Frota',
+            description: 'TransLog gerencia mais de 15 veículos e motoristas',
+            challenge: 'Gerenciar despesas, receitas e conformidade para uma grande frota era avassalador. Sem visibilidade de desempenho em tempo real.',
+            solution: 'Dive Into Drive PRO fornece acesso de equipe, integração de API com software de contabilidade e análises avançadas para toda a frota.',
+            result: 'Reduziu sobrecarga administrativa em 60% e melhorou margens de lucro em 18% através de decisões baseadas em dados.',
+            badge: 'Plano PRO',
+        },
+    },
+    comparison: {
+        badge: 'Veja a Diferença',
+        title: 'Controle Manual vs Dive Into Drive',
+        subtitle: 'Pare de perder tempo com planilhas e abrace a automação',
+        recommendedBadge: 'Recomendado',
+        manual: {
+            title: 'Controle Manual',
+            item1: 'Horas gastas em planilhas semanalmente',
+            item2: 'Recibos perdidos e dados faltando',
+            item3: 'Cálculos manuais propensos a erros',
+            item4: 'Sem insights em tempo real',
+            item5: 'Preparação estressante de impostos',
+            item6: 'Difícil rastrear múltiplas plataformas',
+            item7: 'Sem categorização de despesas',
+            item8: 'Difícil identificar tendências de lucratividade',
+        },
+        automated: {
+            title: 'Com Dive Into Drive',
+            item1: 'Rastreamento automatizado em segundos',
+            item2: 'Armazenamento digital de recibos (5GB nuvem)',
+            item3: 'Cálculos automáticos com precisão',
+            item4: 'Painéis em tempo real e alertas',
+            item5: 'Relatórios prontos para impostos em um clique',
+            item6: 'Todas as plataformas em uma visualização',
+            item7: 'Categorização inteligente de despesas',
+            item8: 'Insights de lucratividade com IA',
+        },
+    },
+    about: {
+        title: 'Sobre o Dive Into Drive',
+        subtitle: 'Capacitando motoristas com clareza financeira',
+        mission: {
+            badge: 'Nossa Missão',
+            title: 'Controle Financeiro para Cada Motorista',
+            description: 'Acreditamos que todo motorista merece ferramentas simples e poderosas para gerenciar suas finanças. Dive Into Drive foi criado para eliminar o estresse de rastrear despesas, receitas e impostos para motoristas de aplicativo e entregadores.',
+        },
+        story: {
+            badge: 'Nossa História',
+            title: 'Nascido das Necessidades Reais dos Motoristas',
+            description: 'Depois de anos observando motoristas lutando com planilhas e recibos perdidos durante a temporada de impostos, construímos o Dive Into Drive para resolver este problema de uma vez por todas. O que começou como um simples rastreador de despesas evoluiu para uma plataforma abrangente de gestão financeira confiada por motoristas em todo o mundo.',
+        },
+        values: {
+            badge: 'Nossos Valores',
+            title: 'O Que Nos Impulsiona',
+            value1: {
+                title: 'Motorista em Primeiro Lugar',
+                description: 'Cada recurso é projetado pensando nos fluxos de trabalho reais dos motoristas. Ouvimos feedback e melhoramos continuamente com base nas suas necessidades.',
+            },
+            value2: {
+                title: 'Transparência',
+                description: 'Preços claros, sem taxas ocultas e comunicação honesta. Seus dados pertencem a você, sempre.',
+            },
+            value3: {
+                title: 'Inovação',
+                description: 'Aproveitamos a tecnologia mais recente para trazer insights com IA, automação e integrações perfeitas.',
+            },
+            value4: {
+                title: 'Confiabilidade',
+                description: 'Segurança nível bancário, 99,9% de uptime e backups automáticos. Seus dados financeiros estão seguros conosco.',
+            },
+        },
+        vision: {
+            badge: 'Nossa Visão',
+            title: 'O Futuro das Finanças do Motorista',
+            description: 'Imaginamos um mundo onde todo motorista tem completa clareza e controle financeiro. Através de inovação e parceria, estamos construindo o sistema operacional financeiro definitivo para a economia gig.',
+        },
+        forWho: {
+            badge: 'Quem Servimos',
+            title: 'Construído para Motoristas, por Defensores de Motoristas',
+            solo: {
+                title: 'Motoristas Solo',
+                description: 'Motoristas independentes de aplicativos de transporte e entrega que precisam de rastreamento de despesas simples e eficaz e preparação de impostos.',
+            },
+            fleet: {
+                title: 'Proprietários de Frota',
+                description: 'Gestores de frotas pequenas e médias que precisam rastrear múltiplos motoristas e veículos com relatórios consolidados.',
+            },
+            enterprise: {
+                title: 'Frotas Empresariais',
+                description: 'Grandes empresas de transporte que requerem análises avançadas, integrações de API e ferramentas de colaboração em equipe.',
+            },
+        },
     },
 } as const

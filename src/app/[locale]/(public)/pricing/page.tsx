@@ -3,8 +3,8 @@ import FooterSection from "@/components/footer";
 import { PricingTableThree } from "@/components/billingsdk/pricing-table-three";
 import { getCurrentLocale, getScopedI18n } from "@/locales/server";
 import { getPlanConfigs } from "@/config/subscription";
-
-
+import PricingWhichPlan from "@/components/pricing-which-plan";
+import PricingFAQ from "@/components/pricing-faq";
 
 export default async function PricingPage() {
   const t = await getScopedI18n("marketing.pricing");
@@ -26,6 +26,8 @@ export default async function PricingPage() {
           showFooter={true}
         />
       </main>
+      <PricingWhichPlan />
+      <PricingFAQ />
       <FooterSection />
     </>
   );

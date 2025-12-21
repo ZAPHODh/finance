@@ -49,6 +49,63 @@ export default {
         loading: 'Loading...',
         footerText: 'Pre-negotiated discounts are available to early-stage startups and nonprofits.',
         footerButtonText: 'Apply now',
+        whichPlan: {
+            badge: 'Find Your Plan',
+            title: 'Which Plan is Right for You?',
+            subtitle: 'Choose based on your needs and scale as you grow',
+            card1: {
+                title: 'Start with Free',
+                description: 'Perfect if you are a solo driver just getting started with financial tracking',
+                ideal: 'Ideal for: Individual drivers testing the platform',
+            },
+            card2: {
+                title: 'Upgrade to Simple',
+                description: 'Best for small operations managing a few drivers and vehicles',
+                ideal: 'Ideal for: Small fleet owners with 2-3 vehicles',
+            },
+            card3: {
+                title: 'Scale with PRO',
+                description: 'Complete solution for serious fleet managers and growing businesses',
+                ideal: 'Ideal for: Fleet managers, transportation companies',
+            },
+        },
+        faq: {
+            title: 'Pricing Questions',
+            subtitle: 'Common questions about plans and billing',
+            q1: {
+                question: 'Can I switch plans at any time?',
+                answer: 'Yes! You can upgrade or downgrade your plan at any time. When upgrading, you will be charged the prorated difference immediately. When downgrading, the change takes effect at the end of your current billing period.',
+            },
+            q2: {
+                question: 'What payment methods do you accept?',
+                answer: 'We accept all major credit cards (Visa, Mastercard, American Express) and debit cards through our secure payment processor Stripe. All payments are encrypted and PCI-compliant.',
+            },
+            q3: {
+                question: 'Do you offer refunds?',
+                answer: 'We offer a 14-day money-back guarantee on all paid plans. If you are not satisfied within the first 14 days, contact support for a full refund. No questions asked.',
+            },
+            q4: {
+                question: 'What happens when I reach plan limits?',
+                answer: 'You will receive notifications when approaching your plan limits (drivers, vehicles, exports). You can either upgrade to a higher plan or manage within your current limits by archiving inactive items.',
+            },
+            q5: {
+                question: 'Is there a discount for annual billing?',
+                answer: 'Yes! Annual plans save you 20% compared to monthly billing. You pay upfront for the year and can cancel anytime with a prorated refund for unused months.',
+            },
+            q6: {
+                question: 'Do you offer custom enterprise plans?',
+                answer: 'Yes! For fleets with 20+ vehicles or custom integration needs, contact our sales team for enterprise pricing and dedicated support options.',
+            },
+        },
+        comparison: {
+            badge: 'Compare Plans',
+            title: 'Detailed Feature Comparison',
+            subtitle: 'See exactly what is included in each plan',
+            category1: 'Core Features',
+            category2: 'Analytics & Reporting',
+            category3: 'Integrations',
+            category4: 'Support & Security',
+        },
         free: {
             name: 'Free',
             feature1: 'Up to 2 drivers',
@@ -551,5 +608,175 @@ export default {
         description: "A financial management tool for drivers to track income and expenses.",
         supportResponseTime: "24 business hours",
         privacyOfficerTitle: "Privacy and Data (DPO)",
+    },
+    howItWorks: {
+        badge: 'Simple Process',
+        title: 'How It Works',
+        subtitle: 'Get started in minutes and take control of your finances',
+        step1: {
+            title: 'Sign Up & Connect',
+            description: 'Create your free account and connect your ride-sharing platforms to automatically import your earnings data.',
+        },
+        step2: {
+            title: 'Track Expenses',
+            description: 'Record all vehicle expenses like fuel, maintenance, and tolls. Attach receipts and categorize everything easily.',
+        },
+        step3: {
+            title: 'Monitor Performance',
+            description: 'View real-time dashboards showing your profit margins, expenses breakdown, and revenue trends across all platforms.',
+        },
+        step4: {
+            title: 'Generate Reports',
+            description: 'Export detailed financial reports for tax filing, analysis, or sharing with your accountant in just one click.',
+        },
+    },
+    whyChoose: {
+        badge: 'Why Choose Us',
+        title: 'Built Specifically for Drivers',
+        subtitle: 'Unlike generic accounting tools, we understand the unique challenges of ride-sharing and delivery drivers',
+        benefit1: {
+            title: 'Multi-Platform Support',
+            description: 'Track earnings from Uber, 99, Cabify, iFood, and other platforms all in one place. No more spreadsheets or manual calculations.',
+        },
+        benefit2: {
+            title: 'Tax-Ready Reports',
+            description: 'Generate IRS-compliant reports with automatic mileage tracking, expense categorization, and profit calculations for stress-free tax filing.',
+        },
+        benefit3: {
+            title: 'Real-Time Insights',
+            description: 'See your actual profit per trip, per day, and per platform. Identify which times and areas are most profitable instantly.',
+        },
+        benefit4: {
+            title: 'Fleet Management',
+            description: 'Manage multiple drivers and vehicles effortlessly. Track individual performance, assign vehicles, and monitor fleet profitability.',
+        },
+        benefit5: {
+            title: 'Smart Budgeting',
+            description: 'Set income goals and expense budgets. Get alerts when approaching limits and insights on how to improve your margins.',
+        },
+        benefit6: {
+            title: 'Secure & Private',
+            description: 'Bank-level encryption, automatic backups, and LGPD compliance. Your financial data is safe and belongs only to you.',
+        },
+    },
+    useCases: {
+        badge: 'Success Stories',
+        title: 'Who Benefits from Dive Into Drive?',
+        subtitle: 'Real scenarios from drivers who transformed their financial management',
+        challengeLabel: 'Challenge',
+        solutionLabel: 'Solution',
+        resultLabel: 'Result',
+        resultsLabel: 'Results Achieved',
+        cta: {
+            title: 'Ready to Transform Your Financial Management?',
+            subtitle: 'Join thousands of drivers who have taken control of their finances',
+        },
+        solo: {
+            title: 'Solo Rideshare Driver',
+            description: 'João is an Uber driver in São Paulo',
+            challenge: 'João struggled to track expenses across Uber and 99. Tax season was a nightmare with lost receipts and manual calculations.',
+            solution: 'With Dive Into Drive, João now tracks all expenses in real-time, attaches digital receipts, and exports tax-ready reports in seconds.',
+            result: 'Saved 10+ hours monthly on bookkeeping and identified $400/month in overlooked deductions.',
+            badge: 'Free Plan',
+        },
+        smallFleet: {
+            title: 'Small Fleet Owner',
+            description: 'Maria manages 3 drivers and vehicles',
+            challenge: 'Maria couldn\'t track which drivers were profitable. She spent hours consolidating reports from different drivers manually.',
+            solution: 'Now each driver logs their own data. Maria gets consolidated dashboards showing performance per driver and vehicle instantly.',
+            result: 'Increased fleet profitability by 23% by identifying underperforming vehicles and optimizing driver assignments.',
+            badge: 'Simple Plan',
+        },
+        largeFleet: {
+            title: 'Fleet Manager',
+            description: 'TransLog manages 15+ vehicles and drivers',
+            challenge: 'Managing expenses, revenues, and compliance for a large fleet was overwhelming. No visibility into real-time performance.',
+            solution: 'Dive Into Drive PRO provides team access, API integration with accounting software, and advanced analytics for the entire fleet.',
+            result: 'Reduced administrative overhead by 60% and improved profit margins by 18% through data-driven decisions.',
+            badge: 'PRO Plan',
+        },
+    },
+    comparison: {
+        badge: 'See the Difference',
+        title: 'Manual Tracking vs Dive Into Drive',
+        subtitle: 'Stop wasting time on spreadsheets and embrace automation',
+        recommendedBadge: 'Recommended',
+        manual: {
+            title: 'Manual Tracking',
+            item1: 'Hours spent on spreadsheets weekly',
+            item2: 'Lost receipts and missing data',
+            item3: 'Error-prone manual calculations',
+            item4: 'No real-time insights',
+            item5: 'Stressful tax preparation',
+            item6: 'Difficult to track multiple platforms',
+            item7: 'No expense categorization',
+            item8: 'Hard to identify profitability trends',
+        },
+        automated: {
+            title: 'With Dive Into Drive',
+            item1: 'Automated tracking in seconds',
+            item2: 'Digital receipt storage (5GB cloud)',
+            item3: 'Automatic calculations with accuracy',
+            item4: 'Real-time dashboards and alerts',
+            item5: 'One-click tax-ready reports',
+            item6: 'All platforms in one view',
+            item7: 'Smart expense categorization',
+            item8: 'AI-powered profitability insights',
+        },
+    },
+    about: {
+        title: 'About Dive Into Drive',
+        subtitle: 'Empowering drivers with financial clarity',
+        mission: {
+            badge: 'Our Mission',
+            title: 'Financial Control for Every Driver',
+            description: 'We believe every driver deserves simple, powerful tools to manage their finances. Dive Into Drive was created to eliminate the stress of tracking expenses, revenues, and taxes for ride-sharing and delivery drivers.',
+        },
+        story: {
+            badge: 'Our Story',
+            title: 'Born from Real Driver Needs',
+            description: 'After years of watching drivers struggle with spreadsheets and lost receipts during tax season, we built Dive Into Drive to solve this problem once and for all. What started as a simple expense tracker evolved into a comprehensive financial management platform trusted by drivers worldwide.',
+        },
+        values: {
+            badge: 'Our Values',
+            title: 'What Drives Us',
+            value1: {
+                title: 'Driver-First',
+                description: 'Every feature is designed with real driver workflows in mind. We listen to feedback and continuously improve based on your needs.',
+            },
+            value2: {
+                title: 'Transparency',
+                description: 'Clear pricing, no hidden fees, and honest communication. Your data belongs to you, always.',
+            },
+            value3: {
+                title: 'Innovation',
+                description: 'We leverage the latest technology to bring you AI-powered insights, automation, and seamless integrations.',
+            },
+            value4: {
+                title: 'Reliability',
+                description: 'Bank-level security, 99.9% uptime, and automatic backups. Your financial data is safe with us.',
+            },
+        },
+        vision: {
+            badge: 'Our Vision',
+            title: 'The Future of Driver Finance',
+            description: 'We envision a world where every driver has complete financial clarity and control. Through innovation and partnership, we are building the ultimate financial operating system for the gig economy.',
+        },
+        forWho: {
+            badge: 'Who We Serve',
+            title: 'Built for Drivers, by Driver Advocates',
+            solo: {
+                title: 'Solo Drivers',
+                description: 'Independent ride-sharing and delivery drivers who need simple, effective expense tracking and tax preparation.',
+            },
+            fleet: {
+                title: 'Fleet Owners',
+                description: 'Small to medium fleet managers who need to track multiple drivers and vehicles with consolidated reporting.',
+            },
+            enterprise: {
+                title: 'Enterprise Fleets',
+                description: 'Large transportation companies requiring advanced analytics, API integrations, and team collaboration tools.',
+            },
+        },
     },
 } as const

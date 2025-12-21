@@ -17,6 +17,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     },
     {
+      url: `${siteUrl}/about`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+      alternates: {
+        languages: {
+          en: `${siteUrl}/en/about`,
+          pt: `${siteUrl}/pt/about`,
+        },
+      },
+    },
+    {
       url: `${siteUrl}/pricing`,
       lastModified: new Date(),
       changeFrequency: "monthly",
@@ -41,10 +53,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     },
     {
+      url: `${siteUrl}/use-cases`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+      alternates: {
+        languages: {
+          en: `${siteUrl}/en/use-cases`,
+          pt: `${siteUrl}/pt/use-cases`,
+        },
+      },
+    },
+    {
       url: `${siteUrl}/faq`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.6,
+      priority: 0.7,
       alternates: {
         languages: {
           en: `${siteUrl}/en/faq`,
@@ -68,7 +92,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${siteUrl}/privacy`,
       lastModified: new Date(),
       changeFrequency: "yearly",
-      priority: 0.3,
+      priority: 0.4,
       alternates: {
         languages: {
           en: `${siteUrl}/en/privacy`,
@@ -80,7 +104,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${siteUrl}/terms`,
       lastModified: new Date(),
       changeFrequency: "yearly",
-      priority: 0.3,
+      priority: 0.4,
       alternates: {
         languages: {
           en: `${siteUrl}/en/terms`,
@@ -92,7 +116,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${siteUrl}/login`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.2,
+      priority: 0.5,
       alternates: {
         languages: {
           en: `${siteUrl}/en/login`,
