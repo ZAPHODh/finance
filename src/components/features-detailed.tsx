@@ -11,11 +11,9 @@ import {
   Car,
   Building2,
   Target,
-  Calendar,
   Bell,
   Download,
   Cloud,
-  Zap,
   Shield,
   Clock,
   Activity,
@@ -59,10 +57,6 @@ export function FeaturesDetailed() {
       key: 'goals',
     },
     {
-      icon: Calendar,
-      key: 'workLogs',
-    },
-    {
       icon: Bell,
       key: 'reminders',
     },
@@ -73,10 +67,6 @@ export function FeaturesDetailed() {
     {
       icon: Cloud,
       key: 'storage',
-    },
-    {
-      icon: Zap,
-      key: 'ai',
     },
     {
       icon: Shield,

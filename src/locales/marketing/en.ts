@@ -131,12 +131,11 @@ export default {
             feature2: 'Unlimited vehicles',
             feature3: 'Advanced analytics dashboard',
             feature4: 'Revenue tracking',
-            feature5: 'Work logs management',
-            feature6: 'Multiple platforms/apps',
-            feature7: 'Custom expense types',
-            feature8: 'Export to PDF/Excel',
-            feature9: 'Priority support',
-            feature10: 'Data backup and recovery',
+            feature5: 'Multiple platforms/apps',
+            feature6: 'Custom expense types',
+            feature7: 'Export to PDF/Excel',
+            feature8: 'Priority support',
+            feature9: 'Data backup and recovery',
         },
     },
     faqs: {
@@ -464,7 +463,7 @@ export default {
                 title: 'Smart Reporting',
                 description: 'Generate detailed reports on driver performance, vehicle efficiency, and financial summaries.',
                 benefit1: 'PDF and Excel exports',
-                benefit2: 'Automated report scheduling',
+                benefit2: 'Multiple export formats',
                 benefit3: 'Custom report builder',
                 benefit4: 'Tax-ready summaries',
             },
@@ -500,14 +499,6 @@ export default {
                 benefit3: 'Progress tracking',
                 benefit4: 'Achievement notifications',
             },
-            workLogs: {
-                title: 'Work Logs',
-                description: 'Record work hours, kilometers driven, and trips completed for accurate tracking.',
-                benefit1: 'Shift tracking',
-                benefit2: 'KM/miles logging',
-                benefit3: 'Trip counters',
-                benefit4: 'Hourly rate calculations',
-            },
             reminders: {
                 title: 'Smart Reminders',
                 description: 'Never miss important deadlines with automated reminders for payments, maintenance, and renewals.',
@@ -531,15 +522,6 @@ export default {
                 benefit2: 'OCR text recognition',
                 benefit3: 'Automatic backup',
                 benefit4: 'Secure encryption',
-            },
-            ai: {
-                title: 'AI-Powered Insights',
-                description: 'Get intelligent recommendations to optimize costs and increase profitability.',
-                benefit1: 'Cost optimization tips',
-                benefit2: 'Anomaly detection',
-                benefit3: 'Predictive analytics',
-                benefit4: 'Smart suggestions',
-                badge: 'PRO Only',
             },
             team: {
                 title: 'Team Access & Permissions',
@@ -595,7 +577,6 @@ export default {
             "driver finances",
             "driver financial report",
             "fuel tracking",
-            "mileage tracking",
             "driver profit",
             "vehicle expenses",
             "driver budget",
@@ -639,16 +620,16 @@ export default {
             description: 'Track earnings from Uber, 99, Cabify, iFood, and other platforms all in one place. No more spreadsheets or manual calculations.',
         },
         benefit2: {
-            title: 'Tax-Ready Reports',
-            description: 'Generate IRS-compliant reports with automatic mileage tracking, expense categorization, and profit calculations for stress-free tax filing.',
+            title: 'Professional Reports',
+            description: 'Generate comprehensive financial reports with detailed expense categorization, revenue tracking, and profit calculations. Export to PDF or Excel for easy sharing with your accountant.',
         },
         benefit3: {
             title: 'Real-Time Insights',
-            description: 'See your actual profit per trip, per day, and per platform. Identify which times and areas are most profitable instantly.',
+            description: 'See your actual profit per day and per platform with detailed analytics. Compare periods, track trends, and identify your most profitable platforms.',
         },
         benefit4: {
             title: 'Fleet Management',
-            description: 'Manage multiple drivers and vehicles effortlessly. Track individual performance, assign vehicles, and monitor fleet profitability.',
+            description: 'Manage multiple drivers and vehicles effortlessly. Track individual performance metrics, monitor vehicle costs, and analyze fleet profitability by driver or vehicle.',
         },
         benefit5: {
             title: 'Smart Budgeting',
@@ -684,7 +665,7 @@ export default {
             description: 'Maria manages 3 drivers and vehicles',
             challenge: 'Maria couldn\'t track which drivers were profitable. She spent hours consolidating reports from different drivers manually.',
             solution: 'Now each driver logs their own data. Maria gets consolidated dashboards showing performance per driver and vehicle instantly.',
-            result: 'Increased fleet profitability by 23% by identifying underperforming vehicles and optimizing driver assignments.',
+            result: 'Increased fleet profitability by 23% by identifying underperforming vehicles and optimizing vehicle usage based on cost analysis.',
             badge: 'Simple Plan',
         },
         largeFleet: {
@@ -721,7 +702,7 @@ export default {
             item5: 'One-click tax-ready reports',
             item6: 'All platforms in one view',
             item7: 'Smart expense categorization',
-            item8: 'AI-powered profitability insights',
+            item8: 'Advanced profitability analytics',
         },
     },
     about: {
@@ -750,7 +731,7 @@ export default {
             },
             value3: {
                 title: 'Innovation',
-                description: 'We leverage the latest technology to bring you AI-powered insights, automation, and seamless integrations.',
+                description: 'We leverage the latest technology to bring you powerful automation, detailed analytics, and seamless integrations.',
             },
             value4: {
                 title: 'Reliability',

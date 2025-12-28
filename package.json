@@ -99,6 +99,7 @@
     "knip": "^5.71.0",
     "prettier": "^3.7.4",
     "prisma": "^7.1.0",
+    "rimraf": "^6.1.2",
     "serwist": "^9.2.3",
     "shadcn": "^3.5.1",
     "tailwindcss": "^4.1.17",

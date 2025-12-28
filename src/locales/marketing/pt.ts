@@ -131,12 +131,11 @@ export default {
             feature2: 'Veículos ilimitados',
             feature3: 'Dashboard de análises avançadas',
             feature4: 'Rastreamento de receitas',
-            feature5: 'Gestão de registros de trabalho',
-            feature6: 'Múltiplas plataformas/apps',
-            feature7: 'Tipos de despesas personalizados',
-            feature8: 'Exportar para PDF/Excel',
-            feature9: 'Suporte prioritário',
-            feature10: 'Backup e recuperação de dados',
+            feature5: 'Múltiplas plataformas/apps',
+            feature6: 'Tipos de despesas personalizados',
+            feature7: 'Exportar para PDF/Excel',
+            feature8: 'Suporte prioritário',
+            feature9: 'Backup e recuperação de dados',
         },
     },
     faqs: {
@@ -465,7 +464,7 @@ export default {
                 title: 'Relatórios Inteligentes',
                 description: 'Gere relatórios detalhados sobre desempenho de motoristas, eficiência de veículos e resumos financeiros.',
                 benefit1: 'Exportações em PDF e Excel',
-                benefit2: 'Agendamento automático de relatórios',
+                benefit2: 'Múltiplos formatos de exportação',
                 benefit3: 'Construtor de relatórios personalizados',
                 benefit4: 'Resumos prontos para impostos',
             },
@@ -501,14 +500,6 @@ export default {
                 benefit3: 'Rastreamento de progresso',
                 benefit4: 'Notificações de conquistas',
             },
-            workLogs: {
-                title: 'Registros de Trabalho',
-                description: 'Registre horas trabalhadas, quilômetros dirigidos e viagens completadas para rastreamento preciso.',
-                benefit1: 'Rastreamento de turnos',
-                benefit2: 'Registro de KM',
-                benefit3: 'Contadores de viagens',
-                benefit4: 'Cálculos de taxa por hora',
-            },
             reminders: {
                 title: 'Lembretes Inteligentes',
                 description: 'Nunca perca prazos importantes com lembretes automatizados para pagamentos, manutenção e renovações.',
@@ -532,15 +523,6 @@ export default {
                 benefit2: 'Reconhecimento de texto OCR',
                 benefit3: 'Backup automático',
                 benefit4: 'Criptografia segura',
-            },
-            ai: {
-                title: 'Insights com IA',
-                description: 'Obtenha recomendações inteligentes para otimizar custos e aumentar lucratividade.',
-                benefit1: 'Dicas de otimização de custos',
-                benefit2: 'Detecção de anomalias',
-                benefit3: 'Análises preditivas',
-                benefit4: 'Sugestões inteligentes',
-                badge: 'Somente PRO',
             },
             team: {
                 title: 'Acesso de Equipe e Permissões',
@@ -597,7 +579,6 @@ export default {
             "finanças motorista",
             "relatório financeiro motorista",
             "controle de combustível",
-            "controle de quilometragem",
             "lucro motorista",
             "despesas veículo",
             "orçamento motorista",
@@ -641,16 +622,16 @@ export default {
             description: 'Rastreie ganhos do Uber, 99, Cabify, iFood e outras plataformas tudo em um só lugar. Sem mais planilhas ou cálculos manuais.',
         },
         benefit2: {
-            title: 'Relatórios Prontos para Impostos',
-            description: 'Gere relatórios compatíveis com a Receita Federal com rastreamento automático de quilometragem, categorização de despesas e cálculos de lucro para declaração sem stress.',
+            title: 'Relatórios Profissionais',
+            description: 'Gere relatórios financeiros completos com categorização detalhada de despesas, rastreamento de receitas e cálculos de lucro. Exporte para PDF ou Excel para facilitar o compartilhamento com seu contador.',
         },
         benefit3: {
             title: 'Insights em Tempo Real',
-            description: 'Veja seu lucro real por viagem, por dia e por plataforma. Identifique quais horários e áreas são mais lucrativos instantaneamente.',
+            description: 'Veja seu lucro real por dia e por plataforma com análises detalhadas. Compare períodos, acompanhe tendências e identifique suas plataformas mais lucrativas.',
         },
         benefit4: {
             title: 'Gestão de Frota',
-            description: 'Gerencie múltiplos motoristas e veículos sem esforço. Acompanhe desempenho individual, atribua veículos e monitore a lucratividade da frota.',
+            description: 'Gerencie múltiplos motoristas e veículos sem esforço. Acompanhe métricas de desempenho individual, monitore custos por veículo e analise a lucratividade da frota por motorista ou veículo.',
         },
         benefit5: {
             title: 'Orçamento Inteligente',
@@ -686,7 +667,7 @@ export default {
             description: 'Maria gerencia 3 motoristas e veículos',
             challenge: 'Maria não conseguia rastrear quais motoristas eram lucrativos. Gastava horas consolidando relatórios de diferentes motoristas manualmente.',
             solution: 'Agora cada motorista registra seus próprios dados. Maria obtém painéis consolidados mostrando desempenho por motorista e veículo instantaneamente.',
-            result: 'Aumentou a lucratividade da frota em 23% identificando veículos com baixo desempenho e otimizando atribuições de motoristas.',
+            result: 'Aumentou a lucratividade da frota em 23% identificando veículos com baixo desempenho e otimizando o uso de veículos baseado em análise de custos.',
             badge: 'Plano Simple',
         },
         largeFleet: {
@@ -723,7 +704,7 @@ export default {
             item5: 'Relatórios prontos para impostos em um clique',
             item6: 'Todas as plataformas em uma visualização',
             item7: 'Categorização inteligente de despesas',
-            item8: 'Insights de lucratividade com IA',
+            item8: 'Análises avançadas de lucratividade',
         },
     },
     about: {
@@ -752,7 +733,7 @@ export default {
             },
             value3: {
                 title: 'Inovação',
-                description: 'Aproveitamos a tecnologia mais recente para trazer insights com IA, automação e integrações perfeitas.',
+                description: 'Aproveitamos a tecnologia mais recente para trazer automação poderosa, análises detalhadas e integrações perfeitas.',
             },
             value4: {
                 title: 'Confiabilidade',
