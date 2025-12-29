@@ -17,6 +17,7 @@ import { ThemeSyncScript } from "@/components/theme-sync-script";
 import { getCurrentSession } from "@/lib/server/auth/session";
 import { prisma } from "@/lib/server/db";
 import { getStaticParams } from "@/locales/server";
+import { isCookieTypeAllowed } from "@/lib/server/cookie-consent/actions";
 
 import "../globals.css";
 
@@ -177,10 +178,10 @@ export default async function RootLayout({
             </QueryProvider>
           </AccessibilityProvider>
         </ThemeProvider>
-        {process.env.NEXT_PUBLIC_GTM_ID && (
+        {await isCookieTypeAllowed('performance') && process.env.NEXT_PUBLIC_GTM_ID && (
           <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID} />
         )}
-        {process.env.NEXT_PUBLIC_GA_ID && (
+        {await isCookieTypeAllowed('performance') && process.env.NEXT_PUBLIC_GA_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
         )}
       </body>
