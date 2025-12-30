@@ -32,7 +32,7 @@ export default {
         },
         feature1: 'Categorização detalhada de despesas',
         feature2: 'Rastreamento de receita em tempo real',
-        feature3: 'Métricas de desempenho de motoristas e veículos',
+        feature3: 'Rastreamento de despesas e receitas por motorista e veículo',
         feature4: 'Relatórios e exportações personalizáveis',
     },
     pricing: {
@@ -449,7 +449,6 @@ export default {
                 benefit1: 'Rastreamento multi-plataforma',
                 benefit2: 'Resumos diários/semanais/mensais',
                 benefit3: 'Cálculos de margem de lucro',
-                benefit4: 'Previsão de receitas',
                 badge: 'Recurso Principal',
             },
             dashboard: {
@@ -518,9 +517,9 @@ export default {
             },
             storage: {
                 title: 'Armazenamento em Nuvem',
-                description: 'Armazene recibos, faturas e documentos com segurança na nuvem com digitalização OCR.',
+                description: 'Armazene recibos, faturas e documentos com segurança na nuvem.',
                 benefit1: 'Até 5GB de armazenamento (PRO)',
-                benefit2: 'Reconhecimento de texto OCR',
+                benefit2: 'Armazenamento organizado de arquivos',
                 benefit3: 'Backup automático',
                 benefit4: 'Criptografia segura',
             },
@@ -598,7 +597,7 @@ export default {
         subtitle: 'Comece em minutos e assuma o controle das suas finanças',
         step1: {
             title: 'Cadastre-se e Conecte',
-            description: 'Crie sua conta gratuita e conecte suas plataformas de transporte para importar automaticamente seus dados de ganhos.',
+            description: 'Crie sua conta gratuita e comece a rastrear seus ganhos do Uber, 99, Cabify e outras plataformas manualmente.',
         },
         step2: {
             title: 'Registre Despesas',
@@ -606,7 +605,7 @@ export default {
         },
         step3: {
             title: 'Monitore o Desempenho',
-            description: 'Visualize painéis em tempo real mostrando suas margens de lucro, detalhamento de despesas e tendências de receita em todas as plataformas.',
+            description: 'Visualize painéis mostrando suas margens de lucro, detalhamento de despesas e resumos de ganhos em todas as plataformas.',
         },
         step4: {
             title: 'Gere Relatórios',
@@ -697,10 +696,10 @@ export default {
         },
         automated: {
             title: 'Com Dive Into Drive',
-            item1: 'Rastreamento automatizado em segundos',
+            item1: 'Entrada rápida de despesas em segundos',
             item2: 'Armazenamento digital de recibos (5GB nuvem)',
             item3: 'Cálculos automáticos com precisão',
-            item4: 'Painéis em tempo real e alertas',
+            item4: 'Painéis ao vivo e alertas de orçamento',
             item5: 'Relatórios prontos para impostos em um clique',
             item6: 'Todas as plataformas em uma visualização',
             item7: 'Categorização inteligente de despesas',

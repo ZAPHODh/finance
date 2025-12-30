@@ -32,7 +32,7 @@ export default {
         },
         feature1: 'Detailed expense categorization',
         feature2: 'Real-time revenue tracking',
-        feature3: 'Driver and vehicle performance metrics',
+        feature3: 'Expense and revenue tracking by driver and vehicle',
         feature4: 'Customizable reports and exports',
     },
     pricing: {
@@ -448,7 +448,6 @@ export default {
                 benefit1: 'Multi-platform tracking',
                 benefit2: 'Daily/weekly/monthly summaries',
                 benefit3: 'Profit margin calculations',
-                benefit4: 'Revenue forecasting',
                 badge: 'Core Feature',
             },
             dashboard: {
@@ -517,9 +516,9 @@ export default {
             },
             storage: {
                 title: 'Cloud Storage',
-                description: 'Store receipts, invoices, and documents securely in the cloud with OCR scanning.',
+                description: 'Store receipts, invoices, and documents securely in the cloud.',
                 benefit1: 'Up to 5GB storage (PRO)',
-                benefit2: 'OCR text recognition',
+                benefit2: 'Organized file storage',
                 benefit3: 'Automatic backup',
                 benefit4: 'Secure encryption',
             },
@@ -596,7 +595,7 @@ export default {
         subtitle: 'Get started in minutes and take control of your finances',
         step1: {
             title: 'Sign Up & Connect',
-            description: 'Create your free account and connect your ride-sharing platforms to automatically import your earnings data.',
+            description: 'Create your free account and start tracking your earnings from Uber, 99, Cabify, and other platforms manually.',
         },
         step2: {
             title: 'Track Expenses',
@@ -604,7 +603,7 @@ export default {
         },
         step3: {
             title: 'Monitor Performance',
-            description: 'View real-time dashboards showing your profit margins, expenses breakdown, and revenue trends across all platforms.',
+            description: 'View dashboards showing your profit margins, expenses breakdown, and earnings summaries across all platforms.',
         },
         step4: {
             title: 'Generate Reports',
@@ -695,10 +694,10 @@ export default {
         },
         automated: {
             title: 'With Dive Into Drive',
-            item1: 'Automated tracking in seconds',
+            item1: 'Quick expense entry in seconds',
             item2: 'Digital receipt storage (5GB cloud)',
             item3: 'Automatic calculations with accuracy',
-            item4: 'Real-time dashboards and alerts',
+            item4: 'Live dashboards and budget alerts',
             item5: 'One-click tax-ready reports',
             item6: 'All platforms in one view',
             item7: 'Smart expense categorization',
