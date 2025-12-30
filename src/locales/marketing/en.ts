@@ -457,6 +457,7 @@ export default {
                 benefit2: 'Interactive charts',
                 benefit3: 'Performance comparisons',
                 benefit4: 'Real-time data sync',
+                badge: 'SIMPLE+',
             },
             reporting: {
                 title: 'Smart Reporting',
@@ -465,6 +466,7 @@ export default {
                 benefit2: 'Multiple export formats',
                 benefit3: 'Custom report builder',
                 benefit4: 'Tax-ready summaries',
+                badge: 'SIMPLE+',
             },
             vehicle: {
                 title: 'Vehicle Management',
@@ -505,6 +507,7 @@ export default {
                 benefit2: 'Maintenance alerts',
                 benefit3: 'Insurance renewal notices',
                 benefit4: 'Custom reminder setup',
+                badge: 'SIMPLE+',
             },
             export: {
                 title: 'Data Export',
@@ -513,6 +516,7 @@ export default {
                 benefit2: 'Excel spreadsheets',
                 benefit3: 'CSV data export',
                 benefit4: 'Accounting software integration',
+                badge: 'SIMPLE+',
             },
             storage: {
                 title: 'Cloud Storage',
@@ -521,6 +525,7 @@ export default {
                 benefit2: 'Organized file storage',
                 benefit3: 'Automatic backup',
                 benefit4: 'Secure encryption',
+                badge: 'SIMPLE+',
             },
             team: {
                 title: 'Team Access & Permissions',
@@ -599,7 +604,7 @@ export default {
         },
         step2: {
             title: 'Track Expenses',
-            description: 'Record all vehicle expenses like fuel, maintenance, and tolls. Attach receipts and categorize everything easily.',
+            description: 'Record all vehicle expenses like fuel, maintenance, and tolls. Enter expense amounts and categorize everything easily.',
         },
         step3: {
             title: 'Monitor Performance',
@@ -655,7 +660,7 @@ export default {
             title: 'Solo Rideshare Driver',
             description: 'João is an Uber driver in São Paulo',
             challenge: 'João struggled to track expenses across Uber and 99. Tax season was a nightmare with lost receipts and manual calculations.',
-            solution: 'With Dive Into Drive, João now tracks all expenses in real-time, attaches digital receipts, and exports tax-ready reports in seconds.',
+            solution: 'With Dive Into Drive, João now tracks all expenses in real-time, records expense amounts, and exports professional financial reports in seconds.',
             result: 'Saved 10+ hours monthly on bookkeeping and identified $400/month in overlooked deductions.',
             badge: 'Free Plan',
         },

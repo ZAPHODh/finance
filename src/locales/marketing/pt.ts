@@ -458,6 +458,7 @@ export default {
                 benefit2: 'Gráficos interativos',
                 benefit3: 'Comparações de desempenho',
                 benefit4: 'Sincronização de dados em tempo real',
+                badge: 'SIMPLE+',
             },
             reporting: {
                 title: 'Relatórios Inteligentes',
@@ -466,6 +467,7 @@ export default {
                 benefit2: 'Múltiplos formatos de exportação',
                 benefit3: 'Construtor de relatórios personalizados',
                 benefit4: 'Resumos prontos para impostos',
+                badge: 'SIMPLE+',
             },
             vehicle: {
                 title: 'Gestão de Veículos',
@@ -506,6 +508,7 @@ export default {
                 benefit2: 'Alertas de manutenção',
                 benefit3: 'Avisos de renovação de seguro',
                 benefit4: 'Configuração de lembretes personalizados',
+                badge: 'SIMPLE+',
             },
             export: {
                 title: 'Exportação de Dados',
@@ -514,6 +517,7 @@ export default {
                 benefit2: 'Planilhas Excel',
                 benefit3: 'Exportação de dados CSV',
                 benefit4: 'Integração com software de contabilidade',
+                badge: 'SIMPLE+',
             },
             storage: {
                 title: 'Armazenamento em Nuvem',
@@ -522,6 +526,7 @@ export default {
                 benefit2: 'Armazenamento organizado de arquivos',
                 benefit3: 'Backup automático',
                 benefit4: 'Criptografia segura',
+                badge: 'SIMPLE+',
             },
             team: {
                 title: 'Acesso de Equipe e Permissões',
@@ -601,7 +606,7 @@ export default {
         },
         step2: {
             title: 'Registre Despesas',
-            description: 'Registre todas as despesas do veículo como combustível, manutenção e pedágios. Anexe recibos e categorize tudo facilmente.',
+            description: 'Registre todas as despesas do veículo como combustível, manutenção e pedágios. Insira os valores das despesas e categorize tudo facilmente.',
         },
         step3: {
             title: 'Monitore o Desempenho',
@@ -657,7 +662,7 @@ export default {
             title: 'Motorista de Aplicativo Solo',
             description: 'João é motorista de Uber em São Paulo',
             challenge: 'João tinha dificuldade para rastrear despesas entre Uber e 99. A época de impostos era um pesadelo com recibos perdidos e cálculos manuais.',
-            solution: 'Com Dive Into Drive, João agora rastreia todas as despesas em tempo real, anexa recibos digitais e exporta relatórios prontos para impostos em segundos.',
+            solution: 'Com Dive Into Drive, João agora rastreia todas as despesas em tempo real, registra valores das despesas e exporta relatórios financeiros profissionais em segundos.',
             result: 'Economizou mais de 10 horas mensais em contabilidade e identificou R$ 400/mês em deduções que passavam despercebidas.',
             badge: 'Plano Grátis',
         },
